@@ -1,1 +1,4 @@
+#exclude everything in the bin folder
 bin/*
+#except for this file, so that the bin folder is added to the git repository
+!bin/.gitkeep
