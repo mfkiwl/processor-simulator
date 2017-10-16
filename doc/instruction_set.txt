@@ -1,0 +1,11 @@
+Instruction Set:
+ADD R1 R2 R3     - Adds registers R2 and R3 and stores the result in R1
+ADDI R1 R2 x     - Adds register R2 with immediate value x and stores the result in R1
+CMP R1 R2 R3     - Compare registers R2 and R3. R1 = 1 if R2 > R3. R1 = 0 if R2 = R3. R1 = -1 if R2 < R3.
+LD R1 R2 x       - Load from memory into R1 using the base address R2 and the immediate operand x as the offset
+LDC R1 x         - Load from memory into R1 using the immediate operand x as the memory address
+B x              - Perform an absolute branch to a memory address provided as the immediate operand x
+J x              - Perform a relative branch to an address provided as an immediate operand
+BLTH x R1 R2     - Perform an absolute branch to an address provided as an immediate operand if R1 is less than R2
+
+
