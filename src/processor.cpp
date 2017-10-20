@@ -13,10 +13,13 @@ class Processor {
 
         void info() {
         	printf("0: %d | 1: %d | 2: %d\n", registerFile.getRegisterValue(0), registerFile.getRegisterValue(1), registerFile.getRegisterValue(2));
-            registerFile.setRegisterValue(1, 2);
-            registerFile.setRegisterValue(2, 3);
+            alu.ADDI(1,1,2);
             printf("0: %d | 1: %d | 2: %d\n", registerFile.getRegisterValue(0), registerFile.getRegisterValue(1), registerFile.getRegisterValue(2));
-            alu.add(0,1,2);
+            alu.ADDI(2,2,3);
+            printf("0: %d | 1: %d | 2: %d\n", registerFile.getRegisterValue(0), registerFile.getRegisterValue(1), registerFile.getRegisterValue(2));
+            alu.ADD(0,1,2);
+            printf("0: %d | 1: %d | 2: %d\n", registerFile.getRegisterValue(0), registerFile.getRegisterValue(1), registerFile.getRegisterValue(2));
+            alu.SUB(0,0,1);
             printf("0: %d | 1: %d | 2: %d\n", registerFile.getRegisterValue(0), registerFile.getRegisterValue(1), registerFile.getRegisterValue(2));
         }
 };
