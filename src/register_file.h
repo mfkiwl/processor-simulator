@@ -3,9 +3,8 @@
 class RegisterFile {
 	int numRegisters;
     public: 
-    	RegisterFile() {
-            numRegisters = 0;
-        }
+    	RegisterFile(int a) : numRegisters(a) {}
+
         int getNumRegisters() {
         	return numRegisters;
         }
