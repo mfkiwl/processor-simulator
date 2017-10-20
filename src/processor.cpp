@@ -12,15 +12,15 @@ class Processor {
         Processor() : pc(0), noOfInstructionsExecuted(0), registerFile(8), alu(registerFile) {}
 
         void info() {
-        	printf("0: %d | 1: %d | 2: %d\n", registerFile.getRegisterValue(0), registerFile.getRegisterValue(1), registerFile.getRegisterValue(2));
+        	registerFile.printRegisterValues();
             alu.ADDI(1,1,2);
-            printf("0: %d | 1: %d | 2: %d\n", registerFile.getRegisterValue(0), registerFile.getRegisterValue(1), registerFile.getRegisterValue(2));
+            registerFile.printRegisterValues();
             alu.ADDI(2,2,3);
-            printf("0: %d | 1: %d | 2: %d\n", registerFile.getRegisterValue(0), registerFile.getRegisterValue(1), registerFile.getRegisterValue(2));
+            registerFile.printRegisterValues();
             alu.ADD(0,1,2);
-            printf("0: %d | 1: %d | 2: %d\n", registerFile.getRegisterValue(0), registerFile.getRegisterValue(1), registerFile.getRegisterValue(2));
-            alu.SUB(0,0,1);
-            printf("0: %d | 1: %d | 2: %d\n", registerFile.getRegisterValue(0), registerFile.getRegisterValue(1), registerFile.getRegisterValue(2));
+            registerFile.printRegisterValues();
+            alu.SUB(3,1,0);
+            registerFile.printRegisterValues();
         }
 };
 

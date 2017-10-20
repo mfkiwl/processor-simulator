@@ -24,6 +24,12 @@ class RegisterFile {
         		printf("Register index %d is out of bounds.\n", i);
         	}
         	registers[i] = val;
-        	printf("Register %d given the value %d.\n", i, val);
+        }
+
+        void printRegisterValues() {
+        	for(int i = 0; i < numRegisters; i++) {
+        		printf("%d  ", registers[i]);
+        	}
+        	printf("\n");
         }
 };
