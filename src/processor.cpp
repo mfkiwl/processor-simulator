@@ -7,27 +7,21 @@ class Processor {
     RegisterFile registerFile;
     public:
     	//Classes needed to be initialised in the uniform initialiser list
-        Processor() : registerFile(3), pc(0), noOfInstructionsExecuted(0) {}
+        Processor() : registerFile(8), pc(0), noOfInstructionsExecuted(0) {}
 
-        int getpc() {
-	        return pc;
-        }
-
-        int getNoOfInstructionsExecuted() {
-        	return noOfInstructionsExecuted;
-        }
-
-        int getNumRegisters() {
-        	return registerFile.getNumRegisters();
+        void info() {
+            printf("pc: %d\n", pc);
+	        printf("number of instrutions executed: %d\n", noOfInstructionsExecuted);
+            printf("Number of registers: %d\n", registerFile.getNumRegisters());
+            int r = 7;
+            printf("Value at register %d is %d\n", r, registerFile.getRegisterValue(r));
+            printf("This is my processor.\nThanks!\n");
         }
 };
 
 
 int main(void) {
 	Processor processor;
-	printf("pc: %d\n", processor.getpc());
-	printf("number of instrutions executed: %d\n", processor.getNoOfInstructionsExecuted());
-	printf("Number of registers: %d\n", processor.getNumRegisters());
-	printf("This is my processor.\nThanks!\n");
+	processor.info();
 	return 0;
 }
