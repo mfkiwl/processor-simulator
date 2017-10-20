@@ -1,21 +1,23 @@
 #include <stdio.h>
 #include "register_file.h"
+#include "alu.h"
 
 class Processor {
     int pc;
     int noOfInstructionsExecuted;
     RegisterFile registerFile;
+    ALU alu;
     public:
     	//Classes needed to be initialised in the uniform initialiser list
-        Processor() : registerFile(8), pc(0), noOfInstructionsExecuted(0) {}
+        Processor() : pc(0), noOfInstructionsExecuted(0), registerFile(8), alu(registerFile) {}
 
         void info() {
-            printf("pc: %d\n", pc);
-	        printf("number of instrutions executed: %d\n", noOfInstructionsExecuted);
-            printf("Number of registers: %d\n", registerFile.getNumRegisters());
-            int r = 7;
-            printf("Value at register %d is %d\n", r, registerFile.getRegisterValue(r));
-            printf("This is my processor.\nThanks!\n");
+        	printf("0: %d | 1: %d | 2: %d\n", registerFile.getRegisterValue(0), registerFile.getRegisterValue(1), registerFile.getRegisterValue(2));
+            registerFile.setRegisterValue(1, 2);
+            registerFile.setRegisterValue(2, 3);
+            printf("0: %d | 1: %d | 2: %d\n", registerFile.getRegisterValue(0), registerFile.getRegisterValue(1), registerFile.getRegisterValue(2));
+            alu.add(0,1,2);
+            printf("0: %d | 1: %d | 2: %d\n", registerFile.getRegisterValue(0), registerFile.getRegisterValue(1), registerFile.getRegisterValue(2));
         }
 };
 
