@@ -20,6 +20,14 @@ class RegisterFile {
     		pc++;
     	}
 
+    	void setpc(int x) {
+    		pc = x;
+    	}
+
+    	void printpc() {
+    		printf("PC: %d\n", pc);
+    	}
+
         int getNumRegisters() {
         	return numRegisters;
         }

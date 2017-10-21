@@ -2,5 +2,6 @@ Instruction Set:
 ADD R1 R2 R3     - Adds registers R2 and R3 and stores the result in R1                   - opcode: 0
 ADDI R1 R2 x     - Adds register R2 with immediate value x and stores the result in R1    - opcode: 1
 SUB R1 R2 R3     - Subs the register R3 from R2 and stores the result in R1               - opcode: 2
+B x              - Branch to instruction x                                                - opcode: 3
 
 
