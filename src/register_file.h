@@ -1,11 +1,23 @@
 #include <stdlib.h>
 
 class RegisterFile {
+	int pc;
 	int numRegisters;
 	int* registers;
     public: 
-    	RegisterFile(int a) : numRegisters(a) {
+    	RegisterFile(int a) : pc(0), numRegisters(a) {
     		registers = (int*) malloc(sizeof(int) * numRegisters);
+    		for(int i = 0; i < numRegisters; i++) {
+    			registers[i] = 0;
+    		}
+    	}
+
+    	int getpc() {
+    		return pc;
+    	}
+
+    	void incpc() {
+    		pc++;
     	}
 
         int getNumRegisters() {
