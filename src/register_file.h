@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <math.h>
 
 class RegisterFile {
 	int pc;
@@ -46,10 +47,62 @@ class RegisterFile {
         	registers[i] = val;
         }
 
-        void printRegisterValues() {
+        void printRegisters() {
+
+        	printf("Registers: ");
+
+            //print register names
+            int pclength = intLength(pc);
+            if(pclength <= 2) {
+            	printf("PC ");
+            }
+        	int lengths[numRegisters];
         	for(int i = 0; i < numRegisters; i++) {
-        		printf("%d  ", registers[i]);
+        		lengths[i] = intLength(registers[i]);
+        		
+        	}
+        	for(int i = 0; i < numRegisters; i++) {
+        		if(lengths[i] <= 2) {
+        		    printf("R%d ", i);
+        		}
         	}
         	printf("\n");
+
+        	printf("Values:    ");
+
+            //printf register values
+            if(pclength == 1) {
+        		printf("%d  ", pc);
+            }
+        	else if(pclength == 2) {
+        		printf("%d  ", pc);
+        	}
+        	else {
+        		printf("%d ", pc);
+        	}
+        	for(int i = 0; i < numRegisters; i++) {
+        		if(lengths[i] == 1) {
+        		    printf("%d  ", registers[i]);
+        		}
+        		else if(lengths[i] == 2) {
+        			printf("%d  ", registers[i]);
+        		}
+        		else {
+        			printf("%d ", registers[i]);
+        		}
+        	}
+        	printf("\n");
+        }
+
+        int intLength(int n) {
+        	if(n == 0) {
+        	    return 1;
+        	} else {
+        	    int nDigits = floor(log10(abs(n))) + 1;
+        	    if(n < 0) {
+        	    	nDigits++;
+        	    }
+        	    return nDigits;
+        	}
         }
 };

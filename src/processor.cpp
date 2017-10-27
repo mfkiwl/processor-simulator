@@ -19,15 +19,13 @@ class Processor {
         Processor(std::vector<Instruction> a) : instructions(a), noOfInstructionsExecuted(0), registerFile(8), alu(registerFile), bu(registerFile) {}
 
         void start() {
-        	printf("Registers: ");
-        	registerFile.printRegisterValues();
+        	printInfo();
         	while(registerFile.getpc() < instructions.size()) {
         	    Instruction i = instructions[registerFile.getpc()];
                 execute(i);
                 registerFile.incpc();
                 noOfInstructionsExecuted++;
-        	    printf("Registers: ");
-        	    registerFile.printRegisterValues();
+                printInfo();
             }
         }
 
@@ -51,10 +49,11 @@ class Processor {
         	}
         }
 
-        void printInstructions() {
-        	for(int i = 0; i < instructions.size(); i++) {
-        		std::cout << instructions[i].assembly << std::endl;
-        	}
+        void printInfo() {
+        	printf("\n");
+        	printf("Instructions executed: %d\n", noOfInstructionsExecuted);
+        	registerFile.printRegisters();
+        	printf("\n");
         }
 };
 
@@ -67,7 +66,7 @@ int main(void) {
 	instructions.push_back(Instruction("SUB R3 R1 R0", 2, 3, 1, 0));
 	instructions.push_back(Instruction("ADDI R1 R1 R2", 1, 1, 1, 2));
 	instructions.push_back(Instruction("ADDI R1 R1 R2", 1, 1, 1, 2));
-	instructions.push_back(Instruction("B 0", 3, 0, 0, 0));
+	//minstructions.push_back(Instruction("B 0", 3, 0, 0, 0));
 	Processor processor(instructions);
 	processor.start();
 	return 0;
