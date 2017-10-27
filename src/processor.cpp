@@ -64,12 +64,12 @@ class Processor {
 
 int main(void) {
 	std::vector<Instruction> instructions;
-	instructions.push_back(Instruction("ADDI R1 R1 R2", 1, 1, 1, 2));
 	instructions.push_back(Instruction("ADDI R2 R2 R3", 1, 2, 2, 3));
-	instructions.push_back(Instruction("ADD R0 R1 R2", 0, 0, 1, 2));
-	instructions.push_back(Instruction("SUB R3 R1 R0", 2, 3, 1, 0));
-	instructions.push_back(Instruction("ADDI R1 R1 R2", 1, 1, 1, 2));
-	instructions.push_back(Instruction("ADDI R1 R1 R2", 1, 1, 1, 2));
+	instructions.push_back(Instruction("ADDI R3 R3 R4", 1, 3, 3, 4));
+	instructions.push_back(Instruction("ADD R1 R2 R3", 0, 1, 2, 3));
+	instructions.push_back(Instruction("SUB R4 R2 R1", 2, 4, 2, 1));
+	instructions.push_back(Instruction("ADDI R2 R2 R3", 1, 2, 2, 3));
+	instructions.push_back(Instruction("ADDI R2 R2 R3", 1, 2, 2, 3));
 	//minstructions.push_back(Instruction("B 0", 3, 0, 0, 0));
 	Processor processor(instructions);
 	processor.start();
