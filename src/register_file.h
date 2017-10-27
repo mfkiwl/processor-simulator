@@ -48,43 +48,32 @@ class RegisterFile {
 
         void printRegisters() {
 
-        	printf("Registers: ");
-
             //print register names
-            int pclength = intLength(registers[0]);
-            if(pclength <= 2) {
-            	printf("PC ");
-            }
+        	printf("Registers: ");
         	int lengths[numRegisters];
-        	for(int i = 1; i < numRegisters; i++) {
+        	for(int i = 0; i < numRegisters; i++) {
         		lengths[i] = intLength(registers[i]);
-        		
         	}
-        	for(int i = 1; i < numRegisters; i++) {
+        	for(int i = 0; i < numRegisters; i++) {
         		if(lengths[i] <= 2) {
-        		    printf("R%d ", i);
+        			if(i == 0) {
+        				printf("PC ");
+        			}
+        			else {
+        		        printf("R%d ", i);
+        		    }
         		}
         	}
         	printf("\n");
 
+            //print register values
         	printf("Values:    ");
-
-            //printf register values
-            if(pclength == 1) {
-        		printf("%d  ", registers[0]);
-            }
-        	else if(pclength == 2) {
-        		printf("%d  ", registers[0]);
-        	}
-        	else {
-        		printf("%d ", registers[0]);
-        	}
-        	for(int i = 1; i < numRegisters; i++) {
+        	for(int i = 0; i < numRegisters; i++) {
         		if(lengths[i] == 1) {
         		    printf("%d  ", registers[i]);
         		}
         		else if(lengths[i] == 2) {
-        			printf("%d  ", registers[i]);
+        			printf("%d ", registers[i]);
         		}
         		else {
         			printf("%d ", registers[i]);

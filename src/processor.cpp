@@ -27,7 +27,9 @@ class Processor {
                 fgets(str, 2, stdin);
         	    Instruction i = instructions[registerFile.getpc()];
                 execute(i);
-                registerFile.incpc();
+                if(i.assembly[0] != 'B') {
+                  registerFile.incpc();
+                }
                 noOfInstructionsExecuted++;
                 printInfo();
             }
@@ -70,7 +72,7 @@ int main(void) {
 	instructions.push_back(Instruction("SUB R4 R2 R1", 2, 4, 2, 1));
 	instructions.push_back(Instruction("ADDI R2 R2 R3", 1, 2, 2, 3));
 	instructions.push_back(Instruction("ADDI R2 R2 R3", 1, 2, 2, 3));
-	//minstructions.push_back(Instruction("B 0", 3, 0, 0, 0));
+	instructions.push_back(Instruction("B 0", 3, 0, 0, 0));
 	Processor processor(instructions);
 	processor.start();
 	return 0;
