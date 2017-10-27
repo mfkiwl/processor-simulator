@@ -21,6 +21,11 @@ class Processor {
         void start() {
         	printInfo();
         	while(registerFile.getpc() < instructions.size()) {
+                //step through the program
+                printf("Press ENTER to continue\n");
+                char str[3];
+                fgets(str, 2, stdin);
+
         	    Instruction i = instructions[registerFile.getpc()];
                 execute(i);
                 registerFile.incpc();
