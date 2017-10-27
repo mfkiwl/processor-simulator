@@ -55,13 +55,16 @@ class RegisterFile {
         		lengths[i] = intLength(registers[i]);
         	}
         	for(int i = 0; i < numRegisters; i++) {
-        		if(lengths[i] <= 2) {
-        			if(i == 0) {
-        				printf("PC ");
+        		if(i == 0) {
+        			printf("PC ");
+        		}
+        		else {
+        		    printf("R%d ", i);
+        		}
+        		if(lengths[i] > 2) {
+        			for(int j = 2; j < lengths[i]; j++) {
+                        printf(" ");
         			}
-        			else {
-        		        printf("R%d ", i);
-        		    }
         		}
         	}
         	printf("\n");
@@ -71,9 +74,6 @@ class RegisterFile {
         	for(int i = 0; i < numRegisters; i++) {
         		if(lengths[i] == 1) {
         		    printf("%d  ", registers[i]);
-        		}
-        		else if(lengths[i] == 2) {
-        			printf("%d ", registers[i]);
         		}
         		else {
         			printf("%d ", registers[i]);
