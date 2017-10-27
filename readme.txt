@@ -6,8 +6,8 @@ make run
 
 
 
-Keep pressing the enter button when the simulator is running to step through each instruction.
+Press the enter button when the simulator is running to step through each instruction
 
-The program that the simulator is executing does some simple arithmetic and branching instrcutions
+The program that the simulator is executing does some simple arithmetic and branching instructions
 
-I am yet to implement memory access instructions
+I am yet to implement memory access
