@@ -1,6 +1,3 @@
-#include <stdlib.h>
-#include <math.h>
-
 class RegisterFile {
 	int numRegisters;
 	int* registers;

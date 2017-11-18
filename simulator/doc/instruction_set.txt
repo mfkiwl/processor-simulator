@@ -1,7 +1,8 @@
 Instruction Set:
-ADD R1 R2 R3     - Adds registers R2 and R3 and stores the result in R1                   - opcode: 0
-ADDI R1 R2 x     - Adds register R2 with immediate value x and stores the result in R1    - opcode: 1
-SUB R1 R2 R3     - Subs the register R3 from R2 and stores the result in R1               - opcode: 2
-B x              - Branch to instruction x                                                - opcode: 3
-
+ADD R1 R2 R3     - opcode: 0 - Adds registers R2 and R3 and stores the result in R1
+ADDI R1 R2 x     - opcode: 1 - Adds register R2 with immediate value x and stores the result in R1
+SUB R1 R2 R3     - opcode: 2 - Subs the register R3 from R2 and stores the result in R1
+B x              - opcode: 3 - Branch to instruction x
+LD R1 R2 x       - opcode: 4 - Load from memory to register R1, using R2 as the base address and x as the offset
+STR R1 R2 x      - opcode: 5 - Store value of R1 in memory, using R2 as the base address and x as the offset
 
