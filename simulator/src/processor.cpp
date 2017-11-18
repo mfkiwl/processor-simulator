@@ -12,8 +12,10 @@
 
 
 class Processor {
-	std::vector<Instruction> instructions;
+    int noOfInstructions;
+	Instruction *instructions;
     int noOfInstructionsExecuted;
+
     //components
     RegisterFile registerFile;
     Memory memory;
@@ -21,18 +23,25 @@ class Processor {
     BranchUnit bu;
     public:
     	//Classes needed to be initialised in the uniform initialiser list
-        Processor(std::vector<Instruction> a) : instructions(a), noOfInstructionsExecuted(0), registerFile(8), memory(16, registerFile), alu(registerFile), bu(registerFile) {}
+        Processor(int a, Instruction *b) : 
+            noOfInstructions(a),
+            instructions(b),
+            noOfInstructionsExecuted(0), 
+            registerFile(8), 
+            memory(16, registerFile), 
+            alu(registerFile), 
+            bu(registerFile) {}
 
         void start() {
         	printInfo();
         	printf("Keep pressing ENTER to step through the program\n");
-        	while(registerFile.getpc() < instructions.size()) {
+        	while(registerFile.getpc() < noOfInstructions) {
                 //step through the program
                 char str[3];
                 fgets(str, 2, stdin);
         	    Instruction i = instructions[registerFile.getpc()];
                 execute(i);
-                if(i.assembly[0] != 'B') {
+                if(i.opcode != 3) {
                   registerFile.incpc();
                 }
                 noOfInstructionsExecuted++;
@@ -78,33 +87,35 @@ class Processor {
 
 
 int main(void) {
-	std::vector<Instruction> instructions;
-	instructions.push_back(Instruction("LD R2 R1 0", 4, 2, 1, 0));
-    instructions.push_back(Instruction("ADDI R2 R2 1", 1, 2, 2, 1));
-    instructions.push_back(Instruction("STR R2 R1 0", 5, 2, 1, 0));
-    instructions.push_back(Instruction("ADDI R2 R1 0", 1, 2, 1, 0));
-    instructions.push_back(Instruction("LD R3 R1 R0", 4, 3, 1, 0));
-    instructions.push_back(Instruction("ADDI R3 R3 1", 1, 3, 3, 1));
-    instructions.push_back(Instruction("STR R3 R1 0", 5, 3, 1, 0));
-    instructions.push_back(Instruction("ADDI R3 R1 0", 1, 3, 1, 0));
-    instructions.push_back(Instruction("LD R4 R1 0", 4, 4, 1, 0));
-    instructions.push_back(Instruction("ADDI R4 R4 1", 1, 4, 4, 1));
-    instructions.push_back(Instruction("STR R4 R1 0", 5, 4, 1, 0));
-    instructions.push_back(Instruction("ADDI R4 R1 0", 1, 4, 1, 0));
-    instructions.push_back(Instruction("LD R5 R1 0", 4, 5, 1, 0));
-    instructions.push_back(Instruction("ADDI R5 R5 1", 1, 5, 5, 1));
-    instructions.push_back(Instruction("STR R5 R1 0", 5, 5, 1, 0));
-    instructions.push_back(Instruction("ADDI R5 R1 0", 1, 5, 1, 0));
-    instructions.push_back(Instruction("LD R6 R1 0", 4, 6, 1, 0));
-    instructions.push_back(Instruction("ADDI R6 R6 1", 1, 6, 6, 1));
-    instructions.push_back(Instruction("STR R6 R1 0", 5, 6, 1, 0));
-    instructions.push_back(Instruction("ADDI R6 R1 0", 1, 6, 1, 0));
-    instructions.push_back(Instruction("LD R7 R1 0", 4, 7, 1, 0));
-    instructions.push_back(Instruction("ADDI R7 R7 1", 1, 7, 7, 1));
-    instructions.push_back(Instruction("STR R7 R1 0", 5, 7, 1, 0));
-    instructions.push_back(Instruction("ADDI R7 R1 0", 1, 7, 1, 0));
-    instructions.push_back(Instruction("B 0", 3, 0, 0, 0));
-	Processor processor(instructions);
+    Instruction instructions[25] = {
+        {4,2,1,0},
+        {1,2,2,1},
+        {5,2,1,0},
+        {1,2,1,0},
+        {4,3,1,0},
+        {1,3,3,1},
+        {5,3,1,0},
+        {1,3,1,0},
+        {4,4,1,0},
+        {1,4,4,1},
+        {5,4,1,0},
+        {1,4,1,0},
+        {4,5,1,0},
+        {1,5,5,1},
+        {5,5,1,0},
+        {1,5,1,0},
+        {4,6,1,0},
+        {1,6,6,1},
+        {5,6,1,0},
+        {1,6,1,0},
+        {4,7,1,0},
+        {1,7,7,1},
+        {5,7,1,0},
+        {1,7,1,0},
+        {3,0,0,0}
+    };
+
+	Processor processor(25,instructions);
 	processor.start();
 	return 0;
 }
