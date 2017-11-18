@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <iostream>
-#include <vector>
 #include <math.h>
 
 #include "instruction.h"
@@ -12,6 +11,8 @@
 
 
 class Processor {
+
+    //Instruction info
     int noOfInstructions;
 	Instruction *instructions;
     int noOfInstructionsExecuted;
@@ -32,24 +33,40 @@ class Processor {
             alu(registerFile), 
             bu(registerFile) {}
 
+
         void start() {
         	printInfo();
         	printf("Keep pressing ENTER to step through the program\n");
+
+            //step through the program
         	while(registerFile.getpc() < noOfInstructions) {
-                //step through the program
+
+                //hold up the program
                 char str[3];
                 fgets(str, 2, stdin);
-        	    Instruction i = instructions[registerFile.getpc()];
-                execute(i);
+
+                //fetch, decode, execute
+        	    Instruction i = Fetch();
+                DecodeExecute(i);
+
+                //If we have branched then dont increment the program counter
                 if(i.opcode != 3) {
                   registerFile.incpc();
                 }
+
+                //update info
                 noOfInstructionsExecuted++;
                 printInfo();
             }
         }
 
-        void execute(Instruction i) {
+
+        Instruction Fetch() {
+            Instruction i = instructions[registerFile.getpc()];
+            return i;
+        }
+
+        void DecodeExecute(Instruction i) {
         	switch(i.opcode) {
         		case 0:
         		alu.ADD(i.operands[0], i.operands[1], i.operands[2]);
