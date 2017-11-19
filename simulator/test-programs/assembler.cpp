@@ -47,6 +47,18 @@ string createOutputFileName(string inputFileName) {
     return outputFileName;
 }
 
+int checkValidInputFileName(string inputFileName) {
+	int pos = inputFileName.find(".");
+	if(pos == string::npos) {
+		return 0;
+	}
+	string extension = inputFileName.substr(pos, inputFileName.size());
+	if(extension != ".ass") {
+		return 0;
+	}
+	return 1;
+}
+
 int main(int argc, char *argv[]) {
 
 	//make sure an argument is given
@@ -57,6 +69,10 @@ int main(int argc, char *argv[]) {
 
     //get the input file name
     string inputFileName(argv[1]);
+    if(checkValidInputFileName(inputFileName) == 0) {
+        cout << "Invalid assembly file";
+        return 1;
+    }
     cout << "Input assembly file: " + inputFileName + '\n';
 
     //create the new file name
@@ -92,7 +108,7 @@ int main(int argc, char *argv[]) {
 		outputFile.close();
 
 		//print success message
-		cout << "assembler was successful.\n";
+		cout << "Assembler was successful.\n";
 	}
 	else {
 		//print failure message

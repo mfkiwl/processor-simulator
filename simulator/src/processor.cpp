@@ -125,7 +125,7 @@ Instruction *getInstructions(std::string inputFileName, int numOfInstructions) {
     std::ifstream inputFile(inputFileName.c_str());
     //if file is open then get the instruction information from each line
     if(inputFile.is_open()) {
-
+        printf("Reading instructions from %s\n", inputFileName.c_str());
         //allocating memory to array to store the instructions
         Instruction *instructions = (Instruction*) malloc(sizeof(Instruction) * numOfInstructions);
 
@@ -140,7 +140,6 @@ Instruction *getInstructions(std::string inputFileName, int numOfInstructions) {
             line = line.substr(pos + 1, line.size());
             int opcode = atoi(opcodestr.c_str());
             instructions[i].opcode = opcode;
-            std::cout << opcodestr + " ";
             
             //get the operands
             pos = line.find(" ");
@@ -151,10 +150,6 @@ Instruction *getInstructions(std::string inputFileName, int numOfInstructions) {
                 int operand = atoi(operandstr.c_str());
                 instructions[i].operands[j] = operand;
 
-                //print operand
-                std::cout << operand;
-                std::cout << " ";
-
                 //update values
                 line = line.substr(pos + 1, line.size());
                 pos = line.find(" ");
@@ -164,15 +159,13 @@ Instruction *getInstructions(std::string inputFileName, int numOfInstructions) {
             std::string operandstr = line.substr(0, line.size());
             int operand = atoi(operandstr.c_str());
             instructions[i].operands[j] = operand;
-
-            //print final operand
-            std::cout << operand;
-            std::cout << "\n";
         }
+        //return the instructions array
         return instructions;
     }
     else {
         printf("Failed to read file.\n");
+        //if the file has not been opened then return a null pointer
         return NULL;
     }
 }
@@ -183,16 +176,19 @@ int main(int argc, char *argv[]) {
         printf("Machine code file not valid.\n");
         return 1;
     }
-    //print machine code file name
-    printf("%s\n", argv[1]);
-    std::string inputFileName(argv[1]);
 
     //extract the instructions from the machine code file
+    std::string inputFileName(argv[1]);
     int numOfInstructions = getNumOfInstructions(inputFileName);
-    Instruction *instructions = getInstructions(inputFileName, numOfInstructions);
+    Instruction *instructions = NULL;
+    if(numOfInstructions != -1) {
+        instructions = getInstructions(inputFileName, numOfInstructions);
+    }
 
     //create processor object and start processing
-	Processor processor(numOfInstructions,instructions);
-	processor.start();
+    if(numOfInstructions != -1 && instructions != NULL) {
+	    Processor processor(numOfInstructions,instructions);
+	    processor.start();
+    }
 	return 0;
 }
