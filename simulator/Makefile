@@ -2,7 +2,7 @@ all:
 	g++ src/processor.cpp -o bin/processor
 
 run:
-	./bin/processor
+	./bin/processor ./test-programs/memory.mac
 
 clean:
 	rm bin/*

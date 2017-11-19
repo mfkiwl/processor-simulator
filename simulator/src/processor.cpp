@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <iostream>
 #include <math.h>
+#include <fstream>
+#include <string>
 
 #include "instruction.h"
 #include "register_file.h"
@@ -102,37 +104,95 @@ class Processor {
         }
 };
 
+int getNumOfInstructions(std::string inputFileName) {
+    std::ifstream inputFile(inputFileName.c_str());
+    if(inputFile.is_open()) {
+        int i = 0;
+        std::string line;
+        while(getline(inputFile,line)) {
+            i++;
+        }
+        return i;
+    }
+    else {
+        printf("Failed to read file.\n");
+        return -1;
+    }
+}
 
-int main(void) {
-    Instruction instructions[25] = {
-        {4,2,1,0},
-        {1,2,2,1},
-        {5,2,1,0},
-        {1,2,1,0},
-        {4,3,1,0},
-        {1,3,3,1},
-        {5,3,1,0},
-        {1,3,1,0},
-        {4,4,1,0},
-        {1,4,4,1},
-        {5,4,1,0},
-        {1,4,1,0},
-        {4,5,1,0},
-        {1,5,5,1},
-        {5,5,1,0},
-        {1,5,1,0},
-        {4,6,1,0},
-        {1,6,6,1},
-        {5,6,1,0},
-        {1,6,1,0},
-        {4,7,1,0},
-        {1,7,7,1},
-        {5,7,1,0},
-        {1,7,1,0},
-        {3,0,0,0}
-    };
+Instruction *getInstructions(std::string inputFileName, int numOfInstructions) {
+    //open file
+    std::ifstream inputFile(inputFileName.c_str());
+    //if file is open then get the instruction information from each line
+    if(inputFile.is_open()) {
 
-	Processor processor(25,instructions);
+        //allocating memory to array to store the instructions
+        Instruction *instructions = (Instruction*) malloc(sizeof(Instruction) * numOfInstructions);
+
+        //interating through each instruction
+        std::string line;
+        for(int i = 0; i < numOfInstructions; i++) {
+            getline(inputFile,line);
+
+            //get the opcode
+            int pos = line.find(" ");
+            std::string opcodestr = line.substr(0,pos);
+            line = line.substr(pos + 1, line.size());
+            int opcode = atoi(opcodestr.c_str());
+            instructions[i].opcode = opcode;
+            std::cout << opcodestr + " ";
+            
+            //get the operands
+            pos = line.find(" ");
+            int j = 0;
+            while(pos != std::string::npos) {
+                //get operand
+                std::string operandstr = line.substr(0, pos);
+                int operand = atoi(operandstr.c_str());
+                instructions[i].operands[j] = operand;
+
+                //print operand
+                std::cout << operand;
+                std::cout << " ";
+
+                //update values
+                line = line.substr(pos + 1, line.size());
+                pos = line.find(" ");
+                j++;
+            }
+            //get the final operand
+            std::string operandstr = line.substr(0, line.size());
+            int operand = atoi(operandstr.c_str());
+            instructions[i].operands[j] = operand;
+
+            //print final operand
+            std::cout << operand;
+            std::cout << "\n";
+        }
+        return instructions;
+    }
+    else {
+        printf("Failed to read file.\n");
+        return NULL;
+    }
+}
+
+int main(int argc, char *argv[]) {
+    //If command line arguments are incorrect then stop program
+    if(argc != 2) {
+        printf("Machine code file not valid.\n");
+        return 1;
+    }
+    //print machine code file name
+    printf("%s\n", argv[1]);
+    std::string inputFileName(argv[1]);
+
+    //extract the instructions from the machine code file
+    int numOfInstructions = getNumOfInstructions(inputFileName);
+    Instruction *instructions = getInstructions(inputFileName, numOfInstructions);
+
+    //create processor object and start processing
+	Processor processor(numOfInstructions,instructions);
 	processor.start();
 	return 0;
 }
