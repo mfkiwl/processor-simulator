@@ -12,7 +12,8 @@ class Memory {
         		memory[i] = 0;
         	}
         }
-
+    
+    private:
         int loadFromMemory(int address) {
         	if(address < 0 || address > size - 1) {
         		printf("Register index %d is out of bounds.\n", address);
@@ -27,6 +28,7 @@ class Memory {
         	memory[address] = value;
         }
 
+    public:
         void LD(int a, int b, int c) {
         	printf("LD R%d R%d %d\n", a, b, c);
         	int absoluteAddress = b + c;

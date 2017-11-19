@@ -1,3 +1,10 @@
+typedef struct instruction {
+	int opcode;
+	int operands[3];
+} Instruction;
+
+
+//return the number of instruction in the given file
 int getNumOfInstructions(std::string inputFileName) {
     std::ifstream inputFile(inputFileName.c_str());
     if(inputFile.is_open()) {
@@ -14,6 +21,8 @@ int getNumOfInstructions(std::string inputFileName) {
     }
 }
 
+
+//return an array of Instructions which contain the instructions in the given file
 Instruction *getInstructions(std::string inputFileName, int numOfInstructions) {
     //open file
     std::ifstream inputFile(inputFileName.c_str());

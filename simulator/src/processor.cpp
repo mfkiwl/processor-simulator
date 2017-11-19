@@ -5,8 +5,7 @@
 #include <fstream>
 #include <string>
 
-#include "instruction.h"
-#include "get_instructions.h"
+#include "instructions.h"
 #include "register_file.h"
 #include "memory.h"
 #include "alu.h"
@@ -25,6 +24,7 @@ class Processor {
     Memory memory;
     ALU alu;
     BranchUnit bu;
+
     public:
     	//Classes needed to be initialised in the uniform initialiser list
         Processor(int a, Instruction *b) : 
