@@ -1,10 +1,10 @@
 class RegisterFile {
-	int numRegisters;
+	int numOfRegisters;
 	int* registers;
     public: 
-    	RegisterFile(int a) : numRegisters(a) {
-    		registers = (int*) malloc(sizeof(int) * numRegisters);
-    		for(int i = 0; i < numRegisters; i++) {
+    	RegisterFile(int numOfRegisters) : numOfRegisters(numOfRegisters) {
+    		registers = (int*) malloc(sizeof(int) * numOfRegisters);
+    		for(int i = 0; i < numOfRegisters; i++) {
     			registers[i] = 0;
     		}
     	}
@@ -25,19 +25,19 @@ class RegisterFile {
     		printf("PC: %d\n", registers[0]);
     	}
 
-        int getNumRegisters() {
-        	return numRegisters;
+        int getNumOfRegisters() {
+        	return numOfRegisters;
         }
 
         int getRegisterValue(int i) {
-        	if(i < 0 || i > numRegisters - 1) {
+        	if(i < 0 || i > numOfRegisters - 1) {
         		printf("Register index %d is out of bounds.\n", i);
         	}
         	return registers[i];
         }
 
         void setRegisterValue(int i, int val) {
-        	if(i < 0 || i > numRegisters - 1) {
+        	if(i < 0 || i > numOfRegisters - 1) {
         		printf("Register index %d is out of bounds.\n", i);
         	}
         	registers[i] = val;
@@ -47,11 +47,11 @@ class RegisterFile {
 
             //print register names
         	printf("Registers: ");
-        	int lengths[numRegisters];
-        	for(int i = 0; i < numRegisters; i++) {
+        	int lengths[numOfRegisters];
+        	for(int i = 0; i < numOfRegisters; i++) {
         		lengths[i] = intLength(registers[i]);
         	}
-        	for(int i = 0; i < numRegisters; i++) {
+        	for(int i = 0; i < numOfRegisters; i++) {
         		if(i == 0) {
         			printf("PC ");
         		}
@@ -68,7 +68,7 @@ class RegisterFile {
 
             //print register values
         	printf("Values:    ");
-        	for(int i = 0; i < numRegisters; i++) {
+        	for(int i = 0; i < numOfRegisters; i++) {
         		if(lengths[i] == 1) {
         		    printf("%d  ", registers[i]);
         		}

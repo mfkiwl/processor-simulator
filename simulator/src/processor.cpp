@@ -8,33 +8,43 @@
 #include "instructions.h"
 #include "register_file.h"
 #include "memory.h"
+#include "fetch_unit.h"
+#include "decode_unit.h"
 #include "alu.h"
 #include "branch_unit.h"
+#include "memory_unit.h"
 
 
 class Processor {
 
     //Instruction info
     int noOfInstructions;
-	Instruction *instructions;
     int noOfInstructionsExecuted;
+	Instruction *instructions;
 
     //components
     RegisterFile registerFile;
     Memory memory;
+    FetchUnit fetchUnit;
+    DecodeUnit decodeUnit;
     ALU alu;
-    BranchUnit bu;
+    BranchUnit branchUnit;
+    MemoryUnit memoryUnit;
 
     public:
     	//Classes needed to be initialised in the uniform initialiser list
-        Processor(int a, Instruction *b) : 
-            noOfInstructions(a),
-            instructions(b),
+        Processor(int noOfInstructions, Instruction *instructions) : 
+            noOfInstructions(noOfInstructions),
             noOfInstructionsExecuted(0), 
+            instructions(instructions),
             registerFile(8), 
-            memory(16, registerFile), 
-            alu(registerFile), 
-            bu(registerFile) {}
+            memory(16),
+            fetchUnit(instructions, registerFile),
+            decodeUnit(fetchUnit),
+            alu(registerFile, decodeUnit), 
+            branchUnit(registerFile, decodeUnit),
+            memoryUnit(memory, registerFile, decodeUnit)
+            {}
 
 
         void start() {
@@ -84,15 +94,15 @@ class Processor {
         		break;
 
         		case 3:
-        		bu.B(i.operands[0]);
+        		branchUnit.B(i.operands[0]);
         		break;
 
                 case 4:
-                memory.LD(i.operands[0], i.operands[1], i.operands[2]);
+                memoryUnit.LD(i.operands[0], i.operands[1], i.operands[2]);
                 break;
 
                 case 5:
-                memory.STR(i.operands[0], i.operands[1], i.operands[2]);
+                memoryUnit.STR(i.operands[0], i.operands[1], i.operands[2]);
                 break;
         	}
         }

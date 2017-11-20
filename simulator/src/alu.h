@@ -1,9 +1,10 @@
 class ALU {
 
     RegisterFile registerFile;
+    DecodeUnit decodeUnit;
     
     public:
-        ALU(RegisterFile r) : registerFile(r) {}
+        ALU(RegisterFile registerFile, DecodeUnit decodeUnit) : registerFile(registerFile), decodeUnit(decodeUnit) {}
 
         void ADD(int a, int b, int c) {
         	printf("ADD R%d R%d R%d\n", a, b, c);
