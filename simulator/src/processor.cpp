@@ -39,12 +39,12 @@ class Processor {
             instructions(instructions),
             registerFile(8), 
             memory(16),
-            fetchUnit(instructions, registerFile),
-            decodeUnit(fetchUnit),
-            alu(registerFile, decodeUnit), 
-            branchUnit(registerFile, decodeUnit),
-            memoryUnit(memory, registerFile, decodeUnit)
-            {}
+            fetchUnit(instructions, &registerFile),
+            decodeUnit(&fetchUnit),
+            alu(&registerFile, &decodeUnit), 
+            branchUnit(&registerFile, &decodeUnit),
+            memoryUnit(&memory, &registerFile, &decodeUnit)
+        {}
 
 
         void start() {
@@ -59,52 +59,17 @@ class Processor {
                 fgets(str, 2, stdin);
 
                 //fetch, decode, execute
-        	    Instruction i = Fetch();
-                DecodeExecute(i);
+        	    fetchUnit.run();
+                decodeUnit.run();
+                alu.run();
 
-                //If we have branched then dont increment the program counter
-                if(i.opcode != 3) {
-                  registerFile.incpc();
-                }
+                //increment the program counter
+                registerFile.incpc();
 
                 //update info
                 noOfInstructionsExecuted++;
                 printInfo();
             }
-        }
-
-
-        Instruction Fetch() {
-            Instruction i = instructions[registerFile.getpc()];
-            return i;
-        }
-
-        void DecodeExecute(Instruction i) {
-        	switch(i.opcode) {
-        		case 0:
-        		alu.ADD(i.operands[0], i.operands[1], i.operands[2]);
-        		break;
-
-        		case 1:
-        		alu.ADDI(i.operands[0], i.operands[1], i.operands[2]);
-        		break;
-
-        		case 2:
-        		alu.SUB(i.operands[0], i.operands[1], i.operands[2]);
-        		break;
-
-        		case 3:
-        		branchUnit.B(i.operands[0]);
-        		break;
-
-                case 4:
-                memoryUnit.LD(i.operands[0], i.operands[1], i.operands[2]);
-                break;
-
-                case 5:
-                memoryUnit.STR(i.operands[0], i.operands[1], i.operands[2]);
-                break;
-        	}
         }
 
         void printInfo() {

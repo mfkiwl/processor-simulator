@@ -30,14 +30,14 @@ class RegisterFile {
         }
 
         int getRegisterValue(int i) {
-        	if(i < 0 || i > numOfRegisters - 1) {
+        	if(i < 1 || i > numOfRegisters - 1) {
         		printf("Register index %d is out of bounds.\n", i);
         	}
         	return registers[i];
         }
 
         void setRegisterValue(int i, int val) {
-        	if(i < 0 || i > numOfRegisters - 1) {
+        	if(i < 1 || i > numOfRegisters - 1) {
         		printf("Register index %d is out of bounds.\n", i);
         	}
         	registers[i] = val;

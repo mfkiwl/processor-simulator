@@ -37,7 +37,11 @@ void printOperands(string operands, ofstream *newfile) {
 		operands = operands.substr(pos + 1, operands.size());
 		pos = operands.find(" ");
 	}
-	*newfile << operands;
+	operand = operands.substr(0,operands.size());
+    if(operand[0] == 'R') {
+		operand = operand.substr(1, operand.size());
+	}
+	*newfile << operand;
 }
 
 string createOutputFileName(string inputFileName) {
