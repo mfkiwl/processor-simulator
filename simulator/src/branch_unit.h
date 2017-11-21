@@ -1,19 +1,34 @@
 class BranchUnit {
 	
     RegisterFile *registerFile;
-    DecodeUnit *decodeUnit;
+    int opcode;
+    int *operands;
 
     public:
-        BranchUnit(RegisterFile *registerFile, DecodeUnit *decodeUnit) : registerFile(registerFile), decodeUnit(decodeUnit) {}
+        BranchUnit(RegisterFile *registerFile) : 
+            registerFile(registerFile),
+            opcode(0),
+            operands(NULL)
+        {}
 
         void run() {
-        	int opcode = decodeUnit->getOpcode();
-        	int *operands = decodeUnit->getOperands();
-        	switch(opcode) {
-        		case 3:
-        		    B(operands[0]);
-        		    break;
-        	}
+            if(opcode != 0 && operands != NULL) {
+        	    switch(opcode) {
+        		    case 4:
+        		        B(operands[0]);
+        		        break;
+        	    }
+                opcode = 0;
+                operands = NULL;
+            }
+        }
+
+        void setOpcode(int x) {
+            opcode = x;
+        }
+
+        void setOperands(int *x) {
+            operands = x;
         }
 
     private:

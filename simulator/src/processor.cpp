@@ -8,11 +8,11 @@
 #include "instructions.h"
 #include "register_file.h"
 #include "memory.h"
-#include "fetch_unit.h"
-#include "decode_unit.h"
 #include "alu.h"
 #include "branch_unit.h"
 #include "memory_unit.h"
+#include "decode_unit.h"
+#include "fetch_unit.h"
 
 
 class Processor {
@@ -39,11 +39,11 @@ class Processor {
             instructions(instructions),
             registerFile(8), 
             memory(16),
-            fetchUnit(instructions, &registerFile),
-            decodeUnit(&fetchUnit),
-            alu(&registerFile, &decodeUnit),
-            branchUnit(&registerFile, &decodeUnit),
-            memoryUnit(&memory, &registerFile, &decodeUnit)
+            fetchUnit(instructions, &registerFile, &decodeUnit),
+            decodeUnit(&alu, &branchUnit, &memoryUnit),
+            alu(&registerFile),
+            branchUnit(&registerFile),
+            memoryUnit(&memory, &registerFile)
         {}
 
 
@@ -56,7 +56,7 @@ class Processor {
 
                 //hold up the program
                 char str[3];
-                //fgets(str, 2, stdin);
+                fgets(str, 2, stdin);
 
                 //fetch, decode, execute
         	    fetchUnit.run();

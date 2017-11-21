@@ -1,27 +1,39 @@
 class MemoryUnit {
 	Memory *memory;
 	RegisterFile *registerFile;
-    DecodeUnit *decodeUnit;
+    int opcode;
+    int *operands;
 
     public:
-        MemoryUnit(Memory *memory, RegisterFile *registerFile, DecodeUnit *decodeUnit) : 
-        memory(memory),
-        registerFile(registerFile),
-        decodeUnit(decodeUnit) 
-    {}
+        MemoryUnit(Memory *memory, RegisterFile *registerFile) : 
+            memory(memory),
+            registerFile(registerFile),
+            opcode(0),
+            operands(NULL)
+        {}
 
-    void run() {
-    	int opcode = decodeUnit->getOpcode();
-    	int *operands = decodeUnit->getOperands();
-    	switch(opcode) {
-    		case 4:
-    		    LD(operands[0], operands[1], operands[2]);
-    		    break;
-    		case 5:
-    		    STR(operands[0], operands[1], operands[2]);
-    		    break;
-    	}
-    }
+        void run() {
+            if(opcode != 0 && operands != NULL) {
+    	        switch(opcode) {
+    		        case 5:
+    		            LD(operands[0], operands[1], operands[2]);
+    		            break;
+    		        case 6:
+    		            STR(operands[0], operands[1], operands[2]);
+    		            break;
+                }
+                opcode = 0;
+                operands = NULL;
+    	    }
+        }
+
+        void setOpcode(int x) {
+            opcode = x;
+        }
+
+        void setOperands(int *x) {
+            operands = x;
+        }
 
     private:
 

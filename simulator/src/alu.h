@@ -1,28 +1,41 @@
 class ALU {
 
     RegisterFile *registerFile;
-    DecodeUnit *decodeUnit;
-    
+    int opcode;
+    int *operands;
+
+
     public:
-        ALU(RegisterFile *registerFile, DecodeUnit *decodeUnit) : 
+        ALU(RegisterFile *registerFile) : 
             registerFile(registerFile), 
-            decodeUnit(decodeUnit)
+            opcode(0),
+            operands(NULL)
         {}
 
         void run() {
-            int opcode = decodeUnit->getOpcode();
-            int *operands = decodeUnit->getOperands();
-            switch(opcode) {
-                case 0:
-                    ADD(operands[0], operands[1], operands[2]);
-                    break;
-                case 1:
-                    ADDI(operands[0], operands[1], operands[2]);
-                    break;
-                case 2:
-                    SUB(operands[0], operands[1], operands[2]);
-                    break;
+            if(opcode != 0 && operands != NULL) {
+                switch(opcode) {
+                    case 1:
+                        ADD(operands[0], operands[1], operands[2]);
+                        break;
+                    case 2:
+                        ADDI(operands[0], operands[1], operands[2]);
+                        break;
+                    case 3:
+                        SUB(operands[0], operands[1], operands[2]);
+                        break;
+                }
+                opcode = 0;
+                operands = NULL;
             }
+        }
+
+        void setOpcode(int x) {
+            opcode = x;
+        }
+
+        void setOperands(int *x) {
+            operands = x;
         }
 
     private:

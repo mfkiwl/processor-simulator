@@ -1,53 +1,49 @@
 class DecodeUnit {
-	FetchUnit *fetchUnit;
-    int opcode;
-    int *operands;
+	ALU *alu;
+	BranchUnit *branchUnit;
+	MemoryUnit *memoryUnit;
+    Instruction instruction;
 
     public:
-    	DecodeUnit(FetchUnit *fetchUnit) :
-    	    fetchUnit(fetchUnit)
+    	DecodeUnit(ALU *alu, BranchUnit *branchUnit, MemoryUnit *memoryUnit) :
+    	    alu(alu),
+    	    branchUnit(branchUnit),
+    	    memoryUnit(memoryUnit)
         {}
 
         void run() {
-    	    Instruction currentInstruction = fetchUnit->getNextInstruction();
-    	    opcode = currentInstruction.opcode;
-    	    //copying the operands
-    	    int x = numberOfOperands(opcode);
-    	    operands = (int*) malloc(sizeof(int) * x);
-    	    for(int i = 0; i < x; i++) {
-    	    	operands[i] = currentInstruction.operands[i];
+    	    switch(instruction.opcode) {
+    	    	case 1:
+    	    	case 2:
+    	    	case 3:
+    	    	    alu->setOpcode(instruction.opcode);
+    	    	    alu->setOperands(instruction.operands);
+    	    	    branchUnit->setOpcode(0);
+    	    	    branchUnit->setOperands(NULL);
+    	    	    memoryUnit->setOpcode(0);
+    	    	    memoryUnit->setOperands(NULL);
+    	    	    break;
+    	    	case 4:
+    	    	    alu->setOpcode(0);
+    	    	    alu->setOperands(NULL);
+    	    	    branchUnit->setOpcode(instruction.opcode);
+    	    	    branchUnit->setOperands(instruction.operands);
+    	    	    memoryUnit->setOpcode(0);
+    	    	    memoryUnit->setOperands(NULL);
+                    break;
+                case 5:
+                case 6:
+                    alu->setOpcode(0);
+                    alu->setOperands(NULL);
+                    branchUnit->setOpcode(0);
+                    branchUnit->setOperands(NULL);
+                    memoryUnit->setOpcode(instruction.opcode);
+                    memoryUnit->setOperands(instruction.operands);
+                    break;
     	    }
         }
 
-        int numberOfOperands(int opcode) {
-        	switch(opcode) {
-        		case 0:
-        		    return 3;
-        		    break;
-        		case 1:
-        		    return 3;
-        		    break;
-        		case 2:
-        		    return 3;
-        		    break;
-        		case 3:
-        		    return 1;
-        		    break;
-        		case 4:
-        		    return 3;
-        		    break;
-        		case 5:
-        		    return 3;
-        		    break;
-        	}
-        	return 0;
-        }
-
-        int getOpcode() {
-    	    return opcode;
-        }
-
-        int* getOperands() {
-    	    return operands;
+        void setInstruction(Instruction x) {
+        	instruction = x;
         }
 };

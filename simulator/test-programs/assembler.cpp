@@ -5,22 +5,22 @@ using namespace std;
 
 int printOpcode(string op, ofstream *newfile) {
 	if(op == "ADD") {
-		*newfile << 0;
-	}
-	else if(op == "ADDI") {
 		*newfile << 1;
 	}
-	else if(op == "SUB") {
+	else if(op == "ADDI") {
 		*newfile << 2;
 	}
-	else if(op == "B") {
+	else if(op == "SUB") {
 		*newfile << 3;
 	}
-	else if(op == "LD") {
+	else if(op == "B") {
 		*newfile << 4;
 	}
-	else if(op == "STR") {
+	else if(op == "LD") {
 		*newfile << 5;
+	}
+	else if(op == "STR") {
+		*newfile << 6;
 	}
 	*newfile << " ";
 }
