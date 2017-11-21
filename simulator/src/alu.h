@@ -4,16 +4,14 @@ class ALU {
     DecodeUnit *decodeUnit;
     
     public:
-        ALU(RegisterFile *registerFile, DecodeUnit *decodeUnit) : registerFile(registerFile), decodeUnit(decodeUnit) {}
+        ALU(RegisterFile *registerFile, DecodeUnit *decodeUnit) : 
+            registerFile(registerFile), 
+            decodeUnit(decodeUnit)
+        {}
 
         void run() {
             int opcode = decodeUnit->getOpcode();
             int *operands = decodeUnit->getOperands();
-            printf("%p\n", operands);
-            for(int i = 0; i < 3; i++) {
-                printf("%d ", operands[i]);
-            }
-            printf("\n");
             switch(opcode) {
                 case 0:
                     ADD(operands[0], operands[1], operands[2]);
@@ -25,7 +23,6 @@ class ALU {
                     SUB(operands[0], operands[1], operands[2]);
                     break;
             }
-            printf("alu unit has run.\n");
         }
 
     private:

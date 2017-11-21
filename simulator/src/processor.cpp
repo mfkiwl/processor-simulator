@@ -41,7 +41,7 @@ class Processor {
             memory(16),
             fetchUnit(instructions, &registerFile),
             decodeUnit(&fetchUnit),
-            alu(&registerFile, &decodeUnit), 
+            alu(&registerFile, &decodeUnit),
             branchUnit(&registerFile, &decodeUnit),
             memoryUnit(&memory, &registerFile, &decodeUnit)
         {}
@@ -56,12 +56,14 @@ class Processor {
 
                 //hold up the program
                 char str[3];
-                fgets(str, 2, stdin);
+                //fgets(str, 2, stdin);
 
                 //fetch, decode, execute
         	    fetchUnit.run();
                 decodeUnit.run();
                 alu.run();
+                branchUnit.run();
+                memoryUnit.run();
 
                 //increment the program counter
                 registerFile.incpc();

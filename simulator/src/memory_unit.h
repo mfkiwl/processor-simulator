@@ -18,10 +18,9 @@ class MemoryUnit {
     		    LD(operands[0], operands[1], operands[2]);
     		    break;
     		case 5:
-    		    STR(operands[0], operands[2], operands[3]);
+    		    STR(operands[0], operands[1], operands[2]);
     		    break;
     	}
-    	printf("memory unit has run.\n");
     }
 
     private:

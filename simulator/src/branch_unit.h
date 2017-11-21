@@ -14,7 +14,6 @@ class BranchUnit {
         		    B(operands[0]);
         		    break;
         	}
-        	printf("branch unit has run.\n");
         }
 
     private:

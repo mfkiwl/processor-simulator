@@ -11,30 +11,43 @@ class DecodeUnit {
         void run() {
     	    Instruction currentInstruction = fetchUnit->getNextInstruction();
     	    opcode = currentInstruction.opcode;
-    	    operands = currentInstruction.operands;
-    	    printf("%p\n", operands);
-    	    for(int i = 0; i < 3; i++) {
-    	    	printf("%d ", operands[i]);
+    	    //copying the operands
+    	    int x = numberOfOperands(opcode);
+    	    operands = (int*) malloc(sizeof(int) * x);
+    	    for(int i = 0; i < x; i++) {
+    	    	operands[i] = currentInstruction.operands[i];
     	    }
-    	    printf("\n");
-    	    printf("decode unit has run.\n");
+        }
+
+        int numberOfOperands(int opcode) {
+        	switch(opcode) {
+        		case 0:
+        		    return 3;
+        		    break;
+        		case 1:
+        		    return 3;
+        		    break;
+        		case 2:
+        		    return 3;
+        		    break;
+        		case 3:
+        		    return 1;
+        		    break;
+        		case 4:
+        		    return 3;
+        		    break;
+        		case 5:
+        		    return 3;
+        		    break;
+        	}
+        	return 0;
         }
 
         int getOpcode() {
-        	printf("%p\n", operands);
-    	    for(int i = 0; i < 3; i++) {
-    	    	printf("%d ", operands[i]);
-    	    }
-    	    printf("\n");
     	    return opcode;
         }
 
         int* getOperands() {
-        	printf("%p\n", operands);
-    	    for(int i = 0; i < 3; i++) {
-    	    	printf("%d ", operands[i]);
-    	    }
-    	    printf("\n");
     	    return operands;
         }
 };
