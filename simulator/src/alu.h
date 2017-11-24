@@ -23,8 +23,6 @@ class ALU {
 
         void run() {
             if(opcode != 0) {
-                printf("Executed instruction: ");
-                printInstruction();
                 switch(opcode) {
                     //ADD
                     case 1:
@@ -43,6 +41,8 @@ class ALU {
                 inputValue1 = 0;
                 inputValue2 = 0;
                 output = 0;
+                printf("Executed instruction: ");
+                printInstruction(DEBUG_Instruction);
             }
         }
 
@@ -61,31 +61,5 @@ class ALU {
 
         void set_DEBUG_Instruction(Instruction i) {
             DEBUG_Instruction = i;
-        }
-
-        void printInstruction() {
-            switch(DEBUG_Instruction.opcode) {
-                case 1:
-                    printf("ADD R%d R%d R%d\n", DEBUG_Instruction.operands[0], DEBUG_Instruction.operands[1], DEBUG_Instruction.operands[2]);
-                    break;
-                case 2:
-                    printf("ADDI R%d R%d %d\n", DEBUG_Instruction.operands[0], DEBUG_Instruction.operands[1], DEBUG_Instruction.operands[2]);
-                    break;
-                case 3:
-                    printf("SUB R%d R%d R%d\n", DEBUG_Instruction.operands[0], DEBUG_Instruction.operands[1], DEBUG_Instruction.operands[2]);
-                    break;
-                case 4:
-                    printf("B %d\n", DEBUG_Instruction.operands[0]);
-                    break;
-                case 5:
-                    printf("LD R%d R%d %d\n", DEBUG_Instruction.operands[0], DEBUG_Instruction.operands[1], DEBUG_Instruction.operands[2]);
-                    break;
-                case 6:
-                    printf("STR R%d R%d %d\n", DEBUG_Instruction.operands[0], DEBUG_Instruction.operands[1], DEBUG_Instruction.operands[2]);
-                    break;
-                default:
-                    printf("\n");
-                    break;
-            }
         }
 };
