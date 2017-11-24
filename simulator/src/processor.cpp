@@ -17,9 +17,16 @@
 
 class Processor {
 
+    //information
+    int noOfRegisters;
+    int memorySize;
+
+    //general stats
+    int noOfInstructionsExecuted;
+    int noOfClockCycles;
+
     //Instruction info
     int noOfInstructions;
-    int noOfInstructionsExecuted;
 	Instruction *instructions;
 
     //registers
@@ -36,18 +43,26 @@ class Processor {
 
     public:
     	//Classes needed to be initialised in the uniform initialiser list
-        Processor(int noOfInstructions, Instruction *instructions) : 
+        Processor(int noOfRegisters, int memorySize, int noOfInstructions, Instruction *instructions) : 
+
+            //processor configuration
+            noOfRegisters(noOfRegisters),
+            memorySize(memorySize),
+
+            //general stats
+            noOfInstructionsExecuted(0),
+            noOfClockCycles(0),
+
             //instruction info
             noOfInstructions(noOfInstructions),
-            noOfInstructionsExecuted(0), 
             instructions(instructions),
 
-            //registers
+            //special registers
             pc(0),
 
             //components
-            registerFile(8), 
-            memory(16),
+            registerFile(noOfRegisters), 
+            memory(memorySize),
             fetchUnit(instructions, noOfInstructions, &pc, &decodeUnit),
             decodeUnit(&registerFile, &alu, &branchUnit, &memoryUnit),
             alu(&registerFile),
@@ -57,6 +72,13 @@ class Processor {
 
 
         void start() {
+
+            printf("\n");
+            printf("Created processor with:\n");
+            printf("\t%d registers\n", noOfRegisters);
+            printf("\t%d word memory size\n", memorySize);
+            printf("\n");
+
         	printf("Keep pressing ENTER to step through the program\n");
 
             printInfo();
@@ -79,6 +101,9 @@ class Processor {
                 fetchUnit.pipe();
                 decodeUnit.pipe();
 
+                //update info
+                noOfClockCycles++;
+
                 //print register info
                 printInfo();
             }
@@ -86,6 +111,8 @@ class Processor {
 
         void printInfo() {
         	printf("\n");
+            printf("Number of clock cycles: %d\n", noOfClockCycles);
+            printf("\n");
             printf("PC: %d\n", pc);
         	registerFile.printRegisters();
         	printf("\n");
@@ -109,7 +136,7 @@ int main(int argc, char *argv[]) {
 
     //create processor object and start processing
     if(numOfInstructions != -1 && instructions != NULL) {
-	    Processor processor(numOfInstructions,instructions);
+	    Processor processor(8, 32, numOfInstructions,instructions);
 	    processor.start();
     }
 	return 0;
