@@ -48,8 +48,8 @@ class Processor {
             //components
             registerFile(8), 
             memory(16),
-            fetchUnit(instructions, &pc, &decodeUnit),
-            decodeUnit(&alu, &branchUnit, &memoryUnit),
+            fetchUnit(instructions, noOfInstructions, &pc, &decodeUnit),
+            decodeUnit(&registerFile, &alu, &branchUnit, &memoryUnit),
             alu(&registerFile),
             branchUnit(&pc),
             memoryUnit(&memory, &registerFile)
@@ -57,32 +57,36 @@ class Processor {
 
 
         void start() {
-        	printInfo();
         	printf("Keep pressing ENTER to step through the program\n");
 
+            printInfo();
+
             //step through the program
-        	while(pc < noOfInstructions) {
+        	while(1) {
 
                 //hold up the program
                 char str[3];
                 fgets(str, 2, stdin);
 
-                //fetch, decode, execute
-        	    fetchUnit.run();
-                decodeUnit.run();
+                //run each unit
                 alu.run();
                 branchUnit.run();
                 memoryUnit.run();
+                decodeUnit.run();
+                fetchUnit.run();
 
-                //update info
-                noOfInstructionsExecuted++;
+                //propogate values through pipeline
+                fetchUnit.update();
+                decodeUnit.update();
+
+                //print register info
                 printInfo();
             }
         }
 
         void printInfo() {
         	printf("\n");
-        	printf("Instructions executed: %d\n", noOfInstructionsExecuted);
+            printf("PC: %d\n", pc);
         	registerFile.printRegisters();
         	printf("\n");
         }

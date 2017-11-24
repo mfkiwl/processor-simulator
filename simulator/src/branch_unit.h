@@ -1,25 +1,30 @@
 class BranchUnit {
 	
     int opcode;
-    int* operands;
+    int branchAddress;
     int* pc;
+
+    //for debugging purposes
+    Instruction instructionRegister;
 
     public:
         BranchUnit(int* pc) : 
             pc(pc),
-            opcode(0),
-            operands(NULL)
+            opcode(0)
         {}
 
         void run() {
-            if(opcode != 0 && operands != NULL) {
+            if(opcode != 0) {
         	    switch(opcode) {
+                    //B
         		    case 4:
-        		        B(operands[0]);
+        		        *pc = branchAddress;
         		        break;
         	    }
                 opcode = 0;
-                operands = NULL;
+                branchAddress = 0;
+                printf("Executed instruction: ");
+                printInstruction();
             }
         }
 
@@ -27,13 +32,37 @@ class BranchUnit {
             opcode = x;
         }
 
-        void setOperands(int* x) {
-            operands = x;
+        void setBranchAddress(int x) {
+            branchAddress = x;
         }
 
-    private:
-        void B(int x) {
-        	printf("B %d\n", x);
-        	*pc = x;
+        void setDebugInstructionRegister(Instruction i) {
+            instructionRegister = i;
+        }
+
+        void printInstruction() {
+            switch(instructionRegister.opcode) {
+                case 1:
+                    printf("ADD R%d R%d R%d\n", instructionRegister.operands[0], instructionRegister.operands[1], instructionRegister.operands[2]);
+                    break;
+                case 2:
+                    printf("ADDI R%d R%d %d\n", instructionRegister.operands[0], instructionRegister.operands[1], instructionRegister.operands[2]);
+                    break;
+                case 3:
+                    printf("SUB R%d R%d R%d\n", instructionRegister.operands[0], instructionRegister.operands[1], instructionRegister.operands[2]);
+                    break;
+                case 4:
+                    printf("B %d\n", instructionRegister.operands[0]);
+                    break;
+                case 5:
+                    printf("LD R%d R%d %d\n", instructionRegister.operands[0], instructionRegister.operands[1], instructionRegister.operands[2]);
+                    break;
+                case 6:
+                    printf("STR R%d R%d %d\n", instructionRegister.operands[0], instructionRegister.operands[1], instructionRegister.operands[2]);
+                    break;
+                default:
+                    printf("\n");
+                    break;
+            }
         }
 };

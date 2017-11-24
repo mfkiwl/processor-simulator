@@ -1,12 +1,14 @@
 class FetchUnit {
 	Instruction* instructions;
+    int noOfInstructions;
 	int* pc;
 	DecodeUnit* decodeUnit;
     Instruction nextInstruction;
 
     public:
-        FetchUnit(Instruction* instructions, int* pc, DecodeUnit* decodeUnit) :
+        FetchUnit(Instruction* instructions, int noOfInstructions, int* pc, DecodeUnit* decodeUnit) :
         instructions(instructions),
+        noOfInstructions(noOfInstructions),
         pc(pc),
         decodeUnit(decodeUnit),
         nextInstruction((Instruction) {0,0,0,0})
@@ -14,9 +16,18 @@ class FetchUnit {
 
     void run() {
         //get next instruction
-    	nextInstruction = instructions[*pc];
-        //increment pc
+        if(*pc < noOfInstructions) {
+    	    nextInstruction = instructions[*pc];
+        }
+        else {
+            nextInstruction = (Instruction) {0,0,0,0};
+        }
+        //increment pc after fetching the next instruction
         (*pc)++;
-        decodeUnit->setInstruction(nextInstruction);
+    }
+
+    void update() {
+        //put the fetched instruction into the instruction register
+        decodeUnit->setInstructionRegister(nextInstruction);
     }
 };
