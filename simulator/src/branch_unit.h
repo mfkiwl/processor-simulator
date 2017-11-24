@@ -13,16 +13,22 @@ class BranchUnit {
             opcode(0)
         {}
 
-        void run() {
+        void execute() {
             if(opcode != 0) {
+
+                //execute the instruction
         	    switch(opcode) {
                     //B
         		    case 4:
         		        *pc = branchAddress;
         		        break;
         	    }
+
+                //reset variables
                 opcode = 0;
                 branchAddress = 0;
+
+                //print the instruction that has been executed
                 printf("Executed instruction: ");
                 printInstruction(DEBUG_Instruction);
             }

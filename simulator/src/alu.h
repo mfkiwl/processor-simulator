@@ -6,7 +6,7 @@ class ALU {
     int inputValue1;
     int inputValue2;
     //the value that we calculate
-    int output;
+    int result;
 
     //for debugging purposes
     Instruction DEBUG_Instruction;
@@ -18,29 +18,37 @@ class ALU {
             outputRegister(0),
             inputValue1(0),
             inputValue2(0),
-            output(0)
+            result(0)
         {}
 
-        void run() {
+        void execute() {
             if(opcode != 0) {
+
+                //execute the instruction
                 switch(opcode) {
                     //ADD
                     case 1:
                     //ADDI
                     case 2:
-                        output = inputValue1 + inputValue2;
+                        result = inputValue1 + inputValue2;
                         break;
                     //SUB
                     case 3:
-                        output = inputValue1 - inputValue2;
+                        result = inputValue1 - inputValue2;
                         break;
                 }
-                registerFile->setRegisterValue(outputRegister, output);
+
+                //write the result to the output register
+                registerFile->setRegisterValue(outputRegister, result);
+
+                //reset variables
                 opcode = 0;
                 outputRegister = 0;
                 inputValue1 = 0;
                 inputValue2 = 0;
-                output = 0;
+                result = 0;
+
+                //print the instruction that has been executed
                 printf("Executed instruction: ");
                 printInstruction(DEBUG_Instruction);
             }

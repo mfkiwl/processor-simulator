@@ -14,19 +14,19 @@ class FetchUnit {
         nextInstruction((Instruction) {0,0,0,0})
     {}
 
-    void run() {
-        //get next instruction
+    void execute() {
         if(*pc < noOfInstructions) {
+            //fetch the next instruction
     	    nextInstruction = instructions[*pc];
+            //increment the program counter
+            (*pc)++;
         }
         else {
             nextInstruction = (Instruction) {0,0,0,0};
         }
-        //increment pc after fetching the next instruction
-        (*pc)++;
     }
 
-    void update() {
+    void pipe() {
         //put the fetched instruction into the instruction register
         decodeUnit->setInstructionRegister(nextInstruction);
     }

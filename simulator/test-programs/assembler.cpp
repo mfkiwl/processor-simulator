@@ -4,6 +4,9 @@
 using namespace std;
 
 int printOpcode(string op, ofstream *newfile) {
+	if(op == "NOP") {
+		*newfile << 0;
+	}
 	if(op == "ADD") {
 		*newfile << 1;
 	}

@@ -16,10 +16,13 @@ class MemoryUnit {
             opcode(0)
         {}
 
-        void run() {
+        void execute() {
             if(opcode != 0) {
+
                 int address;
                 int value;
+
+                //execute the instruction
     	        switch(opcode) {
                     //LD
     		        case 5:
@@ -34,7 +37,14 @@ class MemoryUnit {
                         memory->storeInMemory(address, value);
     		            break;
                 }
+
+                //reset the variables
                 opcode = 0;
+                readWriteRegister = 0;
+                baseAddress = 0;
+                offset = 0;
+
+                //print the instruction that has been executed
                 printf("Executed instruction: ");
                 printInstruction(DEBUG_Instruction);
     	    }

@@ -15,7 +15,7 @@ class DecodeUnit {
     	    memoryUnit(memoryUnit)
         {}
 
-        void run() {
+        void execute() {
             opcode = instructionRegister.opcode;
             int registerNum;
             int val;
@@ -73,7 +73,7 @@ class DecodeUnit {
             memoryUnit->set_DEBUG_Instruction(instructionRegister);
         }
 
-        void update() {
+        void pipe() {
             switch(opcode) {
                 //ALU instructions
                 case 1:
@@ -95,32 +95,6 @@ class DecodeUnit {
                     memoryUnit->setReadWriteRegister(operands[0]);
                     memoryUnit->setBaseAddress(operands[1]);
                     memoryUnit->setOffset(operands[2]);
-                    break;
-            }
-        }
-
-        void printInstruction() {
-            switch(instructionRegister.opcode) {
-                case 1:
-                    printf("ADD R%d R%d R%d\n", instructionRegister.operands[0], instructionRegister.operands[1], instructionRegister.operands[2]);
-                    break;
-                case 2:
-                    printf("ADDI R%d R%d %d\n", instructionRegister.operands[0], instructionRegister.operands[1], instructionRegister.operands[2]);
-                    break;
-                case 3:
-                    printf("SUB R%d R%d R%d\n", instructionRegister.operands[0], instructionRegister.operands[1], instructionRegister.operands[2]);
-                    break;
-                case 4:
-                    printf("B %d\n", instructionRegister.operands[0]);
-                    break;
-                case 5:
-                    printf("LD R%d R%d %d\n", instructionRegister.operands[0], instructionRegister.operands[1], instructionRegister.operands[2]);
-                    break;
-                case 6:
-                    printf("STR R%d R%d %d\n", instructionRegister.operands[0], instructionRegister.operands[1], instructionRegister.operands[2]);
-                    break;
-                default:
-                    printf("\n");
                     break;
             }
         }

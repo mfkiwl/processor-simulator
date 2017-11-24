@@ -69,15 +69,15 @@ class Processor {
                 fgets(str, 2, stdin);
 
                 //run each unit
-                alu.run();
-                branchUnit.run();
-                memoryUnit.run();
-                decodeUnit.run();
-                fetchUnit.run();
+                alu.execute();
+                branchUnit.execute();
+                memoryUnit.execute();
+                decodeUnit.execute();
+                fetchUnit.execute();
 
                 //propogate values through pipeline
-                fetchUnit.update();
-                decodeUnit.update();
+                fetchUnit.pipe();
+                decodeUnit.pipe();
 
                 //print register info
                 printInfo();
