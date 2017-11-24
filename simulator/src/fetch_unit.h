@@ -1,18 +1,22 @@
 class FetchUnit {
-	Instruction *instructions;
-	RegisterFile *registerFile;
+	Instruction* instructions;
+	int* pc;
 	DecodeUnit *decodeUnit;
+    Instruction nextInstruction;
 
     public:
-        FetchUnit(Instruction *instructions, RegisterFile *registerFile, DecodeUnit *decodeUnit) :
+        FetchUnit(Instruction* instructions, int* pc, DecodeUnit* decodeUnit) :
         instructions(instructions),
-        registerFile(registerFile),
-        decodeUnit(decodeUnit)
+        pc(pc),
+        decodeUnit(decodeUnit),
+        nextInstruction((Instruction) {0,0,0,0})
     {}
 
     void run() {
-    	int pc = registerFile->getpc();
-    	Instruction nextInstruction = instructions[pc];
-    	decodeUnit->setInstruction(nextInstruction);
+        //get next instruction
+    	nextInstruction = instructions[*pc];
+        //increment pc
+        (*pc)++;
+        decodeUnit->setInstruction(nextInstruction);
     }
 };

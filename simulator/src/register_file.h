@@ -9,35 +9,19 @@ class RegisterFile {
     		}
     	}
 
-    	int getpc() {
-    		return registers[0];
-    	}
-
-    	void incpc() {
-    		registers[0]++;
-    	}
-
-    	void setpc(int x) {
-    		registers[0] = x;
-    	}
-
-    	void printpc() {
-    		printf("PC: %d\n", registers[0]);
-    	}
-
         int getNumOfRegisters() {
         	return numOfRegisters;
         }
 
         int getRegisterValue(int i) {
-        	if(i < 1 || i > numOfRegisters - 1) {
+        	if(i < 0 || i > numOfRegisters - 1) {
         		printf("Register index %d is out of bounds.\n", i);
         	}
         	return registers[i];
         }
 
         void setRegisterValue(int i, int val) {
-        	if(i < 1 || i > numOfRegisters - 1) {
+        	if(i < 0 || i > numOfRegisters - 1) {
         		printf("Register index %d is out of bounds.\n", i);
         	}
         	registers[i] = val;
@@ -52,12 +36,7 @@ class RegisterFile {
         		lengths[i] = intLength(registers[i]);
         	}
         	for(int i = 0; i < numOfRegisters; i++) {
-        		if(i == 0) {
-        			printf("PC ");
-        		}
-        		else {
-        		    printf("R%d ", i);
-        		}
+        		printf("R%d ", i);
         		if(lengths[i] > 2) {
         			for(int j = 2; j < lengths[i]; j++) {
                         printf(" ");

@@ -1,12 +1,12 @@
 class BranchUnit {
 	
-    RegisterFile *registerFile;
     int opcode;
     int *operands;
+    int *pc;
 
     public:
-        BranchUnit(RegisterFile *registerFile) : 
-            registerFile(registerFile),
+        BranchUnit(int* pc) : 
+            pc(pc),
             opcode(0),
             operands(NULL)
         {}
@@ -34,7 +34,6 @@ class BranchUnit {
     private:
         void B(int x) {
         	printf("B %d\n", x);
-        	//set to x-1 since the program will automatically be incremented
-        	registerFile->setpc(x-1);
+        	*pc = x;
         }
 };

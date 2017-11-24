@@ -22,6 +22,9 @@ class Processor {
     int noOfInstructionsExecuted;
 	Instruction *instructions;
 
+    //registers
+    int pc;
+
     //components
     RegisterFile registerFile;
     Memory memory;
@@ -34,15 +37,21 @@ class Processor {
     public:
     	//Classes needed to be initialised in the uniform initialiser list
         Processor(int noOfInstructions, Instruction *instructions) : 
+            //instruction info
             noOfInstructions(noOfInstructions),
             noOfInstructionsExecuted(0), 
             instructions(instructions),
+
+            //registers
+            pc(0),
+
+            //components
             registerFile(8), 
             memory(16),
-            fetchUnit(instructions, &registerFile, &decodeUnit),
+            fetchUnit(instructions, &pc, &decodeUnit),
             decodeUnit(&alu, &branchUnit, &memoryUnit),
             alu(&registerFile),
-            branchUnit(&registerFile),
+            branchUnit(&pc),
             memoryUnit(&memory, &registerFile)
         {}
 
@@ -52,7 +61,7 @@ class Processor {
         	printf("Keep pressing ENTER to step through the program\n");
 
             //step through the program
-        	while(registerFile.getpc() < noOfInstructions) {
+        	while(pc < noOfInstructions) {
 
                 //hold up the program
                 char str[3];
@@ -64,9 +73,6 @@ class Processor {
                 alu.run();
                 branchUnit.run();
                 memoryUnit.run();
-
-                //increment the program counter
-                registerFile.incpc();
 
                 //update info
                 noOfInstructionsExecuted++;
