@@ -1,12 +1,12 @@
 class ALU {
 
-    RegisterFile *registerFile;
+    RegisterFile* registerFile;
     int opcode;
-    int *operands;
+    int* operands;
 
 
     public:
-        ALU(RegisterFile *registerFile) : 
+        ALU(RegisterFile* registerFile) : 
             registerFile(registerFile), 
             opcode(0),
             operands(NULL)

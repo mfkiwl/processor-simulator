@@ -1,11 +1,11 @@
 class DecodeUnit {
-	ALU *alu;
-	BranchUnit *branchUnit;
-	MemoryUnit *memoryUnit;
+	ALU* alu;
+	BranchUnit* branchUnit;
+	MemoryUnit* memoryUnit;
     Instruction instruction;
 
     public:
-    	DecodeUnit(ALU *alu, BranchUnit *branchUnit, MemoryUnit *memoryUnit) :
+    	DecodeUnit(ALU* alu, BranchUnit* branchUnit, MemoryUnit* memoryUnit) :
     	    alu(alu),
     	    branchUnit(branchUnit),
     	    memoryUnit(memoryUnit)
@@ -41,6 +41,10 @@ class DecodeUnit {
                     memoryUnit->setOperands(instruction.operands);
                     break;
     	    }
+        }
+
+        void update() {
+
         }
 
         void setInstruction(Instruction x) {

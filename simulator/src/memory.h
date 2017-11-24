@@ -5,7 +5,7 @@ class Memory {
 
     public:
         Memory(int size) : size(size) {
-        	memory = (int *) malloc(sizeof(int) * size);
+        	memory = (int*) malloc(sizeof(int) * size);
         	for(int i = 0; i < size; i++) {
         		memory[i] = 0;
         	}

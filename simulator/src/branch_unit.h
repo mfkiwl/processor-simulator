@@ -1,8 +1,8 @@
 class BranchUnit {
 	
     int opcode;
-    int *operands;
-    int *pc;
+    int* operands;
+    int* pc;
 
     public:
         BranchUnit(int* pc) : 
@@ -27,7 +27,7 @@ class BranchUnit {
             opcode = x;
         }
 
-        void setOperands(int *x) {
+        void setOperands(int* x) {
             operands = x;
         }
 

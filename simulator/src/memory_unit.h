@@ -1,11 +1,11 @@
 class MemoryUnit {
-	Memory *memory;
-	RegisterFile *registerFile;
+	Memory* memory;
+	RegisterFile* registerFile;
     int opcode;
-    int *operands;
+    int* operands;
 
     public:
-        MemoryUnit(Memory *memory, RegisterFile *registerFile) : 
+        MemoryUnit(Memory* memory, RegisterFile* registerFile) : 
             memory(memory),
             registerFile(registerFile),
             opcode(0),
@@ -31,7 +31,7 @@ class MemoryUnit {
             opcode = x;
         }
 
-        void setOperands(int *x) {
+        void setOperands(int* x) {
             operands = x;
         }
 

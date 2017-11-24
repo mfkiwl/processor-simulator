@@ -23,14 +23,14 @@ int getNumOfInstructions(std::string inputFileName) {
 
 
 //return an array of Instructions which contain the instructions in the given file
-Instruction *getInstructions(std::string inputFileName, int numOfInstructions) {
+Instruction* getInstructions(std::string inputFileName, int numOfInstructions) {
     //open file
     std::ifstream inputFile(inputFileName.c_str());
     //if file is open then get the instruction information from each line
     if(inputFile.is_open()) {
         printf("Reading instructions from %s\n", inputFileName.c_str());
         //allocating memory to array to store the instructions
-        Instruction *instructions = (Instruction*) malloc(sizeof(Instruction) * numOfInstructions);
+        Instruction* instructions = (Instruction*) malloc(sizeof(Instruction) * numOfInstructions);
 
         //interating through each instruction
         std::string line;
