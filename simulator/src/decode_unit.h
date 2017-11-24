@@ -67,9 +67,10 @@ class DecodeUnit {
                     operands[2] = instructionRegister.operands[2];
                     break;
             }
-            alu->setDebugInstructionRegister(instructionRegister);
-            branchUnit->setDebugInstructionRegister(instructionRegister);
-            memoryUnit->setDebugInstructionRegister(instructionRegister);
+            //giving the components the instruction that they are executing for debugging purposes
+            alu->set_DEBUG_Instruction(instructionRegister);
+            branchUnit->set_DEBUG_Instruction(instructionRegister);
+            memoryUnit->set_DEBUG_Instruction(instructionRegister);
         }
 
         void update() {
