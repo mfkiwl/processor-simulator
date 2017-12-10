@@ -130,6 +130,7 @@ int checkValidInputFileName(string inputFileName) {
 }
 
 int main(int argc, char *argv[]) {
+    cout << "\n";
 
 	//make sure an argument is given
 	if(argc != 2) {
@@ -193,15 +194,6 @@ int main(int argc, char *argv[]) {
            
             lineNumber++;
 		}
-        
-        /*
-        //printing labels and corresponding instruction address
-        for(int i = 0; i < labels.size(); i++) {
-        	cout << labels.at(i);
-        	cout << labelAddresses.at(i);
-        	cout << "\n";
-        }
-        */
 
 		//close the files
 		inputFile.close();
@@ -214,5 +206,6 @@ int main(int argc, char *argv[]) {
 		//print failure message
 		cout << "Unable to open file\n";
 	}
+	cout << "\n";
 	return 0;
 }

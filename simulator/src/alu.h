@@ -32,8 +32,20 @@ class ALU {
                     case 2:
                         result = inputValue1 + inputValue2;
                         break;
-                    //SUB
+                    //AND
                     case 3:
+                        result = inputValue1 && inputValue2;
+                        break;
+                    //MULT
+                    case 4:
+                        result = inputValue1 * inputValue2;
+                        break;
+                    //OR
+                    case 5:
+                        result = inputValue1 || inputValue2;
+                        break;
+                    //SUB
+                    case 6:
                         result = inputValue1 - inputValue2;
                         break;
                 }

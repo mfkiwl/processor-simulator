@@ -73,12 +73,6 @@ class Processor {
 
         void start() {
 
-            printf("\n");
-            printf("Created processor with:\n");
-            printf("\t%d registers\n", noOfRegisters);
-            printf("\t%d word memory size\n", memorySize);
-            printf("\n");
-            
             printf("Keep pressing ENTER to step through the program\n");
 
             printInfo();
@@ -120,6 +114,8 @@ class Processor {
 };
 
 int main(int argc, char *argv[]) {
+    printf("\n");
+
     //If command line arguments are incorrect then stop program
     if(argc != 2) {
         printf("Machine code file not valid.\n");
@@ -139,5 +135,6 @@ int main(int argc, char *argv[]) {
         Processor processor(8, 32, numOfInstructions,instructions);
         processor.start();
     }
+    printf("\n");
     return 0;
 }
