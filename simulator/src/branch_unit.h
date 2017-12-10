@@ -19,7 +19,8 @@ class BranchUnit {
                 //execute the instruction
                 switch(opcode) {
                     //B
-                    case 4:
+                    case 15:
+                    //jump to -1 as the pc will be incremented
                     *pc = branchAddress;
                     break;
                 }

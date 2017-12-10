@@ -15,15 +15,16 @@ class FetchUnit {
     {}
 
     void execute() {
-        if(*pc < noOfInstructions) {
+        if(*pc <= noOfInstructions) {
             //fetch the next instruction
-    	    nextInstruction = instructions[*pc];
-            //increment the program counter
-            (*pc)++;
+    	    nextInstruction = instructions[*pc - 1];
         }
         else {
+            //next instruction is noop if pc exceeds number of instructions
             nextInstruction = (Instruction) {0,0,0,0};
         }
+        //increment the program counter
+        (*pc)++;
     }
 
     void pipe() {

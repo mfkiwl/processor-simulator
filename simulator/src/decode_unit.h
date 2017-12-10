@@ -47,24 +47,18 @@ class DecodeUnit {
                     }
                     break;
                 //B
-                case 4:
+                case 15:
                     operands[0] = instructionRegister.operands[0];
                     break;
                 //LD
-                case 5:
+                case 7:
                     operands[0] = instructionRegister.operands[0];
-                    registerNum = instructionRegister.operands[1];
-                    val = registerFile->getRegisterValue(registerNum);
-                    operands[1] = val;
-                    operands[2] = instructionRegister.operands[2];
+                    operands[1] = instructionRegister.operands[1];
                     break;
                 //STR
-                case 6:
+                case 8:
                     operands[0] = instructionRegister.operands[0];
-                    registerNum = instructionRegister.operands[1];
-                    val = registerFile->getRegisterValue(registerNum);
-                    operands[1] = val;
-                    operands[2] = instructionRegister.operands[2];
+                    operands[1] = instructionRegister.operands[1];
                     break;
             }
             //giving the components the instruction that they are executing for debugging purposes
@@ -84,17 +78,16 @@ class DecodeUnit {
                     alu->setInputValues(operands[1],operands[2]);
                     break;
                 //Branch unit instructions
-                case 4:
+                case 15:
                     branchUnit->setOpcode(opcode);
                     branchUnit->setBranchAddress(operands[0]);
                     break;
                 //Memory unit instructions
-                case 5:
-                case 6:
+                case 7:
+                case 8:
                     memoryUnit->setOpcode(opcode);
                     memoryUnit->setReadWriteRegister(operands[0]);
-                    memoryUnit->setBaseAddress(operands[1]);
-                    memoryUnit->setOffset(operands[2]);
+                    memoryUnit->setOffset(operands[1]);
                     break;
             }
         }

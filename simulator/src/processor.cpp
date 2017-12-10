@@ -58,7 +58,7 @@ class Processor {
             instructions(instructions),
 
             //special registers
-            pc(0),
+            pc(1),
 
             //components
             registerFile(noOfRegisters), 

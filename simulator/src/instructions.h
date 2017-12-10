@@ -82,16 +82,25 @@ void printInstruction(Instruction instruction) {
             printf("ADDI R%d R%d %d\n", instruction.operands[0], instruction.operands[1], instruction.operands[2]);
             break;
         case 3:
-            printf("SUB R%d R%d R%d\n", instruction.operands[0], instruction.operands[1], instruction.operands[2]);
+            printf("AND R%d R%d %d\n", instruction.operands[0], instruction.operands[1], instruction.operands[2]);
             break;
         case 4:
-            printf("B %d\n", instruction.operands[0]);
+            printf("MULT R%d R%d %d\n", instruction.operands[0], instruction.operands[1], instruction.operands[2]);
             break;
         case 5:
-            printf("LD R%d R%d %d\n", instruction.operands[0], instruction.operands[1], instruction.operands[2]);
+            printf("OR R%d R%d %d\n", instruction.operands[0], instruction.operands[1], instruction.operands[2]);
             break;
         case 6:
-            printf("STR R%d R%d %d\n", instruction.operands[0], instruction.operands[1], instruction.operands[2]);
+            printf("SUB R%d R%d %d\n", instruction.operands[0], instruction.operands[1], instruction.operands[2]);
+            break;
+        case 7:
+            printf("LD R%d %d\n", instruction.operands[0], instruction.operands[1]);
+            break;
+        case 8:
+            printf("STR R%d %d\n", instruction.operands[0], instruction.operands[1]);
+            break;
+        case 15:
+            printf("J %d\n", instruction.operands[0]);
             break;
         default:
             printf("\n");
