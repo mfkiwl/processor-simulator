@@ -4,28 +4,61 @@
 using namespace std;
 
 int printOpcode(string op, ofstream *newfile) {
+	int output = -1;
 	if(op == "NOP") {
-		*newfile << 0;
+	    output = 0;
 	}
 	if(op == "ADD") {
-		*newfile << 1;
+		output = 1;
 	}
 	else if(op == "ADDI") {
-		*newfile << 2;
+		output = 2;
+	}
+	else if(op == "AND") {
+		output = 3;
+	}
+	else if(op == "MULT") {
+		output = 4;
+	}
+	else if(op == "OR") {
+		output = 5;
 	}
 	else if(op == "SUB") {
-		*newfile << 3;
+		output = 6;
 	}
-	else if(op == "B") {
-		*newfile << 4;
+	else if(op == "LW") {
+        output = 7;
 	}
-	else if(op == "LD") {
-		*newfile << 5;
+	else if(op == "SW") {
+        output = 8;
 	}
-	else if(op == "STR") {
-		*newfile << 6;
+	else if(op == "BEQ") {
+		output = 9;
 	}
+	else if(op == "BGEZ") {
+		output = 10;
+	}
+	else if(op == "BGTZ") {
+		output = 11;
+	}
+	else if(op == "BLEZ") {
+		output = 12;
+	}
+	else if(op == "BLTZ") {
+		output = 13;
+	}
+	else if(op == "BNE") {
+		output = 14;
+	}
+	else if(op == "J") {
+		output = 15;
+	}
+	else if(op == "JR") {
+		output = 16;
+	}
+	*newfile << output;
 	*newfile << " ";
+	return output;
 }
 
 void printOperands(string operands, ofstream *newfile) {
@@ -92,6 +125,7 @@ int main(int argc, char *argv[]) {
 
 	//begin writing machine to the output file
 	string line;
+	int lineNumber = 1;
 	if(inputFile.is_open() && outputFile.is_open()) {
 		while (getline(inputFile,line)) {
             
@@ -99,7 +133,11 @@ int main(int argc, char *argv[]) {
 			string delimiter = " ";
 			int delimiterPos = line.find(delimiter);
 			string opstr = line.substr(0, delimiterPos);
-			printOpcode(opstr, &outputFile);
+			if(printOpcode(opstr, &outputFile) == -1) {
+                printf("Assembler failed on line %d.\n", lineNumber);
+                printf("Exiting assembler.\n");
+                return 1;
+            }
 
 			//get the operands
 			string operands = line.substr(delimiterPos + 1, line.size());
@@ -107,7 +145,7 @@ int main(int argc, char *argv[]) {
 
             //finish line
 			outputFile << '\n';
-
+            lineNumber++;
 		}
 
 		//close the files

@@ -1,8 +1,26 @@
-Instruction Set:
-ADD R1 R2 R3     - opcode: 1 - Adds registers R2 and R3 and stores the result in R1
-ADDI R1 R2 x     - opcode: 2 - Adds register R2 with immediate value x and stores the result in R1
-SUB R1 R2 R3     - opcode: 3 - Subs the register R3 from R2 and stores the result in R1
-B x              - opcode: 4 - Branch to instruction x
-LD R1 R2 x       - opcode: 5 - Load from memory to register R1, using R2 as the base address and x as the offset
-STR R1 R2 x      - opcode: 6 - Store value of R1 in memory, using R2 as the base address and x as the offset
+http://www.mrc.uidaho.edu/mrc/people/jff/digital/MIPSir.html
 
+Processer instruction set:
+NOOP             - opcode: 0 - Performs no operation
+
+ALU instructions:
+ADD R1 R2 R3     - opcode: 1  - Adds registers R2 and R3 and stores the result in R1
+ADDI R1 R2 x     - opcode: 2  - Adds register R2 with immediate value x and stores the result in R1
+AND R1 R2 R3     - opcode: 3  - Bit wise and R2 and R3 and store the result in R1
+MULT R1 R2 R3    - opcode: 4  - Multiply R2 by R3 and store the result in R1
+OR R1 R2 R3      - opcode: 5  - bitwise logical or of R2 and R3 is stored in R1
+SUB R1 R2 R3     - opcode: 6  - Subs the register R3 from R2 and stores the result in R1
+
+Load/Store instructions
+LW R1 x          - opcode: 7  - Load from memory to register R1, using R2 as the base address and x as the offset
+SW R1 x          - opcode: 8  - The contents of R1 is stored at the address x
+
+Branch instructions:
+BEQ R1 R2 x      - opcode: 9  - Branches if the two registers are equal
+BGEZ R1 x        - opcode: 10 - Branches if the register is greater than or equal to zero
+BGTZ R1 x        - opcode: 11 - Branches if the register is greater than zero
+BLEZ R1 x        - opcode: 12 - Branches if the register is less than or equal to zero
+BLTZ R1 x        - opcode: 13 - Branches if the register is less than zero
+BNE R1 R2 x      - opcode: 14 - Branches if the two registers are not equal
+J x              - opcode: 15 - Jump to the address x
+JR R1            - opcode: 16 - Jump to the address contained in register R1
