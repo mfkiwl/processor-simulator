@@ -1,7 +1,0 @@
-for(int i = 0; i < 10; i++) {
-	A[i] = B[i] + C[i];
-}
-
-ADDI R1 0 0;
-ADDI R2 10 0;
-BLTH 5 R1 R2;
