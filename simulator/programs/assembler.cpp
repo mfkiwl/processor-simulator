@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>	
+#include <vector>
 using namespace std;
 
 int printOpcode(string op, ofstream *newfile) {
@@ -61,23 +62,52 @@ int printOpcode(string op, ofstream *newfile) {
 	return output;
 }
 
-void printOperands(string operands, ofstream *newfile) {
+int findLabelIndex(vector<string> labels, string label) {
+	int index = -1;
+	for(int i = 0; i < labels.size(); i++) {
+		if(labels.at(i) == label) {
+			index = i;
+			break;
+		}
+	}
+	return index;
+}
+
+void printOperands(string operands, ofstream *newfile, vector<string> labels, vector<int> labelAddresses) {
 	int pos = operands.find(" ");
 	string operand;
 	while(pos != string::npos) {
 		operand = operands.substr(0,pos);
-		if(operand[0] == 'R') {
-			operand = operand.substr(1, operand.size());
+		//Check if the operand is a label, if so replace it with the corresponding address
+		int labelIndex = findLabelIndex(labels, operand);
+	        if(labelIndex != -1) {
+		    int address = labelAddresses.at(labelIndex);
+		    *newfile << address << ' ';
+	    }
+	    else {
+	    	//If operand is a register then just print the register number
+		    if(operand[0] == 'R') {
+			    operand = operand.substr(1, operand.size());
+		    }
+		    *newfile << operand << ' ';
 		}
-		*newfile << operand << ' ';
 		operands = operands.substr(pos + 1, operands.size());
 		pos = operands.find(" ");
 	}
 	operand = operands.substr(0,operands.size());
-    if(operand[0] == 'R') {
-		operand = operand.substr(1, operand.size());
+	//check if operand is a label and if so print the corresponding label address
+	int labelIndex = findLabelIndex(labels, operand);
+	if(labelIndex != -1) {
+		int address = labelAddresses.at(labelIndex);
+		*newfile << address;
 	}
-	*newfile << operand;
+	else {
+		//if the operand is a register the just print the register number
+        if(operand[0] == 'R') {
+		    operand = operand.substr(1, operand.size());
+	    }
+	    *newfile << operand;
+	}
 }
 
 string createOutputFileName(string inputFileName) {
@@ -123,6 +153,11 @@ int main(int argc, char *argv[]) {
 	ifstream inputFile(inputFileName.c_str());
 	ofstream outputFile(outputFileName.c_str());
 
+    //vector of labels
+    vector<string> labels;
+    //vector of label addresses
+    vector<int> labelAddresses;
+
 	//begin writing machine to the output file
 	string line;
 	int lineNumber = 1;
@@ -133,20 +168,40 @@ int main(int argc, char *argv[]) {
 			string delimiter = " ";
 			int delimiterPos = line.find(delimiter);
 			string opstr = line.substr(0, delimiterPos);
-			if(printOpcode(opstr, &outputFile) == -1) {
-                printf("Assembler failed on line %d.\n", lineNumber);
-                printf("Exiting assembler.\n");
-                return 1;
+
+            //check if is infact a label
+            if(delimiterPos == string::npos && opstr.at(opstr.size() - 1) == ':') {
+            	//store the label and its corresponding instruction address
+                string label = opstr.substr(0,opstr.size()-1);
+                labels.push_back(label);
+                labelAddresses.push_back(lineNumber - labelAddresses.size());
             }
+            //otherwise write opcode and operands to file
+            else {
+                if(printOpcode(opstr, &outputFile) == -1) {
+                    printf("Assembler failed on line %d.\n", lineNumber);
+                    printf("Exiting assembler.\n");
+                    return 1;
+                }
 
-			//get the operands
-			string operands = line.substr(delimiterPos + 1, line.size());
-			printOperands(operands, &outputFile);
-
-            //finish line
-			outputFile << '\n';
+			    //get the operands
+			    string operands = line.substr(delimiterPos + 1, line.size());
+			    printOperands(operands, &outputFile, labels, labelAddresses);
+			    //finish line
+			    outputFile << '\n';
+            }
+           
             lineNumber++;
 		}
+        
+        /*
+        //printing labels and corresponding instruction address
+        for(int i = 0; i < labels.size(); i++) {
+        	cout << labels.at(i);
+        	cout << labelAddresses.at(i);
+        	cout << "\n";
+        }
+        */
 
 		//close the files
 		inputFile.close();
