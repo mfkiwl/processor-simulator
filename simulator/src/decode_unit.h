@@ -1,8 +1,8 @@
 class DecodeUnit {
-	ALU* alu;
+    ALU* alu;
     RegisterFile* registerFile;
-	BranchUnit* branchUnit;
-	MemoryUnit* memoryUnit;
+    BranchUnit* branchUnit;
+    MemoryUnit* memoryUnit;
     Instruction instructionRegister;
     int opcode;
     int operands[3];

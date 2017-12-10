@@ -1,8 +1,8 @@
 class FetchUnit {
-	Instruction* instructions;
+    Instruction* instructions;
     int noOfInstructions;
-	int* pc;
-	DecodeUnit* decodeUnit;
+    int* pc;
+    DecodeUnit* decodeUnit;
     Instruction nextInstruction;
 
     public:

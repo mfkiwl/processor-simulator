@@ -27,7 +27,7 @@ class Processor {
 
     //Instruction info
     int noOfInstructions;
-	Instruction *instructions;
+    Instruction *instructions;
 
     //registers
     int pc;
@@ -78,8 +78,8 @@ class Processor {
             printf("\t%d registers\n", noOfRegisters);
             printf("\t%d word memory size\n", memorySize);
             printf("\n");
-
-        	printf("Keep pressing ENTER to step through the program\n");
+            
+            printf("Keep pressing ENTER to step through the program\n");
 
             printInfo();
 
@@ -110,12 +110,12 @@ class Processor {
         }
 
         void printInfo() {
-        	printf("\n");
+            printf("\n");
             printf("Number of clock cycles: %d\n", noOfClockCycles);
             printf("\n");
             printf("PC: %d\n", pc);
-        	registerFile.printRegisters();
-        	printf("\n");
+            registerFile.printRegisters();
+            printf("\n");
         }
 };
 
@@ -136,8 +136,8 @@ int main(int argc, char *argv[]) {
 
     //create processor object and start processing
     if(numOfInstructions != -1 && instructions != NULL) {
-	    Processor processor(8, 32, numOfInstructions,instructions);
-	    processor.start();
+        Processor processor(8, 32, numOfInstructions,instructions);
+        processor.start();
     }
-	return 0;
+    return 0;
 }

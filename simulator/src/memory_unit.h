@@ -1,6 +1,6 @@
 class MemoryUnit {
-	Memory* memory;
-	RegisterFile* registerFile;
+    Memory* memory;
+    RegisterFile* registerFile;
     int opcode;
     int readWriteRegister;
     int baseAddress;
@@ -25,17 +25,17 @@ class MemoryUnit {
                 //execute the instruction
     	        switch(opcode) {
                     //LD
-    		        case 5:
-    		            address = baseAddress + offset;
+                    case 5:
+                        address = baseAddress + offset;
                         value = memory->loadFromMemory(address);
                         registerFile->setRegisterValue(readWriteRegister, value);
-    		            break;
+                        break;
                     //STR
     		        case 6:
-    		            address = baseAddress + offset;
+                        address = baseAddress + offset;
                         value = registerFile->getRegisterValue(readWriteRegister);
                         memory->storeInMemory(address, value);
-    		            break;
+                        break;
                 }
 
                 //reset the variables

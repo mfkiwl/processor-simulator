@@ -74,27 +74,27 @@ Instruction* getInstructions(std::string inputFileName, int numOfInstructions) {
 }
 
 void printInstruction(Instruction instruction) {
-            switch(instruction.opcode) {
-                case 1:
-                    printf("ADD R%d R%d R%d\n", instruction.operands[0], instruction.operands[1], instruction.operands[2]);
-                    break;
-                case 2:
-                    printf("ADDI R%d R%d %d\n", instruction.operands[0], instruction.operands[1], instruction.operands[2]);
-                    break;
-                case 3:
-                    printf("SUB R%d R%d R%d\n", instruction.operands[0], instruction.operands[1], instruction.operands[2]);
-                    break;
-                case 4:
-                    printf("B %d\n", instruction.operands[0]);
-                    break;
-                case 5:
-                    printf("LD R%d R%d %d\n", instruction.operands[0], instruction.operands[1], instruction.operands[2]);
-                    break;
-                case 6:
-                    printf("STR R%d R%d %d\n", instruction.operands[0], instruction.operands[1], instruction.operands[2]);
-                    break;
-                default:
-                    printf("\n");
-                    break;
-            }
-        }
+    switch(instruction.opcode) {
+        case 1:
+            printf("ADD R%d R%d R%d\n", instruction.operands[0], instruction.operands[1], instruction.operands[2]);
+            break;
+        case 2:
+            printf("ADDI R%d R%d %d\n", instruction.operands[0], instruction.operands[1], instruction.operands[2]);
+            break;
+        case 3:
+            printf("SUB R%d R%d R%d\n", instruction.operands[0], instruction.operands[1], instruction.operands[2]);
+            break;
+        case 4:
+            printf("B %d\n", instruction.operands[0]);
+            break;
+        case 5:
+            printf("LD R%d R%d %d\n", instruction.operands[0], instruction.operands[1], instruction.operands[2]);
+            break;
+        case 6:
+            printf("STR R%d R%d %d\n", instruction.operands[0], instruction.operands[1], instruction.operands[2]);
+            break;
+        default:
+            printf("\n");
+            break;
+    }
+}

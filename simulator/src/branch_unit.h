@@ -17,12 +17,12 @@ class BranchUnit {
             if(opcode != 0) {
 
                 //execute the instruction
-        	    switch(opcode) {
+                switch(opcode) {
                     //B
-        		    case 4:
-        		        *pc = branchAddress;
-        		        break;
-        	    }
+                    case 4:
+                    *pc = branchAddress;
+                    break;
+                }
 
                 //reset variables
                 opcode = 0;
