@@ -2,10 +2,7 @@ class ALU {
 
     RegisterFile* registerFile;
     int opcode;
-    int outputRegister;
-    int inputValue1;
-    int inputValue2;
-    //the value that we calculate
+    int* operands;
     int result;
 
     //for debugging purposes
@@ -15,9 +12,6 @@ class ALU {
         ALU(RegisterFile* registerFile) : 
             registerFile(registerFile), 
             opcode(0),
-            outputRegister(0),
-            inputValue1(0),
-            inputValue2(0),
             result(0)
         {}
 
@@ -30,34 +24,34 @@ class ALU {
                     case 1:
                     //ADDI
                     case 2:
-                        result = inputValue1 + inputValue2;
+                        result = operands[1] + operands[2];
                         break;
                     //AND
                     case 3:
-                        result = inputValue1 && inputValue2;
+                        result = operands[1] && operands[2];
                         break;
                     //MULT
                     case 4:
-                        result = inputValue1 * inputValue2;
+                        result = operands[1] * operands[2];
                         break;
                     //OR
                     case 5:
-                        result = inputValue1 || inputValue2;
+                        result = operands[1] || operands[2];
                         break;
                     //SUB
                     case 6:
-                        result = inputValue1 - inputValue2;
+                        result = operands[1] - operands[2];
                         break;
                 }
 
                 //write the result to the output register
-                registerFile->setRegisterValue(outputRegister, result);
+                registerFile->setRegisterValue(operands[0], result);
 
                 //reset variables
                 opcode = 0;
-                outputRegister = 0;
-                inputValue1 = 0;
-                inputValue2 = 0;
+                for(int i = 0; i < 3; i++) {
+                    operands[i] = 0;
+                }
                 result = 0;
 
                 //print the instruction that has been executed
@@ -70,13 +64,8 @@ class ALU {
             opcode = x;
         }
 
-        void setOutputRegister(int x) {
-            outputRegister = x;
-        }
-
-        void setInputValues(int a, int b) {
-            inputValue1 = a;
-            inputValue2 = b;
+        void setOperands(int* x) {
+            operands = x;
         }
 
         void set_DEBUG_Instruction(Instruction i) {

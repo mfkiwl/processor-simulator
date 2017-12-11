@@ -19,6 +19,7 @@ class DecodeUnit {
             opcode = instructionRegister.opcode;
             int registerNum;
             int val;
+            //Replacing registers with with values
             switch(opcode) {
                 //ADD
                 case 1:
@@ -103,15 +104,13 @@ class DecodeUnit {
                 case 5:
                 case 6:
                     alu->setOpcode(opcode);
-                    alu->setOutputRegister(operands[0]);
-                    alu->setInputValues(operands[1],operands[2]);
+                    alu->setOperands(operands);
                     break;
                 //Memory unit instructions
                 case 7:
                 case 8:
                     memoryUnit->setOpcode(opcode);
-                    memoryUnit->setReadWriteRegister(operands[0]);
-                    memoryUnit->setOffset(operands[1]);
+                    memoryUnit->setOperands(operands);
                     break;
                 //Branch unit instructions
                 case 9:
@@ -123,8 +122,7 @@ class DecodeUnit {
                 case 15:
                 case 16:
                     branchUnit->setOpcode(opcode);
-                    branchUnit->setInputValues(operands[0],operands[1]);
-                    branchUnit->setBranchAddress(operands[2]);
+                    branchUnit->setOperands(operands);
                     break;
             }
         }

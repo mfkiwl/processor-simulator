@@ -2,9 +2,7 @@ class MemoryUnit {
     Memory* memory;
     RegisterFile* registerFile;
     int opcode;
-    int readWriteRegister;
-    int baseAddress;
-    int offset;
+    int* operands;
 
     //for debugging purposes
     Instruction DEBUG_Instruction;
@@ -24,25 +22,25 @@ class MemoryUnit {
 
                 //execute the instruction
     	        switch(opcode) {
-                    //LD
+                    //LW
                     case 7:
-                        address = 0 + offset;
+                        address = 0 + operands[1];
                         value = memory->loadFromMemory(address);
-                        registerFile->setRegisterValue(readWriteRegister, value);
+                        registerFile->setRegisterValue(operands[0], value);
                         break;
-                    //STR
+                    //SW
     		        case 8:
-                        address = 0 + offset;
-                        value = registerFile->getRegisterValue(readWriteRegister);
+                        address = 0 + operands[1];
+                        value = registerFile->getRegisterValue(operands[0]);
                         memory->storeInMemory(address, value);
                         break;
                 }
 
                 //reset the variables
                 opcode = 0;
-                readWriteRegister = 0;
-                baseAddress = 0;
-                offset = 0;
+                for(int i = 0; i < 3; i++) {
+                    operands[i] = 0;
+                }
 
                 //print the instruction that has been executed
                 printf("Executed instruction: ");
@@ -54,16 +52,8 @@ class MemoryUnit {
             opcode = x;
         }
 
-        void setReadWriteRegister(int x) {
-            readWriteRegister = x;
-        }
-
-        void setBaseAddress(int x) {
-            baseAddress = x;
-        }
-
-        void setOffset(int x) {
-            offset = x;
+        void setOperands(int* x) {
+            operands = x;
         }
 
         void set_DEBUG_Instruction(Instruction i) {
