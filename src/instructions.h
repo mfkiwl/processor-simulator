@@ -1,3 +1,4 @@
+using namespace std;
 typedef struct instruction {
 	int opcode;
 	int operands[3];
@@ -16,7 +17,7 @@ int getNumOfInstructions(std::string inputFileName) {
         return i;
     }
     else {
-        printf("Failed to read file.\n");
+        cout << "Failed to read file.\n";
         return -1;
     }
 }
@@ -28,9 +29,9 @@ Instruction* getInstructions(std::string inputFileName, int numOfInstructions) {
     std::ifstream inputFile(inputFileName.c_str());
     //if file is open then get the instruction information from each line
     if(inputFile.is_open()) {
-        printf("Reading instructions from %s\n", inputFileName.c_str());
+        cout << "Reading instructions from " << inputFileName.c_str() << "\n";
         //allocating memory to array to store the instructions
-        Instruction* instructions = (Instruction*) malloc(sizeof(Instruction) * numOfInstructions);
+        Instruction* instructions = new Instruction[numOfInstructions];
 
         //interating through each instruction
         std::string line;
@@ -67,7 +68,7 @@ Instruction* getInstructions(std::string inputFileName, int numOfInstructions) {
         return instructions;
     }
     else {
-        printf("Failed to read file.\n");
+        cout << "Failed to read file.\n";
         //if the file has not been opened then return a null pointer
         return NULL;
     }
@@ -76,61 +77,60 @@ Instruction* getInstructions(std::string inputFileName, int numOfInstructions) {
 void printInstruction(Instruction instruction) {
     switch(instruction.opcode) {
         case 1:
-            printf("ADD R%d R%d R%d\n", instruction.operands[0], instruction.operands[1], instruction.operands[2]);
+            cout << "ADD R" << instruction.operands[0] << " R" << instruction.operands[1] << " R" << instruction.operands[2] << "\n";
             break;
         case 2:
-            printf("ADDI R%d R%d %d\n", instruction.operands[0], instruction.operands[1], instruction.operands[2]);
+            cout << "ADDI R" << instruction.operands[0] << " R" << instruction.operands[1] << " R" << instruction.operands[2] << "\n";
             break;
         case 3:
-            printf("AND R%d R%d R%d\n", instruction.operands[0], instruction.operands[1], instruction.operands[2]);
+            cout << "AND R" << instruction.operands[0] << " R" << instruction.operands[1] << " R" << instruction.operands[2] << "\n";
             break;
         case 4:
-            printf("MULT R%d R%d R%d\n", instruction.operands[0], instruction.operands[1], instruction.operands[2]);
+            cout << "MULT R" << instruction.operands[0] << " R" << instruction.operands[1] << " R" << instruction.operands[2] << "\n";
             break;
         case 5:
-            printf("OR R%d R%d R%d\n", instruction.operands[0], instruction.operands[1], instruction.operands[2]);
+            cout << "OR R" << instruction.operands[0] << " R" << instruction.operands[1] << " R" << instruction.operands[2] << "\n";
             break;
         case 6:
-            printf("SUB R%d R%d R%d\n", instruction.operands[0], instruction.operands[1], instruction.operands[2]);
+            cout << "SUB R" << instruction.operands[0] << " R" << instruction.operands[1] << " R" << instruction.operands[2] << "\n";
             break;
         case 7:
-            printf("LW R%d %d\n", instruction.operands[0], instruction.operands[1]);
-            break;
+            cout << "LW R" << instruction.operands[0] << " " << instruction.operands[1] << "\n";
         case 8:
-            printf("LWR R%d R%d\n", instruction.operands[0], instruction.operands[1]);
+            cout << "LWR R" << instruction.operands[0] << " R" << instruction.operands[1] << "\n";
             break;
         case 9:
-            printf("SW R%d %d\n", instruction.operands[0], instruction.operands[1]);
+            cout << "SW R" << instruction.operands[0] << " " << instruction.operands[1] << "\n";
             break;
         case 10:
-            printf("SWR R%d R%d\n", instruction.operands[0], instruction.operands[1]);
+            cout << "SWR R" << instruction.operands[0] << " R" << instruction.operands[1] << "\n";
             break;
         case 11:
-            printf("BEQ R%d R%d %d\n", instruction.operands[0], instruction.operands[1], instruction.operands[2]);
+            cout << "BEQ R" << instruction.operands[0] << " R" << instruction.operands[1] << " " << instruction.operands[2] << "\n";
             break;
         case 12:
-            printf("BGEZ R%d %d\n", instruction.operands[0], instruction.operands[1]);
+            cout << "BGEZ R" << instruction.operands[0] << " " << instruction.operands[1] << "\n";
             break;
         case 13:
-            printf("BGTZ R%d %d\n", instruction.operands[0], instruction.operands[1]);
+            cout << "BGTZ R" << instruction.operands[0] << " " << instruction.operands[1] << "\n";
             break;
         case 14:
-            printf("BLEZ R%d %d\n", instruction.operands[0], instruction.operands[1]);
+            cout << "BLEZ R" << instruction.operands[0] << " " << instruction.operands[1] << "\n";
             break;
         case 15:
-            printf("BLTZ R%d %d\n", instruction.operands[0], instruction.operands[1]);
+            cout << "BLTZ R" << instruction.operands[0] << " " << instruction.operands[1] << "\n";
             break;
         case 16:
-            printf("BNE R%d R%d %d\n", instruction.operands[0], instruction.operands[1], instruction.operands[2]);
+            cout << "BNE R" << instruction.operands[0] << " R" << instruction.operands[1] << " " << instruction.operands[2] << "\n";
             break;
         case 17:
-            printf("J %d\n", instruction.operands[0]);
+            cout << "J " << instruction.operands[0] << "\n";
             break;
         case 18:
-            printf("J R%d\n", instruction.operands[0]);
+            cout << "J R" << instruction.operands[0] << "\n";
             break;
         default:
-            printf("\n");
+            cout << "\n";
             break;
     }
 }

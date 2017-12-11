@@ -1,9 +1,10 @@
+using namespace std;
 class RegisterFile {
 	int numOfRegisters;
 	int* registers;
     public: 
     	RegisterFile(int numOfRegisters) : numOfRegisters(numOfRegisters) {
-    		registers = (int*) malloc(sizeof(int) * numOfRegisters);
+    		registers = new int[numOfRegisters];
     		for(int i = 0; i < numOfRegisters; i++) {
     			registers[i] = 0;
     		}
@@ -15,14 +16,14 @@ class RegisterFile {
 
         int getRegisterValue(int i) {
         	if(i < 0 || i > numOfRegisters - 1) {
-        		printf("Register index %d is out of bounds.\n", i);
+        		cout << "Register index " << i << " is out of bounds.\n";
         	}
         	return registers[i];
         }
 
         void setRegisterValue(int i, int val) {
         	if(i < 0 || i > numOfRegisters - 1) {
-        		printf("Register index %d is out of bounds.\n", i);
+        		cout << "Register index " << i << " is out of bounds.\n";
         	}
         	registers[i] = val;
         }
@@ -30,35 +31,35 @@ class RegisterFile {
         void printRegisters() {
 
             //print register names
-        	printf("Registers: ");
+        	cout << "Registers: ";
         	int lengths[numOfRegisters];
         	for(int i = 0; i < numOfRegisters; i++) {
         		lengths[i] = intLength(registers[i]);
         	}
         	for(int i = 0; i < numOfRegisters; i++) {
-        		printf("R%d ", i);
+        		cout << "R" << i << " ";
         		if(lengths[i] > 2) {
         			for(int j = 2; j < lengths[i]; j++) {
-                        printf(" ");
+                        cout << " ";
         			}
         		}
         	}
-        	printf("\n");
+        	cout << "\n";
 
             //print register values
-        	printf("Values:    ");
+        	cout << "Values:    ";
         	for(int i = 0; i < numOfRegisters; i++) {
         		if(lengths[i] == 1) {
-        		    printf("%d  ", registers[i]);
+        		    cout << registers[i] << "  ";
         		}
         		else {
-        			printf("%d ", registers[i]);
+        			cout << registers[i] << " ";
         		}
                 if(i >= 10) {
-                    printf(" ");
+                    cout << " ";
                 }
         	}
-        	printf("\n");
+        	cout << "\n";
         }
 
         int intLength(int n) {

@@ -1,4 +1,3 @@
-#include <stdio.h>
 #include <stdlib.h>
 #include <iostream>
 #include <math.h>
@@ -13,6 +12,8 @@
 #include "memory_unit.h"
 #include "decode_unit.h"
 #include "fetch_unit.h"
+
+using namespace std;
 
 
 class Processor {
@@ -60,7 +61,7 @@ class Processor {
             noOfInstructions(noOfInstructions),
             instructions(instructions),
 
-            //special registers
+            //registers
             pc(1),
 
             //status flags
@@ -79,7 +80,7 @@ class Processor {
 
         void start() {
 
-            printf("Keep pressing ENTER to step through the program\n");
+            cout << "Keep pressing ENTER to step through the program\n";
 
             printInfo();
 
@@ -126,26 +127,24 @@ class Processor {
         }
 
         void printInfo() {
-            printf("\n");
-            printf("Number of clock cycles: %d\n", noOfClockCycles);
-            printf("\n");
-            printf("PC: %d\n", pc);
+            cout << "\nNumber of clock cycles: " << noOfClockCycles << "\n\n";
+            cout << "PC: " << pc << "\n";
             registerFile.printRegisters();
-            printf("\n");
+            cout << "\n";
         }
 };
 
 int main(int argc, char *argv[]) {
-    printf("\n");
+    cout << "\n";
 
     //If command line arguments are incorrect then stop program
     if(argc != 2) {
-        printf("Machine code file not valid.\n");
+        cout << "Machine code file not valid.\n";
         return 1;
     }
 
     //get the instructions from the machine code file
-    std::string inputFileName(argv[1]);
+    string inputFileName(argv[1]);
     int numOfInstructions = getNumOfInstructions(inputFileName);
     Instruction *instructions = NULL;
     if(numOfInstructions != -1) {
@@ -157,6 +156,6 @@ int main(int argc, char *argv[]) {
         Processor processor(16, 64, numOfInstructions,instructions);
         processor.start();
     }
-    printf("\n");
+    cout << "\n";
     return 0;
 }

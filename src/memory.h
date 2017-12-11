@@ -5,7 +5,7 @@ class Memory {
 
     public:
         Memory(int size) : size(size) {
-            memory = (int*) malloc(sizeof(int) * size);
+            memory = new int[size];
             for(int i = 0; i < size; i++) {
                 memory[i] = 0;
             }
@@ -13,14 +13,14 @@ class Memory {
     
     int loadFromMemory(int address) {
         if(address < 0 || address > size - 1) {
-            printf("Register index %d is out of bounds.\n", address);
+            cout << "Register index " << address << " is out of bounds.\n";
         }
         return memory[address];
     }
 
     void storeInMemory(int address, int value) {
         if(address < 0 || address > size - 1) {
-            printf("Register index %d is out of bounds.\n", address);
+            cout << "Register index " << address << " is out of bounds.\n";
         }
         memory[address] = value;
     }

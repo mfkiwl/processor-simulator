@@ -60,7 +60,7 @@ class ALU {
                 result = 0;
 
                 //print the instruction that has been executed
-                printf("Executed instruction: ");
+                cout << "Executed instruction: ";
                 printInstruction(DEBUG_Instruction);
             }
         }

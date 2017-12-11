@@ -6,7 +6,7 @@ class BranchUnit {
 
     //set pc program to jump to a position in the program
     int* pc;
-    
+
     //set to one to send message to processor to flush the pipeline
     int* flushFlag;
 
@@ -52,7 +52,7 @@ class BranchUnit {
                 }
 
                 //print the instruction that has been executed
-                printf("Executed instruction: ");
+                cout << "Executed instruction: ";
                 printInstruction(DEBUG_Instruction);
             }
         }
