@@ -16,7 +16,7 @@ class FetchUnit {
 
     void execute() {
         if(*pc <= noOfInstructions) {
-            //fetch the next instruction
+            //fetch the next instruction (-1 so that pc of 1 refers to the first instruction on line 1)
     	    nextInstruction = instructions[*pc - 1];
         }
         else {
