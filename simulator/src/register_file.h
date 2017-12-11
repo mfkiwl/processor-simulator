@@ -54,6 +54,9 @@ class RegisterFile {
         		else {
         			printf("%d ", registers[i]);
         		}
+                if(i >= 10) {
+                    printf(" ");
+                }
         	}
         	printf("\n");
         }

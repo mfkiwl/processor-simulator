@@ -30,10 +30,6 @@ class DecodeUnit {
                 case 5:
                 //SUB
                 case 6:
-                //BEQ
-                case 9:
-                //BNE
-                case 14:
                     operands[0] = instructionRegister.operands[0];
                     for(int i = 1; i < 3; i++) {
                         registerNum = instructionRegister.operands[i];
@@ -56,6 +52,17 @@ class DecodeUnit {
                     operands[0] = instructionRegister.operands[0];
                     operands[1] = instructionRegister.operands[1];
                     break;
+                //BEQ
+                case 9:
+                //BNE
+                case 14:
+                    registerNum = instructionRegister.operands[0];
+                    val = registerFile->getRegisterValue(registerNum);
+                    operands[0] = val;
+                    registerNum = instructionRegister.operands[1];
+                    val = registerFile->getRegisterValue(registerNum);
+                    operands[1] = val;
+                    operands[2] = instructionRegister.operands[2];
                 //BGEZ
                 case 10:
                 //BGTZ
@@ -116,7 +123,8 @@ class DecodeUnit {
                 case 15:
                 case 16:
                     branchUnit->setOpcode(opcode);
-                    branchUnit->setBranchAddress(operands[0]);
+                    branchUnit->setInputValues(operands[0],operands[1]);
+                    branchUnit->setBranchAddress(operands[2]);
                     break;
             }
         }

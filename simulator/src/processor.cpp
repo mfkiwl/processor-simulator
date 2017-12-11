@@ -132,7 +132,7 @@ int main(int argc, char *argv[]) {
 
     //create processor object and start processing
     if(numOfInstructions != -1 && instructions != NULL) {
-        Processor processor(8, 32, numOfInstructions,instructions);
+        Processor processor(16, 64, numOfInstructions,instructions);
         processor.start();
     }
     printf("\n");

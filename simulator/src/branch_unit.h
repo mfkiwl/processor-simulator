@@ -1,6 +1,8 @@
 class BranchUnit {
 	
     int opcode;
+    int inputValue1;
+    int inputValue2;
     int branchAddress;
     int* pc;
 
@@ -18,11 +20,24 @@ class BranchUnit {
 
                 //execute the instruction
                 switch(opcode) {
+                    //BEQ
+                    case 9:
+                        if(inputValue1 == inputValue2) {
+                            *pc = branchAddress;
+                        }
+                        break;
+                    //BNE
+                    case 14:
+                        printf("%d %d\n", inputValue1, inputValue2);
+                        if(inputValue1 != inputValue2) {
+                            *pc = branchAddress;
+                        }
+                        break;
                     //B
                     case 15:
-                    //jump to -1 as the pc will be incremented
-                    *pc = branchAddress;
-                    break;
+                        //jump to -1 as the pc will be incremented
+                        *pc = branchAddress;
+                         break;
                 }
 
                 //reset variables
@@ -37,6 +52,11 @@ class BranchUnit {
 
         void setOpcode(int x) {
             opcode = x;
+        }
+
+        void setInputValues(int a, int b) {
+            inputValue1 = a;
+            inputValue2 = b;
         }
 
         void setBranchAddress(int x) {

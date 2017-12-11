@@ -94,13 +94,34 @@ void printInstruction(Instruction instruction) {
             printf("SUB R%d R%d R%d\n", instruction.operands[0], instruction.operands[1], instruction.operands[2]);
             break;
         case 7:
-            printf("LD R%d %d\n", instruction.operands[0], instruction.operands[1]);
+            printf("LW R%d %d\n", instruction.operands[0], instruction.operands[1]);
             break;
         case 8:
-            printf("STR R%d %d\n", instruction.operands[0], instruction.operands[1]);
+            printf("SW R%d %d\n", instruction.operands[0], instruction.operands[1]);
+            break;
+        case 9:
+            printf("BEQ R%d R%d %d\n", instruction.operands[0], instruction.operands[1], instruction.operands[2]);
+            break;
+        case 10:
+            printf("BGEZ R%d %d\n", instruction.operands[0], instruction.operands[1]);
+            break;
+        case 11:
+            printf("BGTZ R%d %d\n", instruction.operands[0], instruction.operands[1]);
+            break;
+        case 12:
+            printf("BLEZ R%d %d\n", instruction.operands[0], instruction.operands[1]);
+            break;
+        case 13:
+            printf("BLTZ R%d %d\n", instruction.operands[0], instruction.operands[1]);
+            break;
+        case 14:
+            printf("BNE R%d R%d %d\n", instruction.operands[0], instruction.operands[1], instruction.operands[2]);
             break;
         case 15:
             printf("J %d\n", instruction.operands[0]);
+            break;
+        case 16:
+            printf("J R%d\n", instruction.operands[0]);
             break;
         default:
             printf("\n");
