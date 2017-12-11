@@ -142,4 +142,11 @@ class DecodeUnit {
         void setInstructionRegister(Instruction x) {
         	instructionRegister = x;
         }
+
+        void flush() {
+            opcode = 0;
+            for(int i = 0; i < 3; i++) {
+                operands[i] = 0;
+            }
+        }
 };

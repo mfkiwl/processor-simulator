@@ -1,4 +1,4 @@
-PROGRAM=vector_addition
+PROGRAM=memory
 
 all:
 	g++ src/processor.cpp -o bin/processor

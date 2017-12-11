@@ -31,4 +31,8 @@ class FetchUnit {
         //put the fetched instruction into the instruction register
         decodeUnit->setInstructionRegister(nextInstruction);
     }
+
+    void flush() {
+        nextInstruction = (Instruction) {0,0,0,0};
+    }
 };

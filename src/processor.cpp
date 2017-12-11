@@ -32,6 +32,9 @@ class Processor {
     //registers
     int pc;
 
+    //status
+    int flushFlag;
+
     //components
     RegisterFile registerFile;
     Memory memory;
@@ -60,13 +63,16 @@ class Processor {
             //special registers
             pc(1),
 
+            //status
+            flushFlag(0),
+
             //components
             registerFile(noOfRegisters), 
             memory(memorySize),
             fetchUnit(instructions, noOfInstructions, &pc, &decodeUnit),
             decodeUnit(&registerFile, &alu, &branchUnit, &memoryUnit),
             alu(&registerFile),
-            branchUnit(&pc),
+            branchUnit(&pc, &flushFlag),
             memoryUnit(&memory, &registerFile)
         {}
 
@@ -95,12 +101,23 @@ class Processor {
                 fetchUnit.pipe();
                 decodeUnit.pipe();
 
+                //check if we received a message to flush the pipeline
+                if(flushFlag == 1) {
+                    flushPipeline();
+                }
+
                 //update info
                 noOfClockCycles++;
 
                 //print register info
                 printInfo();
             }
+        }
+
+        void flushPipeline() {
+            fetchUnit.flush();
+            decodeUnit.flush();
+            flushFlag = 0;
         }
 
         void printInfo() {

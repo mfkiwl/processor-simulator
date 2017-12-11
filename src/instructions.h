@@ -103,7 +103,7 @@ void printInstruction(Instruction instruction) {
             printf("SW R%d %d\n", instruction.operands[0], instruction.operands[1]);
             break;
         case 10:
-            printf("LWR R%d R%d\n", instruction.operands[0], instruction.operands[1]);
+            printf("SWR R%d R%d\n", instruction.operands[0], instruction.operands[1]);
             break;
         case 11:
             printf("BEQ R%d R%d %d\n", instruction.operands[0], instruction.operands[1], instruction.operands[2]);
