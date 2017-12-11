@@ -71,4 +71,13 @@ class MemoryUnit {
         void set_DEBUG_Instruction(Instruction i) {
             DEBUG_Instruction = i;
         }
+
+        void flush() {
+            opcode = 0;
+            for(int i = 0; i < 3; i++) {
+                operands[i] = 0;
+            }
+            //reset debug instruciton
+            DEBUG_Instruction = (Instruction) {0,0,0,0};
+        }
 };

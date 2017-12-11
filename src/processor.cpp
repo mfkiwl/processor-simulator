@@ -32,7 +32,7 @@ class Processor {
     //registers
     int pc;
 
-    //status
+    //status flags
     int flushFlag;
 
     //components
@@ -63,7 +63,7 @@ class Processor {
             //special registers
             pc(1),
 
-            //status
+            //status flags
             flushFlag(0),
 
             //components
@@ -86,7 +86,7 @@ class Processor {
             //step through the program
         	while(1) {
 
-                //hold up the program
+                //hold up the program at each clock cycle
                 char str[3];
                 fgets(str, 2, stdin);
 
@@ -103,6 +103,7 @@ class Processor {
 
                 //check if we received a message to flush the pipeline
                 if(flushFlag == 1) {
+                    //if so then flush the pipeline
                     flushPipeline();
                 }
 
@@ -115,6 +116,9 @@ class Processor {
         }
 
         void flushPipeline() {
+            alu.flush();
+            branchUnit.flush();
+            decodeUnit.flush();
             fetchUnit.flush();
             decodeUnit.flush();
             flushFlag = 0;
