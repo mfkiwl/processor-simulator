@@ -1,6 +1,9 @@
 class MemoryUnit {
+    //forward components
     Memory* memory;
     RegisterFile* registerFile;
+
+    //decoded instruction
     int opcode;
     int* operands;
 

@@ -1,9 +1,14 @@
 class DecodeUnit {
+    //forward components
     ALU* alu;
     RegisterFile* registerFile;
     BranchUnit* branchUnit;
     MemoryUnit* memoryUnit;
+
+    //Instruction given my fetch unit
     Instruction instructionRegister;
+
+    //Decoding of the instruction
     int opcode;
     int operands[3];
 
@@ -148,5 +153,6 @@ class DecodeUnit {
             for(int i = 0; i < 3; i++) {
                 operands[i] = 0;
             }
+            instructionRegister = (Instruction) {0,0,0,0};
         }
 };

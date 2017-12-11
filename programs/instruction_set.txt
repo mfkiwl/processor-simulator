@@ -12,8 +12,8 @@ OR R1 R2 R3      - opcode: 5  - bitwise logical or of R2 and R3 is stored in R1
 SUB R1 R2 R3     - opcode: 6  - Subs the register R3 from R2 and stores the result in R1
 
 Load/Store instructions
-LW R1 x          - opcode: 7  - Load from memory to register R1, using x as the offset
-LWR R1 R2        - opcode: 8  - Load from memory to register R1, using R2 as the offset
+LW R1 x          - opcode: 7  - Load from memory to register R1, from an address using x as the offset
+LWR R1 R2        - opcode: 8  - Load from memory to register R1, from an address stored in R2 as the offset
 SW R1 x          - opcode: 9  - The contents of R1 is stored at the address x
 SWR R1 R2        - opcode: 10 - The contents of R1 is stored at the address stored in R2
 

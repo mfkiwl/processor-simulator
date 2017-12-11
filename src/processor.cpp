@@ -95,17 +95,18 @@ class Processor {
                 branchUnit.execute();
                 memoryUnit.execute();
                 decodeUnit.execute();
+
+                //check if we received a message to flush the pipeline before fetching the next instruction
+                if(flushFlag == 1) {
+                    //if so then flush the pipeline
+                    flushPipeline();
+                }
+
                 fetchUnit.execute();
 
                 //propogate values through pipeline
                 fetchUnit.pipe();
                 decodeUnit.pipe();
-
-                //check if we received a message to flush the pipeline
-                if(flushFlag == 1) {
-                    //if so then flush the pipeline
-                    flushPipeline();
-                }
 
                 //update info
                 noOfClockCycles++;

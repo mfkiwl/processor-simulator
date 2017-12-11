@@ -1,8 +1,13 @@
 class ALU {
 
+    //forward components
     RegisterFile* registerFile;
+
+    //decoded instruction
     int opcode;
     int* operands;
+
+    //instruction result
     int result;
 
     //for debugging purposes

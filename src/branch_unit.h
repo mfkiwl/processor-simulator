@@ -1,9 +1,12 @@
 class BranchUnit {
 	
+    //decoded instruction
     int opcode;
     int* operands;
+
     //set pc program to jump to a position in the program
     int* pc;
+    
     //set to one to send message to processor to flush the pipeline
     int* flushFlag;
 
