@@ -28,9 +28,21 @@ class MemoryUnit {
                         value = memory->loadFromMemory(address);
                         registerFile->setRegisterValue(operands[0], value);
                         break;
+                    //LWR
+                    case 8:
+                        address = 0 + registerFile->getRegisterValue(operands[1]);
+                        value = memory->loadFromMemory(address);
+                        registerFile->setRegisterValue(operands[0], value);
+                        break;
                     //SW
-    		        case 8:
+    		        case 9:
                         address = 0 + operands[1];
+                        value = registerFile->getRegisterValue(operands[0]);
+                        memory->storeInMemory(address, value);
+                        break;
+                    //SWR
+                    case 10:
+                        address = 0 + registerFile->getRegisterValue(operands[1]);
                         value = registerFile->getRegisterValue(operands[0]);
                         memory->storeInMemory(address, value);
                         break;

@@ -49,14 +49,23 @@ class DecodeUnit {
                 //LW
                 case 7:
                 //SW
-                case 8:
+                case 9:
                     operands[0] = instructionRegister.operands[0];
                     operands[1] = instructionRegister.operands[1];
                     break;
+                //LWR
+                case 8:
+                //SWR
+                case 10:
+                    operands[0] = instructionRegister.operands[0];
+                    registerNum = instructionRegister.operands[1];
+                    val = registerFile->getRegisterValue(registerNum);
+                    operands[1] = val;
+                    break;
                 //BEQ
-                case 9:
+                case 11:
                 //BNE
-                case 14:
+                case 16:
                     registerNum = instructionRegister.operands[0];
                     val = registerFile->getRegisterValue(registerNum);
                     operands[0] = val;
@@ -64,25 +73,26 @@ class DecodeUnit {
                     val = registerFile->getRegisterValue(registerNum);
                     operands[1] = val;
                     operands[2] = instructionRegister.operands[2];
+                    break;
                 //BGEZ
-                case 10:
-                //BGTZ
-                case 11:
-                //BLEZ
                 case 12:
-                //BLTZ
+                //BGTZ
                 case 13:
+                //BLEZ
+                case 14:
+                //BLTZ
+                case 15:
                     registerNum = instructionRegister.operands[0];
                     val = registerFile->getRegisterValue(registerNum);
                     operands[0] = val;
                     operands[1] = instructionRegister.operands[1];
                     break;
                 //J
-                case 15:
+                case 17:
                     operands[0] = instructionRegister.operands[0];
                     break;
                 //JR
-                case 16:
+                case 18:
                     registerNum = instructionRegister.operands[0];
                     val = registerFile->getRegisterValue(registerNum);
                     operands[0] = val;
@@ -109,18 +119,20 @@ class DecodeUnit {
                 //Memory unit instructions
                 case 7:
                 case 8:
+                case 9:
+                case 10:
                     memoryUnit->setOpcode(opcode);
                     memoryUnit->setOperands(operands);
                     break;
                 //Branch unit instructions
-                case 9:
-                case 10:
                 case 11:
                 case 12:
                 case 13:
                 case 14:
                 case 15:
                 case 16:
+                case 17:
+                case 18:
                     branchUnit->setOpcode(opcode);
                     branchUnit->setOperands(operands);
                     break;

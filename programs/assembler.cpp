@@ -30,32 +30,38 @@ int printOpcode(string op, ofstream *newfile) {
 	else if(op == "LW") {
         output = 7;
 	}
+	else if(op == "LWR") {
+		output = 8;
+	}
 	else if(op == "SW") {
-        output = 8;
+        output = 9;
 	}
-	else if(op == "BEQ") {
-		output = 9;
-	}
-	else if(op == "BGEZ") {
+	else if(op == "SWR") {
 		output = 10;
 	}
-	else if(op == "BGTZ") {
+	else if(op == "BEQ") {
 		output = 11;
 	}
-	else if(op == "BLEZ") {
+	else if(op == "BGEZ") {
 		output = 12;
 	}
-	else if(op == "BLTZ") {
+	else if(op == "BGTZ") {
 		output = 13;
 	}
-	else if(op == "BNE") {
+	else if(op == "BLEZ") {
 		output = 14;
 	}
-	else if(op == "J") {
+	else if(op == "BLTZ") {
 		output = 15;
 	}
-	else if(op == "JR") {
+	else if(op == "BNE") {
 		output = 16;
+	}
+	else if(op == "J") {
+		output = 17;
+	}
+	else if(op == "JR") {
+		output = 18;
 	}
 	*newfile << output;
 	*newfile << " ";

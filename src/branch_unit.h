@@ -15,24 +15,22 @@ class BranchUnit {
 
         void execute() {
             if(opcode != 0) {
-
                 //execute the instruction
                 switch(opcode) {
                     //BEQ
-                    case 9:
+                    case 11:
                         if(operands[0] == operands[1]) {
                             *pc = operands[2];
                         }
                         break;
                     //BNE
-                    case 14:
+                    case 16:
                         if(operands[0] != operands[1]) {
                             *pc = operands[2];
                         }
                         break;
-                    //B
-                    case 15:
-                        //jump to -1 as the pc will be incremented
+                    //J
+                    case 17:
                         *pc = operands[0];
                          break;
                 }
