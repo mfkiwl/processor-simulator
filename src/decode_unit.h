@@ -8,16 +8,20 @@ class DecodeUnit {
     //Instruction given my fetch unit
     Instruction instructionRegister;
 
+    //tells the processor whether or not to block the pipeline
+    int* blockingFlag;
+
     //Decoding of the instruction
     int opcode;
     int operands[3];
 
     public:
-    	DecodeUnit(RegisterFile* registerFile, ALU* alu, BranchUnit* branchUnit, MemoryUnit* memoryUnit) :
+    	DecodeUnit(RegisterFile* registerFile, ALU* alu, BranchUnit* branchUnit, MemoryUnit* memoryUnit, int* blockingFlag) :
             registerFile(registerFile),
     	    alu(alu),
     	    branchUnit(branchUnit),
-    	    memoryUnit(memoryUnit)
+    	    memoryUnit(memoryUnit),
+            blockingFlag(blockingFlag)
         {}
 
         void execute() {
@@ -104,18 +108,6 @@ class DecodeUnit {
                     operands[0] = val;
                     break;
             }
-            //Setting the scoreboard values of destination registers to 0
-            switch(opcode) {
-                case 1:
-                case 2:
-                case 3:
-                case 4:
-                case 5:
-                case 6:
-                case 7:
-                case 8:
-                    registerFile->setScoreboardValue(operands[0], 0);
-            }
             //giving the components the instruction that they are executing for debugging purposes
             alu->set_DEBUG_Instruction(instructionRegister);
             branchUnit->set_DEBUG_Instruction(instructionRegister);
@@ -133,10 +125,14 @@ class DecodeUnit {
                 case 6:
                     alu->setOpcode(opcode);
                     alu->setOperands(operands);
+                    //Setting the scoreboard values of the destination register to 0
+                    registerFile->setScoreboardValue(operands[0],0);
                     break;
                 //Memory unit instructions
                 case 7:
                 case 8:
+                    //Setting the scoreboard values of the destination register to 0
+                    registerFile->setScoreboardValue(operands[0],0);
                 case 9:
                 case 10:
                     memoryUnit->setOpcode(opcode);

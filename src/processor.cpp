@@ -36,6 +36,7 @@ class Processor {
     //status flags
     int flushFlag;
     int runningFlag;
+    int blockingFlag;
 
     //components
     RegisterFile registerFile;
@@ -68,12 +69,13 @@ class Processor {
             //status flags
             flushFlag(0),
             runningFlag(1),
+            blockingFlag(0),
 
             //components
             registerFile(noOfRegisters), 
             memory(memorySize),
             fetchUnit(instructions, noOfInstructions, &pc, &decodeUnit),
-            decodeUnit(&registerFile, &alu, &branchUnit, &memoryUnit),
+            decodeUnit(&registerFile, &alu, &branchUnit, &memoryUnit, &blockingFlag),
             alu(&registerFile, &noOfInstructionsExecuted),
             branchUnit(&pc, &flushFlag, &runningFlag, &noOfInstructionsExecuted),
             memoryUnit(&memory, &registerFile, &noOfInstructionsExecuted)
@@ -97,19 +99,21 @@ class Processor {
                 alu.execute();
                 branchUnit.execute();
                 memoryUnit.execute();
-                decodeUnit.execute();
+                //only if the pipeline is not being blocked
+                if(!blockingFlag) {
+                    decodeUnit.execute();
 
-                //check if we received a message to flush the pipeline before fetching the next instruction
-                if(flushFlag == 1) {
-                    //if so then flush the pipeline
-                    flushPipeline();
+                    //check if we received a message to flush the pipeline before fetching the next instruction
+                    if(flushFlag == 1) {
+                        //if so then flush the pipeline
+                        flushPipeline();
+                    }
+                    fetchUnit.execute();
+
+                    //propogate values through pipeline
+                    fetchUnit.pipe();
+                    decodeUnit.pipe();
                 }
-
-                fetchUnit.execute();
-
-                //propogate values through pipeline
-                fetchUnit.pipe();
-                decodeUnit.pipe();
 
                 //update info
                 noOfClockCycles++;
@@ -134,7 +138,13 @@ class Processor {
             cout << "\n";
             cout << "Number of clock cycles: " << noOfClockCycles << "\n";
             cout << "Number of instructions executed: " << noOfInstructionsExecuted << "\n";
-            float instructionsPerCycle = (float) noOfInstructionsExecuted / (float) noOfClockCycles;
+            float instructionsPerCycle;
+            if(noOfClockCycles == 0) {
+                instructionsPerCycle = 0;
+            }
+            else {
+                instructionsPerCycle = (float) noOfInstructionsExecuted / (float) noOfClockCycles;
+            }
             cout << "Instruction per cycle: " << instructionsPerCycle << "\n";
             cout << "\n";
             cout << "PC: " << pc << "\n";
