@@ -129,6 +129,9 @@ void printInstruction(Instruction instruction) {
         case 18:
             cout << "J R" << instruction.operands[0] << "\n";
             break;
+        case 19:
+            cout << "END " << instruction.operands[0] << "\n";
+            break;
         default:
             cout << "\n";
             break;

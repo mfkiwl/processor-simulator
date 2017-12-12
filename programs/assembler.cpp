@@ -63,6 +63,9 @@ int printOpcode(string op, ofstream *newfile) {
 	else if(op == "JR") {
 		output = 18;
 	}
+	else if(op == "END") {
+		output = 19;
+	}
 	*newfile << output;
 	*newfile << " ";
 	return output;

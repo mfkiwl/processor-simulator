@@ -26,3 +26,5 @@ BLTZ R1 x        - opcode: 15 - Branches if the register is less than zero
 BNE R1 R2 x      - opcode: 16 - Branches if the two registers are not equal
 J x              - opcode: 17 - Jump to the address x
 JR R1            - opcode: 18 - Jump to the address contained in register R1
+
+END              - opcode: 19 - End the program

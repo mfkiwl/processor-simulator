@@ -138,6 +138,7 @@ class DecodeUnit {
                 case 16:
                 case 17:
                 case 18:
+                case 19:
                     branchUnit->setOpcode(opcode);
                     branchUnit->setOperands(operands);
                     break;

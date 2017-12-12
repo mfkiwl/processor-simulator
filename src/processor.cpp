@@ -35,6 +35,7 @@ class Processor {
 
     //status flags
     int flushFlag;
+    int runningFlag;
 
     //components
     RegisterFile registerFile;
@@ -66,6 +67,7 @@ class Processor {
 
             //status flags
             flushFlag(0),
+            runningFlag(1),
 
             //components
             registerFile(noOfRegisters), 
@@ -73,7 +75,7 @@ class Processor {
             fetchUnit(instructions, noOfInstructions, &pc, &decodeUnit),
             decodeUnit(&registerFile, &alu, &branchUnit, &memoryUnit),
             alu(&registerFile, &noOfInstructionsExecuted),
-            branchUnit(&pc, &flushFlag, &noOfInstructionsExecuted),
+            branchUnit(&pc, &flushFlag, &runningFlag, &noOfInstructionsExecuted),
             memoryUnit(&memory, &registerFile, &noOfInstructionsExecuted)
         {}
 
@@ -85,11 +87,11 @@ class Processor {
             printInfo();
 
             //step through the program
-        	while(1) {
+        	while(runningFlag) {
 
                 //hold up the program at each clock cycle
                 char str[3];
-                fgets(str, 2, stdin);
+                //fgets(str, 2, stdin);
 
                 //run each unit
                 alu.execute();
@@ -115,6 +117,8 @@ class Processor {
                 //print register info
                 printInfo();
             }
+
+            cout << "PROGRAM FINISHED\n";
         }
 
         void flushPipeline() {

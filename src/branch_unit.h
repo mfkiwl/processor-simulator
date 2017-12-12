@@ -9,6 +9,7 @@ class BranchUnit {
 
     //set to one to send message to processor to flush the pipeline
     int* flushFlag;
+    int* runningFlag;
 
     //no of total instruction executed by the processor
     int* noOfInstructionsExecuted;
@@ -17,9 +18,10 @@ class BranchUnit {
     Instruction DEBUG_Instruction;
 
     public:
-        BranchUnit(int* pc, int* flushFlag, int* noOfInstructionsExecuted) : 
+        BranchUnit(int* pc, int* flushFlag, int* runningFlag, int* noOfInstructionsExecuted) : 
             pc(pc),
             flushFlag(flushFlag),
+            runningFlag(runningFlag),
             noOfInstructionsExecuted(noOfInstructionsExecuted),
             opcode(0)
         {}
@@ -47,6 +49,11 @@ class BranchUnit {
                         *pc = operands[0];
                         *flushFlag = 1;
                          break;
+                    //END
+                    case 19:
+                        //tell the processor that the program had finished
+                        *runningFlag = 0;
+                        break;
                 }
 
                 //reset variables
