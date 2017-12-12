@@ -1,3 +1,4 @@
+using namespace std;
 class MemoryUnit {
     //forward components
     Memory* memory;
@@ -13,13 +14,28 @@ class MemoryUnit {
     //for debugging purposes
     Instruction DEBUG_Instruction;
 
+    //write buffer
+    int** writeBuffer;
+    int writeBufferSize;
+
     public:
         MemoryUnit(Memory* memory, RegisterFile* registerFile, int* noOfInstructionsExecuted) : 
             memory(memory),
             registerFile(registerFile),
             noOfInstructionsExecuted(noOfInstructionsExecuted),
-            opcode(0)
-        {}
+            opcode(0),
+            writeBufferSize(10)
+        {
+            //dynamically allocated a 2d array to the write buffer
+            writeBuffer = new int*[writeBufferSize];
+            for(int i = 0; i < writeBufferSize; i++) {
+                writeBuffer[i] = new int[2];
+            }
+            for(int i = 0; i < writeBufferSize; i++) {
+                writeBuffer[0] = 0;
+                writeBuffer[1] = 0;
+            }
+        }
 
         void execute() {
             if(opcode != 0) {
