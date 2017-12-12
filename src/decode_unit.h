@@ -24,7 +24,7 @@ class DecodeUnit {
             opcode = instructionRegister.opcode;
             int registerNum;
             int val;
-            //Replacing registers with with values
+            //Getting the values from source registers
             switch(opcode) {
                 //ADD
                 case 1:
@@ -42,6 +42,7 @@ class DecodeUnit {
                         val = registerFile->getRegisterValue(registerNum);
                         operands[i] = val;
                     }
+
                     break;
                 //ADDI
                 case 2:
@@ -102,6 +103,18 @@ class DecodeUnit {
                     val = registerFile->getRegisterValue(registerNum);
                     operands[0] = val;
                     break;
+            }
+            //Setting the scoreboard values of destination registers to 0
+            switch(opcode) {
+                case 1:
+                case 2:
+                case 3:
+                case 4:
+                case 5:
+                case 6:
+                case 7:
+                case 8:
+                    registerFile->setScoreboardValue(operands[0], 0);
             }
             //giving the components the instruction that they are executing for debugging purposes
             alu->set_DEBUG_Instruction(instructionRegister);

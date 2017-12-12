@@ -91,7 +91,7 @@ class Processor {
 
                 //hold up the program at each clock cycle
                 char str[3];
-                //fgets(str, 2, stdin);
+                fgets(str, 2, stdin);
 
                 //run each unit
                 alu.execute();
