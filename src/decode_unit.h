@@ -15,6 +15,8 @@ class DecodeUnit {
     int opcode;
     int operands[3];
 
+    int iteration;
+
     public:
     	DecodeUnit(RegisterFile* registerFile, ALU* alu, BranchUnit* branchUnit, MemoryUnit* memoryUnit, int* blockingFlag) :
             registerFile(registerFile),
@@ -22,9 +24,22 @@ class DecodeUnit {
     	    branchUnit(branchUnit),
     	    memoryUnit(memoryUnit),
             blockingFlag(blockingFlag)
-        {}
+        {
+            iteration = 0;
+        }
 
         void execute() {
+
+            iteration++;
+            if(iteration >= 10 && iteration < 15) {
+                *blockingFlag = 1;
+            }
+            else {
+                *blockingFlag = 0;
+            }
+
+
+
             opcode = instructionRegister.opcode;
             int registerNum;
             int val;

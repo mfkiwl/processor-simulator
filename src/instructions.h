@@ -80,7 +80,7 @@ void printInstruction(Instruction instruction) {
             cout << "ADD R" << instruction.operands[0] << " R" << instruction.operands[1] << " R" << instruction.operands[2] << "\n";
             break;
         case 2:
-            cout << "ADDI R" << instruction.operands[0] << " R" << instruction.operands[1] << " R" << instruction.operands[2] << "\n";
+            cout << "ADDI R" << instruction.operands[0] << " R" << instruction.operands[1] << " " << instruction.operands[2] << "\n";
             break;
         case 3:
             cout << "AND R" << instruction.operands[0] << " R" << instruction.operands[1] << " R" << instruction.operands[2] << "\n";

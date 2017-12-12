@@ -99,20 +99,22 @@ class Processor {
                 alu.execute();
                 branchUnit.execute();
                 memoryUnit.execute();
+                decodeUnit.execute();
+
+                //check if we received a message to flush the pipeline before fetching the next instruction
+                if(flushFlag == 1) {
+                    //if so then flush the pipeline
+                    flushPipeline();
+                }
+
                 //only if the pipeline is not being blocked
                 if(!blockingFlag) {
-                    decodeUnit.execute();
-
-                    //check if we received a message to flush the pipeline before fetching the next instruction
-                    if(flushFlag == 1) {
-                        //if so then flush the pipeline
-                        flushPipeline();
-                    }
-                    fetchUnit.execute();
 
                     //propogate values through pipeline
                     fetchUnit.pipe();
                     decodeUnit.pipe();
+
+                    fetchUnit.execute();
                 }
 
                 //update info
