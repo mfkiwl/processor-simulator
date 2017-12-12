@@ -10,13 +10,17 @@ class BranchUnit {
     //set to one to send message to processor to flush the pipeline
     int* flushFlag;
 
+    //no of total instruction executed by the processor
+    int* noOfInstructionsExecuted;
+
     //for debugging purposes
     Instruction DEBUG_Instruction;
 
     public:
-        BranchUnit(int* pc, int* flushFlag) : 
+        BranchUnit(int* pc, int* flushFlag, int* noOfInstructionsExecuted) : 
             pc(pc),
             flushFlag(flushFlag),
+            noOfInstructionsExecuted(noOfInstructionsExecuted),
             opcode(0)
         {}
 
@@ -50,6 +54,9 @@ class BranchUnit {
                 for(int i = 0; i < 3; i++) {
                     operands[i] = 0;
                 }
+
+                //increment the number of instructions executed
+                (*noOfInstructionsExecuted) += 1;
 
                 //print the instruction that has been executed
                 cout << "Executed instruction: ";

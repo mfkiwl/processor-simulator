@@ -10,13 +10,17 @@ class ALU {
     //instruction result
     int result;
 
+    //no of instruction executed by the processor
+    int* noOfInstructionsExecuted;
+
     //for debugging purposes
     Instruction DEBUG_Instruction;
 
     public:
-        ALU(RegisterFile* registerFile) : 
+        ALU(RegisterFile* registerFile, int* noOfInstructionsExecuted) : 
             registerFile(registerFile), 
             opcode(0),
+            noOfInstructionsExecuted(noOfInstructionsExecuted),
             result(0)
         {}
 
@@ -58,6 +62,9 @@ class ALU {
                     operands[i] = 0;
                 }
                 result = 0;
+
+                //increment the number of instructions executed
+                (*noOfInstructionsExecuted) += 1;
 
                 //print the instruction that has been executed
                 cout << "Executed instruction: ";

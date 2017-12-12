@@ -72,9 +72,9 @@ class Processor {
             memory(memorySize),
             fetchUnit(instructions, noOfInstructions, &pc, &decodeUnit),
             decodeUnit(&registerFile, &alu, &branchUnit, &memoryUnit),
-            alu(&registerFile),
-            branchUnit(&pc, &flushFlag),
-            memoryUnit(&memory, &registerFile)
+            alu(&registerFile, &noOfInstructionsExecuted),
+            branchUnit(&pc, &flushFlag, &noOfInstructionsExecuted),
+            memoryUnit(&memory, &registerFile, &noOfInstructionsExecuted)
         {}
 
 
@@ -127,10 +127,16 @@ class Processor {
         }
 
         void printInfo() {
-            cout << "\nNumber of clock cycles: " << noOfClockCycles << "\n\n";
+            cout << "\n";
+            cout << "Number of clock cycles: " << noOfClockCycles << "\n";
+            cout << "Number of instructions executed: " << noOfInstructionsExecuted << "\n";
+            float instructionsPerCycle = (float) noOfInstructionsExecuted / (float) noOfClockCycles;
+            cout << "Instruction per cycle: " << instructionsPerCycle << "\n";
+            cout << "\n";
             cout << "PC: " << pc << "\n";
             registerFile.printRegisters();
             cout << "\n";
+
         }
 };
 

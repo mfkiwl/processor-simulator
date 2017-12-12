@@ -7,13 +7,17 @@ class MemoryUnit {
     int opcode;
     int* operands;
 
+    //no of instruction executed
+    int* noOfInstructionsExecuted;
+
     //for debugging purposes
     Instruction DEBUG_Instruction;
 
     public:
-        MemoryUnit(Memory* memory, RegisterFile* registerFile) : 
+        MemoryUnit(Memory* memory, RegisterFile* registerFile, int* noOfInstructionsExecuted) : 
             memory(memory),
             registerFile(registerFile),
+            noOfInstructionsExecuted(noOfInstructionsExecuted),
             opcode(0)
         {}
 
@@ -56,6 +60,9 @@ class MemoryUnit {
                 for(int i = 0; i < 3; i++) {
                     operands[i] = 0;
                 }
+
+                //increment the number of instructions executed
+                (*noOfInstructionsExecuted) += 1;
 
                 //print the instruction that has been executed
                 printf("Executed instruction: ");
