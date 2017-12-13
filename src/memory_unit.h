@@ -8,11 +8,20 @@ class MemoryUnit {
     int opcode;
     int* operands;
 
+    int* blockingFlag;
+
     //no of instruction executed
     int* noOfInstructionsExecuted;
 
     //for debugging purposes
     Instruction DEBUG_Instruction;
+
+    //read buffer
+    int** readBuffer;
+    int readBufferSize;
+    int readBufferStart;
+    int readBufferEnd;
+    int readBufferSteps;
 
     //write buffer
     int** writeBuffer;
@@ -22,7 +31,7 @@ class MemoryUnit {
     int writeBufferSteps;
 
     public:
-        MemoryUnit(Memory* memory, RegisterFile* registerFile, int* noOfInstructionsExecuted) : 
+        MemoryUnit(Memory* memory, RegisterFile* registerFile, int* noOfInstructionsExecuted, int* blockingFlag) : 
             memory(memory),
             registerFile(registerFile),
             noOfInstructionsExecuted(noOfInstructionsExecuted),
@@ -30,17 +39,25 @@ class MemoryUnit {
             writeBufferSize(100),
             writeBufferStart(0),
             writeBufferEnd(0),
-            writeBufferSteps(5)
+            writeBufferSteps(5),
+            readBufferSize(100),
+            readBufferStart(0),
+            readBufferEnd(0),
+            readBufferSteps(5),
+            blockingFlag(blockingFlag)
         {
-            //dynamically allocated a 2d array to the write buffer
+            //dynamically allocated a 2d array to the read and write buffer
             writeBuffer = new int*[writeBufferSize];
+            readBuffer = new int*[readBufferSize];
             for(int i = 0; i < writeBufferSize; i++) {
                 writeBuffer[i] = new int[3];
+                readBuffer[i] = new int[3];
             }
             for(int i = 0; i < writeBufferSize; i++) {
-                writeBuffer[i][0] = 0;
-                writeBuffer[i][1] = 0;
-                writeBuffer[i][2] = 0;
+                for(int j = 0; j < 3; j++) {
+                    writeBuffer[i][j] = 0;
+                    readBuffer[i][j] = 0;
+                }
             }
         }
 
@@ -72,10 +89,6 @@ class MemoryUnit {
                         break;
                 }
 
-                //perform the write buffer operations
-                writeBufferStep();
-                writeIfReady();
-
                 //reset the variables
                 opcode = 0;
                 for(int i = 0; i < 3; i++) {
@@ -89,6 +102,28 @@ class MemoryUnit {
                 printf("Executed instruction: ");
                 printInstruction(DEBUG_Instruction);
     	    }
+
+            //perform the write buffer operations
+            writeBufferStep();
+            writeIfReady();
+
+            //if we are waiting for a load or store to complete then block the pipeline
+            if(waitingForMemory()) {
+                *blockingFlag = 1;
+            }
+            else {
+                *blockingFlag = 0;
+            }
+            cout << writeBufferStart << " " << writeBufferEnd << "\n";
+        }
+
+        int waitingForMemory() {
+            if(writeBufferStart != writeBufferEnd) {
+                return 1;
+            }
+            else {
+                return 0;
+            }
         }
 
         void addToWriteBuffer(int address, int value) {

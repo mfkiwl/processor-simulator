@@ -78,7 +78,7 @@ class Processor {
             decodeUnit(&registerFile, &alu, &branchUnit, &memoryUnit, &blockingFlag),
             alu(&registerFile, &noOfInstructionsExecuted),
             branchUnit(&pc, &flushFlag, &runningFlag, &noOfInstructionsExecuted),
-            memoryUnit(&memory, &registerFile, &noOfInstructionsExecuted)
+            memoryUnit(&memory, &registerFile, &noOfInstructionsExecuted, &blockingFlag)
         {}
 
 
