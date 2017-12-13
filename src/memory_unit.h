@@ -27,7 +27,11 @@ class MemoryUnit {
 
         void execute() {
             if(opcode != 0) {
-
+/*
+                printf("Memory unit:\n");
+                printf("opcode: %d\n", opcode);
+                printf("operands: %d %d %d\n", operands[0], operands[1], operands[2]);
+*/
                 int address;
                 int value;
 
@@ -53,9 +57,13 @@ class MemoryUnit {
 
                 //increment the number of instructions executed
                 (*noOfInstructionsExecuted) += 1;
-
+/*
+                printf("Memory unit:\n");
+                printf("opcode: %d\n", opcode);
+                printf("operands: %d %d %d\n", operands[0], operands[1], operands[2]);
+*/
                 //print the instruction that has been executed
-                printf("Executed instruction: ");
+                cout << "Executed instruction: ";
                 printInstruction(DEBUG_Instruction);
 
                 //reset the variables
@@ -71,7 +79,7 @@ class MemoryUnit {
             opcode = x;
         }
 
-        void setOperands(int* x) {
+        void setOperands(int x[3]) {
             for(int i = 0; i < 3; i++) {
                 operands[i] = x[i];
             }

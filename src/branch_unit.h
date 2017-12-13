@@ -83,7 +83,7 @@ class BranchUnit {
             opcode = x;
         }
 
-        void setOperands(int* x) {
+        void setOperands(int x[3]) {
             for(int i = 0; i < 3; i++) {
                 operands[i] = x[i];
             }

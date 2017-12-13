@@ -116,6 +116,12 @@ class DecodeUnit {
         }
 
         void pipe() {
+            /*
+            printf("Decode unit instruction: ");
+            printInstruction(DEBUG_Instruction);
+            printf("opcode: %d\n", opcode);
+            printf("operands: %d %d %d\n", operands[0], operands[1], operands[2]);
+            */
             switch(opcode) {
                 //ALU instructions
                 case 1:
@@ -135,7 +141,7 @@ class DecodeUnit {
                 case 10:
                     memoryUnit->setOpcode(opcode);
                     memoryUnit->setOperands(operands);
-                    branchUnit->set_DEBUG_Instruction(DEBUG_Instruction);
+                    memoryUnit->set_DEBUG_Instruction(DEBUG_Instruction);
                     break;
                 //Branch unit instructions
                 case 11:
@@ -149,8 +155,13 @@ class DecodeUnit {
                 case 19:
                     branchUnit->setOpcode(opcode);
                     branchUnit->setOperands(operands);
-                    memoryUnit->set_DEBUG_Instruction(instructionRegister);
+                    branchUnit->set_DEBUG_Instruction(DEBUG_Instruction);
                     break;
+            }
+            //reset the decoding
+            opcode = 0;
+            for(int i = 0; i < 3; i++) {
+                operands[i] = 0;
             }
         }
 
