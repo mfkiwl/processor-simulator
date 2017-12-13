@@ -8,6 +8,9 @@ class DecodeUnit {
     //Instruction given my fetch unit
     Instruction instructionRegister;
 
+    //for debugging purposes
+    Instruction DEBUG_Instruction;
+
     //Decoding of the instruction
     int opcode;
     int operands[3];
@@ -109,13 +112,10 @@ class DecodeUnit {
                     operands[0] = val;
                     break;
             }
+            DEBUG_Instruction = instructionRegister;
         }
 
         void pipe() {
-            printf("Decode unit instruction: ");
-            printInstruction(instructionRegister);
-            printf("opcode: %d\n", opcode);
-            printf("operands: %d %d %d\n", operands[0], operands[1], operands[2]);
             switch(opcode) {
                 //ALU instructions
                 case 1:
@@ -126,7 +126,7 @@ class DecodeUnit {
                 case 6:
                     alu->setOpcode(opcode);
                     alu->setOperands(operands);
-                    alu->set_DEBUG_Instruction(instructionRegister);
+                    alu->set_DEBUG_Instruction(DEBUG_Instruction);
                     break;
                 //Memory unit instructions
                 case 7:
@@ -135,7 +135,7 @@ class DecodeUnit {
                 case 10:
                     memoryUnit->setOpcode(opcode);
                     memoryUnit->setOperands(operands);
-                    branchUnit->set_DEBUG_Instruction(instructionRegister);
+                    branchUnit->set_DEBUG_Instruction(DEBUG_Instruction);
                     break;
                 //Branch unit instructions
                 case 11:

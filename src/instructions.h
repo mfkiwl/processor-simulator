@@ -99,6 +99,7 @@ void printInstruction(Instruction instruction) {
             break;
         case 7:
             cout << "LW R" << instruction.operands[0] << " " << instruction.operands[1] << "\n";
+            break;
         case 8:
             cout << "LWR R" << instruction.operands[0] << " R" << instruction.operands[1] << "\n";
             break;
