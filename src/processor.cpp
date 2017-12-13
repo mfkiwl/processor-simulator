@@ -91,21 +91,20 @@ class Processor {
 
                 //hold up the program at each clock cycle
                 char str[3];
-                //fgets(str, 2, stdin);
+                fgets(str, 2, stdin);
 
                 //run each unit
+                fetchUnit.execute();
+                decodeUnit.execute();
                 alu.execute();
                 branchUnit.execute();
                 memoryUnit.execute();
-                decodeUnit.execute();
 
                 //check if we received a message to flush the pipeline before fetching the next instruction
                 if(flushFlag == 1) {
                     //if so then flush the pipeline
                     flushPipeline();
                 }
-
-                fetchUnit.execute();
 
                 //propogate values through pipeline
                 fetchUnit.pipe();
@@ -134,7 +133,13 @@ class Processor {
             cout << "\n";
             cout << "Number of clock cycles: " << noOfClockCycles << "\n";
             cout << "Number of instructions executed: " << noOfInstructionsExecuted << "\n";
-            float instructionsPerCycle = (float) noOfInstructionsExecuted / (float) noOfClockCycles;
+            float instructionsPerCycle;
+            if(noOfClockCycles == 0) {
+                instructionsPerCycle = 0;
+            }
+            else {
+                instructionsPerCycle = (float) noOfInstructionsExecuted / (float) noOfClockCycles;
+            }
             cout << "Instruction per cycle: " << instructionsPerCycle << "\n";
             cout << "\n";
             cout << "PC: " << pc << "\n";

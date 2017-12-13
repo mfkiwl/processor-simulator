@@ -31,10 +31,6 @@ class MemoryUnit {
     	        switch(opcode) {
                     //LW
                     case 7:
-                        address = 0 + operands[1];
-                        value = memory->loadFromMemory(address);
-                        registerFile->setRegisterValue(operands[0], value);
-                        break;
                     //LWR
                     case 8:
                         address = 0 + operands[1];
@@ -43,10 +39,6 @@ class MemoryUnit {
                         break;
                     //SW
     		        case 9:
-                        address = 0 + operands[1];
-                        value = registerFile->getRegisterValue(operands[0]);
-                        memory->storeInMemory(address, value);
-                        break;
                     //SWR
                     case 10:
                         address = 0 + operands[1];
@@ -54,19 +46,20 @@ class MemoryUnit {
                         memory->storeInMemory(address, value);
                         break;
                 }
-
-                //reset the variables
-                opcode = 0;
-                for(int i = 0; i < 3; i++) {
-                    operands[i] = 0;
-                }
-
+                
                 //increment the number of instructions executed
                 (*noOfInstructionsExecuted) += 1;
 
                 //print the instruction that has been executed
                 printf("Executed instruction: ");
                 printInstruction(DEBUG_Instruction);
+
+                //reset the variables
+                opcode = 0;
+                for(int i = 0; i < 3; i++) {
+                    operands[i] = 0;
+                }
+                DEBUG_Instruction = (Instruction) {0,0,0,0};
     	    }
         }
 

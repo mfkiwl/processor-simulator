@@ -21,6 +21,8 @@ class DecodeUnit {
         {}
 
         void execute() {
+            printf("Decode unit instruction: ");
+            printInstruction(instructionRegister);
             opcode = instructionRegister.opcode;
             int registerNum;
             int val;
@@ -103,10 +105,6 @@ class DecodeUnit {
                     operands[0] = val;
                     break;
             }
-            //giving the components the instruction that they are executing for debugging purposes
-            alu->set_DEBUG_Instruction(instructionRegister);
-            branchUnit->set_DEBUG_Instruction(instructionRegister);
-            memoryUnit->set_DEBUG_Instruction(instructionRegister);
         }
 
         void pipe() {
@@ -120,6 +118,7 @@ class DecodeUnit {
                 case 6:
                     alu->setOpcode(opcode);
                     alu->setOperands(operands);
+                    alu->set_DEBUG_Instruction(instructionRegister);
                     break;
                 //Memory unit instructions
                 case 7:
@@ -128,6 +127,7 @@ class DecodeUnit {
                 case 10:
                     memoryUnit->setOpcode(opcode);
                     memoryUnit->setOperands(operands);
+                    branchUnit->set_DEBUG_Instruction(instructionRegister);
                     break;
                 //Branch unit instructions
                 case 11:
@@ -141,6 +141,7 @@ class DecodeUnit {
                 case 19:
                     branchUnit->setOpcode(opcode);
                     branchUnit->setOperands(operands);
+                    memoryUnit->set_DEBUG_Instruction(instructionRegister);
                     break;
             }
         }

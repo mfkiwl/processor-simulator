@@ -56,11 +56,8 @@ class BranchUnit {
                         break;
                 }
 
-                //reset variables
-                opcode = 0;
-                for(int i = 0; i < 3; i++) {
-                    operands[i] = 0;
-                }
+                printf("opcode: %d\n", opcode);
+                printf("operands: %d %d %d\n", operands[0], operands[1], operands[2]);
 
                 //increment the number of instructions executed
                 (*noOfInstructionsExecuted) += 1;
@@ -68,6 +65,13 @@ class BranchUnit {
                 //print the instruction that has been executed
                 cout << "Executed instruction: ";
                 printInstruction(DEBUG_Instruction);
+
+                //reset variables
+                opcode = 0;
+                for(int i = 0; i < 3; i++) {
+                    operands[i] = 0;
+                }
+                DEBUG_Instruction = (Instruction) {0,0,0,0};
             }
         }
 

@@ -53,15 +53,11 @@ class ALU {
                         break;
                 }
 
+                printf("opcode: %d\n", opcode);
+                printf("operands: %d %d %d\n", operands[0], operands[1], operands[2]);
+
                 //write the result to the output register
                 registerFile->setRegisterValue(operands[0], result);
-
-                //reset variables
-                opcode = 0;
-                for(int i = 0; i < 3; i++) {
-                    operands[i] = 0;
-                }
-                result = 0;
 
                 //increment the number of instructions executed
                 (*noOfInstructionsExecuted) += 1;
@@ -69,6 +65,14 @@ class ALU {
                 //print the instruction that has been executed
                 cout << "Executed instruction: ";
                 printInstruction(DEBUG_Instruction);
+
+                //reset variables
+                opcode = 0;
+                for(int i = 0; i < 3; i++) {
+                    operands[i] = 0;
+                }
+                result = 0;
+                DEBUG_Instruction = (Instruction) {0,0,0,0};
             }
         }
 
