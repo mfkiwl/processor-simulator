@@ -77,7 +77,7 @@ Instruction* getInstructions(std::string inputFileName, int numOfInstructions) {
 void printInstruction(Instruction instruction) {
     switch(instruction.opcode) {
         case 0:
-            cout << "NOOP";
+            cout << "NOOP\n";
             break;
         case 1:
             cout << "ADD R" << instruction.operands[0] << " R" << instruction.operands[1] << " R" << instruction.operands[2] << "\n";

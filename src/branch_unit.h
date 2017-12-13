@@ -2,7 +2,7 @@ class BranchUnit {
 	
     //decoded instruction
     int opcode;
-    int* operands;
+    int operands[3];
 
     //set pc program to jump to a position in the program
     int* pc;
@@ -24,7 +24,11 @@ class BranchUnit {
             runningFlag(runningFlag),
             noOfInstructionsExecuted(noOfInstructionsExecuted),
             opcode(0)
-        {}
+        {
+            for(int i = 0; i < 3; i++) {
+                operands[i] = 0;
+            }
+        }
 
         void execute() {
             if(opcode != 0) {
@@ -80,7 +84,9 @@ class BranchUnit {
         }
 
         void setOperands(int* x) {
-            operands = x;
+            for(int i = 0; i < 3; i++) {
+                operands[i] = x[i];
+            }
         }
 
         void set_DEBUG_Instruction(Instruction i) {

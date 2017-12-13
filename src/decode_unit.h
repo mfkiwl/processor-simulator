@@ -17,12 +17,16 @@ class DecodeUnit {
             registerFile(registerFile),
     	    alu(alu),
     	    branchUnit(branchUnit),
-    	    memoryUnit(memoryUnit)
-        {}
+    	    memoryUnit(memoryUnit),
+            instructionRegister((Instruction) {0,0,0}),
+            opcode(0)
+        {
+            for(int i = 0; i < 3; i++) {
+                operands[i] = 0;
+            }
+        }
 
         void execute() {
-            printf("Decode unit instruction: ");
-            printInstruction(instructionRegister);
             opcode = instructionRegister.opcode;
             int registerNum;
             int val;
@@ -108,6 +112,10 @@ class DecodeUnit {
         }
 
         void pipe() {
+            printf("Decode unit instruction: ");
+            printInstruction(instructionRegister);
+            printf("opcode: %d\n", opcode);
+            printf("operands: %d %d %d\n", operands[0], operands[1], operands[2]);
             switch(opcode) {
                 //ALU instructions
                 case 1:

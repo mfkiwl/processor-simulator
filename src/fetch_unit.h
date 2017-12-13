@@ -25,6 +25,7 @@ class FetchUnit {
         }
         //increment the program counter
         (*pc)++;
+        printInstruction(nextInstruction);
     }
 
     void pipe() {

@@ -5,7 +5,7 @@ class ALU {
 
     //decoded instruction
     int opcode;
-    int* operands;
+    int operands[3];
 
     //instruction result
     int result;
@@ -22,7 +22,11 @@ class ALU {
             opcode(0),
             noOfInstructionsExecuted(noOfInstructionsExecuted),
             result(0)
-        {}
+        {
+            for(int i = 0; i < 3; i++) {
+                operands[i] = 0;
+            }
+        }
 
         void execute() {
             if(opcode != 0) {
@@ -53,9 +57,6 @@ class ALU {
                         break;
                 }
 
-                printf("opcode: %d\n", opcode);
-                printf("operands: %d %d %d\n", operands[0], operands[1], operands[2]);
-
                 //write the result to the output register
                 registerFile->setRegisterValue(operands[0], result);
 
@@ -81,7 +82,9 @@ class ALU {
         }
 
         void setOperands(int* x) {
-            operands = x;
+            for(int i = 0; i < 3; i++) {
+                operands[i] = x[i];
+            }
         }
 
         void set_DEBUG_Instruction(Instruction i) {

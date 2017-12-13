@@ -5,7 +5,7 @@ class MemoryUnit {
 
     //decoded instruction
     int opcode;
-    int* operands;
+    int operands[3];
 
     //no of instruction executed
     int* noOfInstructionsExecuted;
@@ -19,7 +19,11 @@ class MemoryUnit {
             registerFile(registerFile),
             noOfInstructionsExecuted(noOfInstructionsExecuted),
             opcode(0)
-        {}
+        {
+            for(int i = 0; i < 3; i++) {
+                operands[i] = 0;
+            }
+        }
 
         void execute() {
             if(opcode != 0) {
@@ -46,7 +50,7 @@ class MemoryUnit {
                         memory->storeInMemory(address, value);
                         break;
                 }
-                
+
                 //increment the number of instructions executed
                 (*noOfInstructionsExecuted) += 1;
 
@@ -68,7 +72,9 @@ class MemoryUnit {
         }
 
         void setOperands(int* x) {
-            operands = x;
+            for(int i = 0; i < 3; i++) {
+                operands[i] = x[i];
+            }
         }
 
         void set_DEBUG_Instruction(Instruction i) {
