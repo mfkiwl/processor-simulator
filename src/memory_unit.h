@@ -16,6 +16,10 @@ class MemoryUnit {
     //for debugging purposes
     Instruction DEBUG_Instruction;
 
+    //all the inflight instructions
+    Instruction* DEBUG_Instructions;
+    int instructionListSize;
+
     //read buffer
     int** readBuffer;
     int readBufferSize;
@@ -29,6 +33,7 @@ class MemoryUnit {
     int writeBufferStart;
     int writeBufferEnd;
     int writeBufferSteps;
+
 
     public:
         MemoryUnit(Memory* memory, RegisterFile* registerFile, int* noOfInstructionsExecuted, int* blockingFlag) : 
@@ -44,7 +49,8 @@ class MemoryUnit {
             readBufferStart(0),
             readBufferEnd(0),
             readBufferSteps(5),
-            blockingFlag(blockingFlag)
+            blockingFlag(blockingFlag),
+            instructionListSize(100)
         {
             //initially set all operands to zero
             for(int i = 0; i < 3; i++) {
@@ -63,6 +69,8 @@ class MemoryUnit {
                     readBuffer[i][j] = 0;
                 }
             }
+            //allocate memory to the list of instructions
+            DEBUG_Instructions = new Instruction[instructionListSize];
         }
 
         void execute() {
@@ -102,7 +110,7 @@ class MemoryUnit {
                 for(int i = 0; i < 3; i++) {
                     operands[i] = 0;
                 }
-                //DEBUG_Instruction = (Instruction) {0,0,0,0};
+                DEBUG_Instruction = (Instruction) {0,0,0,0};
     	    }
 
             //perform the write buffer operations
@@ -134,11 +142,13 @@ class MemoryUnit {
                 writeBuffer[writeBufferStart][0] = address;
                 writeBuffer[writeBufferStart][1] = value;
                 writeBuffer[writeBufferStart][2] = 0;
+                DEBUG_Instructions[writeBufferStart] = DEBUG_Instruction;
             }
             else if(writeBufferEnd < writeBufferSize - 1) {
                 writeBuffer[writeBufferEnd][0] = address;
                 writeBuffer[writeBufferEnd][1] = value;
                 writeBuffer[writeBufferEnd][2] = 0;
+                DEBUG_Instructions[writeBufferEnd] = DEBUG_Instruction;
                 writeBufferEnd += 1;
             }
         }
@@ -159,11 +169,12 @@ class MemoryUnit {
                     memory->storeInMemory(address, value);
                     //print the instruction that has been executed
                     cout << "Executed instruction: ";
-                    printInstruction(DEBUG_Instruction);
+                    printInstruction(DEBUG_Instructions[i]);
                     //reset write buffer entry
                     writeBuffer[i][0] = 0;
                     writeBuffer[i][1] = 0;
                     writeBuffer[i][2] = 0;
+                    DEBUG_Instructions[i] = (Instruction) {0,0,0,0};
                     if(i == writeBufferStart) {
                         writeBufferStart += 1;
                     }
