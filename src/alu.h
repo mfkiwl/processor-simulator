@@ -55,7 +55,11 @@ class ALU {
                         result = operands[1] - operands[2];
                         break;
                 }
+            }
+        }
 
+        void writeback() {
+            if(opcode != 0) {
                 //write the result to the output register
                 registerFile->setRegisterValue(operands[0], result);
                 //Set the scoreboard of the destination register to 1

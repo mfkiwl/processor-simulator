@@ -95,23 +95,19 @@ class Processor {
 
                 //hold up the program at each clock cycle
                 char str[3];
-                fgets(str, 2, stdin);
+                //fgets(str, 2, stdin);
 
                 //if the pipeline is not being blocked
                 if(!decodeUnitBlockingFlag && !memoryUnitBlockingFlag) {
                     //propogate values through pipeline
-                    fetchUnit.pipe();
-                    decodeUnit.pipe();
+                    pipe();
                     //fetch the next instruction
-                    fetchUnit.execute();
+                    fetch();
                 }
-                //decode the instruction
-                decodeUnit.execute();
-                //execute the instruction
-                alu.execute();
-                branchUnit.execute();
-                memoryUnit.execute();
-
+                decode();
+                execute();
+                writeback();
+                
                 //check if we received a message to flush the pipeline before fetching the next instruction
                 if(flushFlag == 1) {
                     //if so then flush the pipeline
@@ -126,6 +122,30 @@ class Processor {
             }
 
             cout << "PROGRAM FINISHED\n";
+        }
+
+        void pipe() {
+            fetchUnit.pipe();
+            decodeUnit.pipe();
+        }
+
+        void fetch() {
+            fetchUnit.execute();
+        }
+
+        void decode() {
+            decodeUnit.execute();
+        }
+
+        void execute() {
+            alu.execute();
+            branchUnit.execute();
+            memoryUnit.execute();
+        }
+
+        void writeback() {
+            alu.writeback();
+            memoryUnit.writeback();
         }
 
         void flushPipeline() {

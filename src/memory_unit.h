@@ -116,9 +116,7 @@ class MemoryUnit {
     	    }
 
             //perform the read and write buffer operations
-            writeIfReady();
             writeBufferStep();
-            readIfReady();
             readBufferStep();
 
             //if we are waiting for a load or store to complete then block the pipeline
@@ -128,6 +126,11 @@ class MemoryUnit {
             else {
                 *blockingFlag = 0;
             }
+        }
+
+        void writeback() {
+            writeIfReady();
+            readIfReady();
         }
 
         int waitingForMemory() {
