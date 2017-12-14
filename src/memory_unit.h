@@ -17,7 +17,8 @@ class MemoryUnit {
     Instruction DEBUG_Instruction;
 
     //all the inflight instructions
-    Instruction* DEBUG_Instructions;
+    Instruction* DEBUG_Write_Instructions;
+    Instruction* DEBUG_Read_Instructions;
     int instructionListSize;
 
     //read buffer
@@ -70,12 +71,14 @@ class MemoryUnit {
                 }
             }
             //allocate memory to the list of instructions
-            DEBUG_Instructions = new Instruction[instructionListSize];
+            DEBUG_Write_Instructions = new Instruction[instructionListSize];
+            DEBUG_Read_Instructions = new Instruction[instructionListSize];
         }
 
         void execute() {
             if(opcode != 0) {
 
+                int destinationRegister;
                 int address;
                 int value;
 
@@ -85,11 +88,10 @@ class MemoryUnit {
                     case 7:
                     //LWR
                     case 8:
+                        destinationRegister = operands[0];
                         address = 0 + operands[1];
-                        value = memory->loadFromMemory(address);
-                        registerFile->setRegisterValue(operands[0], value);
-                        //set the scoreboard value of the destination register to 1
-                        registerFile->setScoreboardValue(operands[0],1);
+                        //and to the read buffer to be read from memory when ready
+                        addToReadBuffer(operands[0], address);
                         break;
                     //SW
     		        case 9:
@@ -97,7 +99,7 @@ class MemoryUnit {
                     case 10:
                         address = 0 + operands[1];
                         value = registerFile->getRegisterValue(operands[0]);
-                        memory->storeInMemory(address, value);
+                        //and to the write buffer to be written to memory when ready
                         addToWriteBuffer(address, value);
                         break;
                 }
@@ -113,9 +115,11 @@ class MemoryUnit {
                 DEBUG_Instruction = (Instruction) {0,0,0,0};
     	    }
 
-            //perform the write buffer operations
-            writeBufferStep();
+            //perform the read and write buffer operations
             writeIfReady();
+            writeBufferStep();
+            readIfReady();
+            readBufferStep();
 
             //if we are waiting for a load or store to complete then block the pipeline
             if(waitingForMemory()) {
@@ -124,11 +128,10 @@ class MemoryUnit {
             else {
                 *blockingFlag = 0;
             }
-            cout << writeBufferStart << " " << writeBufferEnd << "\n";
         }
 
         int waitingForMemory() {
-            if(writeBufferStart != writeBufferEnd) {
+            if(writeBufferStart != writeBufferEnd || readBufferStart != readBufferEnd) {
                 return 1;
             }
             else {
@@ -142,13 +145,13 @@ class MemoryUnit {
                 writeBuffer[writeBufferStart][0] = address;
                 writeBuffer[writeBufferStart][1] = value;
                 writeBuffer[writeBufferStart][2] = 0;
-                DEBUG_Instructions[writeBufferStart] = DEBUG_Instruction;
+                DEBUG_Write_Instructions[writeBufferStart] = DEBUG_Instruction;
             }
             else if(writeBufferEnd < writeBufferSize - 1) {
                 writeBuffer[writeBufferEnd][0] = address;
                 writeBuffer[writeBufferEnd][1] = value;
                 writeBuffer[writeBufferEnd][2] = 0;
-                DEBUG_Instructions[writeBufferEnd] = DEBUG_Instruction;
+                DEBUG_Write_Instructions[writeBufferEnd] = DEBUG_Instruction;
                 writeBufferEnd += 1;
             }
         }
@@ -169,17 +172,69 @@ class MemoryUnit {
                     memory->storeInMemory(address, value);
                     //print the instruction that has been executed
                     cout << "Executed instruction: ";
-                    printInstruction(DEBUG_Instructions[i]);
+                    printInstruction(DEBUG_Write_Instructions[i]);
                     //reset write buffer entry
                     writeBuffer[i][0] = 0;
                     writeBuffer[i][1] = 0;
                     writeBuffer[i][2] = 0;
-                    DEBUG_Instructions[i] = (Instruction) {0,0,0,0};
+                    DEBUG_Write_Instructions[i] = (Instruction) {0,0,0,0};
                     if(i == writeBufferStart) {
                         writeBufferStart += 1;
                     }
                     else if(i == writeBufferEnd - 1) {
                         writeBufferEnd -= 1;
+                    }
+                }
+            }
+        }
+
+        void addToReadBuffer(int destinationRegister, int address) {
+            if(readBufferStart > 0) {
+                readBufferStart -= 1;
+                readBuffer[readBufferStart][0] = destinationRegister;
+                readBuffer[readBufferStart][1] = address;
+                readBuffer[readBufferStart][2] = 0;
+                DEBUG_Read_Instructions[readBufferStart] = DEBUG_Instruction;
+            }
+            else if(readBufferEnd < readBufferSize - 1) {
+                readBuffer[readBufferEnd][0] = destinationRegister;
+                readBuffer[readBufferEnd][1] = address;
+                readBuffer[readBufferEnd][2] = 0;
+                DEBUG_Read_Instructions[readBufferEnd] = DEBUG_Instruction;
+                readBufferEnd += 1;
+            }
+        }
+
+        void readBufferStep() {
+            for(int i = readBufferStart; i < readBufferEnd; i++) {
+                readBuffer[i][2] += 1;
+            }
+        }
+
+        void readIfReady() {
+            for(int i = readBufferStart; i < readBufferEnd; i++) {
+                //for each entry check if it is ready to write
+                if(readBuffer[i][2] == readBufferSteps) {
+                    //write to memory
+                    int destinationRegister = readBuffer[i][0];
+                    int address = readBuffer[i][1];
+                    int value = memory->loadFromMemory(address);
+                    registerFile->setRegisterValue(destinationRegister, value);
+                    //set the scoreboard value of the destination register to 1
+                    registerFile->setScoreboardValue(destinationRegister,1);
+                    //print the instruction that has been executed
+                    cout << "Executed instruction: ";
+                    printInstruction(DEBUG_Read_Instructions[i]);
+                    //reset write buffer entry
+                    readBuffer[i][0] = 0;
+                    readBuffer[i][1] = 0;
+                    readBuffer[i][2] = 0;
+                    DEBUG_Read_Instructions[i] = (Instruction) {0,0,0,0};
+                    if(i == readBufferStart) {
+                        readBufferStart += 1;
+                    }
+                    else if(i == readBufferEnd - 1) {
+                        readBufferEnd -= 1;
                     }
                 }
             }
