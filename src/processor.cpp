@@ -36,7 +36,8 @@ class Processor {
     //status flags
     int flushFlag;
     int runningFlag;
-    int blockingFlag;
+    int decodeUnitBlockingFlag;
+    int memoryUnitBlockingFlag;
 
     //components
     RegisterFile registerFile;
@@ -69,16 +70,17 @@ class Processor {
             //status flags
             flushFlag(0),
             runningFlag(1),
-            blockingFlag(0),
+            decodeUnitBlockingFlag(0),
+            memoryUnitBlockingFlag(0),
 
             //components
             registerFile(noOfRegisters), 
             memory(memorySize),
             fetchUnit(instructions, noOfInstructions, &pc, &decodeUnit),
-            decodeUnit(&registerFile, &alu, &branchUnit, &memoryUnit, &blockingFlag),
+            decodeUnit(&registerFile, &alu, &branchUnit, &memoryUnit, &decodeUnitBlockingFlag),
             alu(&registerFile, &noOfInstructionsExecuted),
             branchUnit(&pc, &flushFlag, &runningFlag, &noOfInstructionsExecuted),
-            memoryUnit(&memory, &registerFile, &noOfInstructionsExecuted)
+            memoryUnit(&memory, &registerFile, &noOfInstructionsExecuted, &memoryUnitBlockingFlag)
         {}
 
 
@@ -96,7 +98,7 @@ class Processor {
                 fgets(str, 2, stdin);
 
                 //if the pipeline is not being blocked
-                if(!blockingFlag) {
+                if(!decodeUnitBlockingFlag && !memoryUnitBlockingFlag) {
                     //propogate values through pipeline
                     fetchUnit.pipe();
                     decodeUnit.pipe();

@@ -7,6 +7,9 @@ class MemoryUnit {
     int opcode;
     int operands[3];
 
+    //tells the processor whether or not to block the pipeline
+    int *blockingFlag;
+
     //no of instruction executed
     int* noOfInstructionsExecuted;
 
@@ -28,7 +31,7 @@ class MemoryUnit {
     int writeBufferSteps;
 
     public:
-        MemoryUnit(Memory* memory, RegisterFile* registerFile, int* noOfInstructionsExecuted) : 
+        MemoryUnit(Memory* memory, RegisterFile* registerFile, int* noOfInstructionsExecuted, int* blockingFlag) : 
             memory(memory),
             registerFile(registerFile),
             noOfInstructionsExecuted(noOfInstructionsExecuted),
@@ -40,7 +43,8 @@ class MemoryUnit {
             readBufferSize(100),
             readBufferStart(0),
             readBufferEnd(0),
-            readBufferSteps(5)
+            readBufferSteps(5),
+            blockingFlag(blockingFlag)
         {
             //initially set all operands to zero
             for(int i = 0; i < 3; i++) {
@@ -86,27 +90,33 @@ class MemoryUnit {
                         address = 0 + operands[1];
                         value = registerFile->getRegisterValue(operands[0]);
                         memory->storeInMemory(address, value);
+                        addToWriteBuffer(address, value);
                         break;
                 }
 
                 //increment the number of instructions executed
                 (*noOfInstructionsExecuted) += 1;
 
-                //print the instruction that has been executed
-                cout << "Executed instruction: ";
-                printInstruction(DEBUG_Instruction);
-
                 //reset the variables
                 opcode = 0;
                 for(int i = 0; i < 3; i++) {
                     operands[i] = 0;
                 }
-                DEBUG_Instruction = (Instruction) {0,0,0,0};
+                //DEBUG_Instruction = (Instruction) {0,0,0,0};
     	    }
 
             //perform the write buffer operations
             writeBufferStep();
             writeIfReady();
+
+            //if we are waiting for a load or store to complete then block the pipeline
+            if(waitingForMemory()) {
+                *blockingFlag = 1;
+            }
+            else {
+                *blockingFlag = 0;
+            }
+            cout << writeBufferStart << " " << writeBufferEnd << "\n";
         }
 
         int waitingForMemory() {
@@ -147,6 +157,9 @@ class MemoryUnit {
                     int address = writeBuffer[i][0];
                     int value = writeBuffer[i][1];
                     memory->storeInMemory(address, value);
+                    //print the instruction that has been executed
+                    cout << "Executed instruction: ";
+                    printInstruction(DEBUG_Instruction);
                     //reset write buffer entry
                     writeBuffer[i][0] = 0;
                     writeBuffer[i][1] = 0;
