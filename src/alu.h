@@ -58,6 +58,8 @@ class ALU {
 
                 //write the result to the output register
                 registerFile->setRegisterValue(operands[0], result);
+                //Set the scoreboard of the destination register to 1
+                registerFile->setScoreboardValue(operands[0], 1);
 
                 //increment the number of instructions executed
                 (*noOfInstructionsExecuted) += 1;

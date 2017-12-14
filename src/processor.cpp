@@ -95,9 +95,17 @@ class Processor {
                 char str[3];
                 fgets(str, 2, stdin);
 
-                //run each unit
-                fetchUnit.execute();
+                //if the pipeline is not being blocked
+                if(!blockingFlag) {
+                    //propogate values through pipeline
+                    fetchUnit.pipe();
+                    decodeUnit.pipe();
+                    //fetch the next instruction
+                    fetchUnit.execute();
+                }
+                //decode the instruction
                 decodeUnit.execute();
+                //execute the instruction
                 alu.execute();
                 branchUnit.execute();
                 memoryUnit.execute();
@@ -107,10 +115,6 @@ class Processor {
                     //if so then flush the pipeline
                     flushPipeline();
                 }
-
-                //propogate values through pipeline
-                fetchUnit.pipe();
-                decodeUnit.pipe();
 
                 //update info
                 noOfClockCycles++;

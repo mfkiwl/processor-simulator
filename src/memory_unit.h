@@ -44,6 +44,8 @@ class MemoryUnit {
                         address = 0 + operands[1];
                         value = memory->loadFromMemory(address);
                         registerFile->setRegisterValue(operands[0], value);
+                        //set the scoreboard value of the destination register to 1
+                        registerFile->setScoreboardValue(operands[0],1);
                         break;
                     //SW
     		        case 9:

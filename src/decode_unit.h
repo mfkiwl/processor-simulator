@@ -185,6 +185,8 @@ class DecodeUnit {
                     alu->setOpcode(opcode);
                     alu->setOperands(operands);
                     alu->set_DEBUG_Instruction(DEBUG_Instruction);
+                    //Setting the scoreboard values of the destination register to 0
+                    registerFile->setScoreboardValue(operands[0],0);
                     break;
                 //Memory unit instructions
                 case 7:
@@ -194,6 +196,8 @@ class DecodeUnit {
                     memoryUnit->setOpcode(opcode);
                     memoryUnit->setOperands(operands);
                     memoryUnit->set_DEBUG_Instruction(DEBUG_Instruction);
+                    //Setting the scoreboard values of the destination register to 0
+                    registerFile->setScoreboardValue(operands[0],0);
                     break;
                 //Branch unit instructions
                 case 11:
