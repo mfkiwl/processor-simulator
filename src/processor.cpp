@@ -36,6 +36,7 @@ class Processor {
     //status flags
     int flushFlag;
     int runningFlag;
+    int blockingFlag;
 
     //components
     RegisterFile registerFile;
@@ -68,12 +69,13 @@ class Processor {
             //status flags
             flushFlag(0),
             runningFlag(1),
+            blockingFlag(0),
 
             //components
             registerFile(noOfRegisters), 
             memory(memorySize),
             fetchUnit(instructions, noOfInstructions, &pc, &decodeUnit),
-            decodeUnit(&registerFile, &alu, &branchUnit, &memoryUnit),
+            decodeUnit(&registerFile, &alu, &branchUnit, &memoryUnit, &blockingFlag),
             alu(&registerFile, &noOfInstructionsExecuted),
             branchUnit(&pc, &flushFlag, &runningFlag, &noOfInstructionsExecuted),
             memoryUnit(&memory, &registerFile, &noOfInstructionsExecuted)

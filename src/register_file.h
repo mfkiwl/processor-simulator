@@ -2,12 +2,17 @@ using namespace std;
 class RegisterFile {
 	int numOfRegisters;
 	int* registers;
+    int* scoreboard;
     public: 
     	RegisterFile(int numOfRegisters) : numOfRegisters(numOfRegisters) {
     		registers = new int[numOfRegisters];
     		for(int i = 0; i < numOfRegisters; i++) {
     			registers[i] = 0;
     		}
+            scoreboard = new int[numOfRegisters];
+            for(int i = 0; i < numOfRegisters; i++) {
+                scoreboard[i] = 1;
+            }
     	}
 
         int getNumOfRegisters() {
@@ -15,17 +20,31 @@ class RegisterFile {
         }
 
         int getRegisterValue(int i) {
-        	if(i < 0 || i > numOfRegisters - 1) {
-        		cout << "Register index " << i << " is out of bounds.\n";
-        	}
-        	return registers[i];
+            if(i < 0 || i >= numOfRegisters) {
+                cout << "Register index " << i << " is out of range.\n";
+            }
+            return registers[i];
         }
 
         void setRegisterValue(int i, int val) {
-        	if(i < 0 || i > numOfRegisters - 1) {
-        		cout << "Register index " << i << " is out of bounds.\n";
-        	}
-        	registers[i] = val;
+            if(i < 0 || i >= numOfRegisters) {
+                cout << "Register index " << i << " is out of range.\n";
+            }
+            registers[i] = val;
+        }
+
+        int getScoreboardValue(int i ) {
+            if(i < 0 || i >= numOfRegisters) {
+                cout << "Scoreboard index " << i << " is out of range.\n";
+            }
+            return scoreboard[i];
+        }
+
+        void setScoreboardValue(int i, int val) {
+            if(i < 0 || i >= numOfRegisters) {
+                cout << "Scoreboard index " << i << " is our of range.\n";
+            }
+            scoreboard[i] = val;
         }
 
         void printRegisters() {
