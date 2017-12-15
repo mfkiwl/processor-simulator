@@ -132,7 +132,7 @@ int checkValidInputFileName(string inputFileName) {
 		return 0;
 	}
 	string extension = inputFileName.substr(pos, inputFileName.size());
-	if(extension != ".ass") {
+	if(extension != ".asm") {
 		return 0;
 	}
 	return 1;

@@ -106,8 +106,11 @@ class Processor {
                     //fetch the next instruction
                     fetch();
                 }
+                //decode the instruction
                 decode();
+                //execute the instruction
                 execute();
+                //writeback the result
                 writeback();
                 
                 //check if we received a message to flush the pipeline before fetching the next instruction
