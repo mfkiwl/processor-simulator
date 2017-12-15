@@ -12,10 +12,13 @@ class ReadBuffer {
     //all the inflight instructions
     Instruction* DEBUG_Instructions;
 
+    int* noOfInstructionsExecuted;
+
 public:
-	ReadBuffer(Memory* memory, RegisterFile* registerFile, int size, int steps) : 
+	ReadBuffer(Memory* memory, RegisterFile* registerFile, int* noOfInstructionsExecuted, int size, int steps) : 
         memory(memory),
         registerFile(registerFile),
+        noOfInstructionsExecuted(noOfInstructionsExecuted),
         size(size),
         head(0),
         tail(0),
@@ -71,6 +74,8 @@ public:
                 int address = buffer[i][1];
                 int value = memory->loadFromMemory(address);
                 registerFile->setRegisterValue(destinationRegister, value);
+                //increment the number of instructions executed
+                (*noOfInstructionsExecuted) += 1;
                 //set the scoreboard value of the destination register to 1
                 registerFile->setScoreboardValue(destinationRegister,1);
                 //print the instruction that has been executed

@@ -12,9 +12,12 @@ class WriteBuffer {
     //all the inflight instructions
     Instruction* DEBUG_Instructions;
 
+    int* noOfInstructionsExecuted;
+
 public:
-	WriteBuffer(Memory* memory, int size, int steps) : 
-	    memory(memory), 
+	WriteBuffer(Memory* memory, int* noOfInstructionsExecuted, int size, int steps) : 
+	    memory(memory),
+        noOfInstructionsExecuted(noOfInstructionsExecuted),
 	    size(size),
 	    head(0),
 	    tail(0),
@@ -83,6 +86,8 @@ public:
                 int address = buffer[i][0];
                 int value = buffer[i][1];
                 memory->storeInMemory(address, value);
+                //increment the number of instructions executed
+                (*noOfInstructionsExecuted) += 1;
                 //print the write instruction that has been executed
                 cout << "Executed instruction: ";
                 printInstruction(DEBUG_Instructions[i]);

@@ -24,7 +24,6 @@ class LoadStoreUnit {
     WriteBuffer writeBuffer;
     ReadBuffer readBuffer;
 
-
     public:
         LoadStoreUnit(Memory* memory, RegisterFile* registerFile, int* noOfInstructionsExecuted, int* blockingFlag) :
             //set initial opcode value to zero
@@ -37,8 +36,8 @@ class LoadStoreUnit {
             bufferSize(100),
             writeCycles(5),
             readCycles(5),
-            writeBuffer(memory, bufferSize, writeCycles),
-            readBuffer(memory, registerFile, bufferSize, readCycles)
+            writeBuffer(memory, noOfInstructionsExecuted, bufferSize, writeCycles),
+            readBuffer(memory, registerFile, noOfInstructionsExecuted, bufferSize, readCycles)
         {
             //initially set all operands to zero
             for(int i = 0; i < 3; i++) {
@@ -77,9 +76,6 @@ class LoadStoreUnit {
                         writeBuffer.addToBuffer(address, value, DEBUG_Instruction);
                         break;
                 }
-
-                //increment the number of instructions executed
-                (*noOfInstructionsExecuted) += 1;
 
                 //reset the variables
                 opcode = 0;
