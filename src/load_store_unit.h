@@ -21,19 +21,14 @@ class LoadStoreUnit {
     Instruction* DEBUG_Read_Instructions;
     int instructionListSize;
 
-    //read buffer to hold inflight read operation info
-    int** readBuffer;
-    int readBufferSize;
-    int readBufferHead;
-    int readBufferTail;
-    int readBufferSteps;
-
     //write buffer to hold inflight write operation info
     int** writeBuffer;
     int writeBufferSize;
     int writeBufferHead;
     int writeBufferTail;
     int writeBufferSteps;
+
+    ReadBuffer readBuffer;
 
 
     public:
@@ -50,13 +45,9 @@ class LoadStoreUnit {
             writeBufferHead(0),
             writeBufferTail(0),
             writeBufferSteps(5),
-            //initialising read buffer variables
-            readBufferSize(100),
-            readBufferHead(0),
-            readBufferTail(0),
-            readBufferSteps(5),
             //initialise list to hold all inflight load/store instructions
-            instructionListSize(100)
+            instructionListSize(100),
+            readBuffer(registerFile, memory, 100, 5)
         {
             //initially set all operands to zero
             for(int i = 0; i < 3; i++) {
@@ -64,21 +55,17 @@ class LoadStoreUnit {
             }
             //dynamically allocated a 2d array to the read and write buffer
             writeBuffer = new int*[writeBufferSize];
-            readBuffer = new int*[readBufferSize];
             for(int i = 0; i < writeBufferSize; i++) {
                 writeBuffer[i] = new int[3];
-                readBuffer[i] = new int[3];
             }
             //initialise all elements of the read and write buffer to zero
             for(int i = 0; i < writeBufferSize; i++) {
                 for(int j = 0; j < 3; j++) {
                     writeBuffer[i][j] = 0;
-                    readBuffer[i][j] = 0;
                 }
             }
             //allocate memory to the list of inflight instructions
             DEBUG_Write_Instructions = new Instruction[instructionListSize];
-            DEBUG_Read_Instructions = new Instruction[instructionListSize];
         }
 
         void execute() {
@@ -99,7 +86,7 @@ class LoadStoreUnit {
                         destinationRegister = operands[0];
                         address = 0 + operands[1];
                         //and to the read buffer to be read from memory when ready
-                        addToReadBuffer(operands[0], address);
+                        readBuffer.addToBuffer(operands[0], address, DEBUG_Instruction);
                         break;
                     //SW
     		        case 9:
@@ -131,7 +118,7 @@ class LoadStoreUnit {
         void writeback() {
             //perform the read and write instructions when the step number has been met
             writeIfReady();
-            readIfReady();
+            readBuffer.readIfReady();
 
             //if we are waiting for a write operation to complete then block the pipeline
             if(waitingForWriteOperation()) {
@@ -176,10 +163,7 @@ class LoadStoreUnit {
             for(int i = writeBufferHead; i < writeBufferTail; i++) {
                 writeBuffer[i][2] += 1;
             }
-            //increment the current step for all inflight instructions in the read buffer
-            for(int i = readBufferHead; i < readBufferTail; i++) {
-                readBuffer[i][2] += 1;
-            }
+            readBuffer.stepInstructions();
         }
 
         void writeIfReady() {
@@ -204,55 +188,6 @@ class LoadStoreUnit {
                     }
                     else if(i == writeBufferTail - 1) {
                         writeBufferTail -= 1;
-                    }
-                }
-            }
-        }
-
-        void addToReadBuffer(int destinationRegister, int address) {
-            //if the start of the buffer is empty then add here
-            if(readBufferHead > 0) {
-                readBufferHead -= 1;
-                readBuffer[readBufferHead][0] = destinationRegister;
-                readBuffer[readBufferHead][1] = address;
-                readBuffer[readBufferHead][2] = 0;
-                DEBUG_Read_Instructions[readBufferHead] = DEBUG_Instruction;
-            }
-            //if the end of the buffer is empty then add here
-            else if(readBufferTail < readBufferSize - 1) {
-                readBuffer[readBufferTail][0] = destinationRegister;
-                readBuffer[readBufferTail][1] = address;
-                readBuffer[readBufferTail][2] = 0;
-                DEBUG_Read_Instructions[readBufferTail] = DEBUG_Instruction;
-                readBufferTail += 1;
-            }
-        }
-
-        void readIfReady() {
-            for(int i = readBufferHead; i < readBufferTail; i++) {
-                //for each entry check if it is ready to write
-                if(readBuffer[i][2] >= readBufferSteps) {
-                    //read the value from the memory address and store it in the destination register
-                    int destinationRegister = readBuffer[i][0];
-                    int address = readBuffer[i][1];
-                    int value = memory->loadFromMemory(address);
-                    registerFile->setRegisterValue(destinationRegister, value);
-                    //set the scoreboard value of the destination register to 1
-                    registerFile->setScoreboardValue(destinationRegister,1);
-                    //print the instruction that has been executed
-                    cout << "Executed instruction: ";
-                    printInstruction(DEBUG_Read_Instructions[i]);
-                    //reset write buffer entry
-                    readBuffer[i][0] = 0;
-                    readBuffer[i][1] = 0;
-                    readBuffer[i][2] = 0;
-                    DEBUG_Read_Instructions[i] = (Instruction) {0,0,0,0};
-                    //update the start and the end of the buffer
-                    if(i == readBufferHead) {
-                        readBufferHead += 1;
-                    }
-                    else if(i == readBufferTail - 1) {
-                        readBufferTail -= 1;
                     }
                 }
             }

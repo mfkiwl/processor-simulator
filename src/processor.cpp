@@ -9,6 +9,7 @@
 #include "memory.h"
 #include "alu.h"
 #include "branch_unit.h"
+#include "read_buffer.h"
 #include "load_store_unit.h"
 #include "decode_unit.h"
 #include "fetch_unit.h"
