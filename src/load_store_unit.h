@@ -16,6 +16,11 @@ class LoadStoreUnit {
     //for debugging purposes
     Instruction DEBUG_Instruction;
 
+    int bufferSize;
+    int writeCycles;
+    int readCycles;
+
+    //Read and write buffers to store load and store instruciton in operation
     WriteBuffer writeBuffer;
     ReadBuffer readBuffer;
 
@@ -29,8 +34,11 @@ class LoadStoreUnit {
             registerFile(registerFile),
             noOfInstructionsExecuted(noOfInstructionsExecuted),
             blockingFlag(blockingFlag),
-            writeBuffer(memory, 100, 5),
-            readBuffer(memory, registerFile, 100, 5)
+            bufferSize(100),
+            writeCycles(5),
+            readCycles(5),
+            writeBuffer(memory, bufferSize, writeCycles),
+            readBuffer(memory, registerFile, bufferSize, readCycles)
         {
             //initially set all operands to zero
             for(int i = 0; i < 3; i++) {
