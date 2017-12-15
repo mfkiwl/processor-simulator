@@ -72,10 +72,6 @@ public:
         for(int i = head; i < tail; i++) {
             buffer[i][2] += 1;
         }
-        //increment the current step for all inflight instructions in the read buffer
-        for(int i = head; i < tail; i++) {
-            buffer[i][2] += 1;
-        }
     }
 
     void writeIfReady() {

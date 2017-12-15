@@ -33,6 +33,7 @@ class LoadStoreUnit {
             registerFile(registerFile),
             noOfInstructionsExecuted(noOfInstructionsExecuted),
             blockingFlag(blockingFlag),
+            DEBUG_Instruction((Instruction) {0,0,0,0}),
             bufferSize(100),
             writeCycles(5),
             readCycles(5),
