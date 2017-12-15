@@ -118,6 +118,11 @@ class MemoryUnit {
             //perform the read and write buffer operations
             writeBufferStep();
             readBufferStep();
+        }
+
+        void writeback() {
+            writeIfReady();
+            readIfReady();
 
             //if we are waiting for a load or store to complete then block the pipeline
             if(waitingForMemory()) {
@@ -128,13 +133,8 @@ class MemoryUnit {
             }
         }
 
-        void writeback() {
-            writeIfReady();
-            readIfReady();
-        }
-
         int waitingForMemory() {
-            if(writeBufferStart != writeBufferEnd || readBufferStart != readBufferEnd) {
+            if(writeBufferStart != writeBufferEnd) {
                 return 1;
             }
             else {
@@ -168,7 +168,7 @@ class MemoryUnit {
         void writeIfReady() {
             for(int i = writeBufferStart; i < writeBufferEnd; i++) {
                 //for each entry check if it is ready to write
-                if(writeBuffer[i][2] == writeBufferSteps) {
+                if(writeBuffer[i][2] >= writeBufferSteps) {
                     //write to memory
                     int address = writeBuffer[i][0];
                     int value = writeBuffer[i][1];
@@ -217,7 +217,7 @@ class MemoryUnit {
         void readIfReady() {
             for(int i = readBufferStart; i < readBufferEnd; i++) {
                 //for each entry check if it is ready to write
-                if(readBuffer[i][2] == readBufferSteps) {
+                if(readBuffer[i][2] >= readBufferSteps) {
                     //write to memory
                     int destinationRegister = readBuffer[i][0];
                     int address = readBuffer[i][1];
