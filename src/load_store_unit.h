@@ -1,4 +1,4 @@
-class MemoryUnit {
+class LoadStoreUnit {
     //forward components
     Memory* memory;
     RegisterFile* registerFile;
@@ -37,7 +37,7 @@ class MemoryUnit {
 
 
     public:
-        MemoryUnit(Memory* memory, RegisterFile* registerFile, int* noOfInstructionsExecuted, int* blockingFlag) :
+        LoadStoreUnit(Memory* memory, RegisterFile* registerFile, int* noOfInstructionsExecuted, int* blockingFlag) :
             //set initial opcode value to zero
             opcode(0),
             //connected components

@@ -9,7 +9,7 @@
 #include "memory.h"
 #include "alu.h"
 #include "branch_unit.h"
-#include "memory_unit.h"
+#include "load_store_unit.h"
 #include "decode_unit.h"
 #include "fetch_unit.h"
 
@@ -37,7 +37,7 @@ class Processor {
     int flushFlag;
     int runningFlag;
     int decodeUnitBlockingFlag;
-    int memoryUnitBlockingFlag;
+    int loadStoreUnitBlockingFlag;
 
     //components
     RegisterFile registerFile;
@@ -46,7 +46,7 @@ class Processor {
     DecodeUnit decodeUnit;
     ALU alu;
     BranchUnit branchUnit;
-    MemoryUnit memoryUnit;
+    LoadStoreUnit loadStoreUnit;
 
     public:
     	//Classes needed to be initialised in the uniform initialiser list
@@ -71,16 +71,16 @@ class Processor {
             flushFlag(0),
             runningFlag(1),
             decodeUnitBlockingFlag(0),
-            memoryUnitBlockingFlag(0),
+            loadStoreUnitBlockingFlag(0),
 
             //components
             registerFile(noOfRegisters), 
             memory(memorySize),
             fetchUnit(instructions, noOfInstructions, &pc, &decodeUnit),
-            decodeUnit(&registerFile, &alu, &branchUnit, &memoryUnit, &decodeUnitBlockingFlag),
+            decodeUnit(&registerFile, &alu, &branchUnit, &loadStoreUnit, &decodeUnitBlockingFlag),
             alu(&registerFile, &noOfInstructionsExecuted),
             branchUnit(&pc, &flushFlag, &runningFlag, &noOfInstructionsExecuted),
-            memoryUnit(&memory, &registerFile, &noOfInstructionsExecuted, &memoryUnitBlockingFlag)
+            loadStoreUnit(&memory, &registerFile, &noOfInstructionsExecuted, &loadStoreUnitBlockingFlag)
         {}
 
 
@@ -98,7 +98,7 @@ class Processor {
                 fgets(str, 2, stdin);
 
                 //if the pipeline is not being blocked
-                if(!decodeUnitBlockingFlag && !memoryUnitBlockingFlag) {
+                if(!decodeUnitBlockingFlag && !loadStoreUnitBlockingFlag) {
                     //propogate values through pipeline
                     pipe();
                     //fetch the next instruction
@@ -140,12 +140,12 @@ class Processor {
         void execute() {
             alu.execute();
             branchUnit.execute();
-            memoryUnit.execute();
+            loadStoreUnit.execute();
         }
 
         void writeback() {
             alu.writeback();
-            memoryUnit.writeback();
+            loadStoreUnit.writeback();
         }
 
         void flushPipeline() {

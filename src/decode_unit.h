@@ -3,7 +3,7 @@ class DecodeUnit {
     ALU* alu;
     RegisterFile* registerFile;
     BranchUnit* branchUnit;
-    MemoryUnit* memoryUnit;
+    LoadStoreUnit* loadStoreUnit;
 
     //Instruction given my fetch unit
     Instruction instructionRegister;
@@ -19,11 +19,11 @@ class DecodeUnit {
     int operands[3];
 
     public:
-    	DecodeUnit(RegisterFile* registerFile, ALU* alu, BranchUnit* branchUnit, MemoryUnit* memoryUnit, int* blockingFlag) :
+    	DecodeUnit(RegisterFile* registerFile, ALU* alu, BranchUnit* branchUnit, LoadStoreUnit* loadStoreUnit, int* blockingFlag) :
             registerFile(registerFile),
     	    alu(alu),
     	    branchUnit(branchUnit),
-    	    memoryUnit(memoryUnit),
+    	    loadStoreUnit(loadStoreUnit),
             instructionRegister((Instruction) {0,0,0}),
             opcode(0),
             blockingFlag(blockingFlag)
@@ -188,14 +188,14 @@ class DecodeUnit {
                     //Setting the scoreboard values of the destination register to 0
                     registerFile->setScoreboardValue(operands[0],0);
                     break;
-                //Memory unit instructions
+                //Load Store unit instructions
                 case 7:
                 case 8:
                 case 9:
                 case 10:
-                    memoryUnit->setOpcode(opcode);
-                    memoryUnit->setOperands(operands);
-                    memoryUnit->set_DEBUG_Instruction(DEBUG_Instruction);
+                    loadStoreUnit->setOpcode(opcode);
+                    loadStoreUnit->setOperands(operands);
+                    loadStoreUnit->set_DEBUG_Instruction(DEBUG_Instruction);
                     //Setting the scoreboard values of the destination register to 0
                     registerFile->setScoreboardValue(operands[0],0);
                     break;
