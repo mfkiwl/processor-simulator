@@ -9,6 +9,8 @@
 #include "memory.h"
 #include "alu.h"
 #include "branch_unit.h"
+#include "write_buffer.h"
+#include "read_buffer.h"
 #include "load_store_unit.h"
 #include "decode_unit.h"
 #include "fetch_unit.h"
@@ -95,7 +97,7 @@ class Processor {
 
                 //hold up the program at each clock cycle
                 char str[3];
-                fgets(str, 2, stdin);
+                //fgets(str, 2, stdin);
 
                 //if the pipeline is not being blocked
                 if(!decodeUnitBlockingFlag && !loadStoreUnitBlockingFlag) {
