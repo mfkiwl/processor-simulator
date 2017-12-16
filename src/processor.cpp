@@ -4,6 +4,7 @@
 #include <fstream>
 #include <string>
 
+#include "constants.h"
 #include "instructions.h"
 #include "register_file.h"
 #include "memory.h"

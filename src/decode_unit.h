@@ -39,16 +39,11 @@ class DecodeUnit {
             int val;
             //Replacing registers with with values
             switch(opcode) {
-                //ADD
-                case 1:
-                //AND
-                case 3:
-                //MULT
-                case 4:
-                //OR
-                case 5:
-                //SUB
-                case 6:
+                case ADD:
+                case AND:
+                case MULT:
+                case OR:
+                case SUB:
                     //if the source registers are ready then continue
                     if(registerFile->getScoreboardValue(instructionRegister.operands[1]) && registerFile->getScoreboardValue(instructionRegister.operands[2])) {
                         operands[0] = instructionRegister.operands[0];
@@ -64,8 +59,7 @@ class DecodeUnit {
                         *blockingFlag = 1;
                     }
                     break;
-                //ADDI
-                case 2:
+                case ADDI:
                     //If the source registers are ready then continue
                     if(registerFile->getScoreboardValue(instructionRegister.operands[1])) {
                         operands[0] = instructionRegister.operands[0];
@@ -80,17 +74,13 @@ class DecodeUnit {
                         *blockingFlag = 1;
                     }
                     break;
-                //LW
-                case 7:
-                //SW
-                case 9:
+                case LW:
+                case SW:
                     operands[0] = instructionRegister.operands[0];
                     operands[1] = instructionRegister.operands[1];
                     break;
-                //LWR
-                case 8:
-                //SWR
-                case 10:
+                case LWR:
+                case SWR:
                     //If the source registers are ready then continue
                     if(registerFile->getScoreboardValue(instructionRegister.operands[1])) {
                         operands[0] = instructionRegister.operands[0];
@@ -104,10 +94,8 @@ class DecodeUnit {
                         *blockingFlag = 1;
                     }
                     break;
-                //BEQ
-                case 11:
-                //BNE
-                case 16:
+                case BEQ:
+                case BNE:
                     //If the source registers are ready then continue
                     if(registerFile->getScoreboardValue(instructionRegister.operands[0]) && registerFile->getScoreboardValue(instructionRegister.operands[1])) {
                         registerNum = instructionRegister.operands[0];
@@ -124,14 +112,10 @@ class DecodeUnit {
                         *blockingFlag = 1;
                     }
                     break;
-                //BGEZ
-                case 12:
-                //BGTZ
-                case 13:
-                //BLEZ
-                case 14:
-                //BLTZ
-                case 15:
+                case BGEZ:
+                case BGTZ:
+                case BLEZ:
+                case BLTZ:
                     //If the source registers are ready then continue
                     if(registerFile->getScoreboardValue(instructionRegister.operands[0])) {
                         registerNum = instructionRegister.operands[0];
@@ -145,12 +129,10 @@ class DecodeUnit {
                         *blockingFlag = 1;
                     }
                     break;
-                //J
-                case 17:
+                case J:
                     operands[0] = instructionRegister.operands[0];
                     break;
-                //JR
-                case 18:
+                case JR:
                     //If the source registers are ready then continue
                     if(registerFile->getScoreboardValue(instructionRegister.operands[0])) {
                         registerNum = instructionRegister.operands[0];

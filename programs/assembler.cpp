@@ -2,30 +2,9 @@
 #include <fstream>
 #include <string>	
 #include <vector>
+#include "../src/constants.h"
 using namespace std;
 
-enum Opcode {
-    NOP,
-    ADD,
-    ADDI,
-    AND,
-    MULT,
-    OR,
-    SUB,
-    LW,
-    LWR,
-    SW,
-    SWR,
-    BEQ,
-    BGEZ,
-    BGTZ,
-    BLEZ,
-    BLTZ,
-    BNE,
-    J,
-    JR,
-    END
-};
 
 int printOpcode(string op, ofstream *newfile) {
 	int output = -1;

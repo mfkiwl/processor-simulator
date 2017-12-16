@@ -56,20 +56,16 @@ class LoadStoreUnit {
 
                 //execute the instruction
     	        switch(opcode) {
-                    //LW
-                    case 7:
-                    //LWR
-                    case 8:
+                    case LW:
+                    case LWR:
                         //get the destination register to update the address to read from
                         destinationRegister = operands[0];
                         address = 0 + operands[1];
                         //and to the read buffer to be read from memory when ready
                         readBuffer.addToBuffer(operands[0], address, DEBUG_Instruction);
                         break;
-                    //SW
-    		        case 9:
-                    //SWR
-                    case 10:
+    		        case SW:
+                    case SWR:
                         //get the address in memory to update and the value to update it to
                         address = 0 + operands[1];
                         value = registerFile->getRegisterValue(operands[0]);

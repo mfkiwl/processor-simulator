@@ -76,64 +76,64 @@ Instruction* getInstructions(std::string inputFileName, int numOfInstructions) {
 
 void printInstruction(Instruction instruction) {
     switch(instruction.opcode) {
-        case 0:
+        case NOOP:
             cout << "NOOP" << endl;
             break;
-        case 1:
+        case ADD:
             cout << "ADD R" << instruction.operands[0] << " R" << instruction.operands[1] << " R" << instruction.operands[2] << "\n";
             break;
-        case 2:
+        case ADDI:
             cout << "ADDI R" << instruction.operands[0] << " R" << instruction.operands[1] << " " << instruction.operands[2] << "\n";
             break;
-        case 3:
+        case AND:
             cout << "AND R" << instruction.operands[0] << " R" << instruction.operands[1] << " R" << instruction.operands[2] << "\n";
             break;
-        case 4:
+        case MULT:
             cout << "MULT R" << instruction.operands[0] << " R" << instruction.operands[1] << " R" << instruction.operands[2] << "\n";
             break;
-        case 5:
+        case OR:
             cout << "OR R" << instruction.operands[0] << " R" << instruction.operands[1] << " R" << instruction.operands[2] << "\n";
             break;
-        case 6:
+        case SUB:
             cout << "SUB R" << instruction.operands[0] << " R" << instruction.operands[1] << " R" << instruction.operands[2] << "\n";
             break;
-        case 7:
+        case LW:
             cout << "LW R" << instruction.operands[0] << " " << instruction.operands[1] << "\n";
             break;
-        case 8:
+        case LWR:
             cout << "LWR R" << instruction.operands[0] << " R" << instruction.operands[1] << "\n";
             break;
-        case 9:
+        case SW:
             cout << "SW R" << instruction.operands[0] << " " << instruction.operands[1] << "\n";
             break;
-        case 10:
+        case SWR:
             cout << "SWR R" << instruction.operands[0] << " R" << instruction.operands[1] << "\n";
             break;
-        case 11:
+        case BEQ:
             cout << "BEQ R" << instruction.operands[0] << " R" << instruction.operands[1] << " " << instruction.operands[2] << "\n";
             break;
-        case 12:
+        case BGEZ:
             cout << "BGEZ R" << instruction.operands[0] << " " << instruction.operands[1] << "\n";
             break;
-        case 13:
+        case BGTZ:
             cout << "BGTZ R" << instruction.operands[0] << " " << instruction.operands[1] << "\n";
             break;
-        case 14:
+        case BLEZ:
             cout << "BLEZ R" << instruction.operands[0] << " " << instruction.operands[1] << "\n";
             break;
-        case 15:
+        case BLTZ:
             cout << "BLTZ R" << instruction.operands[0] << " " << instruction.operands[1] << "\n";
             break;
-        case 16:
+        case BNE:
             cout << "BNE R" << instruction.operands[0] << " R" << instruction.operands[1] << " " << instruction.operands[2] << "\n";
             break;
-        case 17:
+        case J:
             cout << "J " << instruction.operands[0] << "\n";
             break;
-        case 18:
-            cout << "J R" << instruction.operands[0] << "\n";
+        case JR:
+            cout << "JR R" << instruction.operands[0] << "\n";
             break;
-        case 19:
+        case END:
             cout << "END " << instruction.operands[0] << "\n";
             break;
         default:

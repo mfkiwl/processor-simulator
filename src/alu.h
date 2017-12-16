@@ -32,26 +32,20 @@ class ALU {
             if(opcode != 0) {
                 //execute the instruction
                 switch(opcode) {
-                    //ADD
-                    case 1:
-                    //ADDI
-                    case 2:
+                    case ADD:
+                    case ADDI:
                         result = operands[1] + operands[2];
                         break;
-                    //AND
-                    case 3:
+                    case AND:
                         result = operands[1] && operands[2];
                         break;
-                    //MULT
-                    case 4:
+                    case MULT:
                         result = operands[1] * operands[2];
                         break;
-                    //OR
-                    case 5:
+                    case OR:
                         result = operands[1] || operands[2];
                         break;
-                    //SUB
-                    case 6:
+                    case SUB:
                         result = operands[1] - operands[2];
                         break;
                 }
