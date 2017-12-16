@@ -4,67 +4,90 @@
 #include <vector>
 using namespace std;
 
+enum Opcode {
+    NOP,
+    ADD,
+    ADDI,
+    AND,
+    MULT,
+    OR,
+    SUB,
+    LW,
+    LWR,
+    SW,
+    SWR,
+    BEQ,
+    BGEZ,
+    BGTZ,
+    BLEZ,
+    BLTZ,
+    BNE,
+    J,
+    JR,
+    END
+};
+
 int printOpcode(string op, ofstream *newfile) {
 	int output = -1;
 	if(op == "NOP") {
-	    output = 0;
+	    output = NOP;
 	}
 	if(op == "ADD") {
-		output = 1;
+		output = ADD;
 	}
 	else if(op == "ADDI") {
-		output = 2;
+		output = ADDI;
 	}
 	else if(op == "AND") {
-		output = 3;
+		output = AND;
 	}
 	else if(op == "MULT") {
-		output = 4;
+		output = MULT;
 	}
 	else if(op == "OR") {
-		output = 5;
+		output = OR;
 	}
 	else if(op == "SUB") {
-		output = 6;
+		output = SUB;
 	}
 	else if(op == "LW") {
-        output = 7;
+        output = LW;
 	}
 	else if(op == "LWR") {
-		output = 8;
+		output = LWR;
 	}
 	else if(op == "SW") {
-        output = 9;
+        output = SW;
 	}
 	else if(op == "SWR") {
-		output = 10;
+		output = SWR;
 	}
 	else if(op == "BEQ") {
-		output = 11;
+		output = BEQ;
 	}
 	else if(op == "BGEZ") {
-		output = 12;
+		output = BGEZ;
 	}
 	else if(op == "BGTZ") {
-		output = 13;
+		output = BGTZ;
 	}
 	else if(op == "BLEZ") {
-		output = 14;
+		output = BLEZ;
 	}
 	else if(op == "BLTZ") {
-		output = 15;
+		output = BLTZ;
 	}
 	else if(op == "BNE") {
-		output = 16;
+		output = BNE;
 	}
 	else if(op == "J") {
-		output = 17;
+		output = J;
 	}
 	else if(op == "JR") {
-		output = 18;
+		output = JR;
 	}
 	else if(op == "END") {
-		output = 19;
+		output = END;
 	}
 	*newfile << output;
 	*newfile << " ";
