@@ -1,5 +1,17 @@
-enum status {issued, executing, finished};
-enum type {jump, storeToMemory, storeToRegister, noop, end};
+enum constant {
+ status, 
+ type, 
+ destination, 
+ value, 
+ issued, 
+ executing, 
+ finished, 
+ jump, 
+ storeToMemory, 
+ storeToRegister, 
+ noop, 
+ end
+};
 
 class ReorderBuffer {
 	//point to the start and end of the buffer
@@ -44,11 +56,12 @@ public:
     	//add the original instruction
     	DEBUG_instructions[head] = i;
     	//get the type of instruction
-    	type t = getInstructionType(i.opcode);
+    	constant t = getInstructionType(i.opcode);
+    
     }
 
-    type getInstructionType(int opcode) {
-    	type t;
+    constant getInstructionType(int opcode) {
+    	constant t;
     	switch(opcode) {
     		case 0:
     		    t = noop;
