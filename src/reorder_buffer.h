@@ -1,18 +1,3 @@
-enum constant {
- status, 
- type, 
- destination, 
- value, 
- issued, 
- executing, 
- finished, 
- jump, 
- storeToMemory, 
- storeToRegister, 
- noop, 
- end
-};
-
 class ReorderBuffer {
 	//point to the start and end of the buffer
     int head;
@@ -56,38 +41,38 @@ public:
     	//add the original instruction
     	DEBUG_instructions[head] = i;
     	//get the type of instruction
-    	constant t = getInstructionType(i.opcode);
+    	Type t = getInstructionType(i.opcode);
     
     }
 
-    constant getInstructionType(int opcode) {
-    	constant t;
+    Type getInstructionType(int opcode) {
+    	Type t;
     	switch(opcode) {
-    		case 0:
+    		case NOOP:
     		    t = noop;
     		    break;
-        	case 1:
-        	case 2:
-        	case 3:
-        	case 4:
-        	case 5:
-        	case 6:
-        	case 7:
-        	case 8:
+        	case ADD:
+        	case ADDI:
+        	case AND:
+        	case MULT:
+        	case OR:
+        	case SUB:
+        	case LW:
+        	case LWR:
         	    t = storeToRegister;
         	    break;
-        	case 9:
-        	case 10:
+        	case SW:
+        	case SWR:
         	    t = storeToMemory;
         	    break;
-        	case 11:
-        	case 12:
-        	case 13:
-        	case 14:
-        	case 15:
-        	case 16:
-        	case 17:
-        	case 18:
+        	case BEQ:
+        	case BGEZ:
+        	case BGTZ:
+        	case BLEZ:
+        	case BLTZ:
+        	case BNE:
+        	case J:
+        	case JR:
         	    t = jump;
         	    break;
         	case 19:

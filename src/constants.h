@@ -1,4 +1,4 @@
-enum Opcode {
+enum Opcodes {
     NOOP,
     ADD,
     ADDI,
@@ -19,4 +19,25 @@ enum Opcode {
     J,
     JR,
     END
+};
+
+enum Index {
+    status,
+    type,
+    destination,
+    value
+};
+
+enum Status {
+    issued,
+    executing,
+    finished
+};
+
+enum Type {
+    jump,
+    storeToMemory,
+    storeToRegister,
+    noop,
+    end
 };
