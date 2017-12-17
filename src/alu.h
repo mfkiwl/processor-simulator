@@ -78,6 +78,7 @@ class ALU {
 
                 //reset variables
                 destinationRegister = -1;
+                result = 0;
                 currentInstruction = (Instruction) {0,0,0,0};
             }
         }
