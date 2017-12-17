@@ -85,28 +85,22 @@ class LoadStoreUnit {
             //increment the step numbers for each inflight read and write instruction
             writeBuffer.stepInstructions();
             readBuffer.stepInstructions();
+
+            blockIfWaitingForMemoryOperation();
         }
 
         void writeback() {
             //perform the read and write instructions when the step number has been met
             writeBuffer.writeIfReady();
             readBuffer.readIfReady();
+        }
 
-            //if we are waiting for a write operation to complete then block the pipeline
-            if(waitingForMemoryOperation()) {
+        int blockIfWaitingForMemoryOperation() {
+            if(writeBuffer.waitingForWriteOperation() || readBuffer.waitingForReadOperation()) {
                 *blockingFlag = 1;
             }
             else {
                 *blockingFlag = 0;
-            }
-        }
-
-        int waitingForMemoryOperation() {
-            if(writeBuffer.waitingForWriteOperation() || readBuffer.waitingForReadOperation()) {
-                return 1;
-            }
-            else {
-                return 0;
             }
         }
 
