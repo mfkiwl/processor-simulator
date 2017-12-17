@@ -158,12 +158,12 @@ class DecodeUnit {
             */
             switch(opcode) {
                 //ALU instructions
-                case 1:
-                case 2:
-                case 3:
-                case 4:
-                case 5:
-                case 6:
+                case ADD:
+                case ADDI:
+                case AND:
+                case MULT:
+                case OR:
+                case SUB:
                     alu->setOpcode(opcode);
                     alu->setOperands(operands);
                     alu->setNextInstruction(currentInstruction);
@@ -171,30 +171,30 @@ class DecodeUnit {
                     registerFile->setScoreBoardValue(operands[0],0);
                     break;
                 //Load Store unit instructions
-                case 7:
-                case 8:
+                case LW:
+                case LWR:
                     loadStoreUnit->setOpcode(opcode);
                     loadStoreUnit->setOperands(operands);
                     loadStoreUnit->setNextInstruction(currentInstruction);
                     //Setting the scoreBoard values of the destination register to 0
                     registerFile->setScoreBoardValue(operands[0],0);
                     break;
-                case 9:
-                case 10:
+                case SW:
+                case SWR:
                     loadStoreUnit->setOpcode(opcode);
                     loadStoreUnit->setOperands(operands);
                     loadStoreUnit->setNextInstruction(currentInstruction);
                     break;
                 //Branch unit instructions
-                case 11:
-                case 12:
-                case 13:
-                case 14:
-                case 15:
-                case 16:
-                case 17:
-                case 18:
-                case 19:
+                case BEQ:
+                case BGEZ:
+                case BGTZ:
+                case BLEZ:
+                case BLTZ:
+                case BNE:
+                case J:
+                case JR:
+                case END:
                     branchUnit->setOpcode(opcode);
                     branchUnit->setOperands(operands);
                     branchUnit->setNextInstruction(currentInstruction);
