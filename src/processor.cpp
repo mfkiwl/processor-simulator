@@ -103,24 +103,22 @@ class Processor {
                 char str[3];
                 fgets(str, 2, stdin);
 
+                //check if we should flush the pipeline
+                if(flushFlag == 1) {
+                    flushPipeline();
+                }
+                //writeback the result
+                writeback();
+                 //execute the instruction
+                execute();
+                //decode the instruction
+                decode();
                 //if the pipeline is not being blocked
                 if(!decodeUnitBlockingFlag && !loadStoreUnitBlockingFlag) {
                     //propogate values through pipeline
                     pipe();
                     //fetch the next instruction
                     fetch();
-                }
-                //decode the instruction
-                decode();
-                //execute the instruction
-                execute();
-                //writeback the result
-                writeback();
-                
-                //check if we received a message to flush the pipeline before fetching the next instruction
-                if(flushFlag == 1) {
-                    //if so then flush the pipeline
-                    flushPipeline();
                 }
 
                 //update info

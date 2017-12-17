@@ -8,19 +8,22 @@ class ALU {
     int operands[3];
 
     //instruction result
+    int destinationRegister;
     int result;
 
     //no of instruction executed by the processor
     int* noOfInstructionsExecuted;
 
     //for debugging purposes
-    Instruction DEBUG_Instruction;
+    Instruction nextInstruction;
+    Instruction currentInstruction;
 
     public:
         ALU(RegisterFile* registerFile, int* noOfInstructionsExecuted) : 
             registerFile(registerFile), 
             opcode(0),
             noOfInstructionsExecuted(noOfInstructionsExecuted),
+            destinationRegister(-1),
             result(0)
         {
             for(int i = 0; i < 3; i++) {
@@ -31,6 +34,7 @@ class ALU {
         void execute() {
             if(opcode != 0) {
                 //execute the instruction
+                destinationRegister = operands[0];
                 switch(opcode) {
                     case ADD:
                     case ADDI:
@@ -50,29 +54,31 @@ class ALU {
                         break;
                 }
             }
+            currentInstruction = nextInstruction;
+            //reset inputs
+            opcode = 0;
+            for(int i = 0; i < 3; i++) {
+                operands[i] = 0;
+            }
         }
 
         void writeback() {
-            if(opcode != 0) {
+            if(destinationRegister != -1) {
                 //write the result to the output register
-                registerFile->setRegisterValue(operands[0], result);
+                registerFile->setRegisterValue(destinationRegister, result);
                 //Set the scoreboard of the destination register to 1
-                registerFile->setScoreboardValue(operands[0], 1);
+                registerFile->setScoreboardValue(destinationRegister, 1);
 
                 //increment the number of instructions executed
                 (*noOfInstructionsExecuted) += 1;
 
                 //print the instruction that has been executed
                 cout << "Executed instruction: ";
-                printInstruction(DEBUG_Instruction);
+                printInstruction(currentInstruction);
 
                 //reset variables
-                opcode = 0;
-                for(int i = 0; i < 3; i++) {
-                    operands[i] = 0;
-                }
-                result = 0;
-                DEBUG_Instruction = (Instruction) {0,0,0,0};
+                destinationRegister = -1;
+                currentInstruction = (Instruction) {0,0,0,0};
             }
         }
 
@@ -86,8 +92,8 @@ class ALU {
             }
         }
 
-        void set_DEBUG_Instruction(Instruction i) {
-            DEBUG_Instruction = i;
+        void setNextInstruction(Instruction i) {
+            nextInstruction = i;
         }
 
         void flush() {
@@ -96,6 +102,7 @@ class ALU {
                 operands[i] = 0;
             }
             //reset debug instruciton
-            DEBUG_Instruction = (Instruction) {0,0,0,0};
+            nextInstruction = (Instruction) {0,0,0,0};
+            currentInstruction = (Instruction) {0,0,0,0};
         }
 };

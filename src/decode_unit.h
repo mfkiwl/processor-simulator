@@ -6,10 +6,10 @@ class DecodeUnit {
     LoadStoreUnit* loadStoreUnit;
 
     //Instruction given my fetch unit
-    Instruction instructionRegister;
+    Instruction nextInstruction;
 
     //for debugging purposes
-    Instruction DEBUG_Instruction;
+    Instruction currentInstruction;
 
     //tells the processor whether or not to block the pipeline
     int* blockingFlag;
@@ -24,7 +24,7 @@ class DecodeUnit {
     	    alu(alu),
     	    branchUnit(branchUnit),
     	    loadStoreUnit(loadStoreUnit),
-            instructionRegister((Instruction) {0,0,0}),
+            nextInstruction((Instruction) {0,0,0}),
             opcode(0),
             blockingFlag(blockingFlag)
         {
@@ -34,7 +34,7 @@ class DecodeUnit {
         }
 
         void execute() {
-            opcode = instructionRegister.opcode;
+            opcode = nextInstruction.opcode;
             int registerNum;
             int val;
             //Replacing registers with with values
@@ -45,10 +45,10 @@ class DecodeUnit {
                 case OR:
                 case SUB:
                     //if the source registers are ready then continue
-                    if(registerFile->getScoreboardValue(instructionRegister.operands[1]) && registerFile->getScoreboardValue(instructionRegister.operands[2])) {
-                        operands[0] = instructionRegister.operands[0];
+                    if(registerFile->getScoreboardValue(nextInstruction.operands[1]) && registerFile->getScoreboardValue(nextInstruction.operands[2])) {
+                        operands[0] = nextInstruction.operands[0];
                         for(int i = 1; i < 3; i++) {
-                            registerNum = instructionRegister.operands[i];
+                            registerNum = nextInstruction.operands[i];
                             val = registerFile->getRegisterValue(registerNum);
                             operands[i] = val;
                         }
@@ -61,12 +61,12 @@ class DecodeUnit {
                     break;
                 case ADDI:
                     //If the source registers are ready then continue
-                    if(registerFile->getScoreboardValue(instructionRegister.operands[1])) {
-                        operands[0] = instructionRegister.operands[0];
-                        registerNum = instructionRegister.operands[1];
+                    if(registerFile->getScoreboardValue(nextInstruction.operands[1])) {
+                        operands[0] = nextInstruction.operands[0];
+                        registerNum = nextInstruction.operands[1];
                         val = registerFile->getRegisterValue(registerNum);
                         operands[1] = val;
-                        operands[2] = instructionRegister.operands[2];
+                        operands[2] = nextInstruction.operands[2];
                         *blockingFlag = 0;
                     }
                     //If the source registers aren't ready then block the pipeline
@@ -76,15 +76,15 @@ class DecodeUnit {
                     break;
                 case LW:
                 case SW:
-                    operands[0] = instructionRegister.operands[0];
-                    operands[1] = instructionRegister.operands[1];
+                    operands[0] = nextInstruction.operands[0];
+                    operands[1] = nextInstruction.operands[1];
                     break;
                 case LWR:
                 case SWR:
                     //If the source registers are ready then continue
-                    if(registerFile->getScoreboardValue(instructionRegister.operands[1])) {
-                        operands[0] = instructionRegister.operands[0];
-                        registerNum = instructionRegister.operands[1];
+                    if(registerFile->getScoreboardValue(nextInstruction.operands[1])) {
+                        operands[0] = nextInstruction.operands[0];
+                        registerNum = nextInstruction.operands[1];
                         val = registerFile->getRegisterValue(registerNum);
                         operands[1] = val;
                         *blockingFlag = 0;
@@ -97,14 +97,14 @@ class DecodeUnit {
                 case BEQ:
                 case BNE:
                     //If the source registers are ready then continue
-                    if(registerFile->getScoreboardValue(instructionRegister.operands[0]) && registerFile->getScoreboardValue(instructionRegister.operands[1])) {
-                        registerNum = instructionRegister.operands[0];
+                    if(registerFile->getScoreboardValue(nextInstruction.operands[0]) && registerFile->getScoreboardValue(nextInstruction.operands[1])) {
+                        registerNum = nextInstruction.operands[0];
                         val = registerFile->getRegisterValue(registerNum);
                         operands[0] = val;
-                        registerNum = instructionRegister.operands[1];
+                        registerNum = nextInstruction.operands[1];
                         val = registerFile->getRegisterValue(registerNum);
                         operands[1] = val;
-                        operands[2] = instructionRegister.operands[2];
+                        operands[2] = nextInstruction.operands[2];
                         *blockingFlag = 0;
                     }
                     //If the source registers aren't ready then block the pipeline
@@ -117,11 +117,11 @@ class DecodeUnit {
                 case BLEZ:
                 case BLTZ:
                     //If the source registers are ready then continue
-                    if(registerFile->getScoreboardValue(instructionRegister.operands[0])) {
-                        registerNum = instructionRegister.operands[0];
+                    if(registerFile->getScoreboardValue(nextInstruction.operands[0])) {
+                        registerNum = nextInstruction.operands[0];
                         val = registerFile->getRegisterValue(registerNum);
                         operands[0] = val;
-                        operands[1] = instructionRegister.operands[1];
+                        operands[1] = nextInstruction.operands[1];
                         *blockingFlag = 0;
                     }
                     //If the source registers aren't ready then block the pipeline
@@ -130,12 +130,12 @@ class DecodeUnit {
                     }
                     break;
                 case J:
-                    operands[0] = instructionRegister.operands[0];
+                    operands[0] = nextInstruction.operands[0];
                     break;
                 case JR:
                     //If the source registers are ready then continue
-                    if(registerFile->getScoreboardValue(instructionRegister.operands[0])) {
-                        registerNum = instructionRegister.operands[0];
+                    if(registerFile->getScoreboardValue(nextInstruction.operands[0])) {
+                        registerNum = nextInstruction.operands[0];
                         val = registerFile->getRegisterValue(registerNum);
                         operands[0] = val;
                         *blockingFlag = 0;
@@ -146,7 +146,7 @@ class DecodeUnit {
                     }
                     break;
             }
-            DEBUG_Instruction = instructionRegister;
+            currentInstruction = nextInstruction;
         }
 
         void pipe() {
@@ -166,7 +166,7 @@ class DecodeUnit {
                 case 6:
                     alu->setOpcode(opcode);
                     alu->setOperands(operands);
-                    alu->set_DEBUG_Instruction(DEBUG_Instruction);
+                    alu->setNextInstruction(currentInstruction);
                     //Setting the scoreboard values of the destination register to 0
                     registerFile->setScoreboardValue(operands[0],0);
                     break;
@@ -177,7 +177,7 @@ class DecodeUnit {
                 case 10:
                     loadStoreUnit->setOpcode(opcode);
                     loadStoreUnit->setOperands(operands);
-                    loadStoreUnit->set_DEBUG_Instruction(DEBUG_Instruction);
+                    loadStoreUnit->set_DEBUG_Instruction(currentInstruction);
                     //Setting the scoreboard values of the destination register to 0
                     registerFile->setScoreboardValue(operands[0],0);
                     break;
@@ -193,7 +193,7 @@ class DecodeUnit {
                 case 19:
                     branchUnit->setOpcode(opcode);
                     branchUnit->setOperands(operands);
-                    branchUnit->set_DEBUG_Instruction(DEBUG_Instruction);
+                    branchUnit->set_DEBUG_Instruction(currentInstruction);
                     break;
             }
             //reset the decoding
@@ -203,8 +203,8 @@ class DecodeUnit {
             }
         }
 
-        void setInstructionRegister(Instruction x) {
-        	instructionRegister = x;
+        void setNextInstruction(Instruction x) {
+        	nextInstruction = x;
         }
 
         void flush() {
@@ -212,6 +212,6 @@ class DecodeUnit {
             for(int i = 0; i < 3; i++) {
                 operands[i] = 0;
             }
-            instructionRegister = (Instruction) {0,0,0,0};
+            nextInstruction = (Instruction) {0,0,0,0};
         }
 };

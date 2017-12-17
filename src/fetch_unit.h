@@ -3,7 +3,7 @@ class FetchUnit {
     int noOfInstructions;
     int* pc;
     DecodeUnit* decodeUnit;
-    Instruction nextInstruction;
+    Instruction currentInstruction;
 
     public:
         FetchUnit(Instruction* instructions, int noOfInstructions, int* pc, DecodeUnit* decodeUnit) :
@@ -11,17 +11,17 @@ class FetchUnit {
         noOfInstructions(noOfInstructions),
         pc(pc),
         decodeUnit(decodeUnit),
-        nextInstruction((Instruction) {0,0,0,0})
+        currentInstruction((Instruction) {0,0,0,0})
     {}
 
     void execute() {
         if(*pc <= noOfInstructions) {
             //fetch the next instruction (-1 so that pc of 1 refers to the first instruction on line 1)
-    	    nextInstruction = instructions[*pc - 1];
+    	    currentInstruction = instructions[*pc - 1];
         }
         else {
             //next instruction is noop if pc exceeds number of instructions
-            nextInstruction = (Instruction) {0,0,0,0};
+            currentInstruction = (Instruction) {0,0,0,0};
         }
         //increment the program counter
         (*pc)++;
@@ -29,10 +29,10 @@ class FetchUnit {
 
     void pipe() {
         //put the fetched instruction into the instruction register
-        decodeUnit->setInstructionRegister(nextInstruction);
+        decodeUnit->setNextInstruction(currentInstruction);
     }
 
     void flush() {
-        nextInstruction = (Instruction) {0,0,0,0};
+        currentInstruction = (Instruction) {0,0,0,0};
     }
 };
