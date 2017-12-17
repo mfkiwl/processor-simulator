@@ -46,6 +46,16 @@ public:
         }
     }
 
+    //return 1 if we are waiting for a write operation to complete
+    int waitingForReadOperation() {
+        if(head != tail) {
+            return 1;
+        }
+        else {
+            return 0;
+        }
+    }
+
     void addToBuffer(int destinationRegister, int address, Instruction DEBUG_Instruction) {
         //if the start of the buffer is empty then add here
         if(head > 0) {

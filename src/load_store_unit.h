@@ -93,11 +93,20 @@ class LoadStoreUnit {
             readBuffer.readIfReady();
 
             //if we are waiting for a write operation to complete then block the pipeline
-            if(writeBuffer.waitingForWriteOperation()) {
+            if(waitingForMemoryOperation()) {
                 *blockingFlag = 1;
             }
             else {
                 *blockingFlag = 0;
+            }
+        }
+
+        int waitingForMemoryOperation() {
+            if(writeBuffer.waitingForWriteOperation() || readBuffer.waitingForReadOperation()) {
+                return 1;
+            }
+            else {
+                return 0;
             }
         }
 
