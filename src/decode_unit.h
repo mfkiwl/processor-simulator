@@ -82,7 +82,13 @@ class DecodeUnit {
                     break;
                 case ADDI:
                     //If the source registers are ready then continue
-                    if(registerFile->getScoreBoardValue(operands[1])) {
+                    if(
+                        registerFile->getScoreBoardValue(operands[1]) || alu->canBypass(operands[1])
+                    ) {
+                        if(alu->canBypass(operands[1])) {
+                            bypassing = 1;
+                            bypassingOperand = 1;
+                        }
                         registerNum = operands[1];
                         val = registerFile->getRegisterValue(registerNum);
                         operands[1] = val;
@@ -213,6 +219,8 @@ class DecodeUnit {
             for(int i = 0; i < 3; i++) {
                 operands[i] = 0;
             }
+            bypassing = 0;
+            bypassingOperand = 0;
         }
 
         void setNextInstruction(Instruction x) {
