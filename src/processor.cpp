@@ -101,7 +101,7 @@ class Processor {
 
                 //hold up the program at each clock cycle
                 char str[3];
-                //fgets(str, 2, stdin);
+                fgets(str, 2, stdin);
 
                 //writeback the result
                 writeback();
@@ -121,14 +121,6 @@ class Processor {
                     fetch();
                     //propogate values through pipeline
                     pipe();
-                }
-                else {
-                    if(decodeUnitBlockingFlag) {
-                        printf("DECODE UNIT BLOCKING\n");
-                    }
-                    if(loadStoreUnitBlockingFlag) {
-                        printf("MEMORY UNIT BLOCKING\n");
-                    }
                 }
 
                 //update info
@@ -176,9 +168,9 @@ class Processor {
         }
 
         void printInfo() {
-            cout << "\n";
-            cout << "Number of clock cycles: " << noOfClockCycles << "\n";
-            cout << "Number of instructions executed: " << noOfInstructionsExecuted << "\n";
+            cout << endl;
+            cout << "Number of clock cycles: " << noOfClockCycles << endl;
+            cout << "Number of instructions executed: " << noOfInstructionsExecuted << endl;
             float instructionsPerCycle;
             if(noOfClockCycles == 0) {
                 instructionsPerCycle = 0;
@@ -186,12 +178,11 @@ class Processor {
             else {
                 instructionsPerCycle = (float) noOfInstructionsExecuted / (float) noOfClockCycles;
             }
-            cout << "Instruction per cycle: " << instructionsPerCycle << "\n";
-            cout << "\n";
-            cout << "PC: " << pc << "\n";
+            cout << "Instruction per cycle: " << instructionsPerCycle << endl;
+            cout << endl;
+            cout << "PC: " << pc << endl;
             registerFile.printRegisters();
             cout << endl;
-            registerFile.printScoreBoard();
         }
 };
 

@@ -1,4 +1,4 @@
-PROGRAM=kernels/vector_addition
+PROGRAM=tests/bypassing
 
 all:
 	g++ src/processor.cpp -o bin/processor

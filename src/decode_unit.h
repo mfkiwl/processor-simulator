@@ -18,6 +18,10 @@ class DecodeUnit {
     int opcode;
     int operands[3];
 
+    //bypassing variables
+    int bypassing;
+    int bypassingOperand;
+
     public:
     	DecodeUnit(RegisterFile* registerFile, ALU* alu, BranchUnit* branchUnit, LoadStoreUnit* loadStoreUnit, int* blockingFlag) :
             registerFile(registerFile),
@@ -26,7 +30,9 @@ class DecodeUnit {
     	    loadStoreUnit(loadStoreUnit),
             nextInstruction((Instruction) {0,0,0}),
             opcode(0),
-            blockingFlag(blockingFlag)
+            blockingFlag(blockingFlag),
+            bypassing(0),
+            bypassingOperand(0)
         {
             for(int i = 0; i < 3; i++) {
                 operands[i] = 0;
@@ -48,7 +54,20 @@ class DecodeUnit {
                 case OR:
                 case SUB:
                     //if the source registers are ready then continue
-                    if(registerFile->getScoreBoardValue(operands[1]) && registerFile->getScoreBoardValue(operands[2])) {
+                    if(
+                        (registerFile->getScoreBoardValue(operands[1]) || alu->canBypass(operands[1])) && 
+                        (registerFile->getScoreBoardValue(operands[2]) || alu->canBypass(operands[2]))
+                    ) {
+                        if(alu->canBypass(operands[1])) {
+                            bypassing = 1;
+                            bypassingOperand = 1;
+                            printf("BYPASSING\n");
+                        }
+                        if(alu->canBypass(operands[2])) {
+                            bypassing = 1;
+                            bypassingOperand = 2;
+                            printf("BYPASSING\n");
+                        }
                         for(int i = 1; i < 3; i++) {
                             registerNum = operands[i];
                             val = registerFile->getRegisterValue(registerNum);
@@ -113,7 +132,7 @@ class DecodeUnit {
                 case BLEZ:
                 case BLTZ:
                     //If the source registers are ready then continue
-                    if(registerFile->getScoreBoardValue(nextInstruction.operands[0])) {
+                    if(registerFile->getScoreBoardValue(operands[0])) {
                         registerNum = operands[0];
                         val = registerFile->getRegisterValue(registerNum);
                         operands[0] = val;
@@ -128,8 +147,8 @@ class DecodeUnit {
                     break;
                 case JR:
                     //If the source registers are ready then continue
-                    if(registerFile->getScoreBoardValue(nextInstruction.operands[0])) {
-                        registerNum = nextInstruction.operands[0];
+                    if(registerFile->getScoreBoardValue(operands[0])) {
+                        registerNum = operands[0];
                         val = registerFile->getRegisterValue(registerNum);
                         operands[0] = val;
                         *blockingFlag = 0;
@@ -144,12 +163,6 @@ class DecodeUnit {
         }
 
         void pipe() {
-            /*
-            printf("Decode unit instruction: ");
-            printInstruction(DEBUG_Instruction);
-            printf("opcode: %d\n", opcode);
-            printf("operands: %d %d %d\n", operands[0], operands[1], operands[2]);
-            */
             switch(opcode) {
                 //ALU instructions
                 case ADD:
@@ -163,6 +176,7 @@ class DecodeUnit {
                     alu->setNextInstruction(currentInstruction);
                     //Setting the scoreBoard values of the destination register to 0
                     registerFile->setScoreBoardValue(operands[0],0);
+                    alu->setBypassing(bypassing, bypassingOperand);
                     break;
                 //Load Store unit instructions
                 case LW:

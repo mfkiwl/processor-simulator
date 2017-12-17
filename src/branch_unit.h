@@ -60,9 +60,6 @@ class BranchUnit {
                         break;
                 }
 
-                printf("opcode: %d\n", opcode);
-                printf("operands: %d %d %d\n", operands[0], operands[1], operands[2]);
-
                 //increment the number of instructions executed
                 (*noOfInstructionsExecuted) += 1;
 

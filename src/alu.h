@@ -18,13 +18,19 @@ class ALU {
     Instruction nextInstruction;
     Instruction currentInstruction;
 
+    //bypassing variables
+    int bypassing;
+    int bypassingOperand;
+
     public:
         ALU(RegisterFile* registerFile, int* noOfInstructionsExecuted) : 
             registerFile(registerFile), 
             opcode(0),
             noOfInstructionsExecuted(noOfInstructionsExecuted),
             destinationRegister(-1),
-            result(0)
+            result(0),
+            bypassing(0),
+            bypassingOperand(0)
         {
             for(int i = 0; i < 3; i++) {
                 operands[i] = 0;
@@ -35,6 +41,9 @@ class ALU {
             if(opcode != 0) {
                 //execute the instruction
                 destinationRegister = operands[0];
+                if(bypassing) {
+                    operands[bypassingOperand] = result;
+                }
                 switch(opcode) {
                     case ADD:
                     case ADDI:
@@ -62,6 +71,15 @@ class ALU {
             }
         }
 
+        int canBypass(int r) {
+            if(r == destinationRegister) {
+                return 1;
+            }
+            else {
+                return 0;
+            }
+        }
+
         void writeback() {
             if(destinationRegister != -1) {
                 //write the result to the output register
@@ -78,9 +96,13 @@ class ALU {
 
                 //reset variables
                 destinationRegister = -1;
-                result = 0;
                 currentInstruction = (Instruction) {0,0,0,0};
             }
+        }
+
+        void setBypassing(int a, int b) {
+            bypassing = a;
+            bypassingOperand = b;
         }
 
         void setOpcode(int x) {
