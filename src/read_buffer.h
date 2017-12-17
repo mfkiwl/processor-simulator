@@ -62,14 +62,14 @@ public:
             head -= 1;
             buffer[head][0] = destinationRegister;
             buffer[head][1] = address;
-            buffer[head][2] = 0;
+            buffer[head][2] = 1;
             DEBUG_Instructions[head] = DEBUG_Instruction;
         }
         //if the end of the buffer is empty then add here
         else if(tail < size - 1) {
             buffer[tail][0] = destinationRegister;
             buffer[tail][1] = address;
-            buffer[tail][2] = 0;
+            buffer[tail][2] = 1;
             DEBUG_Instructions[tail] = DEBUG_Instruction;
             tail += 1;
         }

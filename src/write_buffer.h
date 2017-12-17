@@ -54,14 +54,14 @@ public:
             head -= 1;
             buffer[head][0] = address;
             buffer[head][1] = value;
-            buffer[head][2] = 0;
+            buffer[head][2] = 1;
             DEBUG_Instructions[head] = DEBUG_Instruction;
         }
         //otherwise if the end of the buffer is empty then add here
         else if(tail < size - 1) {
             buffer[tail][0] = address;
             buffer[tail][1] = value;
-            buffer[tail][2] = 0;
+            buffer[tail][2] = 1;
             DEBUG_Instructions[tail] = DEBUG_Instruction;
             tail += 1;
         }
