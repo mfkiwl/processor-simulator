@@ -115,10 +115,10 @@ class Processor {
                 decode();
                 //if the pipeline is not being blocked
                 if(!decodeUnitBlockingFlag && !loadStoreUnitBlockingFlag) {
-                    //propogate values through pipeline
-                    pipe();
                     //fetch the next instruction
                     fetch();
+                    //propogate values through pipeline
+                    pipe();
                 }
 
                 //update info
@@ -179,8 +179,8 @@ class Processor {
             cout << "\n";
             cout << "PC: " << pc << "\n";
             registerFile.printRegisters();
-            cout << "\n";
-
+            cout << endl;
+            memory.printMemory();
         }
 };
 
@@ -203,7 +203,7 @@ int main(int argc, char *argv[]) {
 
     //create processor object and start processing
     if(numOfInstructions != -1 && instructions != NULL) {
-        Processor processor(16, 64, numOfInstructions,instructions);
+        Processor processor(16, 24, numOfInstructions,instructions);
         processor.start();
     }
     cout << "\n";

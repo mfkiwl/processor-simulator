@@ -14,7 +14,7 @@ class LoadStoreUnit {
     int* noOfInstructionsExecuted;
 
     //for debugging purposes
-    Instruction DEBUG_Instruction;
+    Instruction nextInstruction;
 
     int bufferSize;
     int writeCycles;
@@ -33,7 +33,7 @@ class LoadStoreUnit {
             registerFile(registerFile),
             noOfInstructionsExecuted(noOfInstructionsExecuted),
             blockingFlag(blockingFlag),
-            DEBUG_Instruction((Instruction) {0,0,0,0}),
+            nextInstruction((Instruction) {0,0,0,0}),
             bufferSize(100),
             writeCycles(5),
             readCycles(5),
@@ -62,7 +62,7 @@ class LoadStoreUnit {
                         destinationRegister = operands[0];
                         address = 0 + operands[1];
                         //and to the read buffer to be read from memory when ready
-                        readBuffer.addToBuffer(operands[0], address, DEBUG_Instruction);
+                        readBuffer.addToBuffer(operands[0], address, nextInstruction);
                         break;
     		        case SW:
                     case SWR:
@@ -70,7 +70,7 @@ class LoadStoreUnit {
                         address = 0 + operands[1];
                         value = registerFile->getRegisterValue(operands[0]);
                         //and to the write buffer to be written to memory when ready
-                        writeBuffer.addToBuffer(address, value, DEBUG_Instruction);
+                        writeBuffer.addToBuffer(address, value, nextInstruction);
                         break;
                 }
 
@@ -79,7 +79,7 @@ class LoadStoreUnit {
                 for(int i = 0; i < 3; i++) {
                     operands[i] = 0;
                 }
-                DEBUG_Instruction = (Instruction) {0,0,0,0};
+                nextInstruction = (Instruction) {0,0,0,0};
     	    }
 
             //increment the step numbers for each inflight read and write instruction
@@ -120,8 +120,8 @@ class LoadStoreUnit {
             }
         }
 
-        void set_DEBUG_Instruction(Instruction i) {
-            DEBUG_Instruction = i;
+        void setNextInstruction(Instruction i) {
+            nextInstruction = i;
         }
 
         void flush() {
@@ -130,6 +130,6 @@ class LoadStoreUnit {
                 operands[i] = 0;
             }
             //reset debug instruciton
-            DEBUG_Instruction = (Instruction) {0,0,0,0};
+            nextInstruction = (Instruction) {0,0,0,0};
         }
 };

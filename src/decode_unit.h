@@ -177,7 +177,7 @@ class DecodeUnit {
                 case 10:
                     loadStoreUnit->setOpcode(opcode);
                     loadStoreUnit->setOperands(operands);
-                    loadStoreUnit->set_DEBUG_Instruction(currentInstruction);
+                    loadStoreUnit->setNextInstruction(currentInstruction);
                     //Setting the scoreboard values of the destination register to 0
                     registerFile->setScoreboardValue(operands[0],0);
                     break;

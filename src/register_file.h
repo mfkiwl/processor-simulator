@@ -63,7 +63,7 @@ class RegisterFile {
         			}
         		}
         	}
-        	cout << "\n";
+        	cout << endl;
 
             //print register values
         	cout << "Values:    ";
@@ -78,7 +78,6 @@ class RegisterFile {
                     cout << " ";
                 }
         	}
-        	cout << "\n";
         }
 
         int intLength(int n) {
