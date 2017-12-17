@@ -103,14 +103,16 @@ class Processor {
                 char str[3];
                 fgets(str, 2, stdin);
 
-                //check if we should flush the pipeline
-                if(flushFlag == 1) {
-                    flushPipeline();
-                }
                 //writeback the result
                 writeback();
                  //execute the instruction
                 execute();
+
+                //check if we should flush the pipeline
+                if(flushFlag == 1) {
+                    flushPipeline();
+                }
+
                 //decode the instruction
                 decode();
                 //if the pipeline is not being blocked
@@ -119,6 +121,14 @@ class Processor {
                     fetch();
                     //propogate values through pipeline
                     pipe();
+                }
+                else {
+                    if(decodeUnitBlockingFlag) {
+                        printf("DECODE UNIT BLOCKING\n");
+                    }
+                    if(loadStoreUnitBlockingFlag) {
+                        printf("MEMORY UNIT BLOCKING\n");
+                    }
                 }
 
                 //update info
@@ -162,6 +172,7 @@ class Processor {
             fetchUnit.flush();
             decodeUnit.flush();
             flushFlag = 0;
+            registerFile.resetScoreBoard();
         }
 
         void printInfo() {
@@ -180,7 +191,7 @@ class Processor {
             cout << "PC: " << pc << "\n";
             registerFile.printRegisters();
             cout << endl;
-            memory.printMemory();
+            registerFile.printScoreBoard();
         }
 };
 

@@ -86,8 +86,8 @@ public:
                 registerFile->setRegisterValue(destinationRegister, value);
                 //increment the number of instructions executed
                 (*noOfInstructionsExecuted) += 1;
-                //set the scoreboard value of the destination register to 1
-                registerFile->setScoreboardValue(destinationRegister,1);
+                //set the scoreBoard value of the destination register to 1
+                registerFile->setScoreBoardValue(destinationRegister,1);
                 //print the instruction that has been executed
                 cout << "Executed instruction: ";
                 printInstruction(DEBUG_Instructions[i]);

@@ -45,7 +45,7 @@ class DecodeUnit {
                 case OR:
                 case SUB:
                     //if the source registers are ready then continue
-                    if(registerFile->getScoreboardValue(nextInstruction.operands[1]) && registerFile->getScoreboardValue(nextInstruction.operands[2])) {
+                    if(registerFile->getScoreBoardValue(nextInstruction.operands[1]) && registerFile->getScoreBoardValue(nextInstruction.operands[2])) {
                         operands[0] = nextInstruction.operands[0];
                         for(int i = 1; i < 3; i++) {
                             registerNum = nextInstruction.operands[i];
@@ -61,7 +61,7 @@ class DecodeUnit {
                     break;
                 case ADDI:
                     //If the source registers are ready then continue
-                    if(registerFile->getScoreboardValue(nextInstruction.operands[1])) {
+                    if(registerFile->getScoreBoardValue(nextInstruction.operands[1])) {
                         operands[0] = nextInstruction.operands[0];
                         registerNum = nextInstruction.operands[1];
                         val = registerFile->getRegisterValue(registerNum);
@@ -82,7 +82,7 @@ class DecodeUnit {
                 case LWR:
                 case SWR:
                     //If the source registers are ready then continue
-                    if(registerFile->getScoreboardValue(nextInstruction.operands[1])) {
+                    if(registerFile->getScoreBoardValue(nextInstruction.operands[1])) {
                         operands[0] = nextInstruction.operands[0];
                         registerNum = nextInstruction.operands[1];
                         val = registerFile->getRegisterValue(registerNum);
@@ -97,7 +97,7 @@ class DecodeUnit {
                 case BEQ:
                 case BNE:
                     //If the source registers are ready then continue
-                    if(registerFile->getScoreboardValue(nextInstruction.operands[0]) && registerFile->getScoreboardValue(nextInstruction.operands[1])) {
+                    if(registerFile->getScoreBoardValue(nextInstruction.operands[0]) && registerFile->getScoreBoardValue(nextInstruction.operands[1])) {
                         registerNum = nextInstruction.operands[0];
                         val = registerFile->getRegisterValue(registerNum);
                         operands[0] = val;
@@ -117,7 +117,7 @@ class DecodeUnit {
                 case BLEZ:
                 case BLTZ:
                     //If the source registers are ready then continue
-                    if(registerFile->getScoreboardValue(nextInstruction.operands[0])) {
+                    if(registerFile->getScoreBoardValue(nextInstruction.operands[0])) {
                         registerNum = nextInstruction.operands[0];
                         val = registerFile->getRegisterValue(registerNum);
                         operands[0] = val;
@@ -134,7 +134,7 @@ class DecodeUnit {
                     break;
                 case JR:
                     //If the source registers are ready then continue
-                    if(registerFile->getScoreboardValue(nextInstruction.operands[0])) {
+                    if(registerFile->getScoreBoardValue(nextInstruction.operands[0])) {
                         registerNum = nextInstruction.operands[0];
                         val = registerFile->getRegisterValue(registerNum);
                         operands[0] = val;
@@ -167,19 +167,23 @@ class DecodeUnit {
                     alu->setOpcode(opcode);
                     alu->setOperands(operands);
                     alu->setNextInstruction(currentInstruction);
-                    //Setting the scoreboard values of the destination register to 0
-                    registerFile->setScoreboardValue(operands[0],0);
+                    //Setting the scoreBoard values of the destination register to 0
+                    registerFile->setScoreBoardValue(operands[0],0);
                     break;
                 //Load Store unit instructions
                 case 7:
                 case 8:
+                    loadStoreUnit->setOpcode(opcode);
+                    loadStoreUnit->setOperands(operands);
+                    loadStoreUnit->setNextInstruction(currentInstruction);
+                    //Setting the scoreBoard values of the destination register to 0
+                    registerFile->setScoreBoardValue(operands[0],0);
+                    break;
                 case 9:
                 case 10:
                     loadStoreUnit->setOpcode(opcode);
                     loadStoreUnit->setOperands(operands);
                     loadStoreUnit->setNextInstruction(currentInstruction);
-                    //Setting the scoreboard values of the destination register to 0
-                    registerFile->setScoreboardValue(operands[0],0);
                     break;
                 //Branch unit instructions
                 case 11:
@@ -193,7 +197,7 @@ class DecodeUnit {
                 case 19:
                     branchUnit->setOpcode(opcode);
                     branchUnit->setOperands(operands);
-                    branchUnit->set_DEBUG_Instruction(currentInstruction);
+                    branchUnit->setNextInstruction(currentInstruction);
                     break;
             }
             //reset the decoding

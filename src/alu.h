@@ -66,8 +66,8 @@ class ALU {
             if(destinationRegister != -1) {
                 //write the result to the output register
                 registerFile->setRegisterValue(destinationRegister, result);
-                //Set the scoreboard of the destination register to 1
-                registerFile->setScoreboardValue(destinationRegister, 1);
+                //Set the scoreBoard of the destination register to 1
+                registerFile->setScoreBoardValue(destinationRegister, 1);
 
                 //increment the number of instructions executed
                 (*noOfInstructionsExecuted) += 1;

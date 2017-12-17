@@ -2,16 +2,16 @@ using namespace std;
 class RegisterFile {
 	int numOfRegisters;
 	int* registers;
-    int* scoreboard;
+    int* scoreBoard;
     public: 
     	RegisterFile(int numOfRegisters) : numOfRegisters(numOfRegisters) {
     		registers = new int[numOfRegisters];
     		for(int i = 0; i < numOfRegisters; i++) {
     			registers[i] = 0;
     		}
-            scoreboard = new int[numOfRegisters];
+            scoreBoard = new int[numOfRegisters];
             for(int i = 0; i < numOfRegisters; i++) {
-                scoreboard[i] = 1;
+                scoreBoard[i] = 1;
             }
     	}
 
@@ -33,18 +33,24 @@ class RegisterFile {
             registers[i] = val;
         }
 
-        int getScoreboardValue(int i ) {
+        int getScoreBoardValue(int i ) {
             if(i < 0 || i >= numOfRegisters) {
-                cout << "Scoreboard index " << i << " is out of range.\n";
+                cout << "ScoreBoard index " << i << " is out of range.\n";
             }
-            return scoreboard[i];
+            return scoreBoard[i];
         }
 
-        void setScoreboardValue(int i, int val) {
+        void setScoreBoardValue(int i, int val) {
             if(i < 0 || i >= numOfRegisters) {
-                cout << "Scoreboard index " << i << " is our of range.\n";
+                cout << "ScoreBoard index " << i << " is our of range.\n";
             }
-            scoreboard[i] = val;
+            scoreBoard[i] = val;
+        }
+
+        void resetScoreBoard() {
+            for(int i = 0; i < numOfRegisters; i++) {
+                scoreBoard[i] = 1;
+            }
         }
 
         void printRegisters() {
@@ -78,6 +84,14 @@ class RegisterFile {
                     cout << " ";
                 }
         	}
+        }
+
+        void printScoreBoard() {
+            printf("ScoreBoard:\n");
+            for(int i = 0; i < numOfRegisters; i++) {
+                cout << scoreBoard[i] << " ";
+            }
+            cout << "\n";
         }
 
         int intLength(int n) {

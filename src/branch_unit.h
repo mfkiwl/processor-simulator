@@ -15,7 +15,7 @@ class BranchUnit {
     int* noOfInstructionsExecuted;
 
     //for debugging purposes
-    Instruction DEBUG_Instruction;
+    Instruction nextInstruction;
 
     public:
         BranchUnit(int* pc, int* flushFlag, int* runningFlag, int* noOfInstructionsExecuted) : 
@@ -68,14 +68,14 @@ class BranchUnit {
 
                 //print the instruction that has been executed
                 cout << "Executed instruction: ";
-                printInstruction(DEBUG_Instruction);
+                printInstruction(nextInstruction);
 
                 //reset variables
                 opcode = 0;
                 for(int i = 0; i < 3; i++) {
                     operands[i] = 0;
                 }
-                DEBUG_Instruction = (Instruction) {0,0,0,0};
+                nextInstruction = (Instruction) {0,0,0,0};
             }
         }
 
@@ -89,8 +89,8 @@ class BranchUnit {
             }
         }
 
-        void set_DEBUG_Instruction(Instruction i) {
-            DEBUG_Instruction = i;
+        void setNextInstruction(Instruction i) {
+            nextInstruction = i;
         }
 
         void flush() {
@@ -99,6 +99,6 @@ class BranchUnit {
                 operands[i] = 0;
             }
             //reset debug instruciton
-            DEBUG_Instruction = (Instruction) {0,0,0,0};
+            nextInstruction = (Instruction) {0,0,0,0};
         }
 };
