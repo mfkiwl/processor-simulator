@@ -25,7 +25,8 @@ enum Opcodes {
 enum Type {
     JUMP,
     STORE_TO_MEMORY,
-    STORE_TO_REGISTER
+    STORE_TO_REGISTER,
+    SYSCALL
 };
 //index in the reorder buffer
 enum Index {

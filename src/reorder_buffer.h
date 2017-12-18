@@ -51,4 +51,10 @@ class ReorderBuffer {
             tail = (tail + 1) % size;
     	}
     }
+
+    void printBuffer() {
+    	printf("Reorder buffer: \n");
+    	printf("tail: %d\n", tail);
+    	printf("head: %d\n", head);
+    }
 };

@@ -210,17 +210,29 @@ class DecodeUnit {
                     break;
                 //Branch unit instructions
                 case BEQ:
+                case BNE:
+                    //send the decoded instruction to the execution unit
+                    branchUnit->setOpcode(opcode);
+                    branchUnit->setOperands(operands);
+                    //Instruction has been issued so add entry to the reorder buffer
+                    reorderBuffer->addEntry(JUMP, operands[2], currentInstruction);
+                    break;
                 case BGEZ:
                 case BGTZ:
                 case BLEZ:
                 case BLTZ:
-                case BNE:
                 case J:
                 case JR:
+                    //send the decoded instruction to the execution unit
+                    branchUnit->setOpcode(opcode);
+                    branchUnit->setOperands(operands);
+                    break;
                 case HALT:
                     //send the decoded instruction to the execution unit
                     branchUnit->setOpcode(opcode);
                     branchUnit->setOperands(operands);
+                    //Instruction has been issued so add entry to the reorder buffer
+                    reorderBuffer->addEntry(SYSCALL, operands[0], currentInstruction);
                     break;
             }
             //reset the decoding
