@@ -84,7 +84,7 @@ class ALU {
 
         void writeback() {
             if(destinationRegister != -1) {
-                //write the result to the output register
+                //write the result to the reorder buffer
                 registerFile->setRegisterValue(destinationRegister, result);
                 //Set the scoreBoard of the destination register to 1
                 registerFile->setScoreBoardValue(destinationRegister, 1);

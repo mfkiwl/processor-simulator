@@ -1,5 +1,8 @@
 class ReorderBuffer {
 
+    RegisterFile* registerFile;
+    Memory* memory;
+
     int** buffer;
     int size;
     int head;
@@ -14,7 +17,9 @@ class ReorderBuffer {
     int* noOfInstructionsExecuted;
 
     public:
-    ReorderBuffer(int size, int* noOfInstructionsExecuted) : 
+    ReorderBuffer(RegisterFile* registerFile, Memory* memory, int size, int* noOfInstructionsExecuted) : 
+        registerFile(registerFile),
+        memory(memory),
         size(size),
         head(0),
         tail(0),
@@ -64,6 +69,10 @@ class ReorderBuffer {
 
     void finishedEntry(int i) {
         buffer[i][STATUS] = FINISHED;
+    }
+
+    void writeResult(int i, int r) {
+        buffer[i][RESULT] = r;
     }
 
     void printBuffer() {

@@ -7,8 +7,8 @@
 #include "constants.h"
 #include "instructions.h"
 #include "register_file.h"
-#include "reorder_buffer.h"
 #include "memory.h"
+#include "reorder_buffer.h"
 #include "alu.h"
 #include "branch_unit.h"
 #include "store_queue.h"
@@ -81,7 +81,7 @@ class Processor {
             //components
             registerFile(noOfRegisters), 
             memory(memorySize),
-            reorderBuffer(100, &noOfInstructionsExecuted),
+            reorderBuffer(&registerFile, &memory, 100, &noOfInstructionsExecuted),
             fetchUnit(instructions, noOfInstructions, &pc, &decodeUnit),
             decodeUnit(&registerFile, &reorderBuffer, &alu, &branchUnit, &loadStoreUnit, &decodeUnitBlockingFlag),
             alu(&registerFile, &reorderBuffer),
@@ -101,11 +101,14 @@ class Processor {
 
                 //hold up the program at each clock cycle
                 char str[3];
-                //fgets(str, 2, stdin);
+                fgets(str, 2, stdin);
 
-                //writeback the result
+                //writeback the results
+                commit();
+
+                //write the results to the reorder buffer
                 writeback();
-                reorderBuffer.retire();
+
                 //execute the instruction
                 execute();
 
@@ -156,6 +159,10 @@ class Processor {
         void writeback() {
             alu.writeback();
             loadStoreUnit.writeback();
+        }
+
+        void commit() {
+            reorderBuffer.retire();
         }
 
         void flushPipeline() {
