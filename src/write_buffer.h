@@ -13,7 +13,6 @@ class WriteBuffer {
     const int ADDRESS;
     const int VALUE;
     const int STEP;
-    const int READY;
 
     int numberReady;
 
@@ -33,7 +32,6 @@ public:
         ADDRESS(0),
         VALUE(1),
         STEP(2),
-        READY(3),
         numberReady(0)
 	{
         //dynamically allocated a 2d array to the read and write buffer
@@ -58,7 +56,6 @@ public:
             buffer[head][ADDRESS] = address;
             buffer[head][VALUE] = value;
             buffer[head][STEP] = 0;
-            buffer[head][READY] = 0;
             nextInstructions[head] = nextInstruction;
         }
         //otherwise if the end of the buffer is empty then add here
@@ -66,7 +63,6 @@ public:
             buffer[tail][ADDRESS] = address;
             buffer[tail][VALUE] = value;
             buffer[tail][STEP] = 0;
-            buffer[tail][READY] = 0;
             nextInstructions[tail] = nextInstruction;
             tail += 1;
         }
@@ -84,7 +80,6 @@ public:
         //check if each entry in the buffer is ready to write
         for(int i = head; i < tail; i++) {
             if(buffer[i][STEP] >= steps) {
-                buffer[i][READY] = 1;
                 numberReady++;
             }
         }
@@ -104,7 +99,7 @@ public:
     void writeIfReady() {
         for(int i = head; i < tail; i++) {
             //for each entry check if it is ready to write
-            if(buffer[i][READY]) {
+            if(buffer[i][STEP] >= steps) {
                 //write the value to the memory address
                 int address = buffer[i][ADDRESS];
                 int value = buffer[i][VALUE];
@@ -118,7 +113,6 @@ public:
                 buffer[i][ADDRESS] = 0;
                 buffer[i][VALUE] = 0;
                 buffer[i][STEP] = 0;
-                buffer[i][READY] = 0;
                 nextInstructions[i] = (Instruction) {0,0,0,0};
                 //update the start and end of the buffer
                 if(i == head) {

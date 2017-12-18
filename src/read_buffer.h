@@ -13,7 +13,6 @@ class ReadBuffer {
     const int DESTINATION;
     const int ADDRESS;
     const int STEP;
-    const int READY;
 
     //the number of entries in the buffer ready to read
     int numberReady;
@@ -35,7 +34,7 @@ public:
         DESTINATION(0),
         ADDRESS(1),
         STEP(2),
-        READY(3)
+        numberReady(0)
     {
         //dynamically allocated a 2d array to the read and write buffer
         buffer = new int*[size];
@@ -64,7 +63,6 @@ public:
         //check if each entry in the buffer is ready to write
         for(int i = head; i < tail; i++) {
             if(buffer[i][STEP] >= steps) {
-                buffer[i][READY] = 1;
                 numberReady++;
             }
         }
@@ -88,7 +86,6 @@ public:
             buffer[head][DESTINATION] = destinationRegister;
             buffer[head][ADDRESS] = address;
             buffer[head][STEP] = 0;
-            buffer[head][READY] = 0;
             nextInstructions[head] = nextInstruction;
         }
         //if the end of the buffer is empty then add here
@@ -96,7 +93,6 @@ public:
             buffer[tail][DESTINATION] = destinationRegister;
             buffer[tail][ADDRESS] = address;
             buffer[tail][STEP] = 0;
-            buffer[tail][READY] = 0;
             nextInstructions[tail] = nextInstruction;
             tail += 1;
         }
@@ -105,7 +101,7 @@ public:
     void readIfReady() {
         for(int i = head; i < tail; i++) {
             //for each entry check if it is ready to write
-            if(buffer[i][READY]) {
+            if(buffer[i][STEP] > steps) {
                 //read the value from the memory address and store it in the destination register
                 int destinationRegister = buffer[i][DESTINATION];
                 int address = buffer[i][ADDRESS];
@@ -122,7 +118,6 @@ public:
                 buffer[i][DESTINATION] = 0;
                 buffer[i][ADDRESS] = 0;
                 buffer[i][STEP] = 0;
-                buffer[i][READY] = 0;
                 nextInstructions[i] = (Instruction) {0,0,0,0};
                 //update the start and the end of the buffer
                 if(i == head) {
