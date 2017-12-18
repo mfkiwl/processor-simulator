@@ -8,8 +8,8 @@ using namespace std;
 
 int printOpcode(string op, ofstream *newfile) {
 	int output = -1;
-	if(op == "NOP") {
-	    output = NOP;
+	if(op == "NOOP") {
+	    output = NOOP;
 	}
 	if(op == "ADD") {
 		output = ADD;
@@ -65,8 +65,8 @@ int printOpcode(string op, ofstream *newfile) {
 	else if(op == "JR") {
 		output = JR;
 	}
-	else if(op == "END") {
-		output = END;
+	else if(op == "HALT") {
+		output = HALT;
 	}
 	*newfile << output;
 	*newfile << " ";

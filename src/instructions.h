@@ -133,8 +133,8 @@ void printInstruction(Instruction instruction) {
         case JR:
             cout << "JR R" << instruction.operands[0] << "\n";
             break;
-        case END:
-            cout << "END " << instruction.operands[0] << "\n";
+        case HALT:
+            cout << "HALT " << instruction.operands[0] << "\n";
             break;
         default:
             cout << "\n";

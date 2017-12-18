@@ -18,5 +18,5 @@ enum Opcodes {
     BNE,
     J,
     JR,
-    END
+    HALT
 };

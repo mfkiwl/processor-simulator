@@ -208,7 +208,7 @@ class DecodeUnit {
                 case BNE:
                 case J:
                 case JR:
-                case END:
+                case HALT:
                     branchUnit->setOpcode(opcode);
                     branchUnit->setOperands(operands);
                     branchUnit->setNextInstruction(currentInstruction);

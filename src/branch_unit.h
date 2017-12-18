@@ -34,27 +34,23 @@ class BranchUnit {
             if(opcode != 0) {
                 //execute the instruction
                 switch(opcode) {
-                    //BEQ
                     case BEQ:
                         if(operands[0] == operands[1]) {
                             *pc = operands[2];
                             *flushFlag = 1;
                         }
                         break;
-                    //BNE
                     case BNE:
                         if(operands[0] != operands[1]) {
                             *pc = operands[2];
                             *flushFlag = 1;
                         }
                         break;
-                    //J
                     case J:
                         *pc = operands[0];
                         *flushFlag = 1;
                          break;
-                    //END
-                    case END:
+                    case HALT:
                         //tell the processor that the program had finished
                         *runningFlag = 0;
                         break;
