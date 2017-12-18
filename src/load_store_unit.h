@@ -21,8 +21,8 @@ class LoadStoreUnit {
     int readCycles;
 
     //Read and write buffers to store load and store instruciton in operation
-    WriteBuffer writeBuffer;
-    ReadBuffer readBuffer;
+    StoreQueue storeQueue;
+    LoadQueue loadQueue;
 
     public:
         LoadStoreUnit(Memory* memory, RegisterFile* registerFile, int* noOfInstructionsExecuted, int* blockingFlag) :
@@ -37,8 +37,8 @@ class LoadStoreUnit {
             bufferSize(100),
             writeCycles(5),
             readCycles(5),
-            writeBuffer(memory, noOfInstructionsExecuted, bufferSize, writeCycles),
-            readBuffer(memory, registerFile, noOfInstructionsExecuted, bufferSize, readCycles)
+            storeQueue(memory, noOfInstructionsExecuted, bufferSize, writeCycles),
+            loadQueue(memory, registerFile, noOfInstructionsExecuted, bufferSize, readCycles)
         {
             //initially set all operands to zero
             for(int i = 0; i < 3; i++) {
@@ -62,7 +62,7 @@ class LoadStoreUnit {
                         destinationRegister = operands[0];
                         address = 0 + operands[1];
                         //and to the read buffer to be read from memory when ready
-                        readBuffer.addToBuffer(operands[0], address, nextInstruction);
+                        loadQueue.addToBuffer(operands[0], address, nextInstruction);
                         break;
     		        case SW:
                     case SWR:
@@ -70,7 +70,7 @@ class LoadStoreUnit {
                         address = 0 + operands[1];
                         value = registerFile->getRegisterValue(operands[0]);
                         //and to the write buffer to be written to memory when ready
-                        writeBuffer.addToBuffer(address, value, nextInstruction);
+                        storeQueue.addToBuffer(address, value, nextInstruction);
                         break;
                 }
 
@@ -83,20 +83,20 @@ class LoadStoreUnit {
     	    }
 
             //increment the step numbers for each inflight read and write instruction
-            writeBuffer.stepInstructions();
-            readBuffer.stepInstructions();
+            storeQueue.stepInstructions();
+            loadQueue.stepInstructions();
 
             blockIfWaitingForMemoryOperation();
         }
 
         void writeback() {
             //perform the read and write instructions when the step number has been met
-            writeBuffer.writeIfReady();
-            readBuffer.readIfReady();
+            storeQueue.writeIfReady();
+            loadQueue.readIfReady();
         }
 
         int blockIfWaitingForMemoryOperation() {
-            if(writeBuffer.waitingForWriteOperation() || readBuffer.waitingForReadOperation()) {
+            if(storeQueue.waitingForWriteOperation() || loadQueue.waitingForReadOperation()) {
                 *blockingFlag = 1;
             }
             else {
