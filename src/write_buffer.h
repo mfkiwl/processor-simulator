@@ -15,7 +15,7 @@ class WriteBuffer {
     const int STEP;
 
     //all the inflight instructions
-    Instruction* DEBUG_Instructions;
+    Instruction* nextInstructions;
 
     int* noOfInstructionsExecuted;
 
@@ -43,7 +43,7 @@ public:
             }
         }
         //allocate memory to the list of inflight instructions
-        DEBUG_Instructions = new Instruction[size];
+        nextInstructions = new Instruction[size];
     }
 
     //return 1 if we are waiting for a write operation to complete
@@ -56,21 +56,21 @@ public:
         }
     }
 
-    void addToBuffer(int address, int value, Instruction DEBUG_Instruction) {
+    void addToBuffer(int address, int value, Instruction nextInstruction) {
         //if the start of the buffer is empty then add here
         if(head > 0) {
             head -= 1;
             buffer[head][ADDRESS] = address;
             buffer[head][VALUE] = value;
             buffer[head][STEP] = 1;
-            DEBUG_Instructions[head] = DEBUG_Instruction;
+            nextInstructions[head] = nextInstruction;
         }
         //otherwise if the end of the buffer is empty then add here
         else if(tail < size - 1) {
             buffer[tail][ADDRESS] = address;
             buffer[tail][VALUE] = value;
             buffer[tail][STEP] = 1;
-            DEBUG_Instructions[tail] = DEBUG_Instruction;
+            nextInstructions[tail] = nextInstruction;
             tail += 1;
         }
     }
@@ -94,12 +94,12 @@ public:
                 (*noOfInstructionsExecuted) += 1;
                 //print the write instruction that has been executed
                 cout << "Executed instruction: ";
-                printInstruction(DEBUG_Instructions[i]);
+                printInstruction(nextInstructions[i]);
                 //reset write buffer entry
                 buffer[i][ADDRESS] = 0;
                 buffer[i][VALUE] = 0;
                 buffer[i][STEP] = 0;
-                DEBUG_Instructions[i] = (Instruction) {0,0,0,0};
+                nextInstructions[i] = (Instruction) {0,0,0,0};
                 //update the start and end of the buffer
                 if(i == head) {
                     head += 1;

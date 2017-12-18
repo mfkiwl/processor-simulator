@@ -15,7 +15,7 @@ class ReadBuffer {
     const int STEP;
 
     //all the inflight instructions
-    Instruction* DEBUG_Instructions;
+    Instruction* nextInstructions;
 
     int* noOfInstructionsExecuted;
 
@@ -44,7 +44,7 @@ public:
             }
         }
         //allocate memory to the list of inflight instructions
-        DEBUG_Instructions = new Instruction[size];
+        nextInstructions = new Instruction[size];
     }
 
     void stepInstructions() {
@@ -64,21 +64,21 @@ public:
         }
     }
 
-    void addToBuffer(int destinationRegister, int address, Instruction DEBUG_Instruction) {
+    void addToBuffer(int destinationRegister, int address, Instruction nextInstruction) {
         //if the start of the buffer is empty then add here
         if(head > 0) {
             head -= 1;
             buffer[head][DESTINATION] = destinationRegister;
             buffer[head][ADDRESS] = address;
             buffer[head][STEP] = 1;
-            DEBUG_Instructions[head] = DEBUG_Instruction;
+            nextInstructions[head] = nextInstruction;
         }
         //if the end of the buffer is empty then add here
         else if(tail < size - 1) {
             buffer[tail][DESTINATION] = destinationRegister;
             buffer[tail][ADDRESS] = address;
             buffer[tail][STEP] = 1;
-            DEBUG_Instructions[tail] = DEBUG_Instruction;
+            nextInstructions[tail] = nextInstruction;
             tail += 1;
         }
     }
@@ -98,12 +98,12 @@ public:
                 registerFile->setScoreBoardValue(destinationRegister,1);
                 //print the instruction that has been executed
                 cout << "Executed instruction: ";
-                printInstruction(DEBUG_Instructions[i]);
+                printInstruction(nextInstructions[i]);
                 //reset write buffer entry
                 buffer[i][DESTINATION] = 0;
                 buffer[i][ADDRESS] = 0;
                 buffer[i][STEP] = 0;
-                DEBUG_Instructions[i] = (Instruction) {0,0,0,0};
+                nextInstructions[i] = (Instruction) {0,0,0,0};
                 //update the start and the end of the buffer
                 if(i == head) {
                     head += 1;
