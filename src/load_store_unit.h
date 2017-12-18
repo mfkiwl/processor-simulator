@@ -2,6 +2,7 @@ class LoadStoreUnit {
     //forward components
     Memory* memory;
     RegisterFile* registerFile;
+    ReorderBuffer* reorderBuffer;
 
     //decoded instruction
     int opcode;
@@ -19,12 +20,13 @@ class LoadStoreUnit {
     LoadQueue loadQueue;
 
     public:
-        LoadStoreUnit(Memory* memory, RegisterFile* registerFile, int* blockingFlag) :
+        LoadStoreUnit(Memory* memory, RegisterFile* registerFile, ReorderBuffer* reorderBuffer, int* blockingFlag) :
             //set initial opcode value to zero
             opcode(0),
             //connected components
             memory(memory),
             registerFile(registerFile),
+            reorderBuffer(reorderBuffer),
             blockingFlag(blockingFlag),
             bufferSize(100),
             writeCycles(5),

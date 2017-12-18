@@ -1,5 +1,7 @@
 class BranchUnit {
 	
+    ReorderBuffer* reorderBuffer;
+
     //decoded instruction
     int opcode;
     int operands[3];
@@ -12,7 +14,7 @@ class BranchUnit {
     int* runningFlag;
 
     public:
-        BranchUnit(int* pc, int* flushFlag, int* runningFlag) : 
+        BranchUnit(ReorderBuffer* reorderBuffer, int* pc, int* flushFlag, int* runningFlag) : 
             pc(pc),
             flushFlag(flushFlag),
             runningFlag(runningFlag),

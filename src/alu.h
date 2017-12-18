@@ -2,6 +2,7 @@ class ALU {
 
     //forward components
     RegisterFile* registerFile;
+    ReorderBuffer* reorderBuffer;
 
     //decoded instruction
     int opcode;
@@ -16,8 +17,9 @@ class ALU {
     int bypassingOperand;
 
     public:
-        ALU(RegisterFile* registerFile) : 
-            registerFile(registerFile), 
+        ALU(RegisterFile* registerFile, ReorderBuffer* reorderBuffer) : 
+            registerFile(registerFile),
+            reorderBuffer(reorderBuffer),
             opcode(0),
             destinationRegister(-1),
             result(0),

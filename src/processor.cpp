@@ -84,9 +84,9 @@ class Processor {
             reorderBuffer(100, &noOfInstructionsExecuted),
             fetchUnit(instructions, noOfInstructions, &pc, &decodeUnit),
             decodeUnit(&registerFile, &reorderBuffer, &alu, &branchUnit, &loadStoreUnit, &decodeUnitBlockingFlag),
-            alu(&registerFile),
-            branchUnit(&pc, &flushFlag, &runningFlag),
-            loadStoreUnit(&memory, &registerFile, &loadStoreUnitBlockingFlag)
+            alu(&registerFile, &reorderBuffer),
+            branchUnit(&reorderBuffer, &pc, &flushFlag, &runningFlag),
+            loadStoreUnit(&memory, &registerFile, &reorderBuffer, &loadStoreUnitBlockingFlag)
         {}
 
 
