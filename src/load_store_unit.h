@@ -35,8 +35,8 @@ class LoadStoreUnit {
             blockingFlag(blockingFlag),
             nextInstruction((Instruction) {0,0,0,0}),
             bufferSize(100),
-            writeCycles(5),
-            readCycles(5),
+            writeCycles(0),
+            readCycles(0),
             writeBuffer(memory, noOfInstructionsExecuted, bufferSize, writeCycles),
             readBuffer(memory, registerFile, noOfInstructionsExecuted, bufferSize, readCycles)
         {

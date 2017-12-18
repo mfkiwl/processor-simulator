@@ -20,24 +20,3 @@ enum Opcodes {
     JR,
     END
 };
-
-enum Index {
-    status,
-    type,
-    destination,
-    value
-};
-
-enum Status {
-    issued,
-    executing,
-    finished
-};
-
-enum Type {
-    jump,
-    storeToMemory,
-    storeToRegister,
-    noop,
-    end
-};

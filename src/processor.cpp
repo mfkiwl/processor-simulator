@@ -8,7 +8,6 @@
 #include "instructions.h"
 #include "register_file.h"
 #include "memory.h"
-#include "reorder_buffer.h"
 #include "alu.h"
 #include "branch_unit.h"
 #include "write_buffer.h"
@@ -46,7 +45,6 @@ class Processor {
     //components
     RegisterFile registerFile;
     Memory memory;
-    ReorderBuffer reorderBuffer;
     FetchUnit fetchUnit;
     DecodeUnit decodeUnit;
     ALU alu;
@@ -81,7 +79,6 @@ class Processor {
             //components
             registerFile(noOfRegisters), 
             memory(memorySize),
-            reorderBuffer(100),
             fetchUnit(instructions, noOfInstructions, &pc, &decodeUnit),
             decodeUnit(&registerFile, &alu, &branchUnit, &loadStoreUnit, &decodeUnitBlockingFlag),
             alu(&registerFile, &noOfInstructionsExecuted),
@@ -101,7 +98,7 @@ class Processor {
 
                 //hold up the program at each clock cycle
                 char str[3];
-                fgets(str, 2, stdin);
+                //fgets(str, 2, stdin);
 
                 //writeback the result
                 writeback();

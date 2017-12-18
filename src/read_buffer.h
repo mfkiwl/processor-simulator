@@ -9,6 +9,11 @@ class ReadBuffer {
     int tail;
     int steps;
 
+    //index constants
+    const int DESTINATION;
+    const int ADDRESS;
+    const int STEP;
+
     //all the inflight instructions
     Instruction* DEBUG_Instructions;
 
@@ -22,7 +27,10 @@ public:
         size(size),
         head(0),
         tail(0),
-        steps(steps) 
+        steps(steps),
+        DESTINATION(0),
+        ADDRESS(1),
+        STEP(2)
     {
         //dynamically allocated a 2d array to the read and write buffer
         buffer = new int*[size];
@@ -42,7 +50,7 @@ public:
     void stepInstructions() {
         //increment the current step for all inflight instructions in the read buffer
         for(int i = head; i < tail; i++) {
-            buffer[i][2] += 1;
+            buffer[i][STEP] += 1;
         }
     }
 
@@ -60,16 +68,16 @@ public:
         //if the start of the buffer is empty then add here
         if(head > 0) {
             head -= 1;
-            buffer[head][0] = destinationRegister;
-            buffer[head][1] = address;
-            buffer[head][2] = 1;
+            buffer[head][DESTINATION] = destinationRegister;
+            buffer[head][ADDRESS] = address;
+            buffer[head][STEP] = 1;
             DEBUG_Instructions[head] = DEBUG_Instruction;
         }
         //if the end of the buffer is empty then add here
         else if(tail < size - 1) {
-            buffer[tail][0] = destinationRegister;
-            buffer[tail][1] = address;
-            buffer[tail][2] = 1;
+            buffer[tail][DESTINATION] = destinationRegister;
+            buffer[tail][ADDRESS] = address;
+            buffer[tail][STEP] = 1;
             DEBUG_Instructions[tail] = DEBUG_Instruction;
             tail += 1;
         }
@@ -78,10 +86,10 @@ public:
     void readIfReady() {
         for(int i = head; i < tail; i++) {
             //for each entry check if it is ready to write
-            if(buffer[i][2] >= steps) {
+            if(buffer[i][STEP] >= steps) {
                 //read the value from the memory address and store it in the destination register
-                int destinationRegister = buffer[i][0];
-                int address = buffer[i][1];
+                int destinationRegister = buffer[i][DESTINATION];
+                int address = buffer[i][ADDRESS];
                 int value = memory->loadFromMemory(address);
                 registerFile->setRegisterValue(destinationRegister, value);
                 //increment the number of instructions executed
@@ -92,9 +100,9 @@ public:
                 cout << "Executed instruction: ";
                 printInstruction(DEBUG_Instructions[i]);
                 //reset write buffer entry
-                buffer[i][0] = 0;
-                buffer[i][1] = 0;
-                buffer[i][2] = 0;
+                buffer[i][DESTINATION] = 0;
+                buffer[i][ADDRESS] = 0;
+                buffer[i][STEP] = 0;
                 DEBUG_Instructions[i] = (Instruction) {0,0,0,0};
                 //update the start and the end of the buffer
                 if(i == head) {
