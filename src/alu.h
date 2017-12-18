@@ -11,10 +11,6 @@ class ALU {
     int destinationRegister;
     int result;
 
-    //for debugging purposes
-    Instruction nextInstruction;
-    Instruction currentInstruction;
-
     //bypassing variables
     int bypassing;
     int bypassingOperand;
@@ -59,7 +55,6 @@ class ALU {
                         break;
                 }
             }
-            currentInstruction = nextInstruction;
             //reset inputs
             opcode = 0;
             for(int i = 0; i < 3; i++) {
@@ -86,13 +81,8 @@ class ALU {
                 //increment the number of instructions executed
                 //(*noOfInstructionsExecuted) += 1;
 
-                //print the instruction that has been executed
-                cout << "Executed instruction: ";
-                printInstruction(currentInstruction);
-
                 //reset variables
                 destinationRegister = -1;
-                currentInstruction = (Instruction) {0,0,0,0};
             }
         }
 
@@ -111,17 +101,10 @@ class ALU {
             }
         }
 
-        void setNextInstruction(Instruction i) {
-            nextInstruction = i;
-        }
-
         void flush() {
             opcode = 0;
             for(int i = 0; i < 3; i++) {
                 operands[i] = 0;
             }
-            //reset debug instruciton
-            nextInstruction = (Instruction) {0,0,0,0};
-            currentInstruction = (Instruction) {0,0,0,0};
         }
 };

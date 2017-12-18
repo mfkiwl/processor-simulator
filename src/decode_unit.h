@@ -31,6 +31,7 @@ class DecodeUnit {
     	    branchUnit(branchUnit),
     	    loadStoreUnit(loadStoreUnit),
             nextInstruction((Instruction) {0,0,0}),
+            currentInstruction((Instruction) {0,0,0}),
             opcode(0),
             blockingFlag(blockingFlag),
             bypassing(0),
@@ -179,9 +180,9 @@ class DecodeUnit {
                 case MULT:
                 case OR:
                 case SUB:
+                    //send the decoded instruction to the execution unit
                     alu->setOpcode(opcode);
                     alu->setOperands(operands);
-                    alu->setNextInstruction(currentInstruction);
                     //Setting the scoreBoard values of the destination register to 0
                     registerFile->setScoreBoardValue(operands[0],0);
                     alu->setBypassing(bypassing, bypassingOperand);
@@ -191,9 +192,9 @@ class DecodeUnit {
                 //Load Store unit instructions
                 case LW:
                 case LWR:
+                    //send the decoded instruction to the execution unit
                     loadStoreUnit->setOpcode(opcode);
                     loadStoreUnit->setOperands(operands);
-                    loadStoreUnit->setNextInstruction(currentInstruction);
                     //Setting the scoreBoard values of the destination register to 0
                     registerFile->setScoreBoardValue(operands[0],0);
                     //Instruction has been issued so add entry to the reorder buffer
@@ -201,9 +202,9 @@ class DecodeUnit {
                     break;
                 case SW:
                 case SWR:
+                    //send the decoded instruction to the execution unit
                     loadStoreUnit->setOpcode(opcode);
                     loadStoreUnit->setOperands(operands);
-                    loadStoreUnit->setNextInstruction(currentInstruction);
                     //Instruction has been issued so add entry to the reorder buffer
                     reorderBuffer->addEntry(STORE_TO_MEMORY, operands[1], currentInstruction);
                     break;
@@ -217,9 +218,9 @@ class DecodeUnit {
                 case J:
                 case JR:
                 case HALT:
+                    //send the decoded instruction to the execution unit
                     branchUnit->setOpcode(opcode);
                     branchUnit->setOperands(operands);
-                    branchUnit->setNextInstruction(currentInstruction);
                     break;
             }
             //reset the decoding

@@ -16,9 +16,6 @@ class StoreQueue {
 
     int numberReady;
 
-    //all the inflight instructions
-    Instruction* nextInstructions;
-
 public:
 	StoreQueue(Memory* memory, int size, int steps) : 
 	    memory(memory),
@@ -42,25 +39,21 @@ public:
                 buffer[i][j] = 0;
             }
         }
-        //allocate memory to the list of inflight instructions
-        nextInstructions = new Instruction[size];
     }
 
-    void addToBuffer(int address, int value, Instruction nextInstruction) {
+    void addToBuffer(int address, int value) {
         //if the start of the buffer is empty then add here
         if(head > 0) {
             head -= 1;
             buffer[head][ADDRESS] = address;
             buffer[head][VALUE] = value;
             buffer[head][STEP] = 0;
-            nextInstructions[head] = nextInstruction;
         }
         //otherwise if the end of the buffer is empty then add here
         else if(tail < size - 1) {
             buffer[tail][ADDRESS] = address;
             buffer[tail][VALUE] = value;
             buffer[tail][STEP] = 0;
-            nextInstructions[tail] = nextInstruction;
             tail += 1;
         }
     }
@@ -103,14 +96,10 @@ public:
                 memory->storeInMemory(address, value);
                 //increment the number of instructions executed
                 //(*noOfInstructionsExecuted) += 1;
-                //print the write instruction that has been executed
-                cout << "Executed instruction: ";
-                printInstruction(nextInstructions[i]);
                 //reset write buffer entry
                 buffer[i][ADDRESS] = 0;
                 buffer[i][VALUE] = 0;
                 buffer[i][STEP] = 0;
-                nextInstructions[i] = (Instruction) {0,0,0,0};
                 //update the start and end of the buffer
                 if(i == head) {
                     head += 1;
