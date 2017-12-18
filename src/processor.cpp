@@ -7,6 +7,7 @@
 #include "constants.h"
 #include "instructions.h"
 #include "register_file.h"
+#include "reorder_buffer.h"
 #include "memory.h"
 #include "alu.h"
 #include "branch_unit.h"

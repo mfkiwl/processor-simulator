@@ -1,3 +1,4 @@
+//instruction opcodes
 enum Opcodes {
     NOOP,
     ADD,
@@ -19,4 +20,23 @@ enum Opcodes {
     J,
     JR,
     HALT
+};
+//type in the reorder buffer
+enum Type {
+    JUMP,
+    STORE_TO_MEMORY,
+    STORE_TO_REGISTER
+};
+//index in the reorder buffer
+enum Index {
+    TYPE,
+    DESTINATION,
+    RESULT,
+    STATUS
+};
+//status in the reorder buffer
+enum Status {
+    ISSUED,
+    EXECUTING,
+    FINISHED
 };
