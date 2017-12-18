@@ -1,6 +1,7 @@
 class LoadQueue {
 	Memory* memory;
     RegisterFile* registerFile;
+    ReorderBuffer* reorderBuffer;
 
     //write buffer to hold inflight write operation info
     int** buffer;
@@ -9,35 +10,41 @@ class LoadQueue {
     int tail;
     int steps;
 
+    int queueFields;
+
     //index constants
     const int DESTINATION;
     const int ADDRESS;
+    const int REORDER_BUFFER_INDEX;
     const int STEP;
 
     //the number of entries in the buffer ready to read
     int numberReady;
 
 public:
-	LoadQueue(Memory* memory, RegisterFile* registerFile, int size, int steps) : 
+	LoadQueue(Memory* memory, RegisterFile* registerFile, ReorderBuffer* reorderBuffer, int size, int steps) : 
         memory(memory),
         registerFile(registerFile),
+        reorderBuffer(reorderBuffer),
         size(size),
         head(0),
         tail(0),
         steps(steps),
+        queueFields(4),
         DESTINATION(0),
         ADDRESS(1),
-        STEP(2),
+        REORDER_BUFFER_INDEX(2),
+        STEP(3),
         numberReady(0)
     {
         //dynamically allocated a 2d array to the read and write buffer
         buffer = new int*[size];
         for(int i = 0; i < size; i++) {
-            buffer[i] = new int[4];
+            buffer[i] = new int[queueFields];
         }
         //initialise all elements of the read and write buffer to zero
         for(int i = 0; i < size; i++) {
-            for(int j = 0; j < 4; j++) {
+            for(int j = 0; j < queueFields; j++) {
                 buffer[i][j] = 0;
             }
         }
@@ -71,18 +78,20 @@ public:
         }
     }
 
-    void addToBuffer(int destinationRegister, int address) {
+    void addToBuffer(int destinationRegister, int address, int reorderBufferIndex) {
         //if the start of the buffer is empty then add here
         if(head > 0) {
             head -= 1;
             buffer[head][DESTINATION] = destinationRegister;
             buffer[head][ADDRESS] = address;
+            buffer[head][REORDER_BUFFER_INDEX] = reorderBufferIndex;
             buffer[head][STEP] = 0;
         }
         //if the end of the buffer is empty then add here
         else if(tail < size - 1) {
             buffer[tail][DESTINATION] = destinationRegister;
             buffer[tail][ADDRESS] = address;
+            buffer[tail][REORDER_BUFFER_INDEX] = reorderBufferIndex;
             buffer[tail][STEP] = 0;
             tail += 1;
         }
@@ -97,8 +106,8 @@ public:
                 int address = buffer[i][ADDRESS];
                 int value = memory->loadFromMemory(address);
                 registerFile->setRegisterValue(destinationRegister, value);
-                //increment the number of instructions executed
-                //(*noOfInstructionsExecuted) += 1;
+                //tell the reorder buffer that we are finished executing the instruction
+                reorderBuffer->finishedEntry(buffer[i][REORDER_BUFFER_INDEX]);
                 //set the scoreBoard value of the destination register to 1
                 registerFile->setScoreBoardValue(destinationRegister,1);
                 //reset write buffer entry

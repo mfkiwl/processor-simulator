@@ -41,21 +41,29 @@ class ReorderBuffer {
     	buffer[head][DESTINATION] = destination;
     	buffer[head][RESULT] = 0;
     	buffer[head][STATUS] = ISSUED;
+        instructions[head] = instruction;
     	int index = head;
     	head = (head + 1) % size;
     	return index;
     }
 
     void retire() {
-    	while(buffer[tail][STATUS] = FINISHED) {
+    	while(buffer[tail][STATUS] == FINISHED) {
             buffer[tail][STATUS] = -1;
+            cout << endl << "Finished Instruction: ";
             printInstruction(instructions[tail]);
+            (*noOfInstructionsExecuted)++;
             tail = (tail + 1) % size;
     	}
+        //printInstruction(instructions[tail]);
     }
 
     void executingEntry(int i) {
         buffer[i][STATUS] = EXECUTING;
+    }
+
+    void finishedEntry(int i) {
+        buffer[i][STATUS] = FINISHED;
     }
 
     void printBuffer() {

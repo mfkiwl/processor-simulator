@@ -61,11 +61,15 @@ class ALU {
                         result = operands[1] - operands[2];
                         break;
                 }
-            }
-            //reset inputs
-            opcode = 0;
-            for(int i = 0; i < 3; i++) {
-                operands[i] = 0;
+
+                //tell the reorder buffer that we are finished executing the instruction
+                reorderBuffer->finishedEntry(reorderBufferIndex);
+
+                //reset inputs
+                opcode = 0;
+                for(int i = 0; i < 3; i++) {
+                    operands[i] = 0;
+                }
             }
         }
 

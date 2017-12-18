@@ -59,6 +59,9 @@ class BranchUnit {
                         break;
                 }
 
+                //tell the reorder buffer that we are finished executing the instruction
+                reorderBuffer->finishedEntry(reorderBufferIndex);
+
                 //increment the number of instructions executed
                 //(*noOfInstructionsExecuted) += 1;
 

@@ -34,8 +34,8 @@ class LoadStoreUnit {
             bufferSize(100),
             writeCycles(5),
             readCycles(5),
-            storeQueue(memory, bufferSize, writeCycles),
-            loadQueue(memory, registerFile, bufferSize, readCycles)
+            storeQueue(memory, reorderBuffer, bufferSize, writeCycles),
+            loadQueue(memory, registerFile, reorderBuffer, bufferSize, readCycles)
         {
             //initially set all operands to zero
             for(int i = 0; i < 3; i++) {
@@ -62,7 +62,7 @@ class LoadStoreUnit {
                         destinationRegister = operands[0];
                         address = 0 + operands[1];
                         //and to the read buffer to be read from memory when ready
-                        loadQueue.addToBuffer(operands[0], address);
+                        loadQueue.addToBuffer(operands[0], address, reorderBufferIndex);
                         break;
     		        case SW:
                     case SWR:
@@ -70,7 +70,7 @@ class LoadStoreUnit {
                         address = 0 + operands[1];
                         value = registerFile->getRegisterValue(operands[0]);
                         //and to the write buffer to be written to memory when ready
-                        storeQueue.addToBuffer(address, value);
+                        storeQueue.addToBuffer(address, value, reorderBufferIndex);
                         break;
                 }
 

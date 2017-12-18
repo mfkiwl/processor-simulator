@@ -201,6 +201,7 @@ class DecodeUnit {
                     registerFile->setScoreBoardValue(operands[0],0);
                     //Instruction has been issued so add entry to the reorder buffer
                     reorderBufferIndex = reorderBuffer->addEntry(STORE_TO_REGISTER, operands[0], currentInstruction);
+                    loadStoreUnit->setReorderBufferIndex(reorderBufferIndex);
                     break;
                 case SW:
                 case SWR:

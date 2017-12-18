@@ -105,6 +105,7 @@ class Processor {
 
                 //writeback the result
                 writeback();
+                reorderBuffer.retire();
                 //execute the instruction
                 execute();
 
