@@ -46,6 +46,9 @@ class LoadStoreUnit {
         void execute() {
             if(opcode != 0) {
 
+                //tell reorder buffer that we are executing the instruction
+                reorderBuffer->executingEntry(reorderBufferIndex);
+
                 //variables to hold temperary info
                 int destinationRegister;
                 int address;

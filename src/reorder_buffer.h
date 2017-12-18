@@ -54,6 +54,10 @@ class ReorderBuffer {
     	}
     }
 
+    void executingEntry(int i) {
+        buffer[i][STATUS] = EXECUTING;
+    }
+
     void printBuffer() {
     	printf("Reorder buffer: \n");
     	printf("tail: %d\n", tail);

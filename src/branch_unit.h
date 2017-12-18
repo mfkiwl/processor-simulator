@@ -18,10 +18,12 @@ class BranchUnit {
 
     public:
         BranchUnit(ReorderBuffer* reorderBuffer, int* pc, int* flushFlag, int* runningFlag) : 
+            reorderBuffer(reorderBuffer),
             pc(pc),
             flushFlag(flushFlag),
             runningFlag(runningFlag),
-            opcode(0)
+            opcode(0),
+            reorderBufferIndex(0)
         {
             for(int i = 0; i < 3; i++) {
                 operands[i] = 0;
@@ -30,6 +32,9 @@ class BranchUnit {
 
         void execute() {
             if(opcode != 0) {
+                //tell reorder buffer that we are executing the instruction
+                reorderBuffer->executingEntry(reorderBufferIndex);
+
                 //execute the instruction
                 switch(opcode) {
                     case BEQ:

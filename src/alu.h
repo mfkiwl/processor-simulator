@@ -36,6 +36,8 @@ class ALU {
 
         void execute() {
             if(opcode != 0) {
+                //tell reorder buffer that we are executing the instruction
+                reorderBuffer->executingEntry(reorderBufferIndex);
                 //execute the instruction
                 destinationRegister = operands[0];
                 if(bypassing) {
