@@ -1,7 +1,8 @@
 class DecodeUnit {
     //forward components
-    ALU* alu;
     RegisterFile* registerFile;
+    ReorderBuffer* reorderBuffer;
+    ALU* alu;
     BranchUnit* branchUnit;
     LoadStoreUnit* loadStoreUnit;
 
@@ -23,8 +24,9 @@ class DecodeUnit {
     int bypassingOperand;
 
     public:
-    	DecodeUnit(RegisterFile* registerFile, ALU* alu, BranchUnit* branchUnit, LoadStoreUnit* loadStoreUnit, int* blockingFlag) :
+    	DecodeUnit(RegisterFile* registerFile, ReorderBuffer* reorderBuffer, ALU* alu, BranchUnit* branchUnit, LoadStoreUnit* loadStoreUnit, int* blockingFlag) :
             registerFile(registerFile),
+            reorderBuffer(reorderBuffer),
     	    alu(alu),
     	    branchUnit(branchUnit),
     	    loadStoreUnit(loadStoreUnit),
@@ -183,6 +185,8 @@ class DecodeUnit {
                     //Setting the scoreBoard values of the destination register to 0
                     registerFile->setScoreBoardValue(operands[0],0);
                     alu->setBypassing(bypassing, bypassingOperand);
+                    //Instruction has been issued so add entry to the reorder buffer
+                    reorderBuffer->addEntry(STORE_TO_REGISTER, operands[0], currentInstruction);
                     break;
                 //Load Store unit instructions
                 case LW:
@@ -192,12 +196,16 @@ class DecodeUnit {
                     loadStoreUnit->setNextInstruction(currentInstruction);
                     //Setting the scoreBoard values of the destination register to 0
                     registerFile->setScoreBoardValue(operands[0],0);
+                    //Instruction has been issued so add entry to the reorder buffer
+                    reorderBuffer->addEntry(STORE_TO_REGISTER, operands[0], currentInstruction);
                     break;
                 case SW:
                 case SWR:
                     loadStoreUnit->setOpcode(opcode);
                     loadStoreUnit->setOperands(operands);
                     loadStoreUnit->setNextInstruction(currentInstruction);
+                    //Instruction has been issued so add entry to the reorder buffer
+                    reorderBuffer->addEntry(STORE_TO_MEMORY, operands[1], currentInstruction);
                     break;
                 //Branch unit instructions
                 case BEQ:

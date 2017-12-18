@@ -36,10 +36,10 @@ class ReorderBuffer {
         instructions = new Instruction[size];
     }
 
-    void addEntry(Type type, int destination, int result, Instruction instruction) {
+    void addEntry(Type type, int destination, Instruction instruction) {
     	buffer[head][TYPE] = type;
     	buffer[head][DESTINATION] = destination;
-    	buffer[head][RESULT] = result;
+    	buffer[head][RESULT] = 0;
     	buffer[head][STATUS] = ISSUED;
     	head = (head + 1) % size;
     }
