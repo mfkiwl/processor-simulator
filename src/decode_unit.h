@@ -172,6 +172,7 @@ class DecodeUnit {
         }
 
         void pipe() {
+            int reorderBufferIndex;
             switch(opcode) {
                 //ALU instructions
                 case ADD:
@@ -187,7 +188,8 @@ class DecodeUnit {
                     registerFile->setScoreBoardValue(operands[0],0);
                     alu->setBypassing(bypassing, bypassingOperand);
                     //Instruction has been issued so add entry to the reorder buffer
-                    reorderBuffer->addEntry(STORE_TO_REGISTER, operands[0], currentInstruction);
+                    reorderBufferIndex = reorderBuffer->addEntry(STORE_TO_REGISTER, operands[0], currentInstruction);
+                    alu->setReorderBufferIndex(reorderBufferIndex);
                     break;
                 //Load Store unit instructions
                 case LW:
@@ -198,7 +200,7 @@ class DecodeUnit {
                     //Setting the scoreBoard values of the destination register to 0
                     registerFile->setScoreBoardValue(operands[0],0);
                     //Instruction has been issued so add entry to the reorder buffer
-                    reorderBuffer->addEntry(STORE_TO_REGISTER, operands[0], currentInstruction);
+                    reorderBufferIndex = reorderBuffer->addEntry(STORE_TO_REGISTER, operands[0], currentInstruction);
                     break;
                 case SW:
                 case SWR:
@@ -206,7 +208,8 @@ class DecodeUnit {
                     loadStoreUnit->setOpcode(opcode);
                     loadStoreUnit->setOperands(operands);
                     //Instruction has been issued so add entry to the reorder buffer
-                    reorderBuffer->addEntry(STORE_TO_MEMORY, operands[1], currentInstruction);
+                    reorderBufferIndex = reorderBuffer->addEntry(STORE_TO_MEMORY, operands[1], currentInstruction);
+                    loadStoreUnit->setReorderBufferIndex(reorderBufferIndex);
                     break;
                 //Branch unit instructions
                 case BEQ:
@@ -215,7 +218,8 @@ class DecodeUnit {
                     branchUnit->setOpcode(opcode);
                     branchUnit->setOperands(operands);
                     //Instruction has been issued so add entry to the reorder buffer
-                    reorderBuffer->addEntry(JUMP, operands[2], currentInstruction);
+                    reorderBufferIndex = reorderBuffer->addEntry(JUMP, operands[2], currentInstruction);
+                    branchUnit->setReorderBufferIndex(reorderBufferIndex);
                     break;
                 case BGEZ:
                 case BGTZ:
@@ -232,7 +236,8 @@ class DecodeUnit {
                     branchUnit->setOpcode(opcode);
                     branchUnit->setOperands(operands);
                     //Instruction has been issued so add entry to the reorder buffer
-                    reorderBuffer->addEntry(SYSCALL, operands[0], currentInstruction);
+                    reorderBufferIndex = reorderBuffer->addEntry(SYSCALL, operands[0], currentInstruction);
+                    branchUnit->setReorderBufferIndex(reorderBufferIndex);
                     break;
             }
             //reset the decoding

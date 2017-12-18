@@ -16,6 +16,9 @@ class ALU {
     int bypassing;
     int bypassingOperand;
 
+    //position in the reorder buffer
+    int reorderBufferIndex;
+
     public:
         ALU(RegisterFile* registerFile, ReorderBuffer* reorderBuffer) : 
             registerFile(registerFile),
@@ -108,5 +111,9 @@ class ALU {
             for(int i = 0; i < 3; i++) {
                 operands[i] = 0;
             }
+        }
+
+        void setReorderBufferIndex(int i) {
+            reorderBufferIndex = i;
         }
 };

@@ -13,6 +13,9 @@ class BranchUnit {
     int* flushFlag;
     int* runningFlag;
 
+    //position in the reorder buffer
+    int reorderBufferIndex;
+
     public:
         BranchUnit(ReorderBuffer* reorderBuffer, int* pc, int* flushFlag, int* runningFlag) : 
             pc(pc),
@@ -77,5 +80,9 @@ class BranchUnit {
             for(int i = 0; i < 3; i++) {
                 operands[i] = 0;
             }
+        }
+
+        void setReorderBufferIndex(int i) {
+            reorderBufferIndex = i;
         }
 };

@@ -19,6 +19,9 @@ class LoadStoreUnit {
     StoreQueue storeQueue;
     LoadQueue loadQueue;
 
+    //position in the reorder buffer
+    int reorderBufferIndex;
+
     public:
         LoadStoreUnit(Memory* memory, RegisterFile* registerFile, ReorderBuffer* reorderBuffer, int* blockingFlag) :
             //set initial opcode value to zero
@@ -112,5 +115,9 @@ class LoadStoreUnit {
             for(int i = 0; i < 3; i++) {
                 operands[i] = 0;
             }
+        }
+
+        void setReorderBufferIndex(int i) {
+            reorderBufferIndex = i;
         }
 };
