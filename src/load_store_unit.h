@@ -10,9 +10,6 @@ class LoadStoreUnit {
     //tells the processor whether or not to block the pipeline
     int *blockingFlag;
 
-    //no of instruction executed
-    int* noOfInstructionsExecuted;
-
     //for debugging purposes
     Instruction nextInstruction;
 
@@ -25,20 +22,19 @@ class LoadStoreUnit {
     LoadQueue loadQueue;
 
     public:
-        LoadStoreUnit(Memory* memory, RegisterFile* registerFile, int* noOfInstructionsExecuted, int* blockingFlag) :
+        LoadStoreUnit(Memory* memory, RegisterFile* registerFile, int* blockingFlag) :
             //set initial opcode value to zero
             opcode(0),
             //connected components
             memory(memory),
             registerFile(registerFile),
-            noOfInstructionsExecuted(noOfInstructionsExecuted),
             blockingFlag(blockingFlag),
             nextInstruction((Instruction) {0,0,0,0}),
             bufferSize(100),
             writeCycles(5),
             readCycles(5),
-            storeQueue(memory, noOfInstructionsExecuted, bufferSize, writeCycles),
-            loadQueue(memory, registerFile, noOfInstructionsExecuted, bufferSize, readCycles)
+            storeQueue(memory, bufferSize, writeCycles),
+            loadQueue(memory, registerFile, bufferSize, readCycles)
         {
             //initially set all operands to zero
             for(int i = 0; i < 3; i++) {

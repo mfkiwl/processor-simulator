@@ -19,12 +19,9 @@ class StoreQueue {
     //all the inflight instructions
     Instruction* nextInstructions;
 
-    int* noOfInstructionsExecuted;
-
 public:
-	StoreQueue(Memory* memory, int* noOfInstructionsExecuted, int size, int steps) : 
+	StoreQueue(Memory* memory, int size, int steps) : 
 	    memory(memory),
-        noOfInstructionsExecuted(noOfInstructionsExecuted),
 	    size(size),
 	    head(0),
 	    tail(0),
@@ -105,7 +102,7 @@ public:
                 int value = buffer[i][VALUE];
                 memory->storeInMemory(address, value);
                 //increment the number of instructions executed
-                (*noOfInstructionsExecuted) += 1;
+                //(*noOfInstructionsExecuted) += 1;
                 //print the write instruction that has been executed
                 cout << "Executed instruction: ";
                 printInstruction(nextInstructions[i]);

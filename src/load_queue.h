@@ -20,13 +20,10 @@ class LoadQueue {
     //all the inflight instructions
     Instruction* nextInstructions;
 
-    int* noOfInstructionsExecuted;
-
 public:
-	LoadQueue(Memory* memory, RegisterFile* registerFile, int* noOfInstructionsExecuted, int size, int steps) : 
+	LoadQueue(Memory* memory, RegisterFile* registerFile, int size, int steps) : 
         memory(memory),
         registerFile(registerFile),
-        noOfInstructionsExecuted(noOfInstructionsExecuted),
         size(size),
         head(0),
         tail(0),
@@ -108,7 +105,7 @@ public:
                 int value = memory->loadFromMemory(address);
                 registerFile->setRegisterValue(destinationRegister, value);
                 //increment the number of instructions executed
-                (*noOfInstructionsExecuted) += 1;
+                //(*noOfInstructionsExecuted) += 1;
                 //set the scoreBoard value of the destination register to 1
                 registerFile->setScoreBoardValue(destinationRegister,1);
                 //print the instruction that has been executed

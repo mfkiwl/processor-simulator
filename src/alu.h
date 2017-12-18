@@ -11,9 +11,6 @@ class ALU {
     int destinationRegister;
     int result;
 
-    //no of instruction executed by the processor
-    int* noOfInstructionsExecuted;
-
     //for debugging purposes
     Instruction nextInstruction;
     Instruction currentInstruction;
@@ -23,10 +20,9 @@ class ALU {
     int bypassingOperand;
 
     public:
-        ALU(RegisterFile* registerFile, int* noOfInstructionsExecuted) : 
+        ALU(RegisterFile* registerFile) : 
             registerFile(registerFile), 
             opcode(0),
-            noOfInstructionsExecuted(noOfInstructionsExecuted),
             destinationRegister(-1),
             result(0),
             bypassing(0),
@@ -88,7 +84,7 @@ class ALU {
                 registerFile->setScoreBoardValue(destinationRegister, 1);
 
                 //increment the number of instructions executed
-                (*noOfInstructionsExecuted) += 1;
+                //(*noOfInstructionsExecuted) += 1;
 
                 //print the instruction that has been executed
                 cout << "Executed instruction: ";

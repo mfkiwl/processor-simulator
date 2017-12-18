@@ -11,18 +11,14 @@ class BranchUnit {
     int* flushFlag;
     int* runningFlag;
 
-    //no of total instruction executed by the processor
-    int* noOfInstructionsExecuted;
-
     //for debugging purposes
     Instruction nextInstruction;
 
     public:
-        BranchUnit(int* pc, int* flushFlag, int* runningFlag, int* noOfInstructionsExecuted) : 
+        BranchUnit(int* pc, int* flushFlag, int* runningFlag) : 
             pc(pc),
             flushFlag(flushFlag),
             runningFlag(runningFlag),
-            noOfInstructionsExecuted(noOfInstructionsExecuted),
             opcode(0)
         {
             for(int i = 0; i < 3; i++) {
@@ -57,7 +53,7 @@ class BranchUnit {
                 }
 
                 //increment the number of instructions executed
-                (*noOfInstructionsExecuted) += 1;
+                //(*noOfInstructionsExecuted) += 1;
 
                 //print the instruction that has been executed
                 cout << "Executed instruction: ";

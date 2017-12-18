@@ -10,12 +10,16 @@ class ReorderBuffer {
     //stores the original instruction issued
     Instruction* instructions;
 
+    //no of instruction executed by the processor
+    int* noOfInstructionsExecuted;
+
     public:
-    ReorderBuffer(int size) : 
+    ReorderBuffer(int size, int* noOfInstructionsExecuted) : 
         size(size),
         head(0),
         tail(0),
-        bufferEntryFields(4)
+        bufferEntryFields(4),
+        noOfInstructionsExecuted(noOfInstructionsExecuted)
     {
     	//dynamically allocated a 2d array to the read and write buffer
         buffer = new int*[size];

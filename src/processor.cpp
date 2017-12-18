@@ -46,6 +46,7 @@ class Processor {
     //components
     RegisterFile registerFile;
     Memory memory;
+    ReorderBuffer reorderBuffer;
     FetchUnit fetchUnit;
     DecodeUnit decodeUnit;
     ALU alu;
@@ -80,11 +81,12 @@ class Processor {
             //components
             registerFile(noOfRegisters), 
             memory(memorySize),
+            reorderBuffer(100, &noOfInstructionsExecuted),
             fetchUnit(instructions, noOfInstructions, &pc, &decodeUnit),
             decodeUnit(&registerFile, &alu, &branchUnit, &loadStoreUnit, &decodeUnitBlockingFlag),
-            alu(&registerFile, &noOfInstructionsExecuted),
-            branchUnit(&pc, &flushFlag, &runningFlag, &noOfInstructionsExecuted),
-            loadStoreUnit(&memory, &registerFile, &noOfInstructionsExecuted, &loadStoreUnitBlockingFlag)
+            alu(&registerFile),
+            branchUnit(&pc, &flushFlag, &runningFlag),
+            loadStoreUnit(&memory, &registerFile, &loadStoreUnitBlockingFlag)
         {}
 
 
