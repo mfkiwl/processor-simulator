@@ -91,7 +91,7 @@ class LoadStoreUnit {
             blockIfWaitingForMemoryOperation();
         }
 
-        void writeback() {
+        void writeResult() {
             //perform the read and write instructions when the step number has been met
             storeQueue.writeIfReady();
             loadQueue.readIfReady();

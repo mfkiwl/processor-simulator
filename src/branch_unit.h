@@ -41,7 +41,6 @@ class BranchUnit {
             if(opcode != 0) {
                 //tell reorder buffer that we are executing the instruction
                 reorderBuffer->executingEntry(reorderBufferIndex);
-                successful = 0;
                 //execute the instruction
                 switch(opcode) {
                     case BEQ:
@@ -67,10 +66,7 @@ class BranchUnit {
                         //tell the processor that the program had finished
                         //*runningFlag = 0;
                         break;
-                }
-
-                //tell the reorder buffer that we are finished executing the instruction
-                reorderBuffer->finishedEntry(reorderBufferIndex, successful);
+                } 
 
                 //reset variables
                 opcode = 0;
@@ -78,6 +74,15 @@ class BranchUnit {
                     operands[i] = 0;
                 }
             }
+        }
+
+        void writeResult() {
+            if(reorderBufferIndex != -1) {
+                //tell the reorder buffer that we are finished executing the instruction
+                reorderBuffer->finishedEntry(reorderBufferIndex, successful);
+            }
+            reorderBufferIndex = -1;
+            successful = 0;
         }
 
         void setOpcode(int x) {

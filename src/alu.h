@@ -76,7 +76,7 @@ class ALU {
             }
         }
 
-        void writeback() {
+        void writeResult() {
             if(destinationRegister != -1) {
                 //tell the reorder buffer that we are finished executing the instruction
                 reorderBuffer->finishedEntry(currentReorderBufferIndex, result);

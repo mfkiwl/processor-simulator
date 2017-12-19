@@ -106,7 +106,7 @@ class Processor {
 
                 //hold up the program at each clock cycle
                 char str[3];
-                fgets(str, 2, stdin);
+                //fgets(str, 2, stdin);
 
                 //if the pipeline is not being blocked
                 if(!decodeUnitBlockingFlag && !loadStoreUnitBlockingFlag) {
@@ -123,7 +123,7 @@ class Processor {
                 execute();
 
                  //write the results to the reorder buffer
-                writeback();      
+                writeResult();      
 
                 //writeback the results
                 commit();
@@ -162,9 +162,10 @@ class Processor {
             loadStoreUnit.execute();
         }
 
-        void writeback() {
-            alu.writeback();
-            loadStoreUnit.writeback();
+        void writeResult() {
+            alu.writeResult();
+            loadStoreUnit.writeResult();
+            branchUnit.writeResult();
         }
 
         void commit() {
