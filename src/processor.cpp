@@ -122,16 +122,16 @@ class Processor {
                 //execute the instruction
                 execute();
 
-                //check if we should flush the pipeline
-                if(flushFlag == 1) {
-                    flushPipeline();
-                }
-
                  //write the results to the reorder buffer
                 writeback();      
 
                 //writeback the results
                 commit();
+
+                //check if we should flush the pipeline
+                if(flushFlag == 1) {
+                    flushPipeline();
+                }
 
                 //update info
                 noOfClockCycles++;
