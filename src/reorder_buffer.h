@@ -12,6 +12,7 @@ class ReorderBuffer {
 
     int* pc;
     int* flushFlag;
+    int* runningFlag;
 
     int** buffer;
     int size;
@@ -27,12 +28,13 @@ class ReorderBuffer {
     int* noOfInstructionsExecuted;
 
     public:
-    ReorderBuffer(RegisterFile* registerFile, Memory* memory, LoadStoreUnit* loadStoreUnit, int* pc, int* flushFlag, int* noOfInstructionsExecuted) : 
+    ReorderBuffer(RegisterFile* registerFile, Memory* memory, LoadStoreUnit* loadStoreUnit, int* pc, int* flushFlag, int* runningFlag, int* noOfInstructionsExecuted) : 
         registerFile(registerFile),
         memory(memory),
         loadStoreUnit(loadStoreUnit),
         pc(pc),
         flushFlag(flushFlag),
+        runningFlag(runningFlag),
         size(100),
         head(0),
         tail(0),
@@ -91,6 +93,10 @@ class ReorderBuffer {
                 printf("JUMPING\n");
                 *pc = buffer[tail][DESTINATION];
                 *flushFlag = 1;
+            }
+            if(buffer[tail][TYPE] == SYSCALL) {
+                printf("HALTING\n");
+                *runningFlag = 0;
             }
             cout << endl << "Finished Instruction: ";
             printInstruction(instructions[tail]);
