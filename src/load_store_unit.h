@@ -4,7 +4,6 @@
 class LoadStoreUnit {
     //forward components
     Memory* memory;
-    RegisterFile* registerFile;
     ReorderBuffer* reorderBuffer;
 
     //decoded instruction
@@ -26,19 +25,18 @@ class LoadStoreUnit {
     int reorderBufferIndex;
 
     public:
-        LoadStoreUnit(Memory* memory, RegisterFile* registerFile, ReorderBuffer* reorderBuffer, int* blockingFlag) :
+        LoadStoreUnit(Memory* memory, ReorderBuffer* reorderBuffer, int* blockingFlag) :
             //set initial opcode value to zero
             opcode(0),
             //connected components
             memory(memory),
-            registerFile(registerFile),
             reorderBuffer(reorderBuffer),
             blockingFlag(blockingFlag),
             bufferSize(100),
             writeCycles(5),
             readCycles(5),
             storeQueue(memory, reorderBuffer, bufferSize, writeCycles),
-            loadQueue(memory, registerFile, reorderBuffer, bufferSize, readCycles)
+            loadQueue(memory, reorderBuffer, bufferSize, readCycles)
         {
             //initially set all operands to zero
             for(int i = 0; i < 3; i++) {
@@ -71,8 +69,8 @@ class LoadStoreUnit {
     		        case SW:
                     case SWR:
                         //get the address in memory to update and the value to update it to
+                        value = operands[0];
                         address = 0 + operands[1];
-                        value = registerFile->getRegisterValue(operands[0]);
                         //and to the write buffer to be written to memory when ready
                         storeQueue.addToBuffer(address, value, reorderBufferIndex);
                         break;

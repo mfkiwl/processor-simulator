@@ -3,7 +3,6 @@
 
 class LoadQueue {
 	Memory* memory;
-    RegisterFile* registerFile;
     ReorderBuffer* reorderBuffer;
 
     //write buffer to hold inflight write operation info
@@ -25,9 +24,8 @@ class LoadQueue {
     int numberReady;
 
 public:
-	LoadQueue(Memory* memory, RegisterFile* registerFile, ReorderBuffer* reorderBuffer, int size, int steps) : 
+	LoadQueue(Memory* memory, ReorderBuffer* reorderBuffer, int size, int steps) : 
         memory(memory),
-        registerFile(registerFile),
         reorderBuffer(reorderBuffer),
         size(size),
         head(0),
@@ -108,11 +106,8 @@ public:
                 int destinationRegister = buffer[i][DESTINATION];
                 int address = buffer[i][ADDRESS];
                 int value = memory->loadFromMemory(address);
-                //registerFile->setRegisterValue(destinationRegister, value);
                 //tell the reorder buffer that we are finished executing the instruction
                 reorderBuffer->finishedEntry(buffer[i][REORDER_BUFFER_INDEX], value);
-                //set the scoreBoard value of the destination register to 1
-                registerFile->setScoreBoardValue(destinationRegister,1);
                 //reset write buffer entry
                 buffer[i][DESTINATION] = 0;
                 buffer[i][ADDRESS] = 0;

@@ -91,7 +91,7 @@ class Processor {
             decodeUnit(&registerFile, &reorderBuffer, &alu, &branchUnit, &loadStoreUnit, &decodeUnitBlockingFlag),
             alu(&registerFile, &reorderBuffer),
             branchUnit(&reorderBuffer, &pc, &flushFlag, &runningFlag),
-            loadStoreUnit(&memory, &registerFile, &reorderBuffer, &loadStoreUnitBlockingFlag)
+            loadStoreUnit(&memory, &reorderBuffer, &loadStoreUnitBlockingFlag)
         {}
 
 

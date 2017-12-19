@@ -106,12 +106,37 @@ class DecodeUnit {
                     }
                     break;
                 case LW:
+                    break;
                 case SW:
+                    if(registerFile->getScoreBoardValue(operands[0])) {
+                        registerNum = operands[0];
+                        val = registerFile->getRegisterValue(registerNum);
+                        operands[0] = val;
+                        *blockingFlag = 0;
+                    }
+                    else {
+                        *blockingFlag = 1;
+                    }
                     break;
                 case LWR:
-                case SWR:
                     //If the source registers are ready then continue
                     if(registerFile->getScoreBoardValue(operands[1])) {
+                        registerNum = operands[1];
+                        val = registerFile->getRegisterValue(registerNum);
+                        operands[1] = val;
+                        *blockingFlag = 0;
+                    }
+                    //If the source registers aren't ready then block the pipeline
+                    else {
+                        *blockingFlag = 1;
+                    }
+                    break;
+                case SWR:
+                    //If the source registers are ready then continue
+                    if(registerFile->getScoreBoardValue(operands[0]) && registerFile->getScoreBoardValue(operands[1])) {
+                        registerNum = operands[0];
+                        val = registerFile->getRegisterValue(registerNum);
+                        operands[0] = val;
                         registerNum = operands[1];
                         val = registerFile->getRegisterValue(registerNum);
                         operands[1] = val;
