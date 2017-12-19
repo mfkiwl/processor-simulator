@@ -108,9 +108,9 @@ public:
                 int destinationRegister = buffer[i][DESTINATION];
                 int address = buffer[i][ADDRESS];
                 int value = memory->loadFromMemory(address);
-                registerFile->setRegisterValue(destinationRegister, value);
+                //registerFile->setRegisterValue(destinationRegister, value);
                 //tell the reorder buffer that we are finished executing the instruction
-                reorderBuffer->finishedEntry(buffer[i][REORDER_BUFFER_INDEX], 0);
+                reorderBuffer->finishedEntry(buffer[i][REORDER_BUFFER_INDEX], value);
                 //set the scoreBoard value of the destination register to 1
                 registerFile->setScoreBoardValue(destinationRegister,1);
                 //reset write buffer entry
