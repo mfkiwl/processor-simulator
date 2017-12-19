@@ -1,3 +1,6 @@
+#ifndef _REGISTER_FILE_INCLUDED_
+#define _REGISTER_FILE_INCLUDED_
+
 using namespace std;
 class RegisterFile {
 	int numOfRegisters;
@@ -106,3 +109,5 @@ class RegisterFile {
         	}
         }
 };
+
+#endif

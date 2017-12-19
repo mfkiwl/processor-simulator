@@ -1,3 +1,6 @@
+#ifndef _INSTRUCTIONS_INCLUDED_
+#define _INSTRUCTIONS_INCLUDED_
+
 using namespace std;
 typedef struct instruction {
 	int opcode;
@@ -141,3 +144,5 @@ void printInstruction(Instruction instruction) {
             break;
     }
 }
+
+#endif

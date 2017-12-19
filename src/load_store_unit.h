@@ -1,3 +1,6 @@
+#ifndef _LOAD_STORE_UNIT_INCLUDED_
+#define _LOAD_STORE_UNIT_INCLUDED_
+
 class LoadStoreUnit {
     //forward components
     Memory* memory;
@@ -124,3 +127,5 @@ class LoadStoreUnit {
             reorderBufferIndex = i;
         }
 };
+
+#endif

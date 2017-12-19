@@ -1,3 +1,6 @@
+#ifndef _REORDER_BUFFER_INCLUDED_
+#define _REORDER_BUFFER_INCLUDED_
+
 class ReorderBuffer {
 
     RegisterFile* registerFile;
@@ -99,3 +102,5 @@ class ReorderBuffer {
     	printf("head: %d\n", head);
     }
 };
+
+#endif

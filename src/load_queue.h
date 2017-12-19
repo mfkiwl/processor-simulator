@@ -1,3 +1,6 @@
+#ifndef _LOAD_QUEUE_
+#define _LOAD_QUEUE_
+
 class LoadQueue {
 	Memory* memory;
     RegisterFile* registerFile;
@@ -125,3 +128,5 @@ public:
         }
     }
 };
+
+#endif

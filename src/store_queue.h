@@ -1,3 +1,6 @@
+#ifndef _STORE_QUEUE_INCLUDED_
+#define _STORE_QUEUE_INCLUDED_
+
 class StoreQueue {
 
     Memory* memory;
@@ -121,3 +124,5 @@ public:
         }
     }
 };
+
+#endif

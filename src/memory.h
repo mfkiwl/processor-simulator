@@ -1,3 +1,6 @@
+#ifndef _MEMORY_INCLUDED_
+#define _MEMORY_INCLUDED_
+
 class Memory {
     //the number of bytes the memory has
     int size;
@@ -34,3 +37,5 @@ class Memory {
         cout << endl;
     }
 };
+
+#endif

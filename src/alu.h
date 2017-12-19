@@ -1,3 +1,6 @@
+#ifndef _ALU_INCLUDED_
+#define _ALU_INCLUDED_
+
 class ALU {
 
     //forward components
@@ -118,3 +121,5 @@ class ALU {
             nextReorderBufferIndex = i;
         }
 };
+
+#endif

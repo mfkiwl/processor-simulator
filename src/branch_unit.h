@@ -1,3 +1,6 @@
+#ifndef _BRANCH_UNIT_INCLUDED_
+#define _BRANCH_UNIT_INCLUDED_
+
 class BranchUnit {
 	
     ReorderBuffer* reorderBuffer;
@@ -94,3 +97,5 @@ class BranchUnit {
             reorderBufferIndex = i;
         }
 };
+
+#endif

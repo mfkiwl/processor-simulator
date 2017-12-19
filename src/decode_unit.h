@@ -1,3 +1,6 @@
+#ifndef _DECODE_UNIT_INCLUDED_
+#define _DECODE_UNIT_INCLUDED_
+
 class DecodeUnit {
     //forward components
     RegisterFile* registerFile;
@@ -262,3 +265,5 @@ class DecodeUnit {
             nextInstruction = (Instruction) {0,0,0,0};
         }
 };
+
+#endif

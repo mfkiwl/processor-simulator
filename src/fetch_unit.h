@@ -1,3 +1,6 @@
+#ifndef _FETCH_UNIT_
+#define _FETCH_UNIT_
+
 class FetchUnit {
     Instruction* instructions;
     int noOfInstructions;
@@ -36,3 +39,5 @@ class FetchUnit {
         currentInstruction = (Instruction) {0,0,0,0};
     }
 };
+
+#endif

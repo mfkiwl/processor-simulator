@@ -1,3 +1,6 @@
+#ifndef _CONSTANTS_INCLUDED
+#define _CONSTANTS_INCLUDED
+
 //instruction opcodes
 enum Opcodes {
     NOOP,
@@ -41,3 +44,5 @@ enum Status {
     EXECUTING,
     FINISHED
 };
+
+#endif
