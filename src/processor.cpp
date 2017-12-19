@@ -86,11 +86,11 @@ class Processor {
             //components
             registerFile(noOfRegisters), 
             memory(memorySize),
-            reorderBuffer(&registerFile, &memory, &loadStoreUnit, &pc, &flushFlag, 100, &noOfInstructionsExecuted),
+            reorderBuffer(&registerFile, &memory, &loadStoreUnit, &pc, &flushFlag, &noOfInstructionsExecuted),
             fetchUnit(instructions, noOfInstructions, &pc, &decodeUnit),
             decodeUnit(&registerFile, &reorderBuffer, &alu, &branchUnit, &loadStoreUnit, &decodeUnitBlockingFlag),
             alu(&registerFile, &reorderBuffer),
-            branchUnit(&reorderBuffer, &pc, &flushFlag, &runningFlag),
+            branchUnit(&reorderBuffer),
             loadStoreUnit(&memory, &reorderBuffer, &loadStoreUnitBlockingFlag)
         {}
 
@@ -110,10 +110,10 @@ class Processor {
 
                 //if the pipeline is not being blocked
                 if(!decodeUnitBlockingFlag && !loadStoreUnitBlockingFlag) {
-                    //fetch the next instruction
-                    fetch();
                     //propogate values through pipeline
                     pipe();
+                    //fetch the next instruction
+                    fetch();
                 }
 
                 //decode the instruction
@@ -180,6 +180,7 @@ class Processor {
             decodeUnit.flush();
             flushFlag = 0;
             registerFile.resetScoreBoard();
+            reorderBuffer.flush();
         }
 
         void printInfo() {
@@ -198,7 +199,6 @@ class Processor {
             cout << "PC: " << pc << endl;
             registerFile.printRegisters();
             cout << endl;
-            memory.printMemory();
         }
 };
 

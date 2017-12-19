@@ -22,10 +22,6 @@ class DecodeUnit {
     int opcode;
     int operands[3];
 
-    //bypassing variables
-    int bypassing;
-    int bypassingOperand;
-
     public:
     	DecodeUnit(RegisterFile* registerFile, ReorderBuffer* reorderBuffer, ALU* alu, BranchUnit* branchUnit, LoadStoreUnit* loadStoreUnit, int* blockingFlag) :
             registerFile(registerFile),
@@ -36,9 +32,7 @@ class DecodeUnit {
             nextInstruction((Instruction) {0,0,0}),
             currentInstruction((Instruction) {0,0,0}),
             opcode(0),
-            blockingFlag(blockingFlag),
-            bypassing(0),
-            bypassingOperand(0)
+            blockingFlag(blockingFlag)
         {
             for(int i = 0; i < 3; i++) {
                 operands[i] = 0;
@@ -60,20 +54,7 @@ class DecodeUnit {
                 case OR:
                 case SUB:
                     //if the source registers are ready then continue
-                    if(
-                        (registerFile->getScoreBoardValue(operands[1]) || alu->canBypass(operands[1])) && 
-                        (registerFile->getScoreBoardValue(operands[2]) || alu->canBypass(operands[2]))
-                    ) {
-                        if(alu->canBypass(operands[1])) {
-                            bypassing = 1;
-                            bypassingOperand = 1;
-                            printf("BYPASSING\n");
-                        }
-                        if(alu->canBypass(operands[2])) {
-                            bypassing = 1;
-                            bypassingOperand = 2;
-                            printf("BYPASSING\n");
-                        }
+                    if(registerFile->getScoreBoardValue(operands[1]) && registerFile->getScoreBoardValue(operands[2])) {
                         for(int i = 1; i < 3; i++) {
                             registerNum = operands[i];
                             val = registerFile->getRegisterValue(registerNum);
@@ -88,13 +69,7 @@ class DecodeUnit {
                     break;
                 case ADDI:
                     //If the source registers are ready then continue
-                    if(
-                        registerFile->getScoreBoardValue(operands[1]) || alu->canBypass(operands[1])
-                    ) {
-                        if(alu->canBypass(operands[1])) {
-                            bypassing = 1;
-                            bypassingOperand = 1;
-                        }
+                    if(registerFile->getScoreBoardValue(operands[1])) {
                         registerNum = operands[1];
                         val = registerFile->getRegisterValue(registerNum);
                         operands[1] = val;
@@ -214,7 +189,6 @@ class DecodeUnit {
                     alu->setOperands(operands);
                     //Setting the scoreBoard values of the destination register to 0
                     registerFile->setScoreBoardValue(operands[0],0);
-                    alu->setBypassing(bypassing, bypassingOperand);
                     //Instruction has been issued so add entry to the reorder buffer
                     reorderBufferIndex = reorderBuffer->addEntry(STORE_TO_REGISTER, operands[0], currentInstruction);
                     alu->setReorderBufferIndex(reorderBufferIndex);
@@ -274,8 +248,6 @@ class DecodeUnit {
             for(int i = 0; i < 3; i++) {
                 operands[i] = 0;
             }
-            bypassing = 0;
-            bypassingOperand = 0;
         }
 
         void setNextInstruction(Instruction x) {
@@ -288,6 +260,7 @@ class DecodeUnit {
                 operands[i] = 0;
             }
             nextInstruction = (Instruction) {0,0,0,0};
+            currentInstruction = (Instruction) {0,0,0,0};
         }
 };
 

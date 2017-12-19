@@ -51,6 +51,17 @@ public:
         }
     }
 
+    void flush() {
+        for(int i = 0; i < size; i++) {
+            buffer[i][DESTINATION] = 0;
+            buffer[i][ADDRESS] = 0;
+            buffer[i][REORDER_BUFFER_INDEX] = 0;
+            buffer[i][STEP] = 0;
+        }
+        head = 0;
+        tail = 0;
+    }
+
     void stepInstructions() {
         //increment the current step for all inflight instructions in the read buffer
         for(int i = head; i < tail; i++) {

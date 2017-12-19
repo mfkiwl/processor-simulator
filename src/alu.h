@@ -15,10 +15,6 @@ class ALU {
     int destinationRegister;
     int result;
 
-    //bypassing variables
-    int bypassing;
-    int bypassingOperand;
-
     //position in the reorder buffer
     int nextReorderBufferIndex;
     int currentReorderBufferIndex;
@@ -29,9 +25,7 @@ class ALU {
             reorderBuffer(reorderBuffer),
             opcode(0),
             destinationRegister(-1),
-            result(0),
-            bypassing(0),
-            bypassingOperand(0)
+            result(0)
         {
             for(int i = 0; i < 3; i++) {
                 operands[i] = 0;
@@ -44,9 +38,6 @@ class ALU {
                 reorderBuffer->executingEntry(nextReorderBufferIndex);
                 //execute the instruction
                 destinationRegister = operands[0];
-                if(bypassing) {
-                    operands[bypassingOperand] = result;
-                }
                 switch(opcode) {
                     case ADD:
                     case ADDI:
@@ -95,11 +86,6 @@ class ALU {
             }
         }
 
-        void setBypassing(int a, int b) {
-            bypassing = a;
-            bypassingOperand = b;
-        }
-
         void setOpcode(int x) {
             opcode = x;
         }
@@ -115,6 +101,10 @@ class ALU {
             for(int i = 0; i < 3; i++) {
                 operands[i] = 0;
             }
+            nextReorderBufferIndex = -1;
+            currentReorderBufferIndex = -1;
+            destinationRegister = -1;
+            result = 0;
         }
 
         void setReorderBufferIndex(int i) {

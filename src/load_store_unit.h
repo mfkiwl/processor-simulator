@@ -36,7 +36,8 @@ class LoadStoreUnit {
             writeCycles(5),
             readCycles(5),
             storeQueue(memory, reorderBuffer, bufferSize, writeCycles),
-            loadQueue(memory, reorderBuffer, bufferSize, readCycles)
+            loadQueue(memory, reorderBuffer, bufferSize, readCycles),
+            reorderBufferIndex(-1)
         {
             //initially set all operands to zero
             for(int i = 0; i < 3; i++) {
@@ -120,6 +121,9 @@ class LoadStoreUnit {
             for(int i = 0; i < 3; i++) {
                 operands[i] = 0;
             }
+            reorderBufferIndex = -1;
+            storeQueue.flush();
+            loadQueue.flush();
         }
 
         void setReorderBufferIndex(int i) {

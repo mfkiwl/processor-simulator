@@ -19,14 +19,18 @@ class BranchUnit {
     //position in the reorder buffer
     int reorderBufferIndex;
 
+    //if the branch condition is met or not
+    int successful;
+
     public:
-        BranchUnit(ReorderBuffer* reorderBuffer, int* pc, int* flushFlag, int* runningFlag) : 
+        BranchUnit(ReorderBuffer* reorderBuffer) : 
             reorderBuffer(reorderBuffer),
             pc(pc),
             flushFlag(flushFlag),
             runningFlag(runningFlag),
             opcode(0),
-            reorderBufferIndex(0)
+            reorderBufferIndex(-1),
+            successful(0)
         {
             for(int i = 0; i < 3; i++) {
                 operands[i] = 0;
@@ -37,36 +41,36 @@ class BranchUnit {
             if(opcode != 0) {
                 //tell reorder buffer that we are executing the instruction
                 reorderBuffer->executingEntry(reorderBufferIndex);
-
+                successful = 0;
                 //execute the instruction
                 switch(opcode) {
                     case BEQ:
                         if(operands[0] == operands[1]) {
-                            *pc = operands[2];
-                            *flushFlag = 1;
+                            successful = 1;
+                            //*pc = operands[2];
+                            //*flushFlag = 1;
                         }
                         break;
                     case BNE:
                         if(operands[0] != operands[1]) {
-                            *pc = operands[2];
-                            *flushFlag = 1;
+                            successful = 1;
+                            //*pc = operands[2];
+                            //*flushFlag = 1;
                         }
                         break;
                     case J:
-                        *pc = operands[0];
-                        *flushFlag = 1;
+                        //*pc = operands[0];
+                        //*flushFlag = 1;
                          break;
                     case HALT:
+                        successful = 1;
                         //tell the processor that the program had finished
-                        *runningFlag = 0;
+                        //*runningFlag = 0;
                         break;
                 }
 
                 //tell the reorder buffer that we are finished executing the instruction
-                reorderBuffer->finishedEntry(reorderBufferIndex, 1);
-
-                //increment the number of instructions executed
-                //(*noOfInstructionsExecuted) += 1;
+                reorderBuffer->finishedEntry(reorderBufferIndex, successful);
 
                 //reset variables
                 opcode = 0;
@@ -91,6 +95,7 @@ class BranchUnit {
             for(int i = 0; i < 3; i++) {
                 operands[i] = 0;
             }
+            reorderBufferIndex = -1;
         }
 
         void setReorderBufferIndex(int i) {

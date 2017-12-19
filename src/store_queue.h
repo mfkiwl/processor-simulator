@@ -53,6 +53,18 @@ public:
         }
     }
 
+    void flush() {
+        for(int i = 0; i < size; i++) {
+            buffer[i][ADDRESS] = 0;
+            buffer[i][VALUE] = 0;
+            buffer[i][REORDER_BUFFER_INDEX] = 0;
+            buffer[i][STEP] = 0;
+            buffer[i][HEAD] = 0;
+        }
+        head = 0;
+        tail = 0;
+    }
+
     void addToBuffer(int address, int value, int reorderBufferIndex) {
         //if the start of the buffer is empty then add here
         if(head > 0) {

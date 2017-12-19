@@ -27,13 +27,13 @@ class ReorderBuffer {
     int* noOfInstructionsExecuted;
 
     public:
-    ReorderBuffer(RegisterFile* registerFile, Memory* memory, LoadStoreUnit* loadStoreUnit, int* pc, int* flushFlag, int size, int* noOfInstructionsExecuted) : 
+    ReorderBuffer(RegisterFile* registerFile, Memory* memory, LoadStoreUnit* loadStoreUnit, int* pc, int* flushFlag, int* noOfInstructionsExecuted) : 
         registerFile(registerFile),
         memory(memory),
         loadStoreUnit(loadStoreUnit),
         pc(pc),
         flushFlag(flushFlag),
-        size(size),
+        size(100),
         head(0),
         tail(0),
         bufferEntryFields(4),
@@ -87,7 +87,7 @@ class ReorderBuffer {
             if(buffer[tail][TYPE] == STORE_TO_MEMORY) {
                 printf("STORE TO MEMORY\n");
             }
-            if(buffer[tail][TYPE] == JUMP) {
+            if(buffer[tail][TYPE] == JUMP && buffer[tail][RESULT]) {
                 printf("JUMPING\n");
                 *pc = buffer[tail][DESTINATION];
                 *flushFlag = 1;
@@ -115,6 +115,17 @@ class ReorderBuffer {
 
     void writeResult(int i, int r) {
         buffer[i][RESULT] = r;
+    }
+
+    void flush() {
+        for(int i = 0; i < size; i++) {
+            buffer[i][TYPE] = 0;
+            buffer[i][DESTINATION] = 0;
+            buffer[i][RESULT] = 0;
+            buffer[i][STATUS] = 0;
+        }
+        head = 0;
+        tail = 0;
     }
 
     void printBuffer() {
