@@ -126,6 +126,14 @@ class LoadStoreUnit {
         void setReorderBufferIndex(int i) {
             reorderBufferIndex = i;
         }
+
+        void setHead(int rbi) {
+            storeQueue.setHead(rbi);
+        }
+
+        void printStoreQueue() {
+            storeQueue.printStoreQueue();
+        }
 };
 
 #endif

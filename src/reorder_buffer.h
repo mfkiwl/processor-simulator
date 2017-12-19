@@ -54,6 +54,9 @@ class ReorderBuffer {
         instructions = new Instruction[size];
     }
 
+    //prototype definition of the setHead function, fully defined in processor.cpp
+    void setHead(LoadStoreUnit *loadStoreUnit, int rbi);
+
     int addEntry(Type type, int destination, Instruction instruction) {
     	buffer[head][TYPE] = type;
     	buffer[head][DESTINATION] = destination;
@@ -63,6 +66,12 @@ class ReorderBuffer {
     	int index = head;
     	head = (head + 1) % size;
     	return index;
+    }
+
+    void checkTailForStore() {
+        if(buffer[tail][TYPE] = STORE_TO_MEMORY) {
+            setHead(loadStoreUnit, tail);
+        }
     }
 
     void retire() {

@@ -17,6 +17,11 @@
 #include "decode_unit.h"
 #include "fetch_unit.h"
 
+//Had to do this to avoid errors from forward declaration
+void ReorderBuffer::setHead(LoadStoreUnit* loadStoreUnit, int rbi) {
+    loadStoreUnit->setHead(rbi);
+}
+
 using namespace std;
 
 
@@ -162,6 +167,7 @@ class Processor {
         }
 
         void commit() {
+            reorderBuffer.checkTailForStore();
             reorderBuffer.retire();
         }
 
@@ -191,6 +197,8 @@ class Processor {
             cout << "PC: " << pc << endl;
             registerFile.printRegisters();
             cout << endl;
+            reorderBuffer.printBuffer();
+            loadStoreUnit.printStoreQueue();
         }
 };
 
