@@ -108,11 +108,16 @@ class Processor {
                 char str[3];
                 fgets(str, 2, stdin);
 
-                //writeback the results
-                commit();
+                //if the pipeline is not being blocked
+                if(!decodeUnitBlockingFlag && !loadStoreUnitBlockingFlag) {
+                    //fetch the next instruction
+                    fetch();
+                    //propogate values through pipeline
+                    pipe();
+                }
 
-                //write the results to the reorder buffer
-                writeback();
+                //decode the instruction
+                decode();
 
                 //execute the instruction
                 execute();
@@ -122,15 +127,11 @@ class Processor {
                     flushPipeline();
                 }
 
-                //decode the instruction
-                decode();
-                //if the pipeline is not being blocked
-                if(!decodeUnitBlockingFlag && !loadStoreUnitBlockingFlag) {
-                    //fetch the next instruction
-                    fetch();
-                    //propogate values through pipeline
-                    pipe();
-                }
+                 //write the results to the reorder buffer
+                writeback();      
+
+                //writeback the results
+                commit();
 
                 //update info
                 noOfClockCycles++;
@@ -197,8 +198,7 @@ class Processor {
             cout << "PC: " << pc << endl;
             registerFile.printRegisters();
             cout << endl;
-            reorderBuffer.printBuffer();
-            loadStoreUnit.printStoreQueue();
+            memory.printMemory();
         }
 };
 

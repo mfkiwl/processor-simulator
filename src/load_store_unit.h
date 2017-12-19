@@ -66,6 +66,7 @@ class LoadStoreUnit {
                         address = 0 + operands[1];
                         //and to the read buffer to be read from memory when ready
                         loadQueue.addToBuffer(operands[0], address, reorderBufferIndex);
+                        reorderBuffer->executingEntry(reorderBufferIndex);
                         break;
     		        case SW:
                     case SWR:

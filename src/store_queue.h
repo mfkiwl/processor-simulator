@@ -94,7 +94,8 @@ public:
         for(int i = head; i < tail; i++) {
             if(buffer[i][REORDER_BUFFER_INDEX] == rbi) {
                 buffer[i][HEAD] = 1;
-                printf("SET HEAD AT %d\n", rbi);
+                reorderBuffer->executingEntry(buffer[i][REORDER_BUFFER_INDEX]);
+                reorderBuffer->setEntryResult(i, 12);
                 break;
             }
         }

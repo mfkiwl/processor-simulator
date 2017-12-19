@@ -69,7 +69,7 @@ class ReorderBuffer {
     }
 
     void checkTailForStore() {
-        if(buffer[tail][TYPE] = STORE_TO_MEMORY) {
+        if(buffer[tail][TYPE] == STORE_TO_MEMORY) {
             setHead(loadStoreUnit, tail);
         }
     }
@@ -77,14 +77,17 @@ class ReorderBuffer {
     void retire() {
     	while(buffer[tail][STATUS] == FINISHED) {
             buffer[tail][STATUS] = -1;
-            if(buffer[tail][TYPE] = STORE_TO_REGISTER) {
+            if(buffer[tail][TYPE] == STORE_TO_REGISTER) {
                 printf("STORE TO REGISTER\n");
                 //write the result to the reorder buffer
                 registerFile->setRegisterValue(buffer[tail][DESTINATION], buffer[tail][RESULT]);
                 //Set the scoreBoard of the destination register to 1
                 registerFile->setScoreBoardValue(buffer[tail][DESTINATION], 1);
             }
-            else if(buffer[tail][TYPE] = JUMP) {
+            if(buffer[tail][TYPE] == STORE_TO_MEMORY) {
+                printf("STORE TO MEMORY\n");
+            }
+            if(buffer[tail][TYPE] == JUMP) {
                 printf("JUMPING\n");
                 *pc = buffer[tail][DESTINATION];
                 *flushFlag = 1;
@@ -106,14 +109,21 @@ class ReorderBuffer {
         buffer[i][RESULT] = result;
     }
 
+    void setEntryResult(int i, int r) {
+        buffer[i][RESULT] = r;
+    }
+
     void writeResult(int i, int r) {
         buffer[i][RESULT] = r;
     }
 
     void printBuffer() {
-    	printf("Reorder buffer: \n");
-    	printf("tail: %d\n", tail);
-    	printf("head: %d\n", head);
+        cout << endl;
+        cout << "Reorder Buffer:" << endl;
+    	for(int i = tail; i < head; i++) {
+            printInstruction(instructions[i]);
+        }
+        cout << endl;
     }
 };
 
