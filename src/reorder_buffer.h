@@ -1,10 +1,14 @@
 #ifndef _REORDER_BUFFER_INCLUDED_
 #define _REORDER_BUFFER_INCLUDED_
 
+//forward decleared dependencies
+class LoadStoreUnit;
+
 class ReorderBuffer {
 
     RegisterFile* registerFile;
     Memory* memory;
+    LoadStoreUnit* loadStoreUnit;
 
     int* pc;
     int* flushFlag;
@@ -23,9 +27,10 @@ class ReorderBuffer {
     int* noOfInstructionsExecuted;
 
     public:
-    ReorderBuffer(RegisterFile* registerFile, Memory* memory, int* pc, int* flushFlag, int size, int* noOfInstructionsExecuted) : 
+    ReorderBuffer(RegisterFile* registerFile, Memory* memory, LoadStoreUnit* loadStoreUnit, int* pc, int* flushFlag, int size, int* noOfInstructionsExecuted) : 
         registerFile(registerFile),
         memory(memory),
+        loadStoreUnit(loadStoreUnit),
         pc(pc),
         flushFlag(flushFlag),
         size(size),
