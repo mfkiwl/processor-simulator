@@ -17,7 +17,8 @@ class ALU {
     int bypassingOperand;
 
     //position in the reorder buffer
-    int reorderBufferIndex;
+    int nextReorderBufferIndex;
+    int currentReorderBufferIndex;
 
     public:
         ALU(RegisterFile* registerFile, ReorderBuffer* reorderBuffer) : 
@@ -37,7 +38,7 @@ class ALU {
         void execute() {
             if(opcode != 0) {
                 //tell reorder buffer that we are executing the instruction
-                reorderBuffer->executingEntry(reorderBufferIndex);
+                reorderBuffer->executingEntry(nextReorderBufferIndex);
                 //execute the instruction
                 destinationRegister = operands[0];
                 if(bypassing) {
@@ -62,8 +63,7 @@ class ALU {
                         break;
                 }
 
-                //tell the reorder buffer that we are finished executing the instruction
-                reorderBuffer->finishedEntry(reorderBufferIndex);
+                currentReorderBufferIndex = nextReorderBufferIndex;
 
                 //reset inputs
                 opcode = 0;
@@ -84,13 +84,8 @@ class ALU {
 
         void writeback() {
             if(destinationRegister != -1) {
-                //write the result to the reorder buffer
-                registerFile->setRegisterValue(destinationRegister, result);
-                //Set the scoreBoard of the destination register to 1
-                registerFile->setScoreBoardValue(destinationRegister, 1);
-
-                //increment the number of instructions executed
-                //(*noOfInstructionsExecuted) += 1;
+                //tell the reorder buffer that we are finished executing the instruction
+                reorderBuffer->finishedEntry(currentReorderBufferIndex, result);
 
                 //reset variables
                 destinationRegister = -1;
@@ -120,6 +115,6 @@ class ALU {
         }
 
         void setReorderBufferIndex(int i) {
-            reorderBufferIndex = i;
+            nextReorderBufferIndex = i;
         }
 };

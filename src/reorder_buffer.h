@@ -3,6 +3,9 @@ class ReorderBuffer {
     RegisterFile* registerFile;
     Memory* memory;
 
+    int* pc;
+    int* flushFlag;
+
     int** buffer;
     int size;
     int head;
@@ -17,9 +20,11 @@ class ReorderBuffer {
     int* noOfInstructionsExecuted;
 
     public:
-    ReorderBuffer(RegisterFile* registerFile, Memory* memory, int size, int* noOfInstructionsExecuted) : 
+    ReorderBuffer(RegisterFile* registerFile, Memory* memory, int* pc, int* flushFlag, int size, int* noOfInstructionsExecuted) : 
         registerFile(registerFile),
         memory(memory),
+        pc(pc),
+        flushFlag(flushFlag),
         size(size),
         head(0),
         tail(0),
@@ -55,6 +60,18 @@ class ReorderBuffer {
     void retire() {
     	while(buffer[tail][STATUS] == FINISHED) {
             buffer[tail][STATUS] = -1;
+            if(buffer[tail][TYPE] = STORE_TO_REGISTER) {
+                printf("STORE TO REGISTER\n");
+                //write the result to the reorder buffer
+                registerFile->setRegisterValue(buffer[tail][DESTINATION], buffer[tail][RESULT]);
+                //Set the scoreBoard of the destination register to 1
+                registerFile->setScoreBoardValue(buffer[tail][DESTINATION], 1);
+            }
+            else if(buffer[tail][TYPE] = JUMP) {
+                printf("JUMPING\n");
+                *pc = buffer[tail][DESTINATION];
+                *flushFlag = 1;
+            }
             cout << endl << "Finished Instruction: ";
             printInstruction(instructions[tail]);
             (*noOfInstructionsExecuted)++;
@@ -67,8 +84,9 @@ class ReorderBuffer {
         buffer[i][STATUS] = EXECUTING;
     }
 
-    void finishedEntry(int i) {
+    void finishedEntry(int i, int result) {
         buffer[i][STATUS] = FINISHED;
+        buffer[i][RESULT] = result;
     }
 
     void writeResult(int i, int r) {

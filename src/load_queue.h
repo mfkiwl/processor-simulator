@@ -107,7 +107,7 @@ public:
                 int value = memory->loadFromMemory(address);
                 registerFile->setRegisterValue(destinationRegister, value);
                 //tell the reorder buffer that we are finished executing the instruction
-                reorderBuffer->finishedEntry(buffer[i][REORDER_BUFFER_INDEX]);
+                reorderBuffer->finishedEntry(buffer[i][REORDER_BUFFER_INDEX], 0);
                 //set the scoreBoard value of the destination register to 1
                 registerFile->setScoreBoardValue(destinationRegister,1);
                 //reset write buffer entry

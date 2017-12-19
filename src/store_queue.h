@@ -104,7 +104,7 @@ public:
                 int value = buffer[i][VALUE];
                 memory->storeInMemory(address, value);
                 //tell the reorder buffer that we are finished executing the instruction
-                reorderBuffer->finishedEntry(buffer[i][REORDER_BUFFER_INDEX]);
+                reorderBuffer->finishedEntry(buffer[i][REORDER_BUFFER_INDEX], 0);
                 //reset write buffer entry
                 buffer[i][ADDRESS] = 0;
                 buffer[i][VALUE] = 0;
