@@ -119,7 +119,7 @@ class Processor {
                     //fetch the next instruction
                     fetch();
                 }
-                /*
+                
                 else {
                     if(decodeUnitBlockingFlag) {
                         printf("DECODE UNIT BLOCKING\n");
@@ -128,7 +128,7 @@ class Processor {
                         printf("LOAD STORE UNIT BLOCKING\n");
                     }
                 }
-                */
+                
 
                 //decode the instruction
                 decode();
@@ -202,15 +202,24 @@ class Processor {
         }
 
         void flushPipeline() {
+            //flush fetch unit
+            fetchUnit.flush();
+            //flush decode unit
+            decodeUnit.flush();
+            //flush reservation stations
+            aluReservationStation.flush();
+            branchUnitReservationStation.flush();
+            //flush execution units
             alu.flush();
             branchUnit.flush();
-            decodeUnit.flush();
-            fetchUnit.flush();
-            decodeUnit.flush();
-            flushFlag = 0;
-            registerFile.resetScoreBoard();
+            loadStoreUnit.flush();
+            //flush reorder buffer
             reorderBuffer.flush();
-            aluReservationStation.flush();
+            //reset the register file scoreboard
+            registerFile.resetScoreBoard();
+            //reset the flush flag
+            flushFlag = 0;
+            
             printf("FLUSHING PIPELINE!\n");
         }
 
