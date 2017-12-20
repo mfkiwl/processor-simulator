@@ -1,7 +1,7 @@
-#ifndef _LOAD_QUEUE_
-#define _LOAD_QUEUE_
+#ifndef LOAD_BUFFER_H
+#define LOAD_BUFFER_H
 
-class LoadQueue {
+class LoadBuffer {
 	Memory* memory;
     ReorderBuffer* reorderBuffer;
 
@@ -12,7 +12,7 @@ class LoadQueue {
     int tail;
     int steps;
 
-    int queueFields;
+    int entryFields;
 
     //index constants
     const int DESTINATION;
@@ -24,14 +24,14 @@ class LoadQueue {
     int numberReady;
 
 public:
-	LoadQueue(Memory* memory, ReorderBuffer* reorderBuffer, int size, int steps) : 
+	LoadBuffer(Memory* memory, ReorderBuffer* reorderBuffer, int size, int steps) : 
         memory(memory),
         reorderBuffer(reorderBuffer),
         size(size),
         head(0),
         tail(0),
         steps(steps),
-        queueFields(4),
+        entryFields(4),
         DESTINATION(0),
         ADDRESS(1),
         REORDER_BUFFER_INDEX(2),
@@ -41,11 +41,11 @@ public:
         //dynamically allocated a 2d array to the read and write buffer
         buffer = new int*[size];
         for(int i = 0; i < size; i++) {
-            buffer[i] = new int[queueFields];
+            buffer[i] = new int[entryFields];
         }
         //initialise all elements of the read and write buffer to zero
         for(int i = 0; i < size; i++) {
-            for(int j = 0; j < queueFields; j++) {
+            for(int j = 0; j < entryFields; j++) {
                 buffer[i][j] = 0;
             }
         }

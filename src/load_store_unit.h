@@ -18,8 +18,8 @@ class LoadStoreUnit {
     int readCycles;
 
     //Read and write buffers to store load and store instruciton in operation
-    StoreQueue storeQueue;
-    LoadQueue loadQueue;
+    StoreBuffer storeBuffer;
+    LoadBuffer loadBuffer;
 
     //position in the reorder buffer
     int reorderBufferIndex;
@@ -35,8 +35,8 @@ class LoadStoreUnit {
             bufferSize(100),
             writeCycles(5),
             readCycles(5),
-            storeQueue(memory, reorderBuffer, bufferSize, writeCycles),
-            loadQueue(memory, reorderBuffer, bufferSize, readCycles),
+            storeBuffer(memory, reorderBuffer, bufferSize, writeCycles),
+            loadBuffer(memory, reorderBuffer, bufferSize, readCycles),
             reorderBufferIndex(-1)
         {
             //initially set all operands to zero
@@ -64,7 +64,7 @@ class LoadStoreUnit {
                         destinationRegister = operands[0];
                         address = 0 + operands[1];
                         //and to the read buffer to be read from memory when ready
-                        loadQueue.addToBuffer(operands[0], address, reorderBufferIndex);
+                        loadBuffer.addToBuffer(operands[0], address, reorderBufferIndex);
                         reorderBuffer->executingEntry(reorderBufferIndex);
                         break;
     		        case SW:
@@ -73,7 +73,7 @@ class LoadStoreUnit {
                         value = operands[0];
                         address = 0 + operands[1];
                         //and to the write buffer to be written to memory when ready
-                        storeQueue.addToBuffer(address, value, reorderBufferIndex);
+                        storeBuffer.addToBuffer(address, value, reorderBufferIndex);
                         break;
                 }
 
@@ -85,20 +85,20 @@ class LoadStoreUnit {
     	    }
 
             //increment the step numbers for each inflight read and write instruction
-            storeQueue.stepInstructions();
-            loadQueue.stepInstructions();
+            storeBuffer.stepInstructions();
+            loadBuffer.stepInstructions();
 
             blockIfWaitingForMemoryOperation();
         }
 
         void writeResult() {
             //perform the read and write instructions when the step number has been met
-            storeQueue.writeIfReady();
-            loadQueue.readIfReady();
+            storeBuffer.writeIfReady();
+            loadBuffer.readIfReady();
         }
 
         int blockIfWaitingForMemoryOperation() {
-            if(storeQueue.waitingForWriteOperation() || loadQueue.waitingForReadOperation()) {
+            if(storeBuffer.waitingForWriteOperation() || loadBuffer.waitingForReadOperation()) {
                 *blockingFlag = 1;
             }
             else {
@@ -122,8 +122,8 @@ class LoadStoreUnit {
                 operands[i] = 0;
             }
             reorderBufferIndex = -1;
-            storeQueue.flush();
-            loadQueue.flush();
+            storeBuffer.flush();
+            loadBuffer.flush();
         }
 
         void setReorderBufferIndex(int i) {
@@ -131,11 +131,11 @@ class LoadStoreUnit {
         }
 
         void setHead(int rbi) {
-            storeQueue.setHead(rbi);
+            storeBuffer.setHead(rbi);
         }
 
-        void printStoreQueue() {
-            storeQueue.printStoreQueue();
+        void printStoreBuffer() {
+            storeBuffer.printStoreBuffer();
         }
 };
 

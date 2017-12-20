@@ -1,7 +1,7 @@
-#ifndef _STORE_QUEUE_INCLUDED_
-#define _STORE_QUEUE_INCLUDED_
+#ifndef STORE_BUFFER_H
+#define STORE_BUFFER_H
 
-class StoreQueue {
+class StoreBuffer {
 
     Memory* memory;
     ReorderBuffer* reorderBuffer;
@@ -13,7 +13,7 @@ class StoreQueue {
     int tail;
     int steps;
 
-    int queueFields;
+    int entryFields;
 
     //index constants
     const int ADDRESS;
@@ -25,13 +25,13 @@ class StoreQueue {
     int numberReady;
 
 public:
-	StoreQueue(Memory* memory, ReorderBuffer* reorderBuffer, int size, int steps) : 
+	StoreBuffer(Memory* memory, ReorderBuffer* reorderBuffer, int size, int steps) : 
         reorderBuffer(reorderBuffer),
 	    memory(memory),
 	    size(size),
 	    head(0),
 	    tail(0),
-        queueFields(5),
+        entryFields(5),
 	    steps(steps),
         ADDRESS(0),
         VALUE(1),
@@ -43,11 +43,11 @@ public:
         //dynamically allocated a 2d array to the read and write buffer
         buffer = new int*[size];
         for(int i = 0; i < size; i++) {
-            buffer[i] = new int[queueFields];
+            buffer[i] = new int[entryFields];
         }
         //initialise all elements of the read and write buffer to zero
         for(int i = 0; i < size; i++) {
-            for(int j = 0; j < queueFields; j++) {
+            for(int j = 0; j < entryFields; j++) {
                 buffer[i][j] = 0;
             }
         }
@@ -86,7 +86,7 @@ public:
         }
     }
 
-    void printStoreQueue() {
+    void printStoreBuffer() {
         for(int i = head; i < tail; i++) {
             printf("HEAD: %d\t", buffer[i][HEAD]);
             printf("STEPS: %d\n", buffer[i][STEP]);
