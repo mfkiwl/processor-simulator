@@ -119,7 +119,7 @@ class Processor {
                     //fetch the next instruction
                     fetch();
                 }
-                
+                /*
                 else {
                     if(decodeUnitBlockingFlag) {
                         printf("DECODE UNIT BLOCKING\n");
@@ -128,7 +128,7 @@ class Processor {
                         printf("LOAD STORE UNIT BLOCKING\n");
                     }
                 }
-                
+                */
 
                 //decode the instruction
                 decode();

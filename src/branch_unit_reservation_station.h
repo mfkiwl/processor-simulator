@@ -48,9 +48,9 @@ public:
 				if(readyToDispatch(instructions[i])) {
                     dispatch(instructions[i]);
                     reorderBufferIndex = reorderBufferIndexes[i];
-                    printf("DISPATCHING INSTRUCTION: ");
-                    Instructions::printInstruction(instructions[i]);
-                    printf("WITH REORDER BUFFER INDEX: %d\n", reorderBufferIndex);
+                    //printf("DISPATCHING INSTRUCTION: ");
+                    //Instructions::printInstruction(instructions[i]);
+                    //printf("WITH REORDER BUFFER INDEX: %d\n", reorderBufferIndex);
                     instructions[i] = (Instruction) {0,0,0,0};
                     break;
 				}
@@ -59,8 +59,8 @@ public:
 	}
 
 	void addInstruction(Instruction instruction, int rbi) {
-		printf("ADDED INSTRUCTION: ");
-		Instructions::printInstruction(instruction);
+		//printf("ADDED INSTRUCTION: ");
+		//Instructions::printInstruction(instruction);
 		instructions[size - 1] = instruction;
 		reorderBufferIndexes[size - 1] = rbi;
 	}

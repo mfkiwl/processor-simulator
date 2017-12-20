@@ -80,25 +80,25 @@ class ReorderBuffer {
     	while(buffer[tail][STATUS] == FINISHED) {
             buffer[tail][STATUS] = -1;
             if(buffer[tail][TYPE] == STORE_TO_REGISTER) {
-                printf("STORE TO REGISTER\n");
+                //printf("STORE TO REGISTER\n");
                 //write the result to the reorder buffer
                 registerFile->setRegisterValue(buffer[tail][DESTINATION], buffer[tail][RESULT]);
                 //Set the scoreBoard of the destination register to 1
                 registerFile->setScoreBoardValue(buffer[tail][DESTINATION], 1);
             }
             if(buffer[tail][TYPE] == STORE_TO_MEMORY) {
-                printf("STORE TO MEMORY\n");
+                //printf("STORE TO MEMORY\n");
             }
             if(buffer[tail][TYPE] == JUMP && buffer[tail][RESULT]) {
-                printf("JUMPING\n");
+                //printf("JUMPING\n");
                 *pc = buffer[tail][DESTINATION];
                 *flushFlag = 1;
             }
             if(buffer[tail][TYPE] == SYSCALL) {
-                printf("HALTING\n");
+                //printf("HALTING\n");
                 *runningFlag = 0;
             }
-            cout << endl << "Finished Instruction: ";
+            cout << endl << "Retiring Instruction: ";
             Instructions::printInstruction(instructions[tail]);
             (*noOfInstructionsExecuted)++;
             tail = (tail + 1) % size;
