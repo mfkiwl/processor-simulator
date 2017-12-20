@@ -16,7 +16,7 @@
 #include "load_store_unit.h"
 #include "decode_unit.h"
 #include "fetch_unit.h"
-#include "reservation_station.h"
+#include "alu_reservation_station.h"
 
 //Had to do this to avoid errors from forward declaration
 void ReorderBuffer::setHead(LoadStoreUnit* loadStoreUnit, int rbi) {
