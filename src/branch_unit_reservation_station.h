@@ -86,6 +86,8 @@ public:
                 }
                 break;
             case HALT:
+            case J:
+            case JR:
                 return 1;
                 break;
 		}
@@ -122,6 +124,8 @@ public:
                 val = registerFile->getRegisterValue(registerNum);
                 operands[0] = val;
                 break;
+            case J:
+            case JR:
             case HALT:
                 break;
         }

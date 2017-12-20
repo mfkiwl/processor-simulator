@@ -92,9 +92,15 @@ class DecodeUnit {
                 case BGTZ:
                 case BLEZ:
                 case BLTZ:
+                    break;
                 case J:
                 case JR:
+                    //Instruction has been issued so add entry to the reorder buffer
+                    reorderBufferIndex = reorderBuffer->addEntry(JUMP, currentInstruction.operands[0], currentInstruction);
+                    //send the instruction to the reservation station
+                    branchUnitReservationStation->addInstruction(currentInstruction, reorderBufferIndex);
                     break;
+                    
                 //Instruction to finish the program
                 case HALT:
                     //Instruction has been issued so add entry to the reorder buffer

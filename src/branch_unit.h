@@ -58,6 +58,7 @@ class BranchUnit {
                         }
                         break;
                     case J:
+                        successful = 1;
                         //*pc = operands[0];
                         //*flushFlag = 1;
                          break;
