@@ -132,6 +132,16 @@ public:
                 operands[1] = val;
                 break;
         }
+        //Setting the scoreboard values of the destination register to 0
+        switch(opcode) {
+            case LW:
+            case LWR:
+                registerFile->setScoreBoardValue(operands[0],0);
+                break;
+            case SW:
+            case SWR:
+                break;
+        }
     }
 
     void pipe() {
@@ -140,17 +150,6 @@ public:
             //send the decoded instruction to the execution unit
             loadStoreUnit->setOpcode(opcode);
             loadStoreUnit->setOperands(operands);
-
-            switch(opcode) {
-                case LW:
-                case LWR:
-                    //Setting the score board value of the destination register to 0
-                    registerFile->setScoreBoardValue(operands[0],0);
-                    break;
-                case SW:
-                case SWR:
-                    break;
-            }
 
             //Send the reorder buffer index to the execution unit
             loadStoreUnit->setReorderBufferIndex(reorderBufferIndex);

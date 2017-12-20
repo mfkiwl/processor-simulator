@@ -19,13 +19,13 @@ class FetchUnit {
         if(*pc <= instructions.getNumOfInstructions()) {
             //fetch the next instruction (-1 so that pc of 1 refers to the first instruction on line 1)
     	    currentInstruction = instructions.at(*pc - 1);
+            //increment the program counter
+            (*pc)++;
         }
         else {
             //next instruction is noop if pc exceeds number of instructions
             currentInstruction = (Instruction) {0,0,0,0};
         }
-        //increment the program counter
-        (*pc)++;
     }
 
     void pipe() {

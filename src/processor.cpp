@@ -234,7 +234,6 @@ class Processor {
             cout << endl;
             cout << "PC: " << pc << endl;
             registerFile.printRegisters();
-            cout << endl;
         }
 };
 

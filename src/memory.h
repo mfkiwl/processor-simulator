@@ -29,7 +29,6 @@ class Memory {
     }
 
     void printMemory() {
-        cout << endl;
         cout << "Memory:" << endl;
         for(int i = 0; i < size; i++) {
             cout << memory[i] << " ";

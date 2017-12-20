@@ -87,6 +87,7 @@ class RegisterFile {
                     cout << " ";
                 }
         	}
+            cout << endl;
         }
 
         void printScoreBoard() {
@@ -94,7 +95,7 @@ class RegisterFile {
             for(int i = 0; i < numOfRegisters; i++) {
                 cout << scoreBoard[i] << " ";
             }
-            cout << "\n";
+            cout << endl;
         }
 
         int intLength(int n) {
