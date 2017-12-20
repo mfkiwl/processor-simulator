@@ -16,6 +16,7 @@
 #include "load_store_unit.h"
 #include "decode_unit.h"
 #include "fetch_unit.h"
+#include "reservation_station.h"
 
 //Had to do this to avoid errors from forward declaration
 void ReorderBuffer::setHead(LoadStoreUnit* loadStoreUnit, int rbi) {
@@ -60,7 +61,7 @@ class Processor {
 
     public:
     	//Classes needed to be initialised in the uniform initialiser list
-        Processor(int noOfRegisters, int memorySize, int noOfInstructions, Instruction *instructions) : 
+        Processor(int noOfRegisters, int memorySize, Instructions is) : 
 
             //processor configuration
             noOfRegisters(noOfRegisters),
@@ -71,8 +72,8 @@ class Processor {
             noOfClockCycles(0),
 
             //instruction info
-            noOfInstructions(noOfInstructions),
-            instructions(instructions),
+            noOfInstructions(is.getNumOfInstructions()),
+            instructions(is.getInstructions()),
 
             //registers
             pc(1),
@@ -214,15 +215,11 @@ int main(int argc, char *argv[]) {
 
     //get the instructions from the machine code file
     string inputFileName(argv[1]);
-    int numOfInstructions = getNumOfInstructions(inputFileName);
-    Instruction *instructions = NULL;
-    if(numOfInstructions != -1) {
-        instructions = getInstructions(inputFileName, numOfInstructions);
-    }
+    Instructions instructions(inputFileName);
 
     //create processor object and start processing
-    if(numOfInstructions != -1 && instructions != NULL) {
-        Processor processor(16, 24, numOfInstructions,instructions);
+    if(instructions.getNumOfInstructions() != -1 && instructions.getInstructions() != NULL) {
+        Processor processor(16, 24, instructions);
         processor.start();
     }
     cout << "\n";
