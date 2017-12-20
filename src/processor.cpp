@@ -47,7 +47,6 @@ class Processor {
     //status flags
     int flushFlag;
     int runningFlag;
-    int decodeUnitBlockingFlag;
     int loadStoreUnitBlockingFlag;
 
     //components
@@ -84,7 +83,6 @@ class Processor {
             //status flags
             flushFlag(0),
             runningFlag(1),
-            decodeUnitBlockingFlag(0),
             loadStoreUnitBlockingFlag(0),
 
             //components
@@ -92,7 +90,7 @@ class Processor {
             memory(memorySize),
             reorderBuffer(&registerFile, &memory, &loadStoreUnit, &pc, &flushFlag, &runningFlag, &noOfInstructionsExecuted),
             fetchUnit(instructions, &pc, &decodeUnit),
-            decodeUnit(&registerFile, &reorderBuffer, &aluReservationStation, &branchUnitReservationStation, &loadStoreUnitReservationStation, &decodeUnitBlockingFlag),
+            decodeUnit(&registerFile, &reorderBuffer, &aluReservationStation, &branchUnitReservationStation, &loadStoreUnitReservationStation),
             alu(&registerFile, &reorderBuffer),
             aluReservationStation(&registerFile, &alu),
             branchUnit(&reorderBuffer),
@@ -113,25 +111,15 @@ class Processor {
 
                 //hold up the program at each clock cycle
                 char str[3];
-                fgets(str, 2, stdin);
+                //fgets(str, 2, stdin);
 
                 //if the pipeline is not being blocked
-                if(!decodeUnitBlockingFlag && !loadStoreUnitBlockingFlag) {
+                if(!loadStoreUnitBlockingFlag) {
                     //propogate values through pipeline
                     pipe();
                     //fetch the next instruction
                     fetch();
                 }
-                /*
-                else {
-                    if(decodeUnitBlockingFlag) {
-                        printf("DECODE UNIT BLOCKING\n");
-                    }
-                    if(loadStoreUnitBlockingFlag) {
-                        printf("LOAD STORE UNIT BLOCKING\n");
-                    }
-                }
-                */
 
                 //decode the instruction
                 decode();

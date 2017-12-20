@@ -89,7 +89,7 @@ public:
                 cout << "JR R" << instruction.operands[0] << endl;
                 break;
             case HALT:
-                cout << "HALT " << instruction.operands[0] << endl;
+                cout << "HALT" << endl;
                 break;
             default:
                 cout << "\n";

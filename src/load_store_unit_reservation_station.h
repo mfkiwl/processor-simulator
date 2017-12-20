@@ -7,6 +7,8 @@ class LoadStoreUnitReservationStation {
 
 
 	int size;
+    int head;
+    int tail;
 	Instruction* instructions;
 	int* reorderBufferIndexes;
 
@@ -19,6 +21,8 @@ public:
 	registerFile(registerFile),
 	loadStoreUnit(loadStoreUnit),
 	size(10),
+    head(0),
+    tail(0),
 	opcode(0),
 	reorderBufferIndex(-1)
 	{
@@ -44,17 +48,15 @@ public:
 
     //dispatch an instruction if it can
 	void execute() {
-		for(int i = 0; i < size; i++) {
-			if(instructions[i].opcode != NOOP) {
-				if(readyToDispatch(instructions[i])) {
-                    dispatch(instructions[i]);
-                    reorderBufferIndex = reorderBufferIndexes[i];
-                    //printf("DISPATCHING INSTRUCTION: ");
-                    //Instructions::printInstruction(instructions[i]);
-                    //printf("WITH REORDER BUFFER INDEX: %d\n", reorderBufferIndex);
-                    instructions[i] = (Instruction) {0,0,0,0};
-                    break;
-				}
+	    if(instructions[tail].opcode != NOOP) {
+			if(readyToDispatch(instructions[tail])) {
+                dispatch(instructions[tail]);
+                reorderBufferIndex = reorderBufferIndexes[tail];
+                //printf("DISPATCHING INSTRUCTION: ");
+                //Instructions::printInstruction(instructions[i]);
+                //printf("WITH REORDER BUFFER INDEX: %d\n", reorderBufferIndex);
+                instructions[tail] = (Instruction) {0,0,0,0};
+                tail = (tail + 1) % size;
 			}
 		}
 	}
@@ -62,8 +64,9 @@ public:
 	void addInstruction(Instruction instruction, int rbi) {
 		//printf("ADDED INSTRUCTION: ");
 		//Instructions::printInstruction(instruction);
-		instructions[size - 1] = instruction;
-		reorderBufferIndexes[size - 1] = rbi;
+		instructions[head] = instruction;
+		reorderBufferIndexes[head] = rbi;
+        head = (head + 1) % size;
 	}
 
 	int readyToDispatch(Instruction instruction) {
