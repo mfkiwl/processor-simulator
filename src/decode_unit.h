@@ -5,7 +5,7 @@ class DecodeUnit {
     //forward components
     RegisterFile* registerFile;
     ReorderBuffer* reorderBuffer;
-    ALU* alu;
+    ALUReservationStation* aluReservationStation;
     BranchUnit* branchUnit;
     LoadStoreUnit* loadStoreUnit;
 
@@ -23,14 +23,14 @@ class DecodeUnit {
     int operands[3];
 
     public:
-    	DecodeUnit(RegisterFile* registerFile, ReorderBuffer* reorderBuffer, ALU* alu, BranchUnit* branchUnit, LoadStoreUnit* loadStoreUnit, int* blockingFlag) :
+    	DecodeUnit(RegisterFile* registerFile, ReorderBuffer* reorderBuffer, ALUReservationStation* aluReservationStation, BranchUnit* branchUnit, LoadStoreUnit* loadStoreUnit, int* blockingFlag) :
             registerFile(registerFile),
             reorderBuffer(reorderBuffer),
-    	    alu(alu),
+    	    aluReservationStation(aluReservationStation),
     	    branchUnit(branchUnit),
     	    loadStoreUnit(loadStoreUnit),
-            nextInstruction((Instruction) {0,0,0}),
-            currentInstruction((Instruction) {0,0,0}),
+            nextInstruction((Instruction) {0,0,0,0}),
+            currentInstruction((Instruction) {0,0,0,0}),
             opcode(0),
             blockingFlag(blockingFlag)
         {
@@ -175,7 +175,7 @@ class DecodeUnit {
         }
 
         void pipe() {
-            int reorderBufferIndex;
+            int reorderBufferIndex = -1;
             switch(opcode) {
                 //ALU instructions
                 case ADD:
@@ -184,6 +184,7 @@ class DecodeUnit {
                 case MULT:
                 case OR:
                 case SUB:
+                    /*
                     //send the decoded instruction to the execution unit
                     alu->setOpcode(opcode);
                     alu->setOperands(operands);
@@ -192,6 +193,15 @@ class DecodeUnit {
                     //Instruction has been issued so add entry to the reorder buffer
                     reorderBufferIndex = reorderBuffer->addEntry(STORE_TO_REGISTER, operands[0], currentInstruction);
                     alu->setReorderBufferIndex(reorderBufferIndex);
+                    */
+
+                    //Instruction has been issued so add entry to the reorder buffer
+                    reorderBufferIndex = reorderBuffer->addEntry(STORE_TO_REGISTER, currentInstruction.operands[0], currentInstruction);
+                    //send the instruction to the reservation station
+                    aluReservationStation->addInstruction(currentInstruction, reorderBufferIndex);
+                    //Setting the scoreBoard values of the destination register to 0
+                    registerFile->setScoreBoardValue(currentInstruction.operands[0],0);
+                    
                     break;
                 //Load Store unit instructions
                 case LW:

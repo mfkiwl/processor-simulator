@@ -4,18 +4,22 @@ class ALUReservationStation {
 
 	int size;
 	Instruction* instructions;
+	int* reorderBufferIndexes;
 
 	Instruction dispatchingInstruction;
 
 	int opcode;
 	int* operands;
+	int reorderBufferIndex;
 
 public:
 	ALUReservationStation(RegisterFile* registerFile, ALU* alu) : 
 	registerFile(registerFile),
 	alu(alu),
 	size(10),
-	opcode(0)
+	dispatchingInstruction((Instruction) {0,0,0,0}),
+	opcode(0),
+	reorderBufferIndex(-1)
 	{
 		//allocate memory to the buffer
 		instructions = new Instruction[size];
@@ -23,8 +27,18 @@ public:
 		for(int i = 0; i < size; i++) {
 			instructions[i] = (Instruction) {0,0,0,0};
 		}
+		//allocate memory to the reorder buffer indexes array
+		reorderBufferIndexes = new int[size];
+		//initialise all reorder buffer indexes to -1
+		for(int i = 0; i < size; i++) {
+			reorderBufferIndexes[i] = -1;
+		}
 		//allocate memory for the operands array
 		operands = new int[3];
+		//initialising operands
+		for(int i = 0; i < 3; i++) {
+			operands[i] = 0;
+		}
 	}
 
     //dispatch an instruction if it can
@@ -33,6 +47,10 @@ public:
 			if(instructions[i].opcode != NOOP) {
 				if(readyToDispatch(instructions[i])) {
                     dispatch(instructions[i]);
+                    reorderBufferIndex = reorderBufferIndexes[i];
+                    printf("DISPATCHING INSTRUCTION: ");
+                    Instructions::printInstruction(instructions[i]);
+                    printf("WITH REORDER BUFFER INDEX: %d\n", reorderBufferIndex);
                     instructions[i] = (Instruction) {0,0,0,0};
                     break;
 				}
@@ -40,8 +58,11 @@ public:
 		}
 	}
 
-	void addToReservationStation(Instruction instruction) {
+	void addInstruction(Instruction instruction, int rbi) {
+		printf("ADDED INSTRUCTION: ");
+		Instructions::printInstruction(instruction);
 		instructions[size - 1] = instruction;
+		reorderBufferIndexes[size - 1] = rbi;
 	}
 
 	int readyToDispatch(Instruction instruction) {
@@ -97,17 +118,21 @@ public:
     }
 
     void pipe() {
-    	//send the decoded instruction to the execution unit
-        alu->setOpcode(opcode);
-        alu->setOperands(operands);
-        //Setting the scoreBoard values of the destination register to 0
-        registerFile->setScoreBoardValue(operands[0],0);
-        //Instruction has been issued so add entry to the reorder buffer
+    	if(opcode != 0) {
+    	    //send the decoded instruction to the execution unit
+            alu->setOpcode(opcode);
+            alu->setOperands(operands);
+            //Setting the scoreBoard values of the destination register to 0
+            registerFile->setScoreBoardValue(operands[0],0);
+            //Send the reorder buffer index to the alu
+            alu->setReorderBufferIndex(reorderBufferIndex);
         
-        //reset the opcode and operands
-        opcode = 0;
-        for(int i = 0; i < 3; i++) {
-            operands[i] = 0;
+            //reset the opcode and operands
+            opcode = 0;
+            for(int i = 0; i < 3; i++) {
+                operands[i] = 0;
+            }
+            reorderBufferIndex = -1;
         }
     }
 };

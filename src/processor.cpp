@@ -10,13 +10,13 @@
 #include "memory.h"
 #include "reorder_buffer.h"
 #include "alu.h"
+#include "alu_reservation_station.h"
 #include "branch_unit.h"
 #include "store_queue.h"
 #include "load_queue.h"
 #include "load_store_unit.h"
 #include "decode_unit.h"
 #include "fetch_unit.h"
-#include "alu_reservation_station.h"
 
 //Had to do this to avoid errors from forward declaration
 void ReorderBuffer::setHead(LoadStoreUnit* loadStoreUnit, int rbi) {
@@ -54,6 +54,7 @@ class Processor {
     ReorderBuffer reorderBuffer;
     FetchUnit fetchUnit;
     DecodeUnit decodeUnit;
+    ALUReservationStation aluReservationStation;
     ALU alu;
     BranchUnit branchUnit;
     LoadStoreUnit loadStoreUnit;
@@ -87,7 +88,8 @@ class Processor {
             memory(memorySize),
             reorderBuffer(&registerFile, &memory, &loadStoreUnit, &pc, &flushFlag, &runningFlag, &noOfInstructionsExecuted),
             fetchUnit(instructions, &pc, &decodeUnit),
-            decodeUnit(&registerFile, &reorderBuffer, &alu, &branchUnit, &loadStoreUnit, &decodeUnitBlockingFlag),
+            decodeUnit(&registerFile, &reorderBuffer, &aluReservationStation, &branchUnit, &loadStoreUnit, &decodeUnitBlockingFlag),
+            aluReservationStation(&registerFile, &alu),
             alu(&registerFile, &reorderBuffer),
             branchUnit(&reorderBuffer),
             loadStoreUnit(&memory, &reorderBuffer, &loadStoreUnitBlockingFlag)
@@ -105,7 +107,7 @@ class Processor {
 
                 //hold up the program at each clock cycle
                 char str[3];
-                //fgets(str, 2, stdin);
+                fgets(str, 2, stdin);
 
                 //if the pipeline is not being blocked
                 if(!decodeUnitBlockingFlag && !loadStoreUnitBlockingFlag) {
@@ -117,6 +119,8 @@ class Processor {
 
                 //decode the instruction
                 decode();
+
+                dispatch();
 
                 //execute the instruction
                 execute();
@@ -153,23 +157,34 @@ class Processor {
 
         void decode() {
             decodeUnit.execute();
+            //printf("EXECUTED DECODE\n");
+        }
+
+        void dispatch() {
+            aluReservationStation.execute();
+            //printf("EXECUTED DISPATCH\n");
+            aluReservationStation.pipe();
+            //printf("EXECUTED DISPATCH PIPE\n");
         }
 
         void execute() {
             alu.execute();
             branchUnit.execute();
             loadStoreUnit.execute();
+            //printf("EXECUTED EXECUTE\n");
         }
 
         void writeResult() {
             alu.writeResult();
             loadStoreUnit.writeResult();
             branchUnit.writeResult();
+            //printf("EXECUTED WRITEBACK\n");
         }
 
         void commit() {
             reorderBuffer.checkTailForStore();
             reorderBuffer.retire();
+            //printf("EXECUTED COMMIT\n");
         }
 
         void flushPipeline() {
