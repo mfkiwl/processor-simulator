@@ -176,8 +176,10 @@ class Processor {
 
         void dispatch() {
             aluReservationStation.execute();
+            branchUnitReservationStation.execute();
             //printf("EXECUTED DISPATCH\n");
             aluReservationStation.pipe();
+            branchUnitReservationStation.pipe();
             //printf("EXECUTED DISPATCH PIPE\n");
         }
 
@@ -219,7 +221,7 @@ class Processor {
             registerFile.resetScoreBoard();
             //reset the flush flag
             flushFlag = 0;
-            
+
             printf("FLUSHING PIPELINE!\n");
         }
 
