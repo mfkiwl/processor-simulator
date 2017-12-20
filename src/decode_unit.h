@@ -6,7 +6,7 @@ class DecodeUnit {
     RegisterFile* registerFile;
     ReorderBuffer* reorderBuffer;
     ALUReservationStation* aluReservationStation;
-    BranchUnit* branchUnit;
+    BranchUnitReservationStation* branchUnitReservationStation;
     LoadStoreUnit* loadStoreUnit;
 
     //Instruction given my fetch unit
@@ -23,11 +23,11 @@ class DecodeUnit {
     int operands[3];
 
     public:
-    	DecodeUnit(RegisterFile* registerFile, ReorderBuffer* reorderBuffer, ALUReservationStation* aluReservationStation, BranchUnit* branchUnit, LoadStoreUnit* loadStoreUnit, int* blockingFlag) :
+    	DecodeUnit(RegisterFile* registerFile, ReorderBuffer* reorderBuffer, ALUReservationStation* aluReservationStation, BranchUnitReservationStation* branchUnitReservationStation, LoadStoreUnit* loadStoreUnit, int* blockingFlag) :
             registerFile(registerFile),
             reorderBuffer(reorderBuffer),
     	    aluReservationStation(aluReservationStation),
-    	    branchUnit(branchUnit),
+    	    branchUnitReservationStation(branchUnitReservationStation),
     	    loadStoreUnit(loadStoreUnit),
             nextInstruction((Instruction) {0,0,0,0}),
             currentInstruction((Instruction) {0,0,0,0}),
@@ -184,16 +184,6 @@ class DecodeUnit {
                 case MULT:
                 case OR:
                 case SUB:
-                    /*
-                    //send the decoded instruction to the execution unit
-                    alu->setOpcode(opcode);
-                    alu->setOperands(operands);
-                    //Setting the scoreBoard values of the destination register to 0
-                    registerFile->setScoreBoardValue(operands[0],0);
-                    //Instruction has been issued so add entry to the reorder buffer
-                    reorderBufferIndex = reorderBuffer->addEntry(STORE_TO_REGISTER, operands[0], currentInstruction);
-                    alu->setReorderBufferIndex(reorderBufferIndex);
-                    */
 
                     //Instruction has been issued so add entry to the reorder buffer
                     reorderBufferIndex = reorderBuffer->addEntry(STORE_TO_REGISTER, currentInstruction.operands[0], currentInstruction);
@@ -225,12 +215,12 @@ class DecodeUnit {
                 //Branch unit instructions
                 case BEQ:
                 case BNE:
-                    //send the decoded instruction to the execution unit
-                    branchUnit->setOpcode(opcode);
-                    branchUnit->setOperands(operands);
+
                     //Instruction has been issued so add entry to the reorder buffer
-                    reorderBufferIndex = reorderBuffer->addEntry(JUMP, operands[2], currentInstruction);
-                    branchUnit->setReorderBufferIndex(reorderBufferIndex);
+                    reorderBufferIndex = reorderBuffer->addEntry(JUMP, currentInstruction.operands[2], currentInstruction);
+                    //send the instruction to the reservation station
+                    branchUnitReservationStation->addInstruction(currentInstruction, reorderBufferIndex);
+
                     break;
                 case BGEZ:
                 case BGTZ:
@@ -238,17 +228,20 @@ class DecodeUnit {
                 case BLTZ:
                 case J:
                 case JR:
+                    /*
                     //send the decoded instruction to the execution unit
                     branchUnit->setOpcode(opcode);
                     branchUnit->setOperands(operands);
+                    */
                     break;
                 case HALT:
-                    //send the decoded instruction to the execution unit
-                    branchUnit->setOpcode(opcode);
-                    branchUnit->setOperands(operands);
+
                     //Instruction has been issued so add entry to the reorder buffer
-                    reorderBufferIndex = reorderBuffer->addEntry(SYSCALL, operands[0], currentInstruction);
-                    branchUnit->setReorderBufferIndex(reorderBufferIndex);
+                    reorderBufferIndex = reorderBuffer->addEntry(SYSCALL, currentInstruction.operands[0], currentInstruction);
+                    //send the instruction to the reservation station
+                    branchUnitReservationStation->addInstruction(currentInstruction, reorderBufferIndex);
+
+
                     break;
             }
             //reset the decoding

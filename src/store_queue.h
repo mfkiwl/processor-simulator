@@ -142,6 +142,7 @@ public:
                 int address = buffer[i][ADDRESS];
                 int value = buffer[i][VALUE];
                 memory->storeInMemory(address, value);
+                //printf("STORED %d at ADDRESS %d\n", value, address);
                 //tell the reorder buffer that we are finished executing the instruction
                 reorderBuffer->finishedEntry(buffer[i][REORDER_BUFFER_INDEX], 0);
                 //reset write buffer entry

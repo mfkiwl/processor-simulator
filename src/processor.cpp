@@ -12,6 +12,7 @@
 #include "alu.h"
 #include "alu_reservation_station.h"
 #include "branch_unit.h"
+#include "branch_unit_reservation_station.h"
 #include "store_queue.h"
 #include "load_queue.h"
 #include "load_store_unit.h"
@@ -54,9 +55,10 @@ class Processor {
     ReorderBuffer reorderBuffer;
     FetchUnit fetchUnit;
     DecodeUnit decodeUnit;
-    ALUReservationStation aluReservationStation;
     ALU alu;
+    ALUReservationStation aluReservationStation;
     BranchUnit branchUnit;
+    BranchUnitReservationStation branchUnitReservationStation;
     LoadStoreUnit loadStoreUnit;
 
     public:
@@ -88,10 +90,11 @@ class Processor {
             memory(memorySize),
             reorderBuffer(&registerFile, &memory, &loadStoreUnit, &pc, &flushFlag, &runningFlag, &noOfInstructionsExecuted),
             fetchUnit(instructions, &pc, &decodeUnit),
-            decodeUnit(&registerFile, &reorderBuffer, &aluReservationStation, &branchUnit, &loadStoreUnit, &decodeUnitBlockingFlag),
-            aluReservationStation(&registerFile, &alu),
+            decodeUnit(&registerFile, &reorderBuffer, &aluReservationStation, &branchUnitReservationStation, &loadStoreUnit, &decodeUnitBlockingFlag),
             alu(&registerFile, &reorderBuffer),
+            aluReservationStation(&registerFile, &alu),
             branchUnit(&reorderBuffer),
+            branchUnitReservationStation(&registerFile, &branchUnit),
             loadStoreUnit(&memory, &reorderBuffer, &loadStoreUnitBlockingFlag)
         {}
 
@@ -116,6 +119,7 @@ class Processor {
                     //fetch the next instruction
                     fetch();
                 }
+                /*
                 else {
                     if(decodeUnitBlockingFlag) {
                         printf("DECODE UNIT BLOCKING\n");
@@ -124,6 +128,7 @@ class Processor {
                         printf("LOAD STORE UNIT BLOCKING\n");
                     }
                 }
+                */
 
                 //decode the instruction
                 decode();
@@ -225,7 +230,6 @@ class Processor {
             cout << "PC: " << pc << endl;
             registerFile.printRegisters();
             cout << endl;
-            memory.printMemory();
         }
 };
 

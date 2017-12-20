@@ -1,9 +1,9 @@
-#ifndef ALU_RESERVATION_STATION_H
-#define ALU_RESERVATION_STATION_H
+#ifndef BRANCH_UNIT_RESERVATION_STATION_H
+#define BRANCH_UNIT_RESERVATION_STATION_H
 
-class ALUReservationStation {
+class BranchUnitReservationStation {
     RegisterFile* registerFile;
-    ALU* alu;
+    BranchUnit* branchUnit;
 
 	int size;
 	Instruction* instructions;
@@ -14,9 +14,9 @@ class ALUReservationStation {
 	int reorderBufferIndex;
 
 public:
-	ALUReservationStation(RegisterFile* registerFile, ALU* alu) : 
+	BranchUnitReservationStation(RegisterFile* registerFile, BranchUnit* branchUnit) : 
 	registerFile(registerFile),
-	alu(alu),
+	branchUnit(branchUnit),
 	size(10),
 	opcode(0),
 	reorderBufferIndex(-1)
@@ -48,9 +48,9 @@ public:
 				if(readyToDispatch(instructions[i])) {
                     dispatch(instructions[i]);
                     reorderBufferIndex = reorderBufferIndexes[i];
-                    //printf("DISPATCHING INSTRUCTION: ");
-                    //Instructions::printInstruction(instructions[i]);
-                    //printf("WITH REORDER BUFFER INDEX: %d\n", reorderBufferIndex);
+                    printf("DISPATCHING INSTRUCTION: ");
+                    Instructions::printInstruction(instructions[i]);
+                    printf("WITH REORDER BUFFER INDEX: %d\n", reorderBufferIndex);
                     instructions[i] = (Instruction) {0,0,0,0};
                     break;
 				}
@@ -59,29 +59,32 @@ public:
 	}
 
 	void addInstruction(Instruction instruction, int rbi) {
-		//printf("ADDED INSTRUCTION: ");
-		//Instructions::printInstruction(instruction);
+		printf("ADDED INSTRUCTION: ");
+		Instructions::printInstruction(instruction);
 		instructions[size - 1] = instruction;
 		reorderBufferIndexes[size - 1] = rbi;
 	}
 
 	int readyToDispatch(Instruction instruction) {
-        //check that the source registers are ready to use
+		//check that the source register are ready to use
 		switch(instruction.opcode) {
-			case ADD:
-			case AND:
-			case MULT:
-			case OR:
-			case SUB:
-			    if(registerFile->getScoreBoardValue(instruction.operands[1]) && registerFile->getScoreBoardValue(instruction.operands[2])) {
-			    	return 1;
-			    }
-			    break;
-			case ADDI:
-			    if(registerFile->getScoreBoardValue(instruction.operands[1])) {
-			    	return 1;
-			    }
-			    break;
+			case BEQ:
+            case BNE:
+                if(registerFile->getScoreBoardValue(operands[0]) && registerFile->getScoreBoardValue(operands[1])) {
+                    return 1;
+                }
+                break;
+            case BGEZ:
+            case BGTZ:
+            case BLEZ:
+            case BLTZ:
+                if(registerFile->getScoreBoardValue(operands[0])) {
+                    return 1;
+                }
+                break;
+            case HALT:
+                return 1;
+                break;
 		}
 		return 0;
 	}
@@ -99,34 +102,33 @@ public:
         int val;
         //fetching the operands for the instruction
         switch(opcode) {
-            case ADD:
-            case AND:
-            case MULT:
-            case OR:
-            case SUB:
-                for(int i = 1; i < 3; i++) {
-                    registerNum = operands[i];
-                    val = registerFile->getRegisterValue(registerNum);
-                    operands[i] = val;
-                }
-                break;
-            case ADDI:
+            case BEQ:
+            case BNE:
+                registerNum = operands[0];
+                val = registerFile->getRegisterValue(registerNum);
+                operands[0] = val;
                 registerNum = operands[1];
                 val = registerFile->getRegisterValue(registerNum);
                 operands[1] = val;
                 break;
+            case BGEZ:
+            case BGTZ:
+            case BLEZ:
+            case BLTZ:
+                registerNum = operands[0];
+                val = registerFile->getRegisterValue(registerNum);
+                operands[0] = val;
+                break;
         }
-        //Setting the scoreBoard values of the destination register to 0
-        registerFile->setScoreBoardValue(operands[0],0);
     }
 
     void pipe() {
     	if(opcode != 0) {
     	    //send the decoded instruction to the execution unit
-            alu->setOpcode(opcode);
-            alu->setOperands(operands);
-            //Send the reorder buffer index to the alu
-            alu->setReorderBufferIndex(reorderBufferIndex);
+            branchUnit->setOpcode(opcode);
+            branchUnit->setOperands(operands);
+            //Send the reorder buffer index to the execution unit
+            branchUnit->setReorderBufferIndex(reorderBufferIndex);
         
             //reset the outputs
             opcode = 0;
