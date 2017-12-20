@@ -116,10 +116,19 @@ class Processor {
                     //fetch the next instruction
                     fetch();
                 }
+                else {
+                    if(decodeUnitBlockingFlag) {
+                        printf("DECODE UNIT BLOCKING\n");
+                    }
+                    if(loadStoreUnitBlockingFlag) {
+                        printf("LOAD STORE UNIT BLOCKING\n");
+                    }
+                }
 
                 //decode the instruction
                 decode();
 
+                //dispatch instructions from the reservation stations
                 dispatch();
 
                 //execute the instruction
@@ -196,6 +205,8 @@ class Processor {
             flushFlag = 0;
             registerFile.resetScoreBoard();
             reorderBuffer.flush();
+            aluReservationStation.flush();
+            printf("FLUSHING PIPELINE!\n");
         }
 
         void printInfo() {
@@ -214,6 +225,7 @@ class Processor {
             cout << "PC: " << pc << endl;
             registerFile.printRegisters();
             cout << endl;
+            registerFile.printScoreBoard();
         }
 };
 

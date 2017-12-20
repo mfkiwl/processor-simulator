@@ -135,4 +135,16 @@ public:
             reorderBufferIndex = -1;
         }
     }
+
+    void flush() {
+    	for(int i = 0; i < size; i++) {
+    		instructions[i] = (Instruction) {0,0,0,0};
+    		reorderBufferIndexes[i] = -1;
+    	}
+    	dispatchingInstruction = (Instruction) {0,0,0,0};
+    	opcode = 0;
+    	for(int i = 0; i < 3; i++) {
+    		operands[i] = 0;
+    	}
+    }
 };

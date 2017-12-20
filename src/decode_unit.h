@@ -199,8 +199,6 @@ class DecodeUnit {
                     reorderBufferIndex = reorderBuffer->addEntry(STORE_TO_REGISTER, currentInstruction.operands[0], currentInstruction);
                     //send the instruction to the reservation station
                     aluReservationStation->addInstruction(currentInstruction, reorderBufferIndex);
-                    //Setting the scoreBoard values of the destination register to 0
-                    registerFile->setScoreBoardValue(currentInstruction.operands[0],0);
                     
                     break;
                 //Load Store unit instructions
