@@ -1,5 +1,5 @@
-#ifndef _LOAD_STORE_UNIT_INCLUDED_
-#define _LOAD_STORE_UNIT_INCLUDED_
+#ifndef LOAD_STORE_UNIT_H
+#define LOAD_STORE_UNIT_H
 
 class LoadStoreUnit {
     //forward components

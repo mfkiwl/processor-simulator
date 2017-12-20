@@ -16,6 +16,7 @@
 #include "store_buffer.h"
 #include "load_buffer.h"
 #include "load_store_unit.h"
+#include "load_store_unit_reservation_station.h"
 #include "decode_unit.h"
 #include "fetch_unit.h"
 
@@ -60,6 +61,7 @@ class Processor {
     BranchUnit branchUnit;
     BranchUnitReservationStation branchUnitReservationStation;
     LoadStoreUnit loadStoreUnit;
+    LoadStoreUnitReservationStation loadStoreUnitReservationStation;
 
     public:
     	//Classes needed to be initialised in the uniform initialiser list
@@ -90,12 +92,13 @@ class Processor {
             memory(memorySize),
             reorderBuffer(&registerFile, &memory, &loadStoreUnit, &pc, &flushFlag, &runningFlag, &noOfInstructionsExecuted),
             fetchUnit(instructions, &pc, &decodeUnit),
-            decodeUnit(&registerFile, &reorderBuffer, &aluReservationStation, &branchUnitReservationStation, &loadStoreUnit, &decodeUnitBlockingFlag),
+            decodeUnit(&registerFile, &reorderBuffer, &aluReservationStation, &branchUnitReservationStation, &loadStoreUnitReservationStation, &decodeUnitBlockingFlag),
             alu(&registerFile, &reorderBuffer),
             aluReservationStation(&registerFile, &alu),
             branchUnit(&reorderBuffer),
             branchUnitReservationStation(&registerFile, &branchUnit),
-            loadStoreUnit(&memory, &reorderBuffer, &loadStoreUnitBlockingFlag)
+            loadStoreUnit(&memory, &reorderBuffer, &loadStoreUnitBlockingFlag),
+            loadStoreUnitReservationStation(&registerFile, &loadStoreUnit)
         {}
 
 
@@ -211,6 +214,7 @@ class Processor {
             //flush reservation stations
             aluReservationStation.flush();
             branchUnitReservationStation.flush();
+            loadStoreUnitReservationStation.flush();
             //flush execution units
             alu.flush();
             branchUnit.flush();
