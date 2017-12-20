@@ -2,25 +2,23 @@
 #define _FETCH_UNIT_
 
 class FetchUnit {
-    Instruction* instructions;
-    int noOfInstructions;
+    Instructions instructions;
     int* pc;
     DecodeUnit* decodeUnit;
     Instruction currentInstruction;
 
     public:
-        FetchUnit(Instruction* instructions, int noOfInstructions, int* pc, DecodeUnit* decodeUnit) :
+        FetchUnit(Instructions instructions, int* pc, DecodeUnit* decodeUnit) :
         instructions(instructions),
-        noOfInstructions(noOfInstructions),
         pc(pc),
         decodeUnit(decodeUnit),
         currentInstruction((Instruction) {0,0,0,0})
     {}
 
     void execute() {
-        if(*pc <= noOfInstructions) {
+        if(*pc <= instructions.getNumOfInstructions()) {
             //fetch the next instruction (-1 so that pc of 1 refers to the first instruction on line 1)
-    	    currentInstruction = instructions[*pc - 1];
+    	    currentInstruction = instructions.at(*pc - 1);
         }
         else {
             //next instruction is noop if pc exceeds number of instructions

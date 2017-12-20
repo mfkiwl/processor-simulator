@@ -99,11 +99,10 @@ class ReorderBuffer {
                 *runningFlag = 0;
             }
             cout << endl << "Finished Instruction: ";
-            printInstruction(instructions[tail]);
+            Instructions::printInstruction(instructions[tail]);
             (*noOfInstructionsExecuted)++;
             tail = (tail + 1) % size;
     	}
-        //printInstruction(instructions[tail]);
     }
 
     void executingEntry(int i) {
@@ -138,7 +137,7 @@ class ReorderBuffer {
         cout << endl;
         cout << "Reorder Buffer:" << endl;
     	for(int i = tail; i < head; i++) {
-            printInstruction(instructions[i]);
+            Instructions::printInstruction(instructions[i]);
         }
         cout << endl;
     }

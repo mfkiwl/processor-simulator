@@ -36,9 +36,8 @@ class Processor {
     int noOfInstructionsExecuted;
     int noOfClockCycles;
 
-    //Instruction info
-    int noOfInstructions;
-    Instruction *instructions;
+    //Instructions to execute
+    Instructions instructions;
 
     //registers
     int pc;
@@ -61,19 +60,18 @@ class Processor {
 
     public:
     	//Classes needed to be initialised in the uniform initialiser list
-        Processor(int noOfRegisters, int memorySize, Instructions is) : 
+        Processor(Instructions instructions) : 
 
             //processor configuration
-            noOfRegisters(noOfRegisters),
-            memorySize(memorySize),
+            noOfRegisters(16),
+            memorySize(24),
 
             //general stats
             noOfInstructionsExecuted(0),
             noOfClockCycles(0),
 
             //instruction info
-            noOfInstructions(is.getNumOfInstructions()),
-            instructions(is.getInstructions()),
+            instructions(instructions),
 
             //registers
             pc(1),
@@ -88,7 +86,7 @@ class Processor {
             registerFile(noOfRegisters), 
             memory(memorySize),
             reorderBuffer(&registerFile, &memory, &loadStoreUnit, &pc, &flushFlag, &runningFlag, &noOfInstructionsExecuted),
-            fetchUnit(instructions, noOfInstructions, &pc, &decodeUnit),
+            fetchUnit(instructions, &pc, &decodeUnit),
             decodeUnit(&registerFile, &reorderBuffer, &alu, &branchUnit, &loadStoreUnit, &decodeUnitBlockingFlag),
             alu(&registerFile, &reorderBuffer),
             branchUnit(&reorderBuffer),
@@ -219,7 +217,7 @@ int main(int argc, char *argv[]) {
 
     //create processor object and start processing
     if(instructions.getNumOfInstructions() != -1 && instructions.getInstructions() != NULL) {
-        Processor processor(16, 24, instructions);
+        Processor processor(instructions);
         processor.start();
     }
     cout << "\n";
