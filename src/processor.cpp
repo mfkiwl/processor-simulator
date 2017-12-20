@@ -180,9 +180,11 @@ class Processor {
         void dispatch() {
             aluReservationStation.execute();
             branchUnitReservationStation.execute();
+            loadStoreUnitReservationStation.execute();
             //printf("EXECUTED DISPATCH\n");
             aluReservationStation.pipe();
             branchUnitReservationStation.pipe();
+            loadStoreUnitReservationStation.pipe();
             //printf("EXECUTED DISPATCH PIPE\n");
         }
 
