@@ -6,8 +6,6 @@ class ALUReservationStation {
 	Instruction* instructions;
 	int* reorderBufferIndexes;
 
-	Instruction dispatchingInstruction;
-
 	int opcode;
 	int* operands;
 	int reorderBufferIndex;
@@ -17,7 +15,6 @@ public:
 	registerFile(registerFile),
 	alu(alu),
 	size(10),
-	dispatchingInstruction((Instruction) {0,0,0,0}),
 	opcode(0),
 	reorderBufferIndex(-1)
 	{
@@ -115,6 +112,8 @@ public:
                 operands[1] = val;
                 break;
         }
+        //Setting the scoreBoard values of the destination register to 0
+        registerFile->setScoreBoardValue(operands[0],0);
     }
 
     void pipe() {
@@ -122,12 +121,10 @@ public:
     	    //send the decoded instruction to the execution unit
             alu->setOpcode(opcode);
             alu->setOperands(operands);
-            //Setting the scoreBoard values of the destination register to 0
-            registerFile->setScoreBoardValue(operands[0],0);
             //Send the reorder buffer index to the alu
             alu->setReorderBufferIndex(reorderBufferIndex);
         
-            //reset the opcode and operands
+            //reset the outputs
             opcode = 0;
             for(int i = 0; i < 3; i++) {
                 operands[i] = 0;
@@ -141,10 +138,10 @@ public:
     		instructions[i] = (Instruction) {0,0,0,0};
     		reorderBufferIndexes[i] = -1;
     	}
-    	dispatchingInstruction = (Instruction) {0,0,0,0};
     	opcode = 0;
     	for(int i = 0; i < 3; i++) {
     		operands[i] = 0;
     	}
+    	reorderBufferIndex = -1;
     }
 };

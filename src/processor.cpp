@@ -225,7 +225,7 @@ class Processor {
             cout << "PC: " << pc << endl;
             registerFile.printRegisters();
             cout << endl;
-            registerFile.printScoreBoard();
+            memory.printMemory();
         }
 };
 
