@@ -54,9 +54,8 @@ public:
                 dispatch(tail);
                 reorderBufferIndex = reorderBufferIndexes[tail];
                     
-                //printf("DISPATCHING INSTRUCTION: ");
-                //Instructions::printInstruction(instructions[i]);
-                //printf("WITH REORDER BUFFER INDEX: %d\n", reorderBufferIndex);
+                printf("DISPATCHING INSTRUCTION: ");
+                Instructions::printInstruction(instructions[tail]);
 
                 //clear the dispatched instruction from the reservation station
                 instructions[tail] = (Instruction) {0,0,0,0};

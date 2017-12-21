@@ -49,13 +49,13 @@ public:
                     dispatch(instructions[i]);
                     reorderBufferIndex = reorderBufferIndexes[i];
                     
-                    //printf("DISPATCHING INSTRUCTION: ");
-                    //Instructions::printInstruction(instructions[i]);
-                    //printf("WITH REORDER BUFFER INDEX: %d\n", reorderBufferIndex);
+                    printf("DISPATCHING INSTRUCTION: ");
+                    Instructions::printInstruction(instructions[i]);
 
                     //clear the dispatched instruction from the reservation station
                     instructions[i] = (Instruction) {0,0,0,0};
                     reorderBufferIndexes[i] = -1;
+                    break;
                 }
             }
         }

@@ -116,7 +116,9 @@ class Processor {
                     fetch();
                 }
                 else {
+                    printf("\n");
                     printf("BLOCKING ISSUE\n");
+                    printf("\n");
                 }
 
                 //decode the instruction
@@ -233,10 +235,10 @@ class Processor {
             registerFile.printRegisters();
             memory.print();
             registerFile.printScoreBoard();
-            decodeIssueUnit.print();
-            aluReservationStation.print();
-            branchUnitReservationStation.print();
-            loadStoreUnitReservationStation.print();
+            //decodeIssueUnit.print();
+            //aluReservationStation.print();
+            //branchUnitReservationStation.print();
+            //loadStoreUnitReservationStation.print();
             //reorderBuffer.print();
         }
 };
