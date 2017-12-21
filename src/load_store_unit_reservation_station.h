@@ -23,7 +23,7 @@ public:
 	loadStoreUnit(loadStoreUnit),
     tail(0),
     head(0),
-	size(10),
+	size(100),
 	opcode(0),
 	reorderBufferIndex(-1)
 	{

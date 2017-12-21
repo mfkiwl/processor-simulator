@@ -10,15 +10,13 @@ class DecodeIssueUnit {
     LoadStoreUnitReservationStation* loadStoreUnitReservationStation;
     LoadStoreUnit* loadStoreUnit;
 
-    //Instruction given my fetch unit
+    //Instruction given from the fetch unit
     Instruction nextInstruction;
 
-    //for debugging purposes
+    //the current instruction
     Instruction currentInstruction;
 
-    //Decoding of the instruction
-    int opcode;
-    int operands[3];
+    int reorderBufferIndex;
 
     //tells the processor whether or not to block the pipeline
     int* blockingFlag;
@@ -32,26 +30,19 @@ class DecodeIssueUnit {
     	    loadStoreUnitReservationStation(loadStoreUnitReservationStation),
             nextInstruction((Instruction) {0,0,0,0}),
             currentInstruction((Instruction) {0,0,0,0}),
-            opcode(0),
+            reorderBufferIndex(-1),
             blockingFlag(blockingFlag)
-        {
-            //initialise operand values to zero
-            for(int i = 0; i < 3; i++) {
-                operands[i] = 0;
-            }
-        }
+        {}
 
         void execute() {
-            opcode = nextInstruction.opcode;
-            for(int i = 0; i < 3; i++) {
-                operands[i] = nextInstruction.operands[i];
+            if(nextInstruction.opcode != 0) {
+                currentInstruction = nextInstruction;
+                issue();
             }
-            currentInstruction = nextInstruction;
         }
 
-        void pipe() {
-            int reorderBufferIndex = -1;
-            switch(opcode) {
+        void issue() {
+            switch(currentInstruction.opcode) {
                 //ALU instructions
                 case ADD:
                 case ADDI:
@@ -63,8 +54,6 @@ class DecodeIssueUnit {
                     if(aluReservationStation->findFreePosition() != -1) {
                         //Instruction has been issued so add entry to the reorder buffer
                         reorderBufferIndex = reorderBuffer->addEntry(STORE_TO_REGISTER, currentInstruction.operands[0], currentInstruction);
-                        //send the instruction to the reservation station
-                        aluReservationStation->addInstruction(currentInstruction, reorderBufferIndex);
                         //unblock the pipeline
                         *blockingFlag = 0;
                     }
@@ -80,9 +69,6 @@ class DecodeIssueUnit {
                     if(loadStoreUnitReservationStation->spaceInQueue()) {
                         //Instruction has been issued so add entry to the reorder buffer
                         reorderBufferIndex = reorderBuffer->addEntry(STORE_TO_REGISTER, currentInstruction.operands[0], currentInstruction);
-                        //send the instruction to the reservation station
-                        loadStoreUnitReservationStation->addInstruction(currentInstruction, reorderBufferIndex);
-
                         *blockingFlag = 0;
                     }
                     else {
@@ -94,9 +80,6 @@ class DecodeIssueUnit {
                     if(loadStoreUnitReservationStation->spaceInQueue()) {
                         //Instruction has been issued so add entry to the reorder buffer
                         reorderBufferIndex = reorderBuffer->addEntry(STORE_TO_MEMORY, currentInstruction.operands[1], currentInstruction);
-                        //send the instruction to the reservation station
-                        loadStoreUnitReservationStation->addInstruction(currentInstruction, reorderBufferIndex);
-
                         *blockingFlag = 0;
                     }
                     else {
@@ -111,9 +94,6 @@ class DecodeIssueUnit {
                     if(branchUnitReservationStation->findFreePosition() != -1) {
                         //Instruction has been issued so add entry to the reorder buffer
                         reorderBufferIndex = reorderBuffer->addEntry(JUMP, currentInstruction.operands[2], currentInstruction);
-                        //send the instruction to the reservation station
-                        branchUnitReservationStation->addInstruction(currentInstruction, reorderBufferIndex);
-
                         *blockingFlag = 0;
                     }
                     else {
@@ -130,9 +110,6 @@ class DecodeIssueUnit {
                     if(branchUnitReservationStation->findFreePosition() != -1) {
                         //Instruction has been issued so add entry to the reorder buffer
                         reorderBufferIndex = reorderBuffer->addEntry(JUMP, currentInstruction.operands[0], currentInstruction);
-                        //send the instruction to the reservation station
-                        branchUnitReservationStation->addInstruction(currentInstruction, reorderBufferIndex);
-
                         *blockingFlag = 0;
                     }
                     else {
@@ -145,9 +122,6 @@ class DecodeIssueUnit {
                     if(branchUnitReservationStation->findFreePosition() != -1) {
                         //Instruction has been issued so add entry to the reorder buffer
                         reorderBufferIndex = reorderBuffer->addEntry(SYSCALL, currentInstruction.operands[0], currentInstruction);
-                        //send the instruction to the reservation station
-                        branchUnitReservationStation->addInstruction(currentInstruction, reorderBufferIndex);
-
                         *blockingFlag = 0;
                     }
                     else {
@@ -155,10 +129,46 @@ class DecodeIssueUnit {
                     }
                     break;
             }
-            //reset the decoding
-            opcode = 0;
-            for(int i = 0; i < 3; i++) {
-                operands[i] = 0;
+        }
+
+        void pipe() {
+            if(reorderBufferIndex != -1) {
+                switch(currentInstruction.opcode) {
+
+                //ALU instructions
+                case ADD:
+                case ADDI:
+                case AND:
+                case MULT:
+                case OR:
+                case SUB:
+                    aluReservationStation->addInstruction(currentInstruction, reorderBufferIndex);
+                    break;
+
+                //Load Store unit instructions
+                case LW:
+                case LWR:
+                case SW:
+                case SWR:
+                    loadStoreUnitReservationStation->addInstruction(currentInstruction, reorderBufferIndex);
+                    break;
+
+                //Branch unit instructions
+                case BEQ:
+                case BNE:
+                case BGEZ:
+                case BGTZ:
+                case BLEZ:
+                case BLTZ:
+                case J:
+                case JR:
+                    
+                //Instruction to finish the program
+                case HALT:
+                    branchUnitReservationStation->addInstruction(currentInstruction, reorderBufferIndex);
+                    break;
+                }
+                reorderBufferIndex = -1;
             }
         }
 
@@ -172,10 +182,6 @@ class DecodeIssueUnit {
         }
 
         void flush() {
-            opcode = 0;
-            for(int i = 0; i < 3; i++) {
-                operands[i] = 0;
-            }
             nextInstruction = (Instruction) {0,0,0,0};
             currentInstruction = (Instruction) {0,0,0,0};
         }

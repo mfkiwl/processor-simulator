@@ -237,7 +237,7 @@ class Processor {
             aluReservationStation.print();
             branchUnitReservationStation.print();
             loadStoreUnitReservationStation.print();
-            reorderBuffer.print();
+            //reorderBuffer.print();
         }
 };
 
