@@ -23,7 +23,7 @@ public:
 	loadStoreUnit(loadStoreUnit),
     tail(0),
     head(0),
-	size(100),
+	size(4),
 	opcode(0),
 	reorderBufferIndex(-1)
 	{
@@ -54,8 +54,8 @@ public:
                 dispatch(tail);
                 reorderBufferIndex = reorderBufferIndexes[tail];
                     
-                printf("DISPATCHING INSTRUCTION: ");
-                Instructions::printInstruction(instructions[tail]);
+                //printf("DISPATCHING INSTRUCTION: ");
+                //Instructions::printInstruction(instructions[tail]);
 
                 //clear the dispatched instruction from the reservation station
                 instructions[tail] = (Instruction) {0,0,0,0};

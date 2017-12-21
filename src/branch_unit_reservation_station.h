@@ -17,7 +17,7 @@ public:
 	BranchUnitReservationStation(RegisterFile* registerFile, BranchUnit* branchUnit) : 
 	registerFile(registerFile),
 	branchUnit(branchUnit),
-	size(100),
+	size(4),
 	opcode(0),
 	reorderBufferIndex(-1)
 	{
@@ -49,8 +49,8 @@ public:
                     dispatch(instructions[i]);
                     reorderBufferIndex = reorderBufferIndexes[i];
                     
-                    printf("DISPATCHING INSTRUCTION: ");
-                    Instructions::printInstruction(instructions[i]);
+                    //printf("DISPATCHING INSTRUCTION: ");
+                    //Instructions::printInstruction(instructions[i]);
 
                     //clear the dispatched instruction from the reservation station
                     instructions[i] = (Instruction) {0,0,0,0};

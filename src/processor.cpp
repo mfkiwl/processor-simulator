@@ -233,8 +233,8 @@ class Processor {
             cout << endl;
             cout << "PC: " << pc << endl;
             registerFile.printRegisters();
-            memory.print();
-            registerFile.printScoreBoard();
+            //memory.print();
+            //registerFile.printScoreBoard();
             //decodeIssueUnit.print();
             //aluReservationStation.print();
             //branchUnitReservationStation.print();

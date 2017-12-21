@@ -144,6 +144,9 @@ class ReorderBuffer {
     void print() {
         cout << "Reorder Buffer:" << endl;
     	for(int i = tail; i < head; i++) {
+            if(buffer[i][STATUS] == FINISHED) {
+                printf("FINISHED : ");
+            }
             Instructions::printInstruction(instructions[i]);
         }
     }
