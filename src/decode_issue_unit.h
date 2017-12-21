@@ -38,6 +38,7 @@ class DecodeIssueUnit {
             if(nextInstruction.opcode != 0) {
                 currentInstruction = nextInstruction;
                 issue();
+                setScoreBoardValues();
             }
         }
 
@@ -128,6 +129,25 @@ class DecodeIssueUnit {
                         *blockingFlag = 1;
                     }
                     break;
+            }
+        }
+
+        void setScoreBoardValues() {
+            if(*blockingFlag == 0) {
+                switch(currentInstruction.opcode) {
+                    //alu instructions
+                    case ADD:
+                    case ADDI:
+                    case AND:
+                    case MULT:
+                    case OR:
+                    case SUB:
+                    //Load instructions
+                    case LW:
+                    case LWR:
+                    registerFile->setScoreBoardValue(currentInstruction.operands[0],0);
+                    break;
+                }
             }
         }
 

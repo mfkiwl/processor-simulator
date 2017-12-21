@@ -26,7 +26,6 @@ using namespace std;
 class Processor {
 
     //information
-    int noOfRegisters;
     int memorySize;
 
     //general stats
@@ -62,7 +61,6 @@ class Processor {
         Processor(Instructions instructions) : 
 
             //processor configuration
-            noOfRegisters(16),
             memorySize(24),
 
             //general stats
@@ -81,7 +79,7 @@ class Processor {
             decodeUnitBlockingFlag(0),
 
             //components
-            registerFile(noOfRegisters), 
+            registerFile(), 
             memory(memorySize),
             reorderBuffer(&registerFile, &memory, &pc, &flushFlag, &runningFlag, &noOfInstructionsExecuted),
             fetchUnit(instructions, &pc, &decodeIssueUnit),
@@ -233,13 +231,13 @@ class Processor {
             cout << endl;
             cout << "PC: " << pc << endl;
             registerFile.printRegisters();
-            //memory.print();
-            //registerFile.printScoreBoard();
-            //decodeIssueUnit.print();
-            //aluReservationStation.print();
-            //branchUnitReservationStation.print();
-            //loadStoreUnitReservationStation.print();
-            //reorderBuffer.print();
+            memory.print();
+            registerFile.printScoreBoard();
+            decodeIssueUnit.print();
+            aluReservationStation.print();
+            branchUnitReservationStation.print();
+            loadStoreUnitReservationStation.print();
+            reorderBuffer.print();
         }
 };
 

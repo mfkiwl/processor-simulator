@@ -190,16 +190,6 @@ private:
                 operands[1] = val;
                 break;
         }
-        //Setting the scoreboard values of the destination register to 0
-        switch(opcode) {
-            case LW:
-            case LWR:
-                registerFile->setScoreBoardValue(operands[0],0);
-                break;
-            case SW:
-            case SWR:
-                break;
-        }
     }
 };
 

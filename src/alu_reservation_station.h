@@ -172,8 +172,6 @@ private:
                 operands[1] = val;
                 break;
         }
-        //Setting the scoreBoard values of the destination register to 0
-        registerFile->setScoreBoardValue(operands[0],0);
     }
 };
 
