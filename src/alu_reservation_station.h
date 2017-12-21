@@ -77,6 +77,37 @@ public:
         return -1;
     }
 
+    void pipe() {
+        if(opcode != 0) {
+            //send the decoded instruction to the execution unit
+            alu->setOpcode(opcode);
+            alu->setOperands(operands);
+            //Send the reorder buffer index to the alu
+            alu->setReorderBufferIndex(reorderBufferIndex);
+        
+            //reset the outputs
+            opcode = 0;
+            for(int i = 0; i < 3; i++) {
+                operands[i] = 0;
+            }
+            reorderBufferIndex = -1;
+        }
+    }
+
+    void flush() {
+        for(int i = 0; i < size; i++) {
+            instructions[i] = (Instruction) {0,0,0,0};
+            reorderBufferIndexes[i] = -1;
+        }
+        opcode = 0;
+        for(int i = 0; i < 3; i++) {
+            operands[i] = 0;
+        }
+        reorderBufferIndex = -1;
+    }
+
+private:
+
 	int readyToDispatch(Instruction instruction) {
         //check that the source registers are ready to use
 		switch(instruction.opcode) {
@@ -130,35 +161,6 @@ public:
         }
         //Setting the scoreBoard values of the destination register to 0
         registerFile->setScoreBoardValue(operands[0],0);
-    }
-
-    void pipe() {
-    	if(opcode != 0) {
-    	    //send the decoded instruction to the execution unit
-            alu->setOpcode(opcode);
-            alu->setOperands(operands);
-            //Send the reorder buffer index to the alu
-            alu->setReorderBufferIndex(reorderBufferIndex);
-        
-            //reset the outputs
-            opcode = 0;
-            for(int i = 0; i < 3; i++) {
-                operands[i] = 0;
-            }
-            reorderBufferIndex = -1;
-        }
-    }
-
-    void flush() {
-    	for(int i = 0; i < size; i++) {
-    		instructions[i] = (Instruction) {0,0,0,0};
-    		reorderBufferIndexes[i] = -1;
-    	}
-    	opcode = 0;
-    	for(int i = 0; i < 3; i++) {
-    		operands[i] = 0;
-    	}
-    	reorderBufferIndex = -1;
     }
 };
 

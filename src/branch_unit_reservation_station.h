@@ -77,6 +77,37 @@ public:
         return -1;
     }
 
+    void pipe() {
+        if(opcode != 0) {
+            //send the decoded instruction to the execution unit
+            branchUnit->setOpcode(opcode);
+            branchUnit->setOperands(operands);
+            //Send the reorder buffer index to the execution unit
+            branchUnit->setReorderBufferIndex(reorderBufferIndex);
+        
+            //reset the outputs
+            opcode = 0;
+            for(int i = 0; i < 3; i++) {
+                operands[i] = 0;
+            }
+            reorderBufferIndex = -1;
+        }
+    }
+
+    void flush() {
+        for(int i = 0; i < size; i++) {
+            instructions[i] = (Instruction) {0,0,0,0};
+            reorderBufferIndexes[i] = -1;
+        }
+        opcode = 0;
+        for(int i = 0; i < 3; i++) {
+            operands[i] = 0;
+        }
+        reorderBufferIndex = -1;
+    }
+
+private:
+
 	int readyToDispatch(Instruction instruction) {
 		//check that the source register are ready to use
 		switch(instruction.opcode) {
@@ -138,35 +169,6 @@ public:
             case HALT:
                 break;
         }
-    }
-
-    void pipe() {
-    	if(opcode != 0) {
-    	    //send the decoded instruction to the execution unit
-            branchUnit->setOpcode(opcode);
-            branchUnit->setOperands(operands);
-            //Send the reorder buffer index to the execution unit
-            branchUnit->setReorderBufferIndex(reorderBufferIndex);
-        
-            //reset the outputs
-            opcode = 0;
-            for(int i = 0; i < 3; i++) {
-                operands[i] = 0;
-            }
-            reorderBufferIndex = -1;
-        }
-    }
-
-    void flush() {
-    	for(int i = 0; i < size; i++) {
-    		instructions[i] = (Instruction) {0,0,0,0};
-    		reorderBufferIndexes[i] = -1;
-    	}
-    	opcode = 0;
-    	for(int i = 0; i < 3; i++) {
-    		operands[i] = 0;
-    	}
-    	reorderBufferIndex = -1;
     }
 };
 

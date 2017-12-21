@@ -5,7 +5,6 @@ class LoadStoreUnitReservationStation {
     RegisterFile* registerFile;
     LoadStoreUnit* loadStoreUnit;
 
-
 	int size;
 	Instruction* instructions;
 	int* reorderBufferIndexes;
@@ -85,6 +84,39 @@ public:
         allowLoadReorderBufferIndex = i;
     }
 
+    void pipe() {
+        if(opcode != 0) {
+
+            //send the decoded instruction to the execution unit
+            loadStoreUnit->setOpcode(opcode);
+            loadStoreUnit->setOperands(operands);
+
+            //Send the reorder buffer index to the execution unit
+            loadStoreUnit->setReorderBufferIndex(reorderBufferIndex);
+        
+            //reset the outputs
+            opcode = 0;
+            for(int i = 0; i < 3; i++) {
+                operands[i] = 0;
+            }
+            reorderBufferIndex = -1;
+        }
+    }
+
+    void flush() {
+        for(int i = 0; i < size; i++) {
+            instructions[i] = (Instruction) {0,0,0,0};
+            reorderBufferIndexes[i] = -1;
+        }
+        opcode = 0;
+        for(int i = 0; i < 3; i++) {
+            operands[i] = 0;
+        }
+        reorderBufferIndex = -1;
+    }
+
+private:
+
 	int readyToDispatch(int index) {
         Instruction instruction = instructions[index];
 		//check that the source register are ready to use
@@ -160,37 +192,6 @@ public:
             case SWR:
                 break;
         }
-    }
-
-    void pipe() {
-    	if(opcode != 0) {
-
-            //send the decoded instruction to the execution unit
-            loadStoreUnit->setOpcode(opcode);
-            loadStoreUnit->setOperands(operands);
-
-            //Send the reorder buffer index to the execution unit
-            loadStoreUnit->setReorderBufferIndex(reorderBufferIndex);
-        
-            //reset the outputs
-            opcode = 0;
-            for(int i = 0; i < 3; i++) {
-                operands[i] = 0;
-            }
-            reorderBufferIndex = -1;
-        }
-    }
-
-    void flush() {
-    	for(int i = 0; i < size; i++) {
-    		instructions[i] = (Instruction) {0,0,0,0};
-    		reorderBufferIndexes[i] = -1;
-    	}
-    	opcode = 0;
-    	for(int i = 0; i < 3; i++) {
-    		operands[i] = 0;
-    	}
-    	reorderBufferIndex = -1;
     }
 };
 
