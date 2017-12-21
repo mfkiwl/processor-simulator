@@ -21,8 +21,8 @@
 #include "fetch_unit.h"
 
 //Had to do this to avoid errors from forward declaration
-void ReorderBuffer::setHead(LoadStoreUnit* loadStoreUnit, int rbi) {
-    loadStoreUnit->setHead(rbi);
+void ReorderBuffer::setAllowLoadReorderBufferIndex(LoadStoreUnitReservationStation* loadStoreUnitReservationStation, int rbi) {
+    loadStoreUnitReservationStation->setAllowLoadReorderBufferIndex(rbi);
 }
 
 using namespace std;
@@ -88,7 +88,7 @@ class Processor {
             //components
             registerFile(noOfRegisters), 
             memory(memorySize),
-            reorderBuffer(&registerFile, &memory, &loadStoreUnit, &pc, &flushFlag, &runningFlag, &noOfInstructionsExecuted),
+            reorderBuffer(&registerFile, &memory, &loadStoreUnitReservationStation, &pc, &flushFlag, &runningFlag, &noOfInstructionsExecuted),
             fetchUnit(instructions, &pc, &decodeUnit),
             decodeUnit(&registerFile, &reorderBuffer, &aluReservationStation, &branchUnitReservationStation, &loadStoreUnitReservationStation),
             alu(&registerFile, &reorderBuffer),
@@ -111,7 +111,7 @@ class Processor {
 
                 //hold up the program at each clock cycle
                 char str[3];
-                fgets(str, 2, stdin);
+                //fgets(str, 2, stdin);
 
                 //if the pipeline is not being blocked
                 if(!loadStoreUnitBlockingFlag) {

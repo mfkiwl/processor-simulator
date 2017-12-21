@@ -16,6 +16,8 @@ class LoadStoreUnitReservationStation {
 	int* operands;
 	int reorderBufferIndex;
 
+    int allowLoadReorderBufferIndex;
+
 public:
 	LoadStoreUnitReservationStation(RegisterFile* registerFile, LoadStoreUnit* loadStoreUnit) : 
 	registerFile(registerFile),
@@ -24,7 +26,8 @@ public:
     head(0),
     tail(0),
 	opcode(0),
-	reorderBufferIndex(-1)
+	reorderBufferIndex(-1),
+    allowLoadReorderBufferIndex(-1)
 	{
 		//allocate memory to the buffer
 		instructions = new Instruction[size];
@@ -49,8 +52,8 @@ public:
     //dispatch an instruction if it can
 	void execute() {
 	    if(instructions[tail].opcode != NOOP) {
-			if(readyToDispatch(instructions[tail])) {
-                dispatch(instructions[tail]);
+			if(readyToDispatch(tail)) {
+                dispatch(tail);
                 reorderBufferIndex = reorderBufferIndexes[tail];
                 //printf("DISPATCHING INSTRUCTION: ");
                 //Instructions::printInstruction(instructions[i]);
@@ -61,6 +64,10 @@ public:
 		}
 	}
 
+    void setAllowLoadReorderBufferIndex(int i) {
+        allowLoadReorderBufferIndex = i;
+    }
+
 	void addInstruction(Instruction instruction, int rbi) {
 		//printf("ADDED INSTRUCTION: ");
 		//Instructions::printInstruction(instruction);
@@ -69,14 +76,15 @@ public:
         head = (head + 1) % size;
 	}
 
-	int readyToDispatch(Instruction instruction) {
+	int readyToDispatch(int index) {
+        Instruction instruction = instructions[index];
 		//check that the source register are ready to use
 		switch(instruction.opcode) {
 			case LW:
                 return 1;
                 break;
             case SW:
-                if(registerFile->getScoreBoardValue(operands[0])) {
+                if(registerFile->getScoreBoardValue(operands[0]) && allowLoadReorderBufferIndex == reorderBufferIndexes[index]) {
                     return 1;
                 }
                 break;
@@ -88,7 +96,7 @@ public:
                 break;
             case SWR:
                 //If the source registers are ready then continue
-                if(registerFile->getScoreBoardValue(operands[0]) && registerFile->getScoreBoardValue(operands[1])) {
+                if(registerFile->getScoreBoardValue(operands[0]) && registerFile->getScoreBoardValue(operands[1]) && allowLoadReorderBufferIndex == reorderBufferIndexes[index]) {
                     return 1;
                 }
                 break;
@@ -97,7 +105,8 @@ public:
 	}
 
     //dispatch bound fetch
-    void dispatch(Instruction instruction) {
+    void dispatch(int index) {
+        Instruction instruction = instructions[index];
         //getting the opcode and incomplete operands from the instruction
         opcode = instruction.opcode;
         operands = new int[3];

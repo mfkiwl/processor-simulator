@@ -20,7 +20,6 @@ class StoreBuffer {
     const int VALUE;
     const int REORDER_BUFFER_INDEX;
     const int STEP;
-    const int HEAD;
 
     int numberReady;
 
@@ -31,13 +30,12 @@ public:
 	    size(size),
 	    head(0),
 	    tail(0),
-        entryFields(5),
+        entryFields(4),
 	    steps(steps),
         ADDRESS(0),
         VALUE(1),
         REORDER_BUFFER_INDEX(2),
         STEP(3),
-        HEAD(4),
         numberReady(0)
 	{
         //dynamically allocated a 2d array to the read and write buffer
@@ -59,7 +57,6 @@ public:
             buffer[i][VALUE] = 0;
             buffer[i][REORDER_BUFFER_INDEX] = 0;
             buffer[i][STEP] = 0;
-            buffer[i][HEAD] = 0;
         }
         head = 0;
         tail = 0;
@@ -73,7 +70,6 @@ public:
             buffer[head][VALUE] = value;
             buffer[head][REORDER_BUFFER_INDEX] = reorderBufferIndex;
             buffer[head][STEP] = 0;
-            buffer[head][HEAD] = 0;
         }
         //otherwise if the end of the buffer is empty then add here
         else if(tail < size - 1) {
@@ -81,35 +77,14 @@ public:
             buffer[tail][VALUE] = value;
             buffer[tail][REORDER_BUFFER_INDEX] = reorderBufferIndex;
             buffer[tail][STEP] = 0;
-            buffer[tail][HEAD] = 0;
             tail += 1;
-        }
-    }
-
-    void printStoreBuffer() {
-        for(int i = head; i < tail; i++) {
-            printf("HEAD: %d\t", buffer[i][HEAD]);
-            printf("STEPS: %d\n", buffer[i][STEP]);
         }
     }
 
     void stepInstructions() {
         //increment the current step for all inflight instructions in the write buffer
         for(int i = head; i < tail; i++) {
-            if(buffer[i][HEAD]) {
-                buffer[i][STEP] += 1;
-            }
-        }
-    }
-
-    void setHead(int rbi) {
-        for(int i = head; i < tail; i++) {
-            if(buffer[i][REORDER_BUFFER_INDEX] == rbi) {
-                buffer[i][HEAD] = 1;
-                reorderBuffer->executingEntry(buffer[i][REORDER_BUFFER_INDEX]);
-                reorderBuffer->setEntryResult(i, 12);
-                break;
-            }
+            buffer[i][STEP] += 1;
         }
     }
 
