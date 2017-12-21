@@ -1,14 +1,10 @@
 #ifndef REORDER_BUFFER_H
 #define REORDER_BUFFER_H
 
-//forward decleared dependencies
-class LoadStoreUnitReservationStation;
-
 class ReorderBuffer {
 
     RegisterFile* registerFile;
     Memory* memory;
-    LoadStoreUnitReservationStation* loadStoreUnitReservationStation;
 
     int* pc;
     int* flushFlag;
@@ -28,10 +24,9 @@ class ReorderBuffer {
     int* noOfInstructionsExecuted;
 
     public:
-    ReorderBuffer(RegisterFile* registerFile, Memory* memory, LoadStoreUnitReservationStation* loadStoreUnitReservationStation, int* pc, int* flushFlag, int* runningFlag, int* noOfInstructionsExecuted) : 
+    ReorderBuffer(RegisterFile* registerFile, Memory* memory, int* pc, int* flushFlag, int* runningFlag, int* noOfInstructionsExecuted) : 
         registerFile(registerFile),
         memory(memory),
-        loadStoreUnitReservationStation(loadStoreUnitReservationStation),
         pc(pc),
         flushFlag(flushFlag),
         runningFlag(runningFlag),
@@ -56,9 +51,6 @@ class ReorderBuffer {
         instructions = new Instruction[size];
     }
 
-    //prototype definition of the setHead function, fully defined in processor.cpp
-    void setAllowLoadReorderBufferIndex(LoadStoreUnitReservationStation *loadStoreUnitReservationStation, int rbi);
-
     int addEntry(Type type, int destination, Instruction instruction) {
     	buffer[head][TYPE] = type;
     	buffer[head][DESTINATION] = destination;
@@ -70,10 +62,8 @@ class ReorderBuffer {
     	return index;
     }
 
-    void checkTailForStore() {
-        if(buffer[tail][TYPE] == STORE_TO_MEMORY) {
-            setAllowLoadReorderBufferIndex(loadStoreUnitReservationStation, tail);
-        }
+    int getTailIndex() {
+        return tail;
     }
 
     void retire() {

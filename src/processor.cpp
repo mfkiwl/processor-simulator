@@ -20,11 +20,6 @@
 #include "decode_issue_unit.h"
 #include "fetch_unit.h"
 
-//Had to do this to avoid errors from forward declaration
-void ReorderBuffer::setAllowLoadReorderBufferIndex(LoadStoreUnitReservationStation* loadStoreUnitReservationStation, int rbi) {
-    loadStoreUnitReservationStation->setAllowLoadReorderBufferIndex(rbi);
-}
-
 using namespace std;
 
 
@@ -90,7 +85,7 @@ class Processor {
             //components
             registerFile(noOfRegisters), 
             memory(memorySize),
-            reorderBuffer(&registerFile, &memory, &loadStoreUnitReservationStation, &pc, &flushFlag, &runningFlag, &noOfInstructionsExecuted),
+            reorderBuffer(&registerFile, &memory, &pc, &flushFlag, &runningFlag, &noOfInstructionsExecuted),
             fetchUnit(instructions, &pc, &decodeIssueUnit),
             decodeIssueUnit(&registerFile, &reorderBuffer, &aluReservationStation, &branchUnitReservationStation, &loadStoreUnitReservationStation, &decodeUnitBlockingFlag),
             alu(&registerFile, &reorderBuffer),
@@ -98,7 +93,7 @@ class Processor {
             branchUnit(&reorderBuffer),
             branchUnitReservationStation(&registerFile, &branchUnit),
             loadStoreUnit(&memory, &reorderBuffer, &loadStoreUnitBlockingFlag),
-            loadStoreUnitReservationStation(&registerFile, &loadStoreUnit)
+            loadStoreUnitReservationStation(&registerFile, &reorderBuffer, &loadStoreUnit)
         {}
 
 
@@ -201,7 +196,6 @@ class Processor {
         }
 
         void commit() {
-            reorderBuffer.checkTailForStore();
             reorderBuffer.retire();
             //printf("EXECUTED COMMIT\n");
         }

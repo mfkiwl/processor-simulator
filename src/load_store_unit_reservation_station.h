@@ -3,6 +3,7 @@
 
 class LoadStoreUnitReservationStation {
     RegisterFile* registerFile;
+    ReorderBuffer* reorderBuffer;
     LoadStoreUnit* loadStoreUnit;
 
     int tail;
@@ -15,18 +16,16 @@ class LoadStoreUnitReservationStation {
 	int* operands;
 	int reorderBufferIndex;
 
-    int allowLoadReorderBufferIndex;
-
 public:
-	LoadStoreUnitReservationStation(RegisterFile* registerFile, LoadStoreUnit* loadStoreUnit) : 
+	LoadStoreUnitReservationStation(RegisterFile* registerFile, ReorderBuffer* reorderBuffer, LoadStoreUnit* loadStoreUnit) : 
 	registerFile(registerFile),
+    reorderBuffer(reorderBuffer),
 	loadStoreUnit(loadStoreUnit),
     tail(0),
     head(0),
 	size(10),
 	opcode(0),
-	reorderBufferIndex(-1),
-    allowLoadReorderBufferIndex(-1)
+	reorderBufferIndex(-1)
 	{
 		//allocate memory to the buffer
 		instructions = new Instruction[size];
@@ -83,10 +82,6 @@ public:
         return -1;
     }
 
-    void setAllowLoadReorderBufferIndex(int i) {
-        allowLoadReorderBufferIndex = i;
-    }
-
     void pipe() {
         if(opcode != 0) {
 
@@ -137,7 +132,7 @@ private:
                 return 1;
                 break;
             case SW:
-                if(registerFile->getScoreBoardValue(operands[0]) && allowLoadReorderBufferIndex == reorderBufferIndexes[index]) {
+                if(registerFile->getScoreBoardValue(operands[0]) && reorderBufferIndexes[index] == reorderBuffer->getTailIndex()) {
                     return 1;
                 }
                 break;
@@ -149,7 +144,7 @@ private:
                 break;
             case SWR:
                 //If the source registers are ready then continue
-                if(registerFile->getScoreBoardValue(operands[0]) && registerFile->getScoreBoardValue(operands[1]) && allowLoadReorderBufferIndex == reorderBufferIndexes[index]) {
+                if(registerFile->getScoreBoardValue(operands[0]) && registerFile->getScoreBoardValue(operands[1]) && reorderBufferIndexes[index] == reorderBuffer->getTailIndex()) {
                     return 1;
                 }
                 break;
