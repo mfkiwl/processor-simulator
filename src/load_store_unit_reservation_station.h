@@ -129,7 +129,9 @@ private:
 		//check that the source register are ready to use
 		switch(instruction.opcode) {
 			case LW:
-                return 1;
+                if(!loadStoreUnit->waitingForStore()) {
+                    return 1;
+                }
                 break;
             case SW:
                 if(registerFile->getScoreBoardValue(operands[0]) && reorderBufferIndexes[index] == reorderBuffer->getTailIndex()) {
@@ -138,7 +140,7 @@ private:
                 break;
             case LWR:
                 //If the source registers are ready then continue
-                if(registerFile->getScoreBoardValue(operands[1])) {
+                if(!loadStoreUnit->waitingForStore() && registerFile->getScoreBoardValue(operands[1])) {
                     return 1;
                 }
                 break;

@@ -99,7 +99,7 @@ public:
     }
 
     //return 1 if we are waiting for a write operation to complete
-    int waitingForWriteOperation() {
+    int waitingForStore() {
         checkIfReady();
         if((tail - head) != numberReady) {
             return 1;

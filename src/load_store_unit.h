@@ -88,7 +88,7 @@ class LoadStoreUnit {
             storeBuffer.stepInstructions();
             loadBuffer.stepInstructions();
 
-            blockIfWaitingForMemoryOperation();
+            //blockIfWaitingForMemoryOperation();
         }
 
         void writeResult() {
@@ -98,7 +98,7 @@ class LoadStoreUnit {
         }
 
         int blockIfWaitingForMemoryOperation() {
-            if(storeBuffer.waitingForWriteOperation() || loadBuffer.waitingForReadOperation()) {
+            if(storeBuffer.waitingForStore() || loadBuffer.waitingForReadOperation()) {
                 *blockingFlag = 1;
             }
             else {
@@ -128,6 +128,10 @@ class LoadStoreUnit {
 
         void setReorderBufferIndex(int i) {
             reorderBufferIndex = i;
+        }
+
+        int waitingForStore() {
+            return storeBuffer.waitingForStore();
         }
 };
 
