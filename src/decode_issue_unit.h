@@ -163,7 +163,7 @@ class DecodeIssueUnit {
         }
 
         void print() {
-            printf("DECODE UNIT:\n");
+            printf("DECODE ISSUE UNIT:");
             Instructions::printInstruction(currentInstruction);
         }
 

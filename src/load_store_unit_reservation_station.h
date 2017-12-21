@@ -73,6 +73,15 @@ public:
         head = (head + 1) % size;
     }
 
+    int spaceInQueue() {
+        if(tail == head && instructions[head].opcode != NOOP) {
+            return 0;
+        }
+        else {
+            return 1;
+        }
+    }
+
     int findFreePosition() {
         for(int i = 0; i < size; i++) {
             if(instructions[i].opcode == NOOP) {

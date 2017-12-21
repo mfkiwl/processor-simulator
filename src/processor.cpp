@@ -231,14 +231,13 @@ class Processor {
             cout << endl;
             cout << "PC: " << pc << endl;
             registerFile.printRegisters();
-            memory.printMemory();
-            /*
+            //memory.printMemory();
             registerFile.printScoreBoard();
             decodeIssueUnit.print();
             aluReservationStation.print();
             branchUnitReservationStation.print();
             loadStoreUnitReservationStation.print();
-            */
+            reorderBuffer.printTail();
         }
 };
 

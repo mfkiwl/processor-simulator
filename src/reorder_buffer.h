@@ -49,6 +49,10 @@ class ReorderBuffer {
         }
         //allocate memory to the list of inflight instructions
         instructions = new Instruction[size];
+        //initialise all of the instructions
+        for(int i = 0; i < size; i++) {
+            instructions[i] = (Instruction) {0,0,0,0};
+        }
     }
 
     int addEntry(Type type, int destination, Instruction instruction) {
@@ -70,29 +74,38 @@ class ReorderBuffer {
     	while(buffer[tail][STATUS] == FINISHED) {
             buffer[tail][STATUS] = -1;
             if(buffer[tail][TYPE] == STORE_TO_REGISTER) {
-                //printf("STORE TO REGISTER\n");
                 //write the result to the reorder buffer
                 registerFile->setRegisterValue(buffer[tail][DESTINATION], buffer[tail][RESULT]);
                 //Set the scoreBoard of the destination register to 1
                 registerFile->setScoreBoardValue(buffer[tail][DESTINATION], 1);
             }
             if(buffer[tail][TYPE] == STORE_TO_MEMORY) {
-                //printf("STORE TO MEMORY\n");
+
             }
             if(buffer[tail][TYPE] == JUMP && buffer[tail][RESULT]) {
-                //printf("JUMPING\n");
                 *pc = buffer[tail][DESTINATION];
                 *flushFlag = 1;
             }
             if(buffer[tail][TYPE] == SYSCALL) {
-                //printf("HALTING\n");
                 *runningFlag = 0;
             }
+            //print the instruction that we are retiring
             cout << endl << "Retiring Instruction: ";
             Instructions::printInstruction(instructions[tail]);
+            //reset the reorder buffer entry
+            resetEntry(tail);
+            //increment the number of instructions that we have executed
             (*noOfInstructionsExecuted)++;
+            //increment the tail position
             tail = (tail + 1) % size;
     	}
+    }
+
+    void resetEntry(int index) {
+        instructions[index] = (Instruction) {0,0,0,0};
+        for(int i = 0; i < bufferEntryFields; i++) {
+            buffer[index][i] = -1;
+        }
     }
 
     void executingEntry(int i) {
@@ -121,6 +134,11 @@ class ReorderBuffer {
         }
         head = 0;
         tail = 0;
+    }
+
+    void printTail() {
+        printf("REORDER BUFFER TAIL:");
+        Instructions::printInstruction(instructions[tail]);
     }
 
     void printBuffer() {
