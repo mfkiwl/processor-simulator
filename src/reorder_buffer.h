@@ -1,5 +1,5 @@
-#ifndef _REORDER_BUFFER_INCLUDED_
-#define _REORDER_BUFFER_INCLUDED_
+#ifndef REORDER_BUFFER_H
+#define REORDER_BUFFER_H
 
 //forward decleared dependencies
 class LoadStoreUnitReservationStation;

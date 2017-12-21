@@ -1,5 +1,5 @@
-#ifndef _BRANCH_UNIT_INCLUDED_
-#define _BRANCH_UNIT_INCLUDED_
+#ifndef BRANCH_UNIT_H
+#define BRANCH_UNIT_H
 
 class BranchUnit {
 	

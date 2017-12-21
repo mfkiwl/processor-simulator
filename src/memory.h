@@ -1,5 +1,5 @@
-#ifndef _MEMORY_INCLUDED_
-#define _MEMORY_INCLUDED_
+#ifndef MEMORY_H
+#define MEMROY_H
 
 class Memory {
     //the number of bytes the memory has

@@ -1,5 +1,5 @@
-#ifndef _FETCH_UNIT_
-#define _FETCH_UNIT_
+#ifndef FETCH_UNIT_H
+#define FETCH_UNIT_H
 
 class FetchUnit {
     Instructions instructions;

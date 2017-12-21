@@ -1,5 +1,5 @@
-#ifndef _INSTRUCTIONS_INCLUDED_
-#define _INSTRUCTIONS_INCLUDED_
+#ifndef INSTRUCTIONS_H
+#define INSTRUCTIONS_H
 
 using namespace std;
 typedef struct instruction {

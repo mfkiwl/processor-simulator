@@ -1,5 +1,5 @@
-#ifndef _CONSTANTS_INCLUDED
-#define _CONSTANTS_INCLUDED
+#ifndef CONSTANTS_H
+#define CONSTANTS_H
 
 //instruction opcodes
 enum Opcodes {

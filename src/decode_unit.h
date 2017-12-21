@@ -1,5 +1,5 @@
-#ifndef _DECODE_UNIT_INCLUDED_
-#define _DECODE_UNIT_INCLUDED_
+#ifndef DECODE_UNIT_H
+#define DECODE_UNIT_H
 
 class DecodeUnit {
     //forward components

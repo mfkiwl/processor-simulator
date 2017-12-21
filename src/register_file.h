@@ -1,5 +1,5 @@
-#ifndef _REGISTER_FILE_INCLUDED_
-#define _REGISTER_FILE_INCLUDED_
+#ifndef REGISTER_FILE_H
+#define REGISTER_FILE_H
 
 using namespace std;
 class RegisterFile {
