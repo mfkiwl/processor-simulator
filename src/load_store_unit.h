@@ -10,9 +10,6 @@ class LoadStoreUnit {
     int opcode;
     int operands[3];
 
-    //tells the processor whether or not to block the pipeline
-    int *blockingFlag;
-
     int bufferSize;
     int writeCycles;
     int readCycles;
@@ -25,13 +22,12 @@ class LoadStoreUnit {
     int reorderBufferIndex;
 
     public:
-        LoadStoreUnit(Memory* memory, ReorderBuffer* reorderBuffer, int* blockingFlag) :
+        LoadStoreUnit(Memory* memory, ReorderBuffer* reorderBuffer) :
             //set initial opcode value to zero
             opcode(0),
             //connected components
             memory(memory),
             reorderBuffer(reorderBuffer),
-            blockingFlag(blockingFlag),
             bufferSize(100),
             writeCycles(5),
             readCycles(5),
@@ -87,23 +83,12 @@ class LoadStoreUnit {
             //increment the step numbers for each inflight read and write instruction
             storeBuffer.stepInstructions();
             loadBuffer.stepInstructions();
-
-            //blockIfWaitingForMemoryOperation();
         }
 
         void writeResult() {
             //perform the read and write instructions when the step number has been met
             storeBuffer.writeIfReady();
             loadBuffer.readIfReady();
-        }
-
-        int blockIfWaitingForMemoryOperation() {
-            if(storeBuffer.waitingForStore() || loadBuffer.waitingForReadOperation()) {
-                *blockingFlag = 1;
-            }
-            else {
-                *blockingFlag = 0;
-            }
         }
 
         void setOpcode(int x) {

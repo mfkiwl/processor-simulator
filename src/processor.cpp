@@ -42,7 +42,6 @@ class Processor {
     //status flags
     int flushFlag;
     int runningFlag;
-    int loadStoreUnitBlockingFlag;
     int decodeUnitBlockingFlag;
 
     //components
@@ -79,7 +78,6 @@ class Processor {
             //status flags
             flushFlag(0),
             runningFlag(1),
-            loadStoreUnitBlockingFlag(0),
             decodeUnitBlockingFlag(0),
 
             //components
@@ -92,7 +90,7 @@ class Processor {
             aluReservationStation(&registerFile, &alu),
             branchUnit(&reorderBuffer),
             branchUnitReservationStation(&registerFile, &branchUnit),
-            loadStoreUnit(&memory, &reorderBuffer, &loadStoreUnitBlockingFlag),
+            loadStoreUnit(&memory, &reorderBuffer),
             loadStoreUnitReservationStation(&registerFile, &reorderBuffer, &loadStoreUnit)
         {}
 
@@ -111,19 +109,14 @@ class Processor {
                 fgets(str, 2, stdin);
 
                 //if the pipeline is not being blocked
-                if(!loadStoreUnitBlockingFlag && !decodeUnitBlockingFlag) {
+                if(!decodeUnitBlockingFlag) {
                     //propogate values through pipeline
                     pipe();
                     //fetch the next instruction
                     fetch();
                 }
                 else {
-                    if(loadStoreUnitBlockingFlag) {
-                        printf("LOAD STORE UNIT BLOCKING\n");
-                    }
-                    if(decodeUnitBlockingFlag) {
-                        printf("DECODE UNIT BLOCKING\n");
-                    }
+                    printf("BLOCKING ISSUE\n");
                 }
 
                 //decode the instruction
