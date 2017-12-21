@@ -79,7 +79,7 @@ public:
     }
 
     void pipe() {
-        if(opcode != 0) {
+        if(reorderBufferIndex != -1) {
             //send the decoded instruction to the execution unit
             branchUnit->setOpcode(opcode);
             branchUnit->setOperands(operands);

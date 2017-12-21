@@ -106,10 +106,16 @@ class Processor {
                 char str[3];
                 fgets(str, 2, stdin);
 
+                //propogate the outputs of the reservation stations through the pipeline
+                aluReservationStation.pipe();
+                branchUnitReservationStation.pipe();
+                loadStoreUnitReservationStation.pipe();
+
                 //if the pipeline is not being blocked
                 if(!decodeUnitBlockingFlag) {
-                    //propogate values through pipeline
-                    pipe();
+                    //propogate outputs of the decode/issue unit and the fetch unit through pipeline
+                    decodeIssueUnit.pipe();
+                    fetchUnit.pipe();
                     //fetch the next instruction
                     fetch();
                 }
@@ -152,6 +158,7 @@ class Processor {
         void pipe() {
             fetchUnit.pipe();
             decodeIssueUnit.pipe();
+    
         }
 
         void fetch() {
@@ -168,10 +175,6 @@ class Processor {
             branchUnitReservationStation.execute();
             loadStoreUnitReservationStation.execute();
             //printf("EXECUTED DISPATCH\n");
-            aluReservationStation.pipe();
-            branchUnitReservationStation.pipe();
-            loadStoreUnitReservationStation.pipe();
-            //printf("EXECUTED DISPATCH PIPE\n");
         }
 
         void execute() {

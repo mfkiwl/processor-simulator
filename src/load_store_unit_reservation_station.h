@@ -82,7 +82,7 @@ public:
     }
 
     void pipe() {
-        if(opcode != 0) {
+        if(reorderBufferIndex != -1) {
 
             //send the decoded instruction to the execution unit
             loadStoreUnit->setOpcode(opcode);

@@ -52,7 +52,7 @@ class DecodeIssueUnit {
                 case OR:
                 case SUB:
                     //if there is space in the reservation then issue the instruction
-                    if(aluReservationStation->findFreePosition() != -1) {
+                    if(aluReservationStation->findFreePosition() != -1 && registerFile->getScoreBoardValue(currentInstruction.operands[0])) {
                         //Instruction has been issued so add entry to the reorder buffer
                         reorderBufferIndex = reorderBuffer->addEntry(STORE_TO_REGISTER, currentInstruction.operands[0], currentInstruction);
                         //unblock the pipeline
@@ -67,7 +67,7 @@ class DecodeIssueUnit {
                 //Load Store unit instructions
                 case LW:
                 case LWR:
-                    if(loadStoreUnitReservationStation->spaceInQueue()) {
+                    if(loadStoreUnitReservationStation->spaceInQueue() && registerFile->getScoreBoardValue(currentInstruction.operands[0])) {
                         //Instruction has been issued so add entry to the reorder buffer
                         reorderBufferIndex = reorderBuffer->addEntry(STORE_TO_REGISTER, currentInstruction.operands[0], currentInstruction);
                         *blockingFlag = 0;
