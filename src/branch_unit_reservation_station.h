@@ -17,7 +17,7 @@ public:
 	BranchUnitReservationStation(RegisterFile* registerFile, BranchUnit* branchUnit) : 
 	registerFile(registerFile),
 	branchUnit(branchUnit),
-	size(4),
+	size(10),
 	opcode(0),
 	reorderBufferIndex(-1)
 	{

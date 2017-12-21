@@ -5,6 +5,8 @@ class LoadStoreUnitReservationStation {
     RegisterFile* registerFile;
     LoadStoreUnit* loadStoreUnit;
 
+    int tail;
+    int head;
 	int size;
 	Instruction* instructions;
 	int* reorderBufferIndexes;
@@ -19,7 +21,9 @@ public:
 	LoadStoreUnitReservationStation(RegisterFile* registerFile, LoadStoreUnit* loadStoreUnit) : 
 	registerFile(registerFile),
 	loadStoreUnit(loadStoreUnit),
-	size(4),
+    tail(0),
+    head(0),
+	size(10),
 	opcode(0),
 	reorderBufferIndex(-1),
     allowLoadReorderBufferIndex(-1)
@@ -46,19 +50,18 @@ public:
 
     void execute() {
         //try and find an instruction that can be dispatched
-        for(int i = 0; i < size; i++) {
-            if(instructions[i].opcode != NOOP) {
-                if(readyToDispatch(i)) {
-                    dispatch(i);
-                    reorderBufferIndex = reorderBufferIndexes[i];
+        if(instructions[tail].opcode != NOOP) {
+            if(readyToDispatch(tail)) {
+                dispatch(tail);
+                reorderBufferIndex = reorderBufferIndexes[tail];
                     
-                    //printf("DISPATCHING INSTRUCTION: ");
-                    //Instructions::printInstruction(instructions[i]);
-                    //printf("WITH REORDER BUFFER INDEX: %d\n", reorderBufferIndex);
+                //printf("DISPATCHING INSTRUCTION: ");
+                //Instructions::printInstruction(instructions[i]);
+                //printf("WITH REORDER BUFFER INDEX: %d\n", reorderBufferIndex);
 
-                    //clear the dispatched instruction from the reservation station
-                    instructions[i] = (Instruction) {0,0,0,0};
-                }
+                //clear the dispatched instruction from the reservation station
+                instructions[tail] = (Instruction) {0,0,0,0};
+                tail = (tail + 1) % size;
             }
         }
     }
@@ -66,9 +69,9 @@ public:
     void addInstruction(Instruction instruction, int rbi) {
         //printf("ADDED INSTRUCTION: ");
         //Instructions::printInstruction(instruction);
-        int index = findFreePosition();
-        instructions[index] = instruction;
-        reorderBufferIndexes[index] = rbi;
+        instructions[head] = instruction;
+        reorderBufferIndexes[head] = rbi;
+        head = (head + 1) % size;
     }
 
     int findFreePosition() {

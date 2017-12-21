@@ -17,7 +17,7 @@ public:
 	ALUReservationStation(RegisterFile* registerFile, ALU* alu) : 
 	registerFile(registerFile),
 	alu(alu),
-	size(4),
+	size(10),
 	opcode(0),
 	reorderBufferIndex(-1)
 	{
