@@ -28,7 +28,7 @@ class Memory {
         memory[address] = value;
     }
 
-    void printMemory() {
+    void print() {
         cout << "Memory:" << endl;
         for(int i = 0; i < size; i++) {
             cout << memory[i] << " ";

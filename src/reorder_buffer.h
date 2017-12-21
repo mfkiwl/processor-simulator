@@ -141,13 +141,11 @@ class ReorderBuffer {
         Instructions::printInstruction(instructions[tail]);
     }
 
-    void printBuffer() {
-        cout << endl;
+    void print() {
         cout << "Reorder Buffer:" << endl;
     	for(int i = tail; i < head; i++) {
             Instructions::printInstruction(instructions[i]);
         }
-        cout << endl;
     }
 };
 

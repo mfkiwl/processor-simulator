@@ -77,7 +77,7 @@ class DecodeIssueUnit {
                 //Load Store unit instructions
                 case LW:
                 case LWR:
-                    if(loadStoreUnitReservationStation->findFreePosition() != -1) {
+                    if(loadStoreUnitReservationStation->spaceInQueue()) {
                         //Instruction has been issued so add entry to the reorder buffer
                         reorderBufferIndex = reorderBuffer->addEntry(STORE_TO_REGISTER, currentInstruction.operands[0], currentInstruction);
                         //send the instruction to the reservation station
@@ -91,7 +91,7 @@ class DecodeIssueUnit {
                     break;
                 case SW:
                 case SWR:
-                    if(loadStoreUnitReservationStation->findFreePosition() != -1) {
+                    if(loadStoreUnitReservationStation->spaceInQueue()) {
                         //Instruction has been issued so add entry to the reorder buffer
                         reorderBufferIndex = reorderBuffer->addEntry(STORE_TO_MEMORY, currentInstruction.operands[1], currentInstruction);
                         //send the instruction to the reservation station

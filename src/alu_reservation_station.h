@@ -17,7 +17,7 @@ public:
 	ALUReservationStation(RegisterFile* registerFile, ALU* alu) : 
 	registerFile(registerFile),
 	alu(alu),
-	size(10),
+	size(100),
 	opcode(0),
 	reorderBufferIndex(-1)
 	{
@@ -55,6 +55,7 @@ public:
 
                     //clear the dispatched instruction from the reservation station
                     instructions[i] = (Instruction) {0,0,0,0};
+                    reorderBufferIndexes[i] = -1;
                 }
 			}
 		}
