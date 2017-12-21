@@ -1,7 +1,7 @@
-#ifndef DECODE_UNIT_H
-#define DECODE_UNIT_H
+#ifndef DECODE_ISSUE_UNIT_H
+#define DECODE_ISSUE_UNIT_H
 
-class DecodeUnit {
+class DecodeIssueUnit {
     //forward components
     RegisterFile* registerFile;
     ReorderBuffer* reorderBuffer;
@@ -24,7 +24,7 @@ class DecodeUnit {
     int operands[3];
 
     public:
-    	DecodeUnit(RegisterFile* registerFile, ReorderBuffer* reorderBuffer, ALUReservationStation* aluReservationStation, BranchUnitReservationStation* branchUnitReservationStation, LoadStoreUnitReservationStation* loadStoreUnitReservationStation) :
+    	DecodeIssueUnit(RegisterFile* registerFile, ReorderBuffer* reorderBuffer, ALUReservationStation* aluReservationStation, BranchUnitReservationStation* branchUnitReservationStation, LoadStoreUnitReservationStation* loadStoreUnitReservationStation) :
             registerFile(registerFile),
             reorderBuffer(reorderBuffer),
     	    aluReservationStation(aluReservationStation),

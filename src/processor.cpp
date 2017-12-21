@@ -17,7 +17,7 @@
 #include "load_buffer.h"
 #include "load_store_unit.h"
 #include "load_store_unit_reservation_station.h"
-#include "decode_unit.h"
+#include "decode_issue_unit.h"
 #include "fetch_unit.h"
 
 //Had to do this to avoid errors from forward declaration
@@ -54,7 +54,7 @@ class Processor {
     Memory memory;
     ReorderBuffer reorderBuffer;
     FetchUnit fetchUnit;
-    DecodeUnit decodeUnit;
+    DecodeIssueUnit decodeIssueUnit;
     ALU alu;
     ALUReservationStation aluReservationStation;
     BranchUnit branchUnit;
@@ -89,8 +89,8 @@ class Processor {
             registerFile(noOfRegisters), 
             memory(memorySize),
             reorderBuffer(&registerFile, &memory, &loadStoreUnitReservationStation, &pc, &flushFlag, &runningFlag, &noOfInstructionsExecuted),
-            fetchUnit(instructions, &pc, &decodeUnit),
-            decodeUnit(&registerFile, &reorderBuffer, &aluReservationStation, &branchUnitReservationStation, &loadStoreUnitReservationStation),
+            fetchUnit(instructions, &pc, &decodeIssueUnit),
+            decodeIssueUnit(&registerFile, &reorderBuffer, &aluReservationStation, &branchUnitReservationStation, &loadStoreUnitReservationStation),
             alu(&registerFile, &reorderBuffer),
             aluReservationStation(&registerFile, &alu),
             branchUnit(&reorderBuffer),
@@ -122,7 +122,7 @@ class Processor {
                 }
 
                 //decode the instruction
-                decode();
+                decodeIssue();
 
                 //dispatch instructions from the reservation stations
                 dispatch();
@@ -153,15 +153,15 @@ class Processor {
 
         void pipe() {
             fetchUnit.pipe();
-            decodeUnit.pipe();
+            decodeIssueUnit.pipe();
         }
 
         void fetch() {
             fetchUnit.execute();
         }
 
-        void decode() {
-            decodeUnit.execute();
+        void decodeIssue() {
+            decodeIssueUnit.execute();
             //printf("EXECUTED DECODE\n");
         }
 
@@ -200,7 +200,7 @@ class Processor {
             //flush fetch unit
             fetchUnit.flush();
             //flush decode unit
-            decodeUnit.flush();
+            decodeIssueUnit.flush();
             //flush reservation stations
             aluReservationStation.flush();
             branchUnitReservationStation.flush();

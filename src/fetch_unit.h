@@ -4,14 +4,14 @@
 class FetchUnit {
     Instructions instructions;
     int* pc;
-    DecodeUnit* decodeUnit;
+    DecodeIssueUnit* decodeIssueUnit;
     Instruction currentInstruction;
 
     public:
-        FetchUnit(Instructions instructions, int* pc, DecodeUnit* decodeUnit) :
+        FetchUnit(Instructions instructions, int* pc, DecodeIssueUnit* decodeIssueUnit) :
         instructions(instructions),
         pc(pc),
-        decodeUnit(decodeUnit),
+        decodeIssueUnit(decodeIssueUnit),
         currentInstruction((Instruction) {0,0,0,0})
     {}
 
@@ -30,7 +30,7 @@ class FetchUnit {
 
     void pipe() {
         //put the fetched instruction into the instruction register
-        decodeUnit->setNextInstruction(currentInstruction);
+        decodeIssueUnit->setNextInstruction(currentInstruction);
     }
 
     void flush() {
