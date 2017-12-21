@@ -19,7 +19,7 @@ public:
 	LoadStoreUnitReservationStation(RegisterFile* registerFile, LoadStoreUnit* loadStoreUnit) : 
 	registerFile(registerFile),
 	loadStoreUnit(loadStoreUnit),
-	size(10),
+	size(4),
 	opcode(0),
 	reorderBufferIndex(-1),
     allowLoadReorderBufferIndex(-1)
@@ -113,6 +113,15 @@ public:
             operands[i] = 0;
         }
         reorderBufferIndex = -1;
+    }
+
+    void print() {
+        printf("LOAD/STORE UNIT RESERVATION STATION:\n");
+        for(int i = 0; i < size; i++) {
+            if(instructions[i].opcode != NOOP) {
+                Instructions::printInstruction(instructions[i]);
+            }
+        }
     }
 
 private:

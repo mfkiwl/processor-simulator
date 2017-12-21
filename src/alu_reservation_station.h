@@ -17,7 +17,7 @@ public:
 	ALUReservationStation(RegisterFile* registerFile, ALU* alu) : 
 	registerFile(registerFile),
 	alu(alu),
-	size(10),
+	size(4),
 	opcode(0),
 	reorderBufferIndex(-1)
 	{
@@ -104,6 +104,15 @@ public:
             operands[i] = 0;
         }
         reorderBufferIndex = -1;
+    }
+
+    void print() {
+        printf("ALU RESERVATION STATION:\n");
+        for(int i = 0; i < size; i++) {
+            if(instructions[i].opcode != NOOP) {
+                Instructions::printInstruction(instructions[i]);
+            }
+        }
     }
 
 private:

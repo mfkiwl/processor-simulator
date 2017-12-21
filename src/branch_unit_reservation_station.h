@@ -17,7 +17,7 @@ public:
 	BranchUnitReservationStation(RegisterFile* registerFile, BranchUnit* branchUnit) : 
 	registerFile(registerFile),
 	branchUnit(branchUnit),
-	size(10),
+	size(4),
 	opcode(0),
 	reorderBufferIndex(-1)
 	{
@@ -104,6 +104,15 @@ public:
             operands[i] = 0;
         }
         reorderBufferIndex = -1;
+    }
+
+    void print() {
+        printf("BRANCH UNIT RESERVATION STATION:\n");
+        for(int i = 0; i < size; i++) {
+            if(instructions[i].opcode != NOOP) {
+                Instructions::printInstruction(instructions[i]);
+            }
+        }
     }
 
 private:

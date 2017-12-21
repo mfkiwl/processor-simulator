@@ -48,6 +48,7 @@ class Processor {
     int flushFlag;
     int runningFlag;
     int loadStoreUnitBlockingFlag;
+    int decodeUnitBlockingFlag;
 
     //components
     RegisterFile registerFile;
@@ -84,13 +85,14 @@ class Processor {
             flushFlag(0),
             runningFlag(1),
             loadStoreUnitBlockingFlag(0),
+            decodeUnitBlockingFlag(0),
 
             //components
             registerFile(noOfRegisters), 
             memory(memorySize),
             reorderBuffer(&registerFile, &memory, &loadStoreUnitReservationStation, &pc, &flushFlag, &runningFlag, &noOfInstructionsExecuted),
             fetchUnit(instructions, &pc, &decodeIssueUnit),
-            decodeIssueUnit(&registerFile, &reorderBuffer, &aluReservationStation, &branchUnitReservationStation, &loadStoreUnitReservationStation),
+            decodeIssueUnit(&registerFile, &reorderBuffer, &aluReservationStation, &branchUnitReservationStation, &loadStoreUnitReservationStation, &decodeUnitBlockingFlag),
             alu(&registerFile, &reorderBuffer),
             aluReservationStation(&registerFile, &alu),
             branchUnit(&reorderBuffer),
@@ -111,14 +113,22 @@ class Processor {
 
                 //hold up the program at each clock cycle
                 char str[3];
-                //fgets(str, 2, stdin);
+                fgets(str, 2, stdin);
 
                 //if the pipeline is not being blocked
-                if(!loadStoreUnitBlockingFlag) {
+                if(!loadStoreUnitBlockingFlag && !decodeUnitBlockingFlag) {
                     //propogate values through pipeline
                     pipe();
                     //fetch the next instruction
                     fetch();
+                }
+                else {
+                    if(loadStoreUnitBlockingFlag) {
+                        printf("LOAD STORE UNIT BLOCKING\n");
+                    }
+                    if(decodeUnitBlockingFlag) {
+                        printf("DECODE UNIT BLOCKING\n");
+                    }
                 }
 
                 //decode the instruction
@@ -234,6 +244,11 @@ class Processor {
             cout << endl;
             cout << "PC: " << pc << endl;
             registerFile.printRegisters();
+            registerFile.printScoreBoard();
+            decodeIssueUnit.print();
+            aluReservationStation.print();
+            branchUnitReservationStation.print();
+            loadStoreUnitReservationStation.print();
         }
 };
 
