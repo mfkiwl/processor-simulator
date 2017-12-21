@@ -83,6 +83,7 @@ class LoadStoreUnit {
             //increment the step numbers for each inflight read and write instruction
             storeBuffer.stepInstructions();
             loadBuffer.stepInstructions();
+            writeResult();
         }
 
         void writeResult() {

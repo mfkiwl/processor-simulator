@@ -134,9 +134,6 @@ class Processor {
                 //execute the instruction
                 execute();
 
-                 //write the results to the reorder buffer
-                writeResult();      
-
                 //writeback the results
                 commit();
 
@@ -182,13 +179,6 @@ class Processor {
             branchUnit.execute();
             loadStoreUnit.execute();
             //printf("EXECUTED EXECUTE\n");
-        }
-
-        void writeResult() {
-            alu.writeResult();
-            loadStoreUnit.writeResult();
-            branchUnit.writeResult();
-            //printf("EXECUTED WRITEBACK\n");
         }
 
         void commit() {

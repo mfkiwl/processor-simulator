@@ -74,6 +74,7 @@ class BranchUnit {
                 for(int i = 0; i < 3; i++) {
                     operands[i] = 0;
                 }
+                writeResult();
             }
         }
 
