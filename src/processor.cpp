@@ -95,6 +95,7 @@ class Processor {
 
         void start() {
 
+            char str[3];
             cout << "Keep pressing ENTER to step through the program\n";
 
             printInfo();
@@ -103,8 +104,9 @@ class Processor {
         	while(runningFlag) {
 
                 //hold up the program at each clock cycle
-                char str[3];
-                fgets(str, 2, stdin);
+                if(str[0] != 'e') {
+                    fgets(str, 2, stdin);
+                }
 
                 //writeback the results
                 commit();
@@ -149,7 +151,7 @@ class Processor {
                 printInfo();
             }
 
-            cout << "PROGRAM FINISHED\n";
+            cout << endl << "PROGRAM FINISHED" << endl;
         }
 
         void fetch() {
@@ -201,7 +203,7 @@ class Processor {
         void printInfo() {
 
             cout << endl << endl;
-           
+
             cout << "Number of clock cycles: " << noOfClockCycles << endl;
             cout << "Number of instructions executed: " << noOfInstructionsExecuted << endl;
             float instructionsPerCycle;
