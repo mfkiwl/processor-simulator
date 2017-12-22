@@ -4,7 +4,6 @@ all:
 	g++ src/processor.cpp -o bin/processor
 
 run:
-	./programs/assembler programs/$(PROGRAM).asm
 	./bin/processor ./programs/$(PROGRAM).mac
 
 assembler:

@@ -202,7 +202,7 @@ class Processor {
 
         void printInfo() {
 
-            cout << endl << endl;
+            cout << "______________________________________" << endl << endl;
 
             cout << "Number of clock cycles: " << noOfClockCycles << endl;
             cout << "Number of instructions executed: " << noOfInstructionsExecuted << endl;
