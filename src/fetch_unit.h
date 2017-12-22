@@ -28,6 +28,11 @@ class FetchUnit {
         }
     }
 
+    void print() {
+        printf("FETCHED INSTRUCTION: ");
+        Instructions::printInstruction(currentInstruction);
+    }
+
     void pipe() {
         //put the fetched instruction into the instruction register
         decodeIssueUnit->setNextInstruction(currentInstruction);

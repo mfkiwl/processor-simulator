@@ -106,6 +106,12 @@ class Processor {
                 char str[3];
                 fgets(str, 2, stdin);
 
+
+                //propogate the outputs of the reservation stations through the pipeline
+                alu.pipe();
+                branchUnit.pipe();
+                loadStoreUnit.pipe();
+
                 //propogate the outputs of the reservation stations through the pipeline
                 aluReservationStation.pipe();
                 branchUnitReservationStation.pipe();
@@ -152,38 +158,28 @@ class Processor {
             cout << "PROGRAM FINISHED\n";
         }
 
-        void pipe() {
-            fetchUnit.pipe();
-            decodeIssueUnit.pipe();
-    
-        }
-
         void fetch() {
             fetchUnit.execute();
         }
 
         void decodeIssue() {
             decodeIssueUnit.execute();
-            //printf("EXECUTED DECODE\n");
         }
 
         void dispatch() {
             aluReservationStation.execute();
             branchUnitReservationStation.execute();
             loadStoreUnitReservationStation.execute();
-            //printf("EXECUTED DISPATCH\n");
         }
 
         void execute() {
             alu.execute();
             branchUnit.execute();
             loadStoreUnit.execute();
-            //printf("EXECUTED EXECUTE\n");
         }
 
         void commit() {
             reorderBuffer.retire();
-            //printf("EXECUTED COMMIT\n");
         }
 
         void flushPipeline() {
@@ -224,12 +220,13 @@ class Processor {
             cout << endl;
             cout << "PC: " << pc << endl;
             registerFile.printRegisters();
-            memory.print();
+            //memory.print();
             registerFile.printScoreBoard();
+            fetchUnit.print();
             decodeIssueUnit.print();
             aluReservationStation.print();
-            branchUnitReservationStation.print();
-            loadStoreUnitReservationStation.print();
+            //branchUnitReservationStation.print();
+            //loadStoreUnitReservationStation.print();
             reorderBuffer.print();
         }
 };

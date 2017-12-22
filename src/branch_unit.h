@@ -74,11 +74,10 @@ class BranchUnit {
                 for(int i = 0; i < 3; i++) {
                     operands[i] = 0;
                 }
-                writeResult();
             }
         }
 
-        void writeResult() {
+        void pipe() {
             if(reorderBufferIndex != -1) {
                 //tell the reorder buffer that we are finished executing the instruction
                 reorderBuffer->finishedEntry(reorderBufferIndex, successful);
