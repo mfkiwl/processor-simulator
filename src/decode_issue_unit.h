@@ -38,7 +38,6 @@ class DecodeIssueUnit {
             if(nextInstruction.opcode != 0) {
                 currentInstruction = nextInstruction;
                 issue();
-                setScoreBoardValues();
             }
         }
 
@@ -55,6 +54,8 @@ class DecodeIssueUnit {
                     if(aluReservationStation->findFreePosition() != -1 && registerFile->getScoreBoardValue(currentInstruction.operands[0])) {
                         //Instruction has been issued so add entry to the reorder buffer
                         reorderBufferIndex = reorderBuffer->addEntry(STORE_TO_REGISTER, currentInstruction.operands[0], currentInstruction);
+                        //Set the scoreboard value of the destination register to zero
+                        registerFile->setScoreBoardValue(currentInstruction.operands[0],0);
                         //unblock the pipeline
                         *blockingFlag = 0;
                     }
@@ -70,6 +71,9 @@ class DecodeIssueUnit {
                     if(loadStoreUnitReservationStation->spaceInQueue() && registerFile->getScoreBoardValue(currentInstruction.operands[0])) {
                         //Instruction has been issued so add entry to the reorder buffer
                         reorderBufferIndex = reorderBuffer->addEntry(STORE_TO_REGISTER, currentInstruction.operands[0], currentInstruction);
+                        //Set the scoreboard value of the destination register to zero
+                        registerFile->setScoreBoardValue(currentInstruction.operands[0],0);
+                        //unblock the pipeline
                         *blockingFlag = 0;
                     }
                     else {
@@ -129,25 +133,6 @@ class DecodeIssueUnit {
                         *blockingFlag = 1;
                     }
                     break;
-            }
-        }
-
-        void setScoreBoardValues() {
-            if(*blockingFlag == 0) {
-                switch(currentInstruction.opcode) {
-                    //alu instructions
-                    case ADD:
-                    case ADDI:
-                    case AND:
-                    case MULT:
-                    case OR:
-                    case SUB:
-                    //Load instructions
-                    case LW:
-                    case LWR:
-                    registerFile->setScoreBoardValue(currentInstruction.operands[0],0);
-                    break;
-                }
             }
         }
 

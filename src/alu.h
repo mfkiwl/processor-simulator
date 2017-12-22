@@ -25,7 +25,9 @@ class ALU {
             reorderBuffer(reorderBuffer),
             opcode(0),
             destinationRegister(-1),
-            result(0)
+            result(0),
+            nextReorderBufferIndex(-1),
+            currentReorderBufferIndex(-1)
         {
             for(int i = 0; i < 3; i++) {
                 operands[i] = 0;
@@ -33,7 +35,7 @@ class ALU {
         }
 
         void execute() {
-            if(opcode != 0) {
+            if(nextReorderBufferIndex != -1) {
                 //tell reorder buffer that we are executing the instruction
                 reorderBuffer->executingEntry(nextReorderBufferIndex);
                 //execute the instruction

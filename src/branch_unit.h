@@ -38,8 +38,13 @@ class BranchUnit {
         }
 
         void execute() {
-            if(opcode != 0) {
+            if(reorderBufferIndex != -1) {
                 //tell reorder buffer that we are executing the instruction
+                printf("\n\n");
+                printf("REORDER BUFFER INDEX: %d\n", reorderBufferIndex);
+                printf("opcode: %d\n", opcode);
+                printf("operands: %d %d %d\n", operands[0], operands[1], operands[2]);
+                printf("\n\n");
                 reorderBuffer->executingEntry(reorderBufferIndex);
                 //execute the instruction
                 switch(opcode) {
@@ -78,12 +83,16 @@ class BranchUnit {
         }
 
         void pipe() {
-            if(reorderBufferIndex != -1) {
+            if(successful) {
                 //tell the reorder buffer that we are finished executing the instruction
                 reorderBuffer->finishedEntry(reorderBufferIndex, successful);
+                opcode = 0;
+                for(int i = 0; i < 3; i++) {
+                    operands[i] = 0;
+                }
+                reorderBufferIndex = -1;
+                successful = 0;
             }
-            reorderBufferIndex = -1;
-            successful = 0;
         }
 
         void setOpcode(int x) {

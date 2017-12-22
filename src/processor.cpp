@@ -106,40 +106,6 @@ class Processor {
                 char str[3];
                 fgets(str, 2, stdin);
 
-
-                //propogate the outputs of the reservation stations through the pipeline
-                alu.pipe();
-                branchUnit.pipe();
-                loadStoreUnit.pipe();
-
-                //propogate the outputs of the reservation stations through the pipeline
-                aluReservationStation.pipe();
-                branchUnitReservationStation.pipe();
-                loadStoreUnitReservationStation.pipe();
-
-                //if the pipeline is not being blocked
-                if(!decodeUnitBlockingFlag) {
-                    //propogate outputs of the decode/issue unit and the fetch unit through pipeline
-                    decodeIssueUnit.pipe();
-                    fetchUnit.pipe();
-                    //fetch the next instruction
-                    fetch();
-                }
-                else {
-                    printf("\n");
-                    printf("BLOCKING ISSUE\n");
-                    printf("\n");
-                }
-
-                //decode the instruction
-                decodeIssue();
-
-                //dispatch instructions from the reservation stations
-                dispatch();
-
-                //execute the instruction
-                execute();
-
                 //writeback the results
                 commit();
 
@@ -147,6 +113,39 @@ class Processor {
                 if(flushFlag == 1) {
                     flushPipeline();
                 }
+
+                //execute the instruction
+                execute();
+
+                //dispatch instructions from the reservation stations
+                dispatch();
+
+                //decode the instruction
+                decodeIssue();
+
+                 //if the pipeline is not being blocked
+                if(!decodeUnitBlockingFlag) {
+                    //fetch the next instruction
+                    fetch();
+                    //propogate outputs of the decode/issue unit and the fetch unit through pipeline
+                    decodeIssueUnit.pipe();
+                    fetchUnit.pipe();
+                }
+                else {
+                    printf("\n");
+                    printf("BLOCKING ISSUE\n");
+                    printf("\n");
+                }
+
+                //propogate the outputs of the reservation stations through the pipeline
+                aluReservationStation.pipe();
+                branchUnitReservationStation.pipe();
+                loadStoreUnitReservationStation.pipe();
+
+                //propogate the outputs of the reservation stations through the pipeline
+                alu.pipe();
+                branchUnit.pipe();
+                loadStoreUnit.pipe();
 
                 //update info
                 noOfClockCycles++;
@@ -174,8 +173,8 @@ class Processor {
 
         void execute() {
             alu.execute();
-            branchUnit.execute();
             loadStoreUnit.execute();
+            branchUnit.execute();
         }
 
         void commit() {

@@ -42,7 +42,7 @@ class LoadStoreUnit {
         }
 
         void execute() {
-            if(opcode != 0) {
+            if(reorderBufferIndex != -1) {
 
                 //tell reorder buffer that we are executing the instruction
                 reorderBuffer->executingEntry(reorderBufferIndex);
