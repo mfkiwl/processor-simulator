@@ -114,7 +114,7 @@ public:
     }
 
     void print() {
-        printf("BRANCH UNIT RESERVATION STATION:\n");
+        printf("Branch Unit reservation station::\n");
         for(int i = 0; i < size; i++) {
             if(instructions[i].opcode != NOOP) {
                 Instructions::printInstruction(instructions[i]);

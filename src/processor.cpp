@@ -131,11 +131,6 @@ class Processor {
                     decodeIssueUnit.pipe();
                     fetchUnit.pipe();
                 }
-                else {
-                    printf("\n");
-                    printf("BLOCKING ISSUE\n");
-                    printf("\n");
-                }
 
                 //propogate the outputs of the reservation stations through the pipeline
                 alu.pipe();
@@ -204,7 +199,9 @@ class Processor {
         }
 
         void printInfo() {
-            cout << endl;
+
+            cout << endl << endl;
+           
             cout << "Number of clock cycles: " << noOfClockCycles << endl;
             cout << "Number of instructions executed: " << noOfInstructionsExecuted << endl;
             float instructionsPerCycle;
@@ -218,14 +215,14 @@ class Processor {
             cout << endl;
             cout << "PC: " << pc << endl;
             registerFile.printRegisters();
-            //memory.print();
-            //registerFile.printScoreBoard();
-            //fetchUnit.print();
-            //decodeIssueUnit.print();
-            //aluReservationStation.print();
-            //branchUnitReservationStation.print();
-            //loadStoreUnitReservationStation.print();
-            //reorderBuffer.print();
+            cout << endl;
+            aluReservationStation.print();
+            cout << endl;
+            branchUnitReservationStation.print();
+            cout << endl;
+            loadStoreUnitReservationStation.print();
+            cout << endl;
+            reorderBuffer.print();
         }
 };
 

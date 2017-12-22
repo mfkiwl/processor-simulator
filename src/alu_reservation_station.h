@@ -108,7 +108,7 @@ public:
     }
 
     void print() {
-        printf("ALU RESERVATION STATION:\n");
+        printf("ALU reservation station:\n");
         for(int i = 0; i < size; i++) {
             if(instructions[i].opcode != NOOP) {
                 Instructions::printInstruction(instructions[i]);

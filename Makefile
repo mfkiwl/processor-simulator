@@ -1,4 +1,4 @@
-PROGRAM=tests/memory
+PROGRAM=kernels/vector_addition
 
 all:
 	g++ src/processor.cpp -o bin/processor

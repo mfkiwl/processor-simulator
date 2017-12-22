@@ -113,7 +113,7 @@ public:
     }
 
     void print() {
-        printf("LOAD/STORE UNIT RESERVATION STATION:\n");
+        printf("Load/Store Unit reservation station:\n");
         for(int i = 0; i < size; i++) {
             if(instructions[i].opcode != NOOP) {
                 Instructions::printInstruction(instructions[i]);
