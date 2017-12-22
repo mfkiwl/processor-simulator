@@ -219,13 +219,13 @@ class Processor {
             cout << "PC: " << pc << endl;
             registerFile.printRegisters();
             //memory.print();
-            registerFile.printScoreBoard();
-            fetchUnit.print();
-            decodeIssueUnit.print();
-            aluReservationStation.print();
-            branchUnitReservationStation.print();
+            //registerFile.printScoreBoard();
+            //fetchUnit.print();
+            //decodeIssueUnit.print();
+            //aluReservationStation.print();
+            //branchUnitReservationStation.print();
             //loadStoreUnitReservationStation.print();
-            reorderBuffer.print();
+            //reorderBuffer.print();
         }
 };
 
