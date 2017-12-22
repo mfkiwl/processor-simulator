@@ -174,6 +174,7 @@ class DecodeIssueUnit {
                     break;
                 }
                 reorderBufferIndex = -1;
+                nextInstruction = (Instruction) {0,0,0,0};
             }
         }
 

@@ -48,7 +48,7 @@ public:
                 if(readyToDispatch(instructions[i])) {
                     dispatch(instructions[i]);
                     reorderBufferIndex = reorderBufferIndexes[i];
-                    printf("ORIGINAL REORDER BUFFER INDEX: %d\n", reorderBufferIndex);
+                    //printf("ORIGINAL REORDER BUFFER INDEX: %d\n", reorderBufferIndex);
                     
                     //printf("DISPATCHING INSTRUCTION: ");
                     //Instructions::printInstruction(instructions[i]);
@@ -84,9 +84,11 @@ public:
             //send the decoded instruction to the execution unit
             branchUnit->setOpcode(opcode);
             branchUnit->setOperands(operands);
+            /*
             printf("SENDING OPCODE: %d\n", opcode);
             printf("SENDING OPERANDS: %d %d %d\n", operands[0], operands[1], operands[2]);
             printf("SENDING REORDER BUFFER VALUE: %d\n", reorderBufferIndex);
+            */
             //Send the reorder buffer index to the execution unit
             branchUnit->setReorderBufferIndex(reorderBufferIndex);
         

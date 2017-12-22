@@ -138,14 +138,14 @@ class Processor {
                 }
 
                 //propogate the outputs of the reservation stations through the pipeline
-                aluReservationStation.pipe();
-                branchUnitReservationStation.pipe();
-                loadStoreUnitReservationStation.pipe();
-
-                //propogate the outputs of the reservation stations through the pipeline
                 alu.pipe();
                 branchUnit.pipe();
                 loadStoreUnit.pipe();
+
+                //propogate the outputs of the reservation stations through the pipeline
+                aluReservationStation.pipe();
+                branchUnitReservationStation.pipe();
+                loadStoreUnitReservationStation.pipe();
 
                 //update info
                 noOfClockCycles++;
@@ -182,8 +182,6 @@ class Processor {
         }
 
         void flushPipeline() {
-            //flush fetch unit
-            fetchUnit.flush();
             //flush decode unit
             decodeIssueUnit.flush();
             //flush reservation stations
@@ -200,6 +198,7 @@ class Processor {
             registerFile.resetScoreBoard();
             //reset the flush flag
             flushFlag = 0;
+            decodeUnitBlockingFlag = 0;
 
             printf("FLUSHING PIPELINE!\n");
         }
@@ -224,7 +223,7 @@ class Processor {
             fetchUnit.print();
             decodeIssueUnit.print();
             aluReservationStation.print();
-            //branchUnitReservationStation.print();
+            branchUnitReservationStation.print();
             //loadStoreUnitReservationStation.print();
             reorderBuffer.print();
         }
