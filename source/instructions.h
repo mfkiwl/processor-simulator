@@ -141,7 +141,7 @@ public:
                 //get the operands
                 pos = line.find(" ");
                 int j = 0;
-                while(pos != std::string::npos) {
+                while(pos != (int) std::string::npos) {
                     //get operand
                     std::string operandstr = line.substr(0, pos);
                     int operand = atoi(operandstr.c_str());

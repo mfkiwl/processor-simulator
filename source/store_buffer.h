@@ -25,13 +25,13 @@ class StoreBuffer {
 
   public:
     StoreBuffer(Memory* memory, ReorderBuffer* reorderBuffer, int size, int steps) : 
-      reorderBuffer(reorderBuffer),
       memory(memory),
+      reorderBuffer(reorderBuffer),
       size(size),
       head(0),
       tail(0),
-      entryFields(4),
       steps(steps),
+      entryFields(4),
       ADDRESS(0),
       VALUE(1),
       REORDER_BUFFER_INDEX(2),

@@ -9,13 +9,6 @@ class BranchUnit {
     int opcode;
     int operands[3];
 
-    //set pc program to jump to a position in the program
-    int* pc;
-
-    //set to one to send message to processor to flush the pipeline
-    int* flushFlag;
-    int* runningFlag;
-
     //position in the reorder buffer
     int reorderBufferIndex;
 
@@ -25,9 +18,6 @@ class BranchUnit {
   public:
     BranchUnit(ReorderBuffer* reorderBuffer) : 
       reorderBuffer(reorderBuffer),
-      pc(pc),
-      flushFlag(flushFlag),
-      runningFlag(runningFlag),
       opcode(0),
       reorderBufferIndex(-1),
       successful(0)

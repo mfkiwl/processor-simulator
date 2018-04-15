@@ -24,11 +24,9 @@ class LoadStoreUnit {
 
   public:
     LoadStoreUnit(Memory* memory, ReorderBuffer* reorderBuffer) :
-      //set initial opcode value to zero
-      opcode(0),
-      //connected components
       memory(memory),
       reorderBuffer(reorderBuffer),
+      opcode(0),
       bufferSize(100),
       writeCycles(5),
       readCycles(5),
@@ -49,7 +47,6 @@ class LoadStoreUnit {
         reorderBuffer->executingEntry(reorderBufferIndex);
 
         //variables to hold temperary info
-        int destinationRegister;
         int address;
         int value;
 
@@ -57,8 +54,6 @@ class LoadStoreUnit {
     	switch(opcode) {
           case LW:
           case LWR:
-            //get the destination register to update the address to read from
-            destinationRegister = operands[0];
             address = 0 + operands[1];
             //and to the read buffer to be read from memory when ready
             loadBuffer.addToBuffer(operands[0], address, reorderBufferIndex);

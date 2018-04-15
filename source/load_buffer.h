@@ -114,8 +114,6 @@ class LoadBuffer {
       for(int i = head; i < tail; i++) {
         //for each entry check if it is ready to write
         if(buffer[i][STEP] > steps) {
-          //read the value from the memory address and store it in the destination register
-          int destinationRegister = buffer[i][DESTINATION];
           int address = buffer[i][ADDRESS];
           int value = memory->loadFromMemory(address);
           //tell the reorder buffer that we are finished executing the instruction
