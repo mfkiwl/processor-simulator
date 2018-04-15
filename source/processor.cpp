@@ -20,6 +20,8 @@
 #include "decode_issue_unit.h"
 #include "fetch_unit.h"
 
+#include <SDL2/SDL.h>
+
 using namespace std;
 
 
