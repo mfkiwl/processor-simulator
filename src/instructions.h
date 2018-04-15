@@ -2,10 +2,10 @@
 #define INSTRUCTIONS_H
 
 using namespace std;
-typedef struct instruction {
+struct Instruction {
 	int opcode;
 	int operands[3];
-} Instruction;
+};
 
 class Instructions {
     int numOfInstructions;
