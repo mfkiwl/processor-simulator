@@ -4,7 +4,7 @@ S_DIR = source
 B_DIR = build
 
 #OBJS specifies which files to compile as part of the project
-S_FILES = processor.cpp
+S_FILES = model/processor.cpp
 #OBJ_NAME specifies the name of our executable
 EXEC = processor
 
@@ -15,10 +15,12 @@ CC = g++
 COMPILER_FLAGS = -Wall
 
 #LINKER_FLAGS specifies the libraries we're liking against
-LINKER_FLAGS = -lSDL2
+LINKER_FLAGS = -lSDL2 -lSDL2_image
 
 
-all : $(S_DIR)/$(S_FILES)
+all : Build
+
+Build: $(S_DIR)/$(S_FILES)
 	$(CC) $(S_DIR)/$(S_FILES) $(COMPILER_FLAGS) $(LINKER_FLAGS) -o $(B_DIR)/$(EXEC)
 
 clean:
