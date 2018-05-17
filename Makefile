@@ -4,7 +4,7 @@ S_DIR = source
 B_DIR = build
 
 #OBJS specifies which files to compile as part of the project
-S_FILES = model/processor.cpp
+S_FILES = $(S_DIR)/model/processor.cpp $(S_DIR)/model/alu.cpp $(S_DIR)/model/reorder_buffer.cpp
 #OBJ_NAME specifies the name of our executable
 EXEC = processor
 
@@ -20,8 +20,8 @@ LINKER_FLAGS = -lSDL2 -lSDL2_image
 
 all : Build
 
-Build: $(S_DIR)/$(S_FILES)
-	$(CC) $(S_DIR)/$(S_FILES) $(COMPILER_FLAGS) $(LINKER_FLAGS) -o $(B_DIR)/$(EXEC)
+Build: $(S_FILES)
+	$(CC) $(S_FILES) $(COMPILER_FLAGS) $(LINKER_FLAGS) -o $(B_DIR)/$(EXEC)
 
 clean:
 	rm -rf $(B_DIR)/*
