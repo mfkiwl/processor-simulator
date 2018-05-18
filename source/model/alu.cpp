@@ -1,24 +1,9 @@
-#include <stdlib.h>
 #include <iostream>
-#include <math.h>
-#include <fstream>
-#include <string>
 
 #include "constants.h"
-#include "instructions.h"
 #include "register_file.h"
-#include "memory.h"
 #include "reorder_buffer.h"
 #include "alu.h"
-#include "alu_reservation_station.h"
-#include "branch_unit.h"
-#include "branch_unit_reservation_station.h"
-#include "store_buffer.h"
-#include "load_buffer.h"
-#include "load_store_unit.h"
-#include "load_store_unit_reservation_station.h"
-#include "decode_issue_unit.h"
-#include "fetch_unit.h"
 
 ALU::ALU(RegisterFile* registerFile, ReorderBuffer* reorderBuffer) : 
   registerFile(registerFile),

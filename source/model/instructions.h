@@ -1,6 +1,11 @@
 #ifndef INSTRUCTIONS_H
 #define INSTRUCTIONS_H
 
+
+#include <fstream>
+#include <stdlib.h>
+
+
 using namespace std;
 struct Instruction {
 	int opcode;

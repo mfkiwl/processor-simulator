@@ -1,10 +1,8 @@
 #S_DIR specifies the source directory of the files to compile
-S_DIR = source
+S_DIR = source/model
 #B_DIR specifies the build directory where the executable will be located
 B_DIR = build
 
-#OBJS specifies which files to compile as part of the project
-S_FILES = $(S_DIR)/model/processor.cpp $(S_DIR)/model/alu.cpp $(S_DIR)/model/reorder_buffer.cpp
 #OBJ_NAME specifies the name of our executable
 EXEC = processor
 
@@ -12,19 +10,33 @@ EXEC = processor
 CC = g++
 
 #COMPILER_FLAGS specifies the additional compilation options we're using
-COMPILER_FLAGS = -Wall
+CFLAGSS = -Wall
 
 #LINKER_FLAGS specifies the libraries we're liking against
 LINKER_FLAGS = -lSDL2 -lSDL2_image
 
+#OBJs specify the objects to created for each module
+OBJ1 = $(B_DIR)/processor.o
+OBJ2 = $(B_DIR)/alu.o
+OBJ3 = $(B_DIR)/reorder_buffer.o
+OBJ4 = $(B_DIR)/register_file.o
 
-all : Build
+#Build rule to compile the whole project
+Build : $(OBJ1) $(OBJ2) $(OBJ3) $(OBJ4)
+	$(CC) $(CFLAGS) $(LINKER_FLAGS) -o $(B_DIR)/$(EXEC) $(OBJ1) $(OBJ2) $(OBJ3) $(OBJ4)
 
-Build: $(S_FILES)
-	$(CC) $(S_FILES) $(COMPILER_FLAGS) $(LINKER_FLAGS) -o $(B_DIR)/$(EXEC)
+$(OBJ1) : $(S_DIR)/processor.cpp $(S_DIR)/processor.h
+	$(CC) $(CFLAGS) $(LINKER_FLAGS) -o $(OBJ1) -c $(S_DIR)/processor.cpp
 
-clean:
-	rm -rf $(B_DIR)/*
+$(OBJ2) : $(S_DIR)/alu.cpp $(S_DIR)/alu.h
+	$(CC) $(CFLAGS) $(LINKER_FLAGS) -o $(OBJ2) -c $(S_DIR)/alu.cpp
+
+$(OBJ3) : $(S_DIR)/reorder_buffer.cpp $(S_DIR)/reorder_buffer.h
+	$(CC) $(CFLAGS) $(LINKER_FLAGS) -o $(OBJ3) -c $(S_DIR)/reorder_buffer.cpp
+
+$(OBJ4) : $(S_DIR)/register_file.cpp $(S_DIR)/register_file.h
+	$(CC) $(CFLAGS) $(LINKER_FLAGS) -o $(OBJ4) -c $(S_DIR)/register_file.cpp
+
 
 #P_DIR specifes the directory where the programs are located
 P_DIR = programs
@@ -34,3 +46,5 @@ P_FILE = kernels/vector_addition.mac
 run: $(B_DIR)/$(EXEC) $(P_DIR)/$(P_FILE)
 	$(B_DIR)/$(EXEC) $(P_DIR)/$(P_FILE)
 
+clean :
+	rm -rf $(B_DIR)/*

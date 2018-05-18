@@ -6,6 +6,11 @@
 //===========================
 //forward declared dependencies
 class RegisterFile;
+class Memory;
+
+//=================================
+// included dependencies
+#include "instructions.h"
 
 //===========================
 //class declaration

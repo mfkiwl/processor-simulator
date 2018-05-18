@@ -1,8 +1,4 @@
-#include <stdlib.h>
 #include <iostream>
-#include <math.h>
-#include <fstream>
-#include <string>
 
 #include "constants.h"
 #include "instructions.h"
@@ -124,7 +120,7 @@ void ReorderBuffer::flush() {
 }
 
 void ReorderBuffer::printTail() {
-  printf("REORDER BUFFER TAIL:");
+  cout << "REORDER BUFFER TAIL:";
   Instructions::printInstruction(instructions[tail]);
 }
 
@@ -132,7 +128,7 @@ void ReorderBuffer::print() {
   cout << "Reorder Buffer:" << endl;
   for(int i = tail; i < head; i++) {
     if(buffer[i][STATUS] == FINISHED) {
-      printf("FINISHED : ");
+      cout << "FINISHED : ";
     }
     Instructions::printInstruction(instructions[i]);
   }
