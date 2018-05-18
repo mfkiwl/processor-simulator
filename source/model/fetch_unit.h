@@ -1,8 +1,18 @@
+//===========================
+//include guard
 #ifndef FETCH_UNIT_H
 #define FETCH_UNIT_H
 
+//===========================
+//forward declared dependencies
+class DecodeIssueUnit;
+
+//=================================
+// included dependencies
 #include "instructions.h"
 
+//===========================
+//class declaration
 class FetchUnit {
     
     Instructions instructions;
@@ -11,39 +21,15 @@ class FetchUnit {
     Instruction currentInstruction;
 
   public:
-    FetchUnit(Instructions instructions, int* pc, DecodeIssueUnit* decodeIssueUnit) :
-      instructions(instructions),
-      pc(pc),
-      decodeIssueUnit(decodeIssueUnit),
-      currentInstruction((Instruction) {0,0,0,0})
-    {}
+    FetchUnit(Instructions instructions, int* pc, DecodeIssueUnit* decodeIssueUnit);
 
-    void execute() {
-      if(*pc <= instructions.getNumOfInstructions()) {
-        //fetch the next instruction (-1 so that pc of 1 refers to the first instruction on line 1)
-    	currentInstruction = instructions.at(*pc - 1);
-        //increment the program counter
-        (*pc)++;
-      }
-      else {
-        //next instruction is noop if pc exceeds number of instructions
-        currentInstruction = (Instruction) {0,0,0,0};
-      }
-    }
+    void execute();
 
-    void print() {
-      printf("FETCHED INSTRUCTION: ");
-      printInstruction(currentInstruction);
-    }
+    void print();
 
-    void pipe() {
-      //put the fetched instruction into the instruction register
-      decodeIssueUnit->setNextInstruction(currentInstruction);
-    }
+    void pipe();
 
-    void flush() {
-      currentInstruction = (Instruction) {0,0,0,0};
-    }
+    void flush();
 };
 
 #endif
