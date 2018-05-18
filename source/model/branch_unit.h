@@ -1,6 +1,8 @@
 #ifndef BRANCH_UNIT_H
 #define BRANCH_UNIT_H
 
+#include "constants.h"
+
 class BranchUnit {
 	
     ReorderBuffer* reorderBuffer;

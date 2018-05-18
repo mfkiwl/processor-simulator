@@ -73,7 +73,7 @@ void ReorderBuffer::retire() {
     }
     //print the instruction that we are retiring
     cout << endl << "Retiring Instruction: ";
-    Instructions::printInstruction(instructions[tail]);
+    printInstruction(instructions[tail]);
     //reset the reorder buffer entry
     resetEntry(tail);
     //increment the number of instructions that we have executed
@@ -121,7 +121,7 @@ void ReorderBuffer::flush() {
 
 void ReorderBuffer::printTail() {
   cout << "REORDER BUFFER TAIL:";
-  Instructions::printInstruction(instructions[tail]);
+  printInstruction(instructions[tail]);
 }
 
 void ReorderBuffer::print() {
@@ -130,6 +130,6 @@ void ReorderBuffer::print() {
     if(buffer[i][STATUS] == FINISHED) {
       cout << "FINISHED : ";
     }
-    Instructions::printInstruction(instructions[i]);
+    printInstruction(instructions[i]);
   }
 }

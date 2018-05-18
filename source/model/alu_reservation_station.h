@@ -1,6 +1,9 @@
 #ifndef ALU_RESERVATION_STATION_H
 #define ALU_RESERVATION_STATION_H
 
+#include "constants.h"
+#include "instructions.h"
+
 class ALUReservationStation {
     
     RegisterFile* registerFile;
@@ -51,7 +54,7 @@ class ALUReservationStation {
             reorderBufferIndex = reorderBufferIndexes[i];
 
             //printf("DISPATCHING INSTRUCTION: ");
-            //Instructions::printInstruction(instructions[i]);
+            //printInstruction(instructions[i]);
 
             //clear the dispatched instruction from the reservation station
             instructions[i] = (Instruction) {0,0,0,0};
@@ -64,7 +67,7 @@ class ALUReservationStation {
 
     void addInstruction(Instruction instruction, int rbi) {
       //printf("ADDED INSTRUCTION: ");
-      //Instructions::printInstruction(instruction);
+      //printInstruction(instruction);
       int index = findFreePosition();
       instructions[index] = instruction;
       reorderBufferIndexes[index] = rbi;
@@ -112,7 +115,7 @@ class ALUReservationStation {
       printf("ALU reservation station:\n");
       for(int i = 0; i < size; i++) {
         if(instructions[i].opcode != NOOP) {
-          Instructions::printInstruction(instructions[i]);
+          printInstruction(instructions[i]);
        }
       }
     }

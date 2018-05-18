@@ -1,6 +1,8 @@
 #ifndef LOAD_STORE_UNIT_H
 #define LOAD_STORE_UNIT_H
 
+#include "constants.h"
+
 class LoadStoreUnit {
 
     //forward components

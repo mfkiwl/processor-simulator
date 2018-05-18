@@ -10,7 +10,6 @@ class ReorderBuffer;
 
 //===========================
 //class declaration
-
 class ALU {
 
     //forward components

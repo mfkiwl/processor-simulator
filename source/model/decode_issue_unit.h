@@ -1,6 +1,9 @@
 #ifndef DECODE_ISSUE_UNIT_H
 #define DECODE_ISSUE_UNIT_H
 
+#include "constants.h"
+#include "instructions.h"
+
 class DecodeIssueUnit {
     
     //forward components
@@ -183,7 +186,7 @@ class DecodeIssueUnit {
 
     void print() {
       printf("DECODE ISSUE UNIT:");
-      Instructions::printInstruction(currentInstruction);
+      printInstruction(currentInstruction);
     }
 
     void setNextInstruction(Instruction x) {

@@ -1,6 +1,8 @@
 #ifndef FETCH_UNIT_H
 #define FETCH_UNIT_H
 
+#include "instructions.h"
+
 class FetchUnit {
     
     Instructions instructions;
@@ -31,7 +33,7 @@ class FetchUnit {
 
     void print() {
       printf("FETCHED INSTRUCTION: ");
-      Instructions::printInstruction(currentInstruction);
+      printInstruction(currentInstruction);
     }
 
     void pipe() {

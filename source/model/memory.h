@@ -1,6 +1,10 @@
+//===========================
+//include guard
 #ifndef MEMORY_H
-#define MEMROY_H
+#define MEMORY_H
 
+//===========================
+//class declaration
 class Memory {
 
     //the number of bytes the memory has
@@ -8,34 +12,13 @@ class Memory {
     int* memory;
 
   public:
-    Memory(int size) : size(size) {
-      memory = new int[size];
-      for(int i = 0; i < size; i++) {
-        memory[i] = 0;
-      }
-    }
-    
-    int loadFromMemory(int address) {
-      if(address < 0 || address > size - 1) {
-        cout << "Register index " << address << " is out of bounds.\n";
-      }
-      return memory[address];
-    }
+    Memory(int size);
 
-    void storeInMemory(int address, int value) {
-      if(address < 0 || address > size - 1) {
-        cout << "Register index " << address << " is out of bounds.\n";
-      }
-      memory[address] = value;
-    }
+    int loadFromMemory(int address);
 
-    void print() {
-      cout << "Memory:" << endl;
-      for(int i = 0; i < size; i++) {
-        cout << memory[i] << " ";
-      }
-      cout << endl;
-    }
+    void storeInMemory(int address, int value);
+
+    void print();
 };
 
 #endif

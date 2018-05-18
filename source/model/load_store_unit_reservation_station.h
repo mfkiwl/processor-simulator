@@ -1,6 +1,9 @@
 #ifndef LOAD_STORE_UNIT_RESERVATION_STATION_H
 #define LOAD_STORE_UNIT_RESERVATION_STATION_H
 
+#include "constants.h"
+#include "instructions.h"
+
 class LoadStoreUnitReservationStation {
 
     RegisterFile* registerFile;
@@ -56,7 +59,7 @@ class LoadStoreUnitReservationStation {
             reorderBufferIndex = reorderBufferIndexes[tail];
                     
             //printf("DISPATCHING INSTRUCTION: ");
-            //Instructions::printInstruction(instructions[tail]);
+            //printInstruction(instructions[tail]);
 
             //clear the dispatched instruction from the reservation station
             instructions[tail] = (Instruction) {0,0,0,0};
@@ -67,7 +70,7 @@ class LoadStoreUnitReservationStation {
 
     void addInstruction(Instruction instruction, int rbi) {
       //printf("ADDED INSTRUCTION: ");
-      //Instructions::printInstruction(instruction);
+      //printInstruction(instruction);
       instructions[head] = instruction;
       reorderBufferIndexes[head] = rbi;
       head = (head + 1) % size;
@@ -117,7 +120,7 @@ class LoadStoreUnitReservationStation {
       printf("Load/Store Unit reservation station:\n");
       for(int i = 0; i < size; i++) {
         if(instructions[i].opcode != NOOP) {
-          Instructions::printInstruction(instructions[i]);
+          printInstruction(instructions[i]);
         }
       }
     }
