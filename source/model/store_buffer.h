@@ -1,6 +1,8 @@
 #ifndef STORE_BUFFER_H
 #define STORE_BUFFER_H
 
+#include "memory.h"
+
 class StoreBuffer {
 
     Memory* memory;

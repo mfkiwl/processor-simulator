@@ -1,6 +1,8 @@
 #ifndef LOAD_STORE_UNIT_RESERVATION_STATION_H
 #define LOAD_STORE_UNIT_RESERVATION_STATION_H
 
+#include "load_store_unit.h"
+
 #include "constants.h"
 #include "instructions.h"
 

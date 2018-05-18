@@ -23,10 +23,14 @@ OBJ4 = $(B_DIR)/reorder_buffer.o
 OBJ5 = $(B_DIR)/register_file.o
 OBJ6 = $(B_DIR)/memory.o
 OBJ7 = $(B_DIR)/instructions.o
+OBJ8 = $(B_DIR)/alu_reservation_station.o
+OBJ9 = $(B_DIR)/branch_unit.o
+OBJ10 = $(B_DIR)/branch_unit_reservation_station.o
+OBJ11 = $(B_DIR)/decode_issue_unit.o
 
 #Build rule to compile the whole project
-Build : $(OBJ1) $(OBJ2) $(OBJ3) $(OBJ4) $(OBJ5) $(OBJ6) $(OBJ7)
-	$(CC) $(CFLAGS) $(LINKER_FLAGS) -o $(B_DIR)/$(EXEC) $(OBJ1) $(OBJ2) $(OBJ3) $(OBJ4) $(OBJ5) $(OBJ6) $(OBJ7)
+Build : $(OBJ1) $(OBJ2) $(OBJ3) $(OBJ4) $(OBJ5) $(OBJ6) $(OBJ7) $(OBJ8) $(OBJ9) $(OBJ10) $(OBJ11)
+	$(CC) $(CFLAGS) $(LINKER_FLAGS) -o $(B_DIR)/$(EXEC) $(OBJ1) $(OBJ2) $(OBJ3) $(OBJ4) $(OBJ5) $(OBJ6) $(OBJ7) $(OBJ8) $(OBJ9) $(OBJ10) $(OBJ11)
 
 $(OBJ1) : $(S_DIR)/main.cpp
 	$(CC) $(CFLAGS) $(LINKER_FLAGS) -o $(OBJ1) -c $(S_DIR)/main.cpp
@@ -48,6 +52,18 @@ $(OBJ6) : $(S_DIR)/memory.cpp $(S_DIR)/memory.h
 
 $(OBJ7) : $(S_DIR)/instructions.cpp $(S_DIR)/instructions.h
 	$(CC) $(CFLAGS) $(LINKER_FLAGS) -o $(OBJ7) -c $(S_DIR)/instructions.cpp
+
+$(OBJ8) : $(S_DIR)/alu_reservation_station.cpp $(S_DIR)/alu_reservation_station.h
+	$(CC) $(CFLAGS) $(LINKER_FLAGS) -o $(OBJ8) -c $(S_DIR)/alu_reservation_station.cpp
+
+$(OBJ9) : $(S_DIR)/branch_unit.cpp $(S_DIR)/branch_unit.h
+	$(CC) $(CFLAGS) $(LINKER_FLAGS) -o $(OBJ9) -c $(S_DIR)/branch_unit.cpp
+
+$(OBJ10) : $(S_DIR)/branch_unit_reservation_station.cpp $(S_DIR)/branch_unit_reservation_station.h
+	$(CC) $(CFLAGS) $(LINKER_FLAGS) -o $(OBJ10) -c $(S_DIR)/branch_unit_reservation_station.cpp
+
+$(OBJ11) : $(S_DIR)/decode_issue_unit.cpp $(S_DIR)/decode_issue_unit.h
+	$(CC) $(CFLAGS) $(LINKER_FLAGS) -o $(OBJ11) -c $(S_DIR)/decode_issue_unit.cpp
 
 
 #P_DIR specifes the directory where the programs are located

@@ -1,6 +1,9 @@
 #ifndef LOAD_STORE_UNIT_H
 #define LOAD_STORE_UNIT_H
 
+#include "store_buffer.h"
+#include "load_buffer.h"
+
 #include "constants.h"
 
 class LoadStoreUnit {
