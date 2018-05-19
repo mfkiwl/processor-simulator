@@ -16,74 +16,83 @@ CFLAGSS = -Wall
 LINKER_FLAGS = -lSDL2 -lSDL2_image
 
 #OBJs specify the objects to created for each module
-OBJ1 = $(B_DIR)/main.o
-OBJ2 = $(B_DIR)/processor.o
-OBJ3 = $(B_DIR)/alu.o
-OBJ4 = $(B_DIR)/reorder_buffer.o
-OBJ5 = $(B_DIR)/register_file.o
-OBJ6 = $(B_DIR)/memory.o
-OBJ7 = $(B_DIR)/instructions.o
-OBJ8 = $(B_DIR)/alu_reservation_station.o
-OBJ9 = $(B_DIR)/branch_unit.o
-OBJ10 = $(B_DIR)/branch_unit_reservation_station.o
-OBJ11 = $(B_DIR)/decode_issue_unit.o
-OBJ12 = $(B_DIR)/fetch_unit.o
-OBJ13 = $(B_DIR)/load_buffer.o
-OBJ14 = $(B_DIR)/load_store_unit.o
-OBJ15 = $(B_DIR)/load_store_unit_reservation_station.o
-OBJ16 = $(B_DIR)/store_buffer.o
+OBJ1 = main
+OBJ2 = alu
+OBJ3 = alu_reservation_station
+OBJ4 = branch_unit
+OBJ5 = branch_unit_reservation_station
+OBJ6 = decode_issue_unit
+OBJ7 = fetch_unit
+OBJ8 = instructions
+OBJ9 = load_buffer
+OBJ10 = load_store_unit
+OBJ11 = load_store_unit_reservation_station
+OBJ12 = memory
+OBJ13 = processor
+OBJ14 = register_file
+OBJ15 = reorder_buffer
+OBJ16 = store_buffer
+
+#variable containing all of the object files we need
+OBJS = $(B_DIR)/$(OBJ1).o $(B_DIR)/$(OBJ2).o $(B_DIR)/$(OBJ3).o $(B_DIR)/$(OBJ4).o $(B_DIR)/$(OBJ5).o \
+$(B_DIR)/$(OBJ6).o $(B_DIR)/$(OBJ7).o $(B_DIR)/$(OBJ8).o $(B_DIR)/$(OBJ9).o $(B_DIR)/$(OBJ10).o \
+$(B_DIR)/$(OBJ11).o $(B_DIR)/$(OBJ12).o $(B_DIR)/$(OBJ13).o $(B_DIR)/$(OBJ14).o $(B_DIR)/$(OBJ15).o \
+$(B_DIR)/$(OBJ16).o
+
 
 #Build rule to compile the whole project
-Build : $(OBJ1) $(OBJ2) $(OBJ3) $(OBJ4) $(OBJ5) $(OBJ6) $(OBJ7) $(OBJ8) $(OBJ9) $(OBJ10) $(OBJ11) $(OBJ12) $(OBJ13) $(OBJ14) $(OBJ15) $(OBJ16)
-	$(CC) $(CFLAGS) $(LINKER_FLAGS) -o $(B_DIR)/$(EXEC) $(OBJ1) $(OBJ2) $(OBJ3) $(OBJ4) $(OBJ5) $(OBJ6) $(OBJ7) $(OBJ8) $(OBJ9) $(OBJ10) $(OBJ11) $(OBJ12) $(OBJ13) $(OBJ14) $(OBJ15) $(OBJ16)
+Build : $(OBJS)
+	$(CC) $(CFLAGS) $(LINKER_FLAGS) -o $(B_DIR)/$(EXEC) $(OBJS)
 
-$(OBJ1) : $(S_DIR)/main.cpp
-	$(CC) $(CFLAGS) $(LINKER_FLAGS) -o $(OBJ1) -c $(S_DIR)/main.cpp
+#Rules to compile all of the objects
+$(B_DIR)/$(OBJ1).o : $(S_DIR)/$(OBJ1).cpp
+	$(CC) $(CFLAGS) $(LINKER_FLAGS) -o $(B_DIR)/$(OBJ1).o -c $(S_DIR)/$(OBJ1).cpp
 
-$(OBJ2) : $(S_DIR)/processor.cpp $(S_DIR)/processor.h
-	$(CC) $(CFLAGS) $(LINKER_FLAGS) -o $(OBJ2) -c $(S_DIR)/processor.cpp
+$(B_DIR)/$(OBJ2).o : $(S_DIR)/$(OBJ2).cpp $(S_DIR)/$(OBJ2).h
+	$(CC) $(CFLAGS) $(LINKER_FLAGS) -o $(B_DIR)/$(OBJ2).o -c $(S_DIR)/$(OBJ2).cpp
 
-$(OBJ3) : $(S_DIR)/alu.cpp $(S_DIR)/alu.h
-	$(CC) $(CFLAGS) $(LINKER_FLAGS) -o $(OBJ3) -c $(S_DIR)/alu.cpp
+$(B_DIR)/$(OBJ3).o : $(S_DIR)/$(OBJ3).cpp $(S_DIR)/$(OBJ3).h
+	$(CC) $(CFLAGS) $(LINKER_FLAGS) -o $(B_DIR)/$(OBJ3).o -c $(S_DIR)/$(OBJ3).cpp
 
-$(OBJ4) : $(S_DIR)/reorder_buffer.cpp $(S_DIR)/reorder_buffer.h
-	$(CC) $(CFLAGS) $(LINKER_FLAGS) -o $(OBJ4) -c $(S_DIR)/reorder_buffer.cpp
+$(B_DIR)/$(OBJ4).o : $(S_DIR)/$(OBJ4).cpp $(S_DIR)/$(OBJ4).h
+	$(CC) $(CFLAGS) $(LINKER_FLAGS) -o $(B_DIR)/$(OBJ4).o -c $(S_DIR)/$(OBJ4).cpp
 
-$(OBJ5) : $(S_DIR)/register_file.cpp $(S_DIR)/register_file.h
-	$(CC) $(CFLAGS) $(LINKER_FLAGS) -o $(OBJ5) -c $(S_DIR)/register_file.cpp
+$(B_DIR)/$(OBJ5).o : $(S_DIR)/$(OBJ5).cpp $(S_DIR)/$(OBJ5).h
+	$(CC) $(CFLAGS) $(LINKER_FLAGS) -o $(B_DIR)/$(OBJ5).o -c $(S_DIR)/$(OBJ5).cpp
 
-$(OBJ6) : $(S_DIR)/memory.cpp $(S_DIR)/memory.h
-	$(CC) $(CFLAGS) $(LINKER_FLAGS) -o $(OBJ6) -c $(S_DIR)/memory.cpp
+$(B_DIR)/$(OBJ6).o : $(S_DIR)/$(OBJ6).cpp $(S_DIR)/$(OBJ6).h
+	$(CC) $(CFLAGS) $(LINKER_FLAGS) -o $(B_DIR)/$(OBJ6).o -c $(S_DIR)/$(OBJ6).cpp
 
-$(OBJ7) : $(S_DIR)/instructions.cpp $(S_DIR)/instructions.h
-	$(CC) $(CFLAGS) $(LINKER_FLAGS) -o $(OBJ7) -c $(S_DIR)/instructions.cpp
+$(B_DIR)/$(OBJ7).o : $(S_DIR)/$(OBJ7).cpp $(S_DIR)/$(OBJ7).h
+	$(CC) $(CFLAGS) $(LINKER_FLAGS) -o $(B_DIR)/$(OBJ7).o -c $(S_DIR)/$(OBJ7).cpp
 
-$(OBJ8) : $(S_DIR)/alu_reservation_station.cpp $(S_DIR)/alu_reservation_station.h
-	$(CC) $(CFLAGS) $(LINKER_FLAGS) -o $(OBJ8) -c $(S_DIR)/alu_reservation_station.cpp
+$(B_DIR)/$(OBJ8).o : $(S_DIR)/$(OBJ8).cpp $(S_DIR)/$(OBJ8).h
+	$(CC) $(CFLAGS) $(LINKER_FLAGS) -o $(B_DIR)/$(OBJ8).o -c $(S_DIR)/$(OBJ8).cpp
 
-$(OBJ9) : $(S_DIR)/branch_unit.cpp $(S_DIR)/branch_unit.h
-	$(CC) $(CFLAGS) $(LINKER_FLAGS) -o $(OBJ9) -c $(S_DIR)/branch_unit.cpp
+$(B_DIR)/$(OBJ9).o : $(S_DIR)/$(OBJ9).cpp $(S_DIR)/$(OBJ9).h
+	$(CC) $(CFLAGS) $(LINKER_FLAGS) -o $(B_DIR)/$(OBJ9).o -c $(S_DIR)/$(OBJ9).cpp
 
-$(OBJ10) : $(S_DIR)/branch_unit_reservation_station.cpp $(S_DIR)/branch_unit_reservation_station.h
-	$(CC) $(CFLAGS) $(LINKER_FLAGS) -o $(OBJ10) -c $(S_DIR)/branch_unit_reservation_station.cpp
+$(B_DIR)/$(OBJ10).o : $(S_DIR)/$(OBJ10).cpp $(S_DIR)/$(OBJ10).h
+	$(CC) $(CFLAGS) $(LINKER_FLAGS) -o $(B_DIR)/$(OBJ10).o -c $(S_DIR)/$(OBJ10).cpp
 
-$(OBJ11) : $(S_DIR)/decode_issue_unit.cpp $(S_DIR)/decode_issue_unit.h
-	$(CC) $(CFLAGS) $(LINKER_FLAGS) -o $(OBJ11) -c $(S_DIR)/decode_issue_unit.cpp
+$(B_DIR)/$(OBJ11).o : $(S_DIR)/$(OBJ11).cpp $(S_DIR)/$(OBJ11).h
+	$(CC) $(CFLAGS) $(LINKER_FLAGS) -o $(B_DIR)/$(OBJ11).o -c $(S_DIR)/$(OBJ11).cpp
 
-$(OBJ12) : $(S_DIR)/fetch_unit.cpp $(S_DIR)/fetch_unit.h
-	$(CC) $(CFLAGS) $(LINKER_FLAGS) -o $(OBJ12) -c $(S_DIR)/fetch_unit.cpp
+$(B_DIR)/$(OBJ12).o : $(S_DIR)/$(OBJ12).cpp $(S_DIR)/$(OBJ12).h
+	$(CC) $(CFLAGS) $(LINKER_FLAGS) -o $(B_DIR)/$(OBJ12).o -c $(S_DIR)/$(OBJ12).cpp
 
-$(OBJ13) : $(S_DIR)/load_buffer.cpp $(S_DIR)/load_buffer.h
-	$(CC) $(CFLAGS) $(LINKER_FLAGS) -o $(OBJ13) -c $(S_DIR)/load_buffer.cpp
+$(B_DIR)/$(OBJ13).o : $(S_DIR)/$(OBJ13).cpp $(S_DIR)/$(OBJ13).h
+	$(CC) $(CFLAGS) $(LINKER_FLAGS) -o $(B_DIR)/$(OBJ13).o -c $(S_DIR)/$(OBJ13).cpp
 
-$(OBJ14) : $(S_DIR)/load_store_unit.cpp $(S_DIR)/load_store_unit.h
-	$(CC) $(CFLAGS) $(LINKER_FLAGS) -o $(OBJ14) -c $(S_DIR)/load_store_unit.cpp
+$(B_DIR)/$(OBJ14).o : $(S_DIR)/$(OBJ14).cpp $(S_DIR)/$(OBJ14).h
+	$(CC) $(CFLAGS) $(LINKER_FLAGS) -o $(B_DIR)/$(OBJ14).o -c $(S_DIR)/$(OBJ14).cpp
 
-$(OBJ15) : $(S_DIR)/load_store_unit_reservation_station.cpp $(S_DIR)/load_store_unit_reservation_station.h
-	$(CC) $(CFLAGS) $(LINKER_FLAGS) -o $(OBJ15) -c $(S_DIR)/load_store_unit_reservation_station.cpp
+$(B_DIR)/$(OBJ15).o : $(S_DIR)/$(OBJ15).cpp $(S_DIR)/$(OBJ15).h
+	$(CC) $(CFLAGS) $(LINKER_FLAGS) -o $(B_DIR)/$(OBJ15).o -c $(S_DIR)/$(OBJ15).cpp
 
-$(OBJ16) : $(S_DIR)/store_buffer.cpp $(S_DIR)/store_buffer.h
-	$(CC) $(CFLAGS) $(LINKER_FLAGS) -o $(OBJ16) -c $(S_DIR)/store_buffer.cpp
+$(B_DIR)/$(OBJ16).o : $(S_DIR)/$(OBJ16).cpp $(S_DIR)/$(OBJ16).h
+	$(CC) $(CFLAGS) $(LINKER_FLAGS) -o $(B_DIR)/$(OBJ16).o -c $(S_DIR)/$(OBJ16).cpp
+
 
 
 #P_DIR specifes the directory where the programs are located
