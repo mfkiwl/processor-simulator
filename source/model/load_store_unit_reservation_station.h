@@ -8,10 +8,7 @@
 class RegisterFile;
 class ReorderBuffer;
 class LoadStoreUnit;
-
-//=================================
-// included dependencies
-#include "instructions.h"
+class Instruction;
 
 //===========================
 //class declaration

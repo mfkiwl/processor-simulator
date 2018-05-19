@@ -1,8 +1,17 @@
+//===========================================
+//included header file containing interface
+#include "register_file.h"
+
+//===========================================
+// included dependencies
 #include <iostream>
 #include <math.h>
 #include <stdlib.h>
 
-#include "register_file.h"
+//===========================================
+//class implementation
+
+using namespace std;
 
 RegisterFile::RegisterFile() :   
   numOfArchitecturalRegisters(16) 

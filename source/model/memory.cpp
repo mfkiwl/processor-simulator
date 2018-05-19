@@ -1,5 +1,13 @@
-#include <iostream>
+//===========================================
+//included header file containing interface
 #include "memory.h"
+
+//===========================================
+// included dependencies
+#include <iostream>
+
+//===========================================
+//class implementation
 
 Memory::Memory(int size) : size(size) {
   memory = new int[size];

@@ -7,10 +7,6 @@
 //forward declared dependencies
 class ReorderBuffer;
 
-//=================================
-// included dependencies
-#include "constants.h"
-
 //===========================
 //class declaration
 class BranchUnit {

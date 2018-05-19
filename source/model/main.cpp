@@ -1,17 +1,22 @@
+//===========================================
+// included dependencies
+#include <iostream>
+
 #include "processor.h"
 
-
+//===========================================
+// main function
 int main(int argc, char *argv[]) {
-  cout << "\n";
+  std::cout << "\n";
 
   //If command line arguments are incorrect then stop program
   if(argc != 2) {
-    cout << "Machine code file not valid.\n";
+    std::cout << "Machine code file not valid.\n";
     return 1;
   }
 
   //get the instructions from the machine code file
-  string inputFileName(argv[1]);
+  std::string inputFileName(argv[1]);
   Instructions instructions(inputFileName);
 
   //create processor object and start processing
@@ -19,6 +24,6 @@ int main(int argc, char *argv[]) {
     Processor processor(instructions);
     processor.start();
   }
-  cout << "\n";
+  std::cout << "\n";
   return 0;
 }

@@ -1,12 +1,18 @@
+//===========================
+//include guard
 #ifndef LOAD_BUFFER_H
 #define LOAD_BUFFER_H
 
-#include "memory.h"
-#include "reorder_buffer.h"
+//===========================
+//forward declared dependencies
+class Memory;
+class ReorderBuffer;
 
+//===========================
+//class declaration
 class LoadBuffer {
 
-	  Memory* memory;
+    Memory* memory;
     ReorderBuffer* reorderBuffer;
 
     //write buffer to hold inflight write operation info

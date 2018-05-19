@@ -14,9 +14,7 @@ class LoadStoreUnit;
 
 //=================================
 // included dependencies
-#include "constants.h"
 #include "instructions.h"
-
 
 //===========================
 //class declaration

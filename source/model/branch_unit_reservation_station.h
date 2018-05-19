@@ -7,11 +7,7 @@
 //forward declared dependencies
 class RegisterFile;
 class BranchUnit;
-
-//=================================
-// included dependencies
-#include "constants.h"
-#include "instructions.h"
+class Instruction;
 
 //===========================
 //class declaration

@@ -7,10 +7,11 @@
 //forward declared dependencies
 class RegisterFile;
 class Memory;
+class Instruction;
 
 //=================================
 // included dependencies
-#include "instructions.h"
+#include "constants.h"
 
 //===========================
 //class declaration

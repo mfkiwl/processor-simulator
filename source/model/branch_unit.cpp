@@ -1,6 +1,16 @@
+//===========================================
+//included header file containing interface
 #include "branch_unit.h"
-#include "reorder_buffer.h"
+
+//===========================================
+// included dependencies
 #include <iostream>
+
+#include "reorder_buffer.h"
+#include "constants.h"
+
+//===========================================
+//class implementation
 
 BranchUnit::BranchUnit(ReorderBuffer* reorderBuffer) : 
   reorderBuffer(reorderBuffer),

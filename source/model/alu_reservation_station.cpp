@@ -1,6 +1,20 @@
+//===========================================
+//included header file containing interface
 #include "alu_reservation_station.h"
+
+//===========================================
+// included dependencies
+#include <iostream>
+
 #include "register_file.h"
 #include "alu.h"
+#include "instructions.h"
+#include "constants.h"
+
+//===========================================
+//class implementation
+
+using namespace std;
 
 ALUReservationStation::ALUReservationStation(RegisterFile* registerFile, ALU* alu) : 
   registerFile(registerFile),
@@ -96,7 +110,7 @@ void ALUReservationStation::flush() {
 }
 
 void ALUReservationStation::print() {
-  printf("ALU reservation station:\n");
+  cout << "ALU reservation station:\n";
   for(int i = 0; i < size; i++) {
     if(instructions[i].opcode != NOOP) {
       printInstruction(instructions[i]);

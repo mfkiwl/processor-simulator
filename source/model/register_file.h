@@ -5,7 +5,6 @@
 
 //===========================
 //class declaration
-using namespace std;
 class RegisterFile {
 
     int numOfArchitecturalRegisters;

@@ -1,7 +1,18 @@
+//===========================================
+//included header file containing interface
 #include "branch_unit_reservation_station.h"
+
+//===========================================
+// included dependencies
+#include <iostream>
+
 #include "register_file.h"
 #include "branch_unit.h"
-#include <iostream>
+#include "instructions.h"
+#include "constants.h"
+
+//===========================================
+//class implementation
 
 BranchUnitReservationStation::BranchUnitReservationStation(RegisterFile* registerFile, BranchUnit* branchUnit) : 
   registerFile(registerFile),

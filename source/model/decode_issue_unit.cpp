@@ -1,10 +1,20 @@
+//===========================================
+//included header file containing interface
 #include "decode_issue_unit.h"
+
+//===========================================
+// included dependencies
+#include <iostream>
+
 #include "register_file.h"
 #include "reorder_buffer.h"
 #include "alu_reservation_station.h"
 #include "branch_unit_reservation_station.h"
 #include "load_store_unit_reservation_station.h"
-#include <iostream>
+#include "instructions.h"
+
+//===========================================
+//class implementation
 
 DecodeIssueUnit::DecodeIssueUnit(RegisterFile* registerFile, ReorderBuffer* reorderBuffer, ALUReservationStation* aluReservationStation, BranchUnitReservationStation* branchUnitReservationStation, LoadStoreUnitReservationStation* loadStoreUnitReservationStation, int* blockingFlag) :
   registerFile(registerFile),

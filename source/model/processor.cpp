@@ -1,10 +1,16 @@
-#include <stdlib.h>
-#include <iostream>
-#include <math.h>
-#include <fstream>
-#include <string>
-
+//===========================================
+//included header file containing interface
 #include "processor.h"
+
+//===========================================
+// included dependencies
+#include <iostream>
+#include <fstream>
+
+//===========================================
+//class implementation
+
+using namespace std;
 
 Processor::Processor(Instructions instructions) : 
 
@@ -105,6 +111,10 @@ void Processor::fetch() {
   fetchUnit.execute();
 }
 
+void Processor::decodeIssue() {
+  decodeIssueUnit.execute();
+}
+
 void Processor::dispatch() {
   aluReservationStation.execute();
   branchUnitReservationStation.execute();
@@ -140,7 +150,7 @@ void Processor::flushPipeline() {
   flushFlag = 0;
   decodeUnitBlockingFlag = 0;
 
-  printf("FLUSHING PIPELINE!\n");
+  cout << "FLUSHING PIPELINE!\n";
 }
 
 void Processor::printInfo() {

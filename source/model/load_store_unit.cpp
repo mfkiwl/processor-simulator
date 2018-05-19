@@ -1,7 +1,14 @@
+//===========================================
+//included header file containing interface
 #include "load_store_unit.h"
 
+//===========================================
+// included dependencies
 #include "memory.h"
 #include "reorder_buffer.h"
+
+//===========================================
+//class implementation
 
 LoadStoreUnit::LoadStoreUnit(Memory* memory, ReorderBuffer* reorderBuffer) :
   memory(memory),

@@ -1,10 +1,20 @@
+//===========================================
+//included header file containing interface
+#include "reorder_buffer.h"
+
+//===========================================
+// included dependencies
 #include <iostream>
 
-#include "constants.h"
-#include "instructions.h"
 #include "register_file.h"
 #include "memory.h"
-#include "reorder_buffer.h"
+#include "instructions.h"
+#include "constants.h"
+
+//===========================================
+//class implementation
+
+using namespace std;
 
 ReorderBuffer::ReorderBuffer(RegisterFile* registerFile, Memory* memory, int* pc, int* flushFlag, int* runningFlag, int* noOfInstructionsExecuted) : 
   registerFile(registerFile),

@@ -1,8 +1,18 @@
+//===========================================
+//included header file containing interface
 #include "load_store_unit_reservation_station.h"
+
+//===========================================
+// included dependencies
+#include <iostream>
 
 #include "register_file.h"
 #include "reorder_buffer.h"
 #include "load_store_unit.h"
+#include "instructions.h"
+
+//===========================================
+//class implementation
 
 LoadStoreUnitReservationStation::LoadStoreUnitReservationStation(RegisterFile* registerFile, ReorderBuffer* reorderBuffer, LoadStoreUnit* loadStoreUnit) : 
   registerFile(registerFile),
@@ -100,7 +110,7 @@ void LoadStoreUnitReservationStation::flush() {
 }
 
 void LoadStoreUnitReservationStation::print() {
-  printf("Load/Store Unit reservation station:\n");
+  std::cout << "Load/Store Unit reservation station:\n";
   for(int i = 0; i < size; i++) {
     if(instructions[i].opcode != NOOP) {
       printInstruction(instructions[i]);

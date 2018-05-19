@@ -1,3 +1,5 @@
+//===========================
+//include guard
 #ifndef CONSTANTS_H
 #define CONSTANTS_H
 
@@ -24,6 +26,7 @@ enum Opcodes {
   JR,
   HALT
 };
+
 //type in the reorder buffer
 enum Type {
   JUMP,
@@ -31,6 +34,7 @@ enum Type {
   STORE_TO_REGISTER,
   SYSCALL
 };
+
 //index in the reorder buffer
 enum Index {
   TYPE,
@@ -38,6 +42,7 @@ enum Index {
   RESULT,
   STATUS
 };
+
 //status in the reorder buffer
 enum Status {
   ISSUED,

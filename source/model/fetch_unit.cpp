@@ -1,6 +1,15 @@
+//===========================================
+//included header file containing interface
 #include "fetch_unit.h"
-#include "decode_issue_unit.h"
+
+//===========================================
+// included dependencies
 #include <iostream>
+
+#include "decode_issue_unit.h"
+
+//===========================================
+//class implementation
 
 FetchUnit::FetchUnit(Instructions instructions, int* pc, DecodeIssueUnit* decodeIssueUnit) :
   instructions(instructions),

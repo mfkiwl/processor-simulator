@@ -1,7 +1,14 @@
+//===========================================
+//included header file containing interface
 #include "store_buffer.h"
 
+//===========================================
+// included dependencies
 #include "memory.h"
 #include "reorder_buffer.h"
+
+//===========================================
+//class implementation
 
 StoreBuffer::StoreBuffer(Memory* memory, ReorderBuffer* reorderBuffer, int size, int steps) : 
   memory(memory),

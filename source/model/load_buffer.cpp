@@ -1,4 +1,14 @@
+//===========================================
+//included header file containing interface
 #include "load_buffer.h"
+
+//===========================================
+// included dependencies
+#include "memory.h"
+#include "reorder_buffer.h"
+
+//===========================================
+//class implementation
 
 LoadBuffer::LoadBuffer(Memory* memory, ReorderBuffer* reorderBuffer, int size, int steps) : 
   memory(memory),
