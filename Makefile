@@ -29,10 +29,13 @@ OBJ10 = $(B_DIR)/branch_unit_reservation_station.o
 OBJ11 = $(B_DIR)/decode_issue_unit.o
 OBJ12 = $(B_DIR)/fetch_unit.o
 OBJ13 = $(B_DIR)/load_buffer.o
+OBJ14 = $(B_DIR)/load_store_unit.o
+OBJ15 = $(B_DIR)/load_store_unit_reservation_station.o
+OBJ16 = $(B_DIR)/store_buffer.o
 
 #Build rule to compile the whole project
-Build : $(OBJ1) $(OBJ2) $(OBJ3) $(OBJ4) $(OBJ5) $(OBJ6) $(OBJ7) $(OBJ8) $(OBJ9) $(OBJ10) $(OBJ11) $(OBJ12) $(OBJ13)
-	$(CC) $(CFLAGS) $(LINKER_FLAGS) -o $(B_DIR)/$(EXEC) $(OBJ1) $(OBJ2) $(OBJ3) $(OBJ4) $(OBJ5) $(OBJ6) $(OBJ7) $(OBJ8) $(OBJ9) $(OBJ10) $(OBJ11) $(OBJ12) $(OBJ13)
+Build : $(OBJ1) $(OBJ2) $(OBJ3) $(OBJ4) $(OBJ5) $(OBJ6) $(OBJ7) $(OBJ8) $(OBJ9) $(OBJ10) $(OBJ11) $(OBJ12) $(OBJ13) $(OBJ14) $(OBJ15) $(OBJ16)
+	$(CC) $(CFLAGS) $(LINKER_FLAGS) -o $(B_DIR)/$(EXEC) $(OBJ1) $(OBJ2) $(OBJ3) $(OBJ4) $(OBJ5) $(OBJ6) $(OBJ7) $(OBJ8) $(OBJ9) $(OBJ10) $(OBJ11) $(OBJ12) $(OBJ13) $(OBJ14) $(OBJ15) $(OBJ16)
 
 $(OBJ1) : $(S_DIR)/main.cpp
 	$(CC) $(CFLAGS) $(LINKER_FLAGS) -o $(OBJ1) -c $(S_DIR)/main.cpp
@@ -72,6 +75,16 @@ $(OBJ12) : $(S_DIR)/fetch_unit.cpp $(S_DIR)/fetch_unit.h
 
 $(OBJ13) : $(S_DIR)/load_buffer.cpp $(S_DIR)/load_buffer.h
 	$(CC) $(CFLAGS) $(LINKER_FLAGS) -o $(OBJ13) -c $(S_DIR)/load_buffer.cpp
+
+$(OBJ14) : $(S_DIR)/load_store_unit.cpp $(S_DIR)/load_store_unit.h
+	$(CC) $(CFLAGS) $(LINKER_FLAGS) -o $(OBJ14) -c $(S_DIR)/load_store_unit.cpp
+
+$(OBJ15) : $(S_DIR)/load_store_unit_reservation_station.cpp $(S_DIR)/load_store_unit_reservation_station.h
+	$(CC) $(CFLAGS) $(LINKER_FLAGS) -o $(OBJ15) -c $(S_DIR)/load_store_unit_reservation_station.cpp
+
+$(OBJ16) : $(S_DIR)/store_buffer.cpp $(S_DIR)/store_buffer.h
+	$(CC) $(CFLAGS) $(LINKER_FLAGS) -o $(OBJ16) -c $(S_DIR)/store_buffer.cpp
+
 
 #P_DIR specifes the directory where the programs are located
 P_DIR = programs
