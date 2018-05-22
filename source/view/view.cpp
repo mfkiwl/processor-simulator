@@ -1,11 +1,20 @@
 /*This source code copyrighted by Lazy Foo' Productions (2004-2015)
 and may not be redistributed without written permission.*/
 
+//===========================================
+//included header file containing interface
+#include "view.h"
+
 //Using SDL, SDL_image, standard IO, and strings
+//===========================================
+// included dependencies
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <stdio.h>
 #include <string>
+
+//===========================================
+// implementation
 
 //Screen dimension constants
 const int SCREEN_WIDTH = 640;
@@ -146,7 +155,7 @@ SDL_Texture* loadTexture( std::string path )
 	return newTexture;
 }
 
-int main( int argc, char* args[] )
+int viewmain(int argc, char *argv[])
 {
 	//Start up SDL and create window
 	if( !init() )

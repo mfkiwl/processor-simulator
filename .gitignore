@@ -1,4 +1,6 @@
-#exclude everything in the bin folder
+#exclude everything in the build folder
 build/*
-#except for this file, so that the bin folder is added to the git repository
+#except for these files, so that the build folder is added to the git repository
 !build/.gitkeep
+!build/model/.gitkeep
+!build/view/.gitkeep

@@ -73,4 +73,6 @@ class Processor {
     void printInfo();
 };
 
+int processorMain(int argc, char *argv[]);
+
 #endif
