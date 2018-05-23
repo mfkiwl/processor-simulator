@@ -49,11 +49,11 @@ SOURCES += $(SOURCE_DIR)/main.cpp
 
 # OBJECTS contains a list of the object files that need to created
 # Add all of the model object files that we need to the OBJECTS macro
-OBJECTS = $(addprefix $(BUILD_DIR)/model/, $(addsuffix .o, $(MODEL_MODULES)))
+OBJECTS = $(addprefix $(BUILD_DIR)/objects/model/, $(addsuffix .o, $(MODEL_MODULES)))
 # ADD all of the view object ilfes that we need to the OBJECTS macro
-OBJECTS += $(BUILD_DIR)/view/view.o
+OBJECTS += $(BUILD_DIR)/objects/view/view.o
 # Add the main object to the OBJECTS macro
-OBJECTS += $(BUILD_DIR)/main.o
+OBJECTS += $(BUILD_DIR)/objects/main.o
 
 # PROGRAM_FILE species the program that our processor will run
 PROGRAM_FILE = programs/kernels/vector_addition.mac
@@ -68,23 +68,26 @@ all : Build
 Build : $(OBJECTS) $(SOURCES)
 	$(CC) $(CFLAGS) $(OBJECTS) $(LINKER_FLAGS) -o $(BUILD_DIR)/$(EXECUTABLE)
 
-# rule for the main object file
-$(BUILD_DIR)/main.o : $(SOURCE_DIR)/main.cpp
-	$(CC) $(CFLAGS) -c $(SOURCE_DIR)/main.cpp $(LINKER_FLAGS) -o $(BUILD_DIR)/main.o
+# $< is the first prerequisite (%.cpp)
+# $@ is the target (%.o)
 
-# using pattern rules for the remaining objects files
-# $< is the first prerequisite
-# $@ is the target
-$(BUILD_DIR)/%.o : $(SOURCE_DIR)/%.cpp $(SOURCE_DIR)/%.h
+# rule for the main object file
+$(BUILD_DIR)/objects/main.o : $(SOURCE_DIR)/main.cpp
 	$(CC) $(CFLAGS) -c $< $(LINKER_FLAGS) -o $@
 
+# pattern rule for the remaining objects files
+$(BUILD_DIR)/objects/%.o : $(SOURCE_DIR)/%.cpp $(SOURCE_DIR)/%.h
+	$(CC) $(CFLAGS) -c $< $(LINKER_FLAGS) -o $@
 
-# run the processor with the given assembly program
+# rule for running the processor with the given assembly program
 run: $(BUILD_DIR)/$(EXECUTABLE) $(PROGRAM_FILE)
 	$(BUILD_DIR)/$(EXECUTABLE) $(PROGRAM_FILE)
 
+# rule for compiling the assembler
+assembler : $(SOURCE_DIR)/assembler.cpp
+	$(CC) $(CFLAGS) $(SOURCE_DIR)/assembler.cpp -o $(BUILD_DIR)/assembler
 
-# delete the executable and all of the object files
-# (specific on the files that we are deleting for safety)
+# rule for deleting all of the object files and the executables in the build directory
+# (trying to be specific on the files that are deleted for safety)
 clean :
-	rm build/*.o build/model/*.o build/view/*.o build/processor
+	rm build/objects/*.o build/objects/model/*.o build/objects/view/*.o build/processor build/assembler

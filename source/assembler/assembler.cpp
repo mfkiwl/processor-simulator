@@ -1,10 +1,16 @@
+//===========================================
+// included dependencies
 #include <iostream>
 #include <fstream>
 #include <string>	
 #include <vector>
-#include "../source/constants.h"
-using namespace std;
+#include "model/constants.h"
 
+
+//===========================================
+// Implementation
+
+using namespace std;
 
 int printOpcode(string op, ofstream *newfile) {
   int output = -1;
@@ -75,7 +81,7 @@ int printOpcode(string op, ofstream *newfile) {
 
 int findLabelIndex(vector<string> labels, string label) {
   int index = -1;
-  for(int i = 0; i < labels.size(); i++) {
+  for(int i = 0; i < (int) labels.size(); i++) {
     if(labels.at(i) == label) {
       index = i;
       break;
@@ -87,7 +93,7 @@ int findLabelIndex(vector<string> labels, string label) {
 void printOperands(string operands, ofstream *newfile, vector<string> labels, vector<int> labelAddresses) {
   int pos = operands.find(" ");
   string operand;
-  while(pos != string::npos) {
+  while(pos != (int) string::npos) {
     operand = operands.substr(0,pos);
     //Check if the operand is a label, if so replace it with the corresponding address
     int labelIndex = findLabelIndex(labels, operand);
@@ -130,7 +136,7 @@ string createOutputFileName(string inputFileName) {
 
 int checkValidInputFileName(string inputFileName) {
   int pos = inputFileName.find(".");
-  if(pos == string::npos) {
+  if(pos == (int) string::npos) {
     return 0;
   }
   string extension = inputFileName.substr(pos, inputFileName.size());
@@ -182,7 +188,7 @@ int main(int argc, char *argv[]) {
       string opstr = line.substr(0, delimiterPos);
 
       //check if is infact a label
-      if(delimiterPos == string::npos && opstr.at(opstr.size() - 1) == ':') {
+      if(delimiterPos == (int) string::npos && opstr.at(opstr.size() - 1) == ':') {
         //store the label and its corresponding instruction address
         string label = opstr.substr(0,opstr.size()-1);
         labels.push_back(label);

@@ -1,5 +1,5 @@
 //===========================================
-//included header file containing interface
+// included header file containing interface
 #include "alu.h"
 
 //===========================================
@@ -11,7 +11,7 @@
 #include "constants.h"
 
 //===========================================
-//class implementation
+// class implementation
 
 ALU::ALU(RegisterFile* registerFile, ReorderBuffer* reorderBuffer) : 
   registerFile(registerFile),
