@@ -62,6 +62,7 @@ PROGRAM_FILE = programs/kernels/vector_addition.mac
 # ======================================================
 # Rules
 
+# Default rule
 all : Build
 
 # Build rule to compile the whole project
@@ -73,7 +74,7 @@ Build : $(OBJECTS) $(SOURCES)
 
 # rule for the main object file
 $(BUILD_DIR)/objects/main.o : $(SOURCE_DIR)/main.cpp
-	$(CC) $(CFLAGS) -c $< $(LINKER_FLAGS) -o $@
+	$(CC) $(CFLAGS) -c $(SOURCE_DIR)/main.cpp $(LINKER_FLAGS) -o $(BUILD_DIR)/objects/main.o
 
 # pattern rule for the remaining objects files
 $(BUILD_DIR)/objects/%.o : $(SOURCE_DIR)/%.cpp $(SOURCE_DIR)/%.h
