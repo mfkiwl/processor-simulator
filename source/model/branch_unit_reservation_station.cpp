@@ -4,7 +4,7 @@
 
 //===========================================
 // included dependencies
-#include <iostream>
+#include <stdio.h>
 
 #include "register_file.h"
 #include "branch_unit.h"
@@ -114,7 +114,7 @@ void BranchUnitReservationStation::flush() {
 }
 
 void BranchUnitReservationStation::print() {
-  std::cout << "Branch Unit reservation station::\n";
+  printf("Branch Unit reservation station::\n");
   for(int i = 0; i < size; i++) {
     if(instructions[i].opcode != NOOP) {
       printInstruction(instructions[i]);

@@ -4,8 +4,6 @@
 
 //===========================================
 // included dependencies
-#include <iostream>
-
 #include "register_file.h"
 #include "reorder_buffer.h"
 #include "constants.h"

@@ -4,7 +4,7 @@
 
 //===========================================
 // included dependencies
-#include <iostream>
+#include <stdio.h>
 
 #include "register_file.h"
 #include "memory.h"
@@ -82,7 +82,7 @@ void ReorderBuffer::retire() {
       *runningFlag = 0;
     }
     //print the instruction that we are retiring
-    cout << endl << "Retiring Instruction: ";
+    printf("Retiring Instruction: ");
     printInstruction(instructions[tail]);
     //reset the reorder buffer entry
     resetEntry(tail);
@@ -130,15 +130,15 @@ void ReorderBuffer::flush() {
 }
 
 void ReorderBuffer::printTail() {
-  cout << "REORDER BUFFER TAIL:";
+  printf("REORDER BUFFER TAIL:");
   printInstruction(instructions[tail]);
 }
 
 void ReorderBuffer::print() {
-  cout << "Reorder Buffer:" << endl;
+  printf("Reorder Buffer:\n");
   for(int i = tail; i < head; i++) {
     if(buffer[i][STATUS] == FINISHED) {
-      cout << "FINISHED : ";
+      printf("FINISHED : ");
     }
     printInstruction(instructions[i]);
   }

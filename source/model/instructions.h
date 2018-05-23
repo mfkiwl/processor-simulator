@@ -5,7 +5,7 @@
 
 //=================================
 //included dependencies
-#include <iostream>
+#include <string>
 
 //=================================
 //interface

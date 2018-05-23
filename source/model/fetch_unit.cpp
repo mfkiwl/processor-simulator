@@ -4,7 +4,7 @@
 
 //===========================================
 // included dependencies
-#include <iostream>
+#include <stdio.h>
 
 #include "decode_issue_unit.h"
 
@@ -32,7 +32,7 @@ void FetchUnit::execute() {
 }
 
 void FetchUnit::print() {
-  std::cout << "FETCHED INSTRUCTION: ";
+  printf("FETCHED INSTRUCTION: ");
   printInstruction(currentInstruction);
 }
 

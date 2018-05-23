@@ -4,7 +4,7 @@
 
 //===========================================
 // included dependencies
-#include <iostream>
+#include <stdio.h>
 
 //===========================================
 //class implementation
@@ -18,22 +18,22 @@ Memory::Memory(int size) : size(size) {
 
 int Memory::loadFromMemory(int address) {
   if(address < 0 || address > size - 1) {
-    std::cout << "Register index " << address << " is out of bounds.\n";
+    printf("Register index %d is out of bounds.\n", address);
   }
   return memory[address];
 }
 
 void Memory::storeInMemory(int address, int value) {
   if(address < 0 || address > size - 1) {
-    std::cout << "Register index " << address << " is out of bounds.\n";
+    printf("Register index %d is out of bounds.\n", address);
   }
   memory[address] = value;
 }
 
 void Memory::print() {
-  std::cout << "Memory:" << std::endl;
+  printf("Memory:\n");
   for(int i = 0; i < size; i++) {
-    std::cout << memory[i] << " ";
+    printf("%d ", memory[i]);
   }
-  std::cout << std::endl;
+  printf("\n");
 }

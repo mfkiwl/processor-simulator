@@ -4,7 +4,7 @@
 
 //===========================================
 // included dependencies
-#include <iostream>
+#include <stdio.h>
 
 #include "register_file.h"
 #include "alu.h"
@@ -110,7 +110,7 @@ void ALUReservationStation::flush() {
 }
 
 void ALUReservationStation::print() {
-  cout << "ALU reservation station:\n";
+  printf("ALU reservation station:\n");
   for(int i = 0; i < size; i++) {
     if(instructions[i].opcode != NOOP) {
       printInstruction(instructions[i]);

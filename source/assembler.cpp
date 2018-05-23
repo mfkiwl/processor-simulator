@@ -1,6 +1,6 @@
 //===========================================
 // included dependencies
-#include <iostream>
+#include <stdio.h>
 #include <fstream>
 #include <string>	
 #include <vector>
@@ -147,25 +147,25 @@ int checkValidInputFileName(string inputFileName) {
 }
 
 int main(int argc, char *argv[]) {
-  cout << "\n";
+  printf("\n");
 
   //make sure an argument is given
   if(argc != 2) {
-    cout << "incorrect arguments\n";
+    printf("incorrect arguments\n");
     return 1;
   }
 
   //get the input file name
   string inputFileName(argv[1]);
   if(checkValidInputFileName(inputFileName) == 0) {
-    cout << "Invalid assembly file";
+    printf("Invalid assembly file");
     return 1;
   }
-  cout << "Input assembly file: " + inputFileName + '\n';
+  printf("Input assembly file: %s\n", inputFileName.c_str());
 
   //create the new file name
   string outputFileName = createOutputFileName(inputFileName);
-  cout << "Output machine file: " + outputFileName + "\n";
+  printf("Output machine file: %s\n", outputFileName.c_str());
 
   //the input and output files
   ifstream inputFile(inputFileName.c_str());
@@ -216,12 +216,12 @@ int main(int argc, char *argv[]) {
     outputFile.close();
 
     //print success message
-    cout << "Assembler was successful.\n";
+    printf("Assembler was successful.\n");
   }
   else {
     //print failure message
-    cout << "Unable to open file\n";
+    printf("Unable to open file\n");
   }
-  cout << "\n";
+  printf("\n");
   return 0;
 }

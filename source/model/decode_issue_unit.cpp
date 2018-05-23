@@ -4,7 +4,7 @@
 
 //===========================================
 // included dependencies
-#include <iostream>
+#include <stdio.h>
 
 #include "register_file.h"
 #include "reorder_buffer.h"
@@ -173,7 +173,7 @@ void DecodeIssueUnit::pipe() {
 }
 
 void DecodeIssueUnit::print() {
-  std::cout << "DECODE ISSUE UNIT:";
+  printf("DECODE ISSUE UNIT:");
   printInstruction(currentInstruction);
 }
 

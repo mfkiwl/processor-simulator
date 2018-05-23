@@ -4,7 +4,7 @@
 
 //===========================================
 // included dependencies
-#include <iostream>
+#include <stdio.h>
 #include <math.h>
 #include <stdlib.h>
 
@@ -32,28 +32,28 @@ int RegisterFile::getNumOfArchitecturalRegisters() {
 
 int RegisterFile::getRegisterValue(int i) {
   if(i < 0 || i >= numOfArchitecturalRegisters) {
-    cout << "Register index " << i << " is out of range.\n";
+    printf("Register index %d is out of range.\n", i);
   }
   return registers[i];
 }
 
 void RegisterFile::setRegisterValue(int i, int val) {
   if(i < 0 || i >= numOfArchitecturalRegisters) {
-    cout << "Register index " << i << " is out of range.\n";
+    printf("Register index %d is out of range.\n", i);
   }
   registers[i] = val;
 }
 
 int RegisterFile::getScoreBoardValue(int i ) {
   if(i < 0 || i >= numOfArchitecturalRegisters) {
-    cout << "ScoreBoard index " << i << " is out of range.\n";
+    printf("ScoreBoard index %d is out of range.\n", i);
   }
   return scoreBoard[i];
 }
 
 void RegisterFile::setScoreBoardValue(int i, int val) {
   if(i < 0 || i >= numOfArchitecturalRegisters) {
-    cout << "ScoreBoard index " << i << " is our of range.\n";
+    printf("ScoreBoard index %d is our of range.\n", i);
   }
   scoreBoard[i] = val;
 }
@@ -79,41 +79,41 @@ int intLength(int n) {
 void RegisterFile::printRegisters() {
 
   //print register names
-  cout << "Registers: ";
+  printf("Registers: ");
   int lengths[numOfArchitecturalRegisters];
   for(int i = 0; i < numOfArchitecturalRegisters; i++) {
     lengths[i] = intLength(registers[i]);
   }
   for(int i = 0; i < numOfArchitecturalRegisters; i++) {
-    cout << "R" << i << " ";
+    printf("R%d ", i);
     if(lengths[i] > 2) {
       for(int j = 2; j < lengths[i]; j++) {
-        cout << " ";
+        printf( " ");
       }
     }
   }
-  cout << endl;
+  printf("\n");
 
   //print register values
-  cout << "Values:    ";
+  printf("Values:    ");
   for(int i = 0; i < numOfArchitecturalRegisters; i++) {
     if(lengths[i] == 1) {
-      cout << registers[i] << "  ";
+      printf("%d  ", registers[i]);
     }
     else {
-      cout << registers[i] << " ";
+      printf("%d ", registers[i]);
     }
     if(i >= 10) {
-      cout << " ";
+      printf(" ");
     }
   }
-  cout << endl;
+  printf("\n");
 }
 
 void RegisterFile::printScoreBoard() {
-  cout << "ScoreBoard:" << endl;
+  printf("ScoreBoard:\n");
   for(int i = 0; i < numOfArchitecturalRegisters; i++) {
-    cout << scoreBoard[i] << " ";
+    printf("%d ", scoreBoard[i]);
   }
-  cout << endl;
+  printf("\n");
 }

@@ -4,7 +4,7 @@
 
 //===========================================
 // included dependencies
-#include <iostream>
+#include <stdio.h>
 
 #include "reorder_buffer.h"
 #include "constants.h"
@@ -67,7 +67,7 @@ void BranchUnit::execute() {
         for(int i = 0; i < 3; i++) {
           operands[i] = 0;
         }
-        std::cout << "\n\nEXECUTED BRANCH UNIT\n\n\n";
+        printf("\n\nEXECUTED BRANCH UNIT\n\n\n");
       }
     }
 

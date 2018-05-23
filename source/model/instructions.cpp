@@ -4,7 +4,7 @@
 
 //===========================================
 // included dependencies
-#include <iostream>
+#include <stdio.h>
 #include <stdlib.h>
 #include <fstream>
 
@@ -44,7 +44,7 @@ void Instructions::loadNumOfInstructions(std::string inputFileName) {
     numOfInstructions = i;
   }
   else {
-    cout << "Failed to read file.\n";
+    printf("Failed to read file.\n");
     numOfInstructions = -1;
   }
 }
@@ -54,7 +54,7 @@ void Instructions::loadInstructions(std::string inputFileName) {
   std::ifstream inputFile(inputFileName.c_str());
   //if file is open then get the instruction information from each line
   if(inputFile.is_open()) {
-    cout << "Reading instructions from " << inputFileName.c_str() << "\n";
+    printf("Reading instructions from %s\n", inputFileName.c_str());
     //allocating memory to array to store the instructions
     instructions = new Instruction[numOfInstructions];
 
@@ -91,7 +91,7 @@ void Instructions::loadInstructions(std::string inputFileName) {
     }
   }
   else {
-    cout << "Failed to read file.\n";
+    printf("Failed to read file.\n");
     //if the file has not been opened then return a null pointer
     instructions = NULL;
   }
@@ -100,67 +100,67 @@ void Instructions::loadInstructions(std::string inputFileName) {
 void printInstruction(Instruction instruction) {
   switch(instruction.opcode) {
     case NOOP:
-      cout << "NOOP" << endl;
+      printf("NOOP\n");
       break;
     case ADD:
-      cout << "ADD R" << instruction.operands[0] << " R" << instruction.operands[1] << " R" << instruction.operands[2] << endl;
+      printf("ADD R%d R%d R%d\n", instruction.operands[0], instruction.operands[1], instruction.operands[2]);
       break;
     case ADDI:
-      cout << "ADDI R" << instruction.operands[0] << " R" << instruction.operands[1] << " " << instruction.operands[2] << endl;
+      printf("ADDI R%d R%d %d\n", instruction.operands[0], instruction.operands[1], instruction.operands[2]);
       break;
     case AND:
-      cout << "AND R" << instruction.operands[0] << " R" << instruction.operands[1] << " R" << instruction.operands[2] << endl;
+      printf("AND R%d R%d R%d\n", instruction.operands[0], instruction.operands[1], instruction.operands[2]);
       break;
     case MULT:
-      cout << "MULT R" << instruction.operands[0] << " R" << instruction.operands[1] << " R" << instruction.operands[2] << endl;
+      printf("MULT R%d R%d R%d\n", instruction.operands[0], instruction.operands[1], instruction.operands[2]);
       break;
     case OR:
-      cout << "OR R" << instruction.operands[0] << " R" << instruction.operands[1] << " R" << instruction.operands[2] << endl;
+      printf("OR R%d R%d R%d\n", instruction.operands[0], instruction.operands[1], instruction.operands[2]);
       break;
     case SUB:
-      cout << "SUB R" << instruction.operands[0] << " R" << instruction.operands[1] << " R" << instruction.operands[2] << endl;
+      printf("SUB R%d R%d R%d\n", instruction.operands[0], instruction.operands[1], instruction.operands[2]);
       break;
     case LW:
-      cout << "LW R" << instruction.operands[0] << " " << instruction.operands[1] << endl;
+      printf("LW R%d %d\n", instruction.operands[0], instruction.operands[1]);
       break;
     case LWR:
-      cout << "LWR R" << instruction.operands[0] << " R" << instruction.operands[1] << endl;
+      printf("LWR R%d R%d", instruction.operands[0], instruction.operands[1]);
       break;
     case SW:
-      cout << "SW R" << instruction.operands[0] << " " << instruction.operands[1] << endl;
+      printf("SW R%d %d\n", instruction.operands[0], instruction.operands[1]);
       break;
     case SWR:
-      cout << "SWR R" << instruction.operands[0] << " R" << instruction.operands[1] << endl;
+      printf("SWR R%d R%d\n", instruction.operands[0], instruction.operands[1]);
       break;
     case BEQ:
-      cout << "BEQ R" << instruction.operands[0] << " R" << instruction.operands[1] << " " << instruction.operands[2] << endl;
+      printf("BEQ R%d R%d %d\n", instruction.operands[0], instruction.operands[1], instruction.operands[2]);
       break;
     case BGEZ:
-      cout << "BGEZ R" << instruction.operands[0] << " " << instruction.operands[1] << endl;
+      printf("BGEZ R%d %d\n", instruction.operands[0], instruction.operands[1]);
       break;
     case BGTZ:
-      cout << "BGTZ R" << instruction.operands[0] << " " << instruction.operands[1] << endl;
+      printf("BGTZ R%d %d\n", instruction.operands[0], instruction.operands[1]);
       break;
     case BLEZ:
-      cout << "BLEZ R" << instruction.operands[0] << " " << instruction.operands[1] << endl;
-       break;
+      printf("BLEZ R%d %d\n", instruction.operands[0], instruction.operands[1]);
+      break;
     case BLTZ:
-      cout << "BLTZ R" << instruction.operands[0] << " " << instruction.operands[1] << endl;
+      printf("BLTZ R%d %d\n", instruction.operands[0], instruction.operands[1]);
       break;
     case BNE:
-      cout << "BNE R" << instruction.operands[0] << " R" << instruction.operands[1] << " " << instruction.operands[2] << endl;
+      printf("BNE R%d R%d %d\n", instruction.operands[0], instruction.operands[1], instruction.operands[2]);
       break;
     case J:
-      cout << "J " << instruction.operands[0] << endl;
+      printf("J %d\n", instruction.operands[0]);
       break;
     case JR:
-      cout << "JR R" << instruction.operands[0] << endl;
+      printf("JR R%d\n", instruction.operands[0]);
       break;
     case HALT:
-      cout << "HALT" << endl;
+      printf("HALT\n");
       break;
     default:
-      cout << "\n";
+      printf("\n");
       break;
   }
 }

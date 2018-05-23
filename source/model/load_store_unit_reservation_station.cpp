@@ -4,7 +4,7 @@
 
 //===========================================
 // included dependencies
-#include <iostream>
+#include <stdio.h>
 
 #include "register_file.h"
 #include "reorder_buffer.h"
@@ -110,7 +110,7 @@ void LoadStoreUnitReservationStation::flush() {
 }
 
 void LoadStoreUnitReservationStation::print() {
-  std::cout << "Load/Store Unit reservation station:\n";
+  printf("Load/Store Unit reservation station:\n");
   for(int i = 0; i < size; i++) {
     if(instructions[i].opcode != NOOP) {
       printInstruction(instructions[i]);

@@ -4,7 +4,8 @@
 
 //===========================================
 // included dependencies
-#include <iostream>
+#include <stdio.h>
+#include <string>
 #include <fstream>
 
 //===========================================
@@ -49,7 +50,7 @@ Processor::Processor(Instructions instructions) :
 void Processor::start() {
 
   char str[3];
-  cout << "Keep pressing ENTER to step through the program\n";
+  printf("Keep pressing ENTER to step through the program\n");
 
   printInfo();
 
@@ -104,7 +105,7 @@ void Processor::start() {
     printInfo();
   }
 
-  cout << endl << "PROGRAM FINISHED" << endl;
+  printf("PROGRAM FINISHED\n");
 }
 
 void Processor::fetch() {
@@ -150,15 +151,15 @@ void Processor::flushPipeline() {
   flushFlag = 0;
   decodeUnitBlockingFlag = 0;
 
-  cout << "FLUSHING PIPELINE!\n";
+  printf("FLUSHING PIPELINE!\n");
 }
 
 void Processor::printInfo() {
 
-  cout << "______________________________________" << endl << endl;
+  printf("______________________________________\n\n");
 
-  cout << "Number of clock cycles: " << noOfClockCycles << endl;
-  cout << "Number of instructions executed: " << noOfInstructionsExecuted << endl;
+  printf("Number of clock cycles: %d\n", noOfClockCycles);
+  printf("Number of instructions executed: %d\n", noOfInstructionsExecuted);
   float instructionsPerCycle;
   if(noOfClockCycles == 0) {
     instructionsPerCycle = 0;
@@ -166,26 +167,26 @@ void Processor::printInfo() {
   else {
     instructionsPerCycle = (float) noOfInstructionsExecuted / (float) noOfClockCycles;
   }
-  cout << "Instruction per cycle: " << instructionsPerCycle << endl;
-  cout << endl;
-  cout << "PC: " << pc << endl;
+  printf("Instruction per cycle: %.2f\n", instructionsPerCycle);
+  printf("\n");
+  printf("PC: %d\n", pc);
   registerFile.printRegisters();
-  cout << endl;
+  printf("\n");
   aluReservationStation.print();
-  cout << endl;
+  printf("\n");
   branchUnitReservationStation.print();
-  cout << endl;
+  printf("\n");
   loadStoreUnitReservationStation.print();
-  cout << endl;
+  printf("\n");
   reorderBuffer.print();
 }
 
 int processorMain(int argc, char *argv[]) {
-  std::cout << "\n";
+  printf("\n");
 
   //If command line arguments are incorrect then stop program
   if(argc != 2) {
-    std::cout << "Machine code file not valid.\n";
+    printf("Machine code file not valid.\n");
     return 1;
   }
 
@@ -198,6 +199,6 @@ int processorMain(int argc, char *argv[]) {
     Processor processor(instructions);
     processor.start();
   }
-  std::cout << "\n";
+  printf("\n");
   return 0;
 }
