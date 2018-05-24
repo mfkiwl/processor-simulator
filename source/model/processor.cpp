@@ -6,7 +6,6 @@
 // included dependencies
 #include <stdio.h>
 #include <string>
-#include <fstream>
 
 //===========================================
 //class implementation
@@ -47,7 +46,51 @@ Processor::Processor(Instructions instructions) :
   loadStoreUnitReservationStation(&registerFile, &reorderBuffer, &loadStoreUnit)
 {}
 
-void Processor::start() {
+void Processor::cycle() {
+  //writeback the results
+  commit();
+
+  //check if we should flush the pipeline
+  if(flushFlag == 1) {
+    flushPipeline();
+  }
+
+  //execute the instruction
+  execute();
+
+  //dispatch instructions from the reservation stations
+  dispatch();
+
+  //decode the instruction
+  decodeIssue();
+
+  //if the pipeline is not being blocked
+  if(!decodeUnitBlockingFlag) {
+    //fetch the next instruction
+    fetch();
+    //propogate outputs of the decode/issue unit and the fetch unit through pipeline
+    decodeIssueUnit.pipe();
+    fetchUnit.pipe();
+  }
+
+  //propogate the outputs of the reservation stations through the pipeline
+  alu.pipe();
+  branchUnit.pipe();
+  loadStoreUnit.pipe();
+
+  //propogate the outputs of the reservation stations through the pipeline
+  aluReservationStation.pipe();
+  branchUnitReservationStation.pipe();
+  loadStoreUnitReservationStation.pipe();
+
+  //update info
+  noOfClockCycles++;
+
+  //print register info
+  printInfo();
+}
+
+void Processor::run() {
 
   char str[3];
   printf("Keep pressing ENTER to step through the program\n");
@@ -61,48 +104,9 @@ void Processor::start() {
     if(str[0] != 'e') {
       fgets(str, 2, stdin);
     }
-
-    //writeback the results
-    commit();
-
-    //check if we should flush the pipeline
-    if(flushFlag == 1) {
-      flushPipeline();
-    }
-
-    //execute the instruction
-    execute();
-
-    //dispatch instructions from the reservation stations
-    dispatch();
-
-    //decode the instruction
-    decodeIssue();
-
-    //if the pipeline is not being blocked
-    if(!decodeUnitBlockingFlag) {
-      //fetch the next instruction
-      fetch();
-      //propogate outputs of the decode/issue unit and the fetch unit through pipeline
-      decodeIssueUnit.pipe();
-      fetchUnit.pipe();
-    }
-
-    //propogate the outputs of the reservation stations through the pipeline
-    alu.pipe();
-    branchUnit.pipe();
-    loadStoreUnit.pipe();
-
-    //propogate the outputs of the reservation stations through the pipeline
-    aluReservationStation.pipe();
-    branchUnitReservationStation.pipe();
-    loadStoreUnitReservationStation.pipe();
-
-    //update info
-    noOfClockCycles++;
-
-    //print register info
-    printInfo();
+    
+    //perform one clock cycle
+    cycle();
   }
 
   printf("PROGRAM FINISHED\n");
@@ -181,24 +185,6 @@ void Processor::printInfo() {
   reorderBuffer.print();
 }
 
-int processorMain(int argc, char *argv[]) {
-  printf("\n");
-
-  //If command line arguments are incorrect then stop program
-  if(argc != 2) {
-    printf("Machine code file not valid.\n");
-    return 1;
-  }
-
-  //get the instructions from the machine code file
-  std::string inputFileName(argv[1]);
-  Instructions instructions(inputFileName);
-
-  //create processor object and start processing
-  if(instructions.getNumOfInstructions() != -1 && instructions.getInstructions() != NULL) {
-    Processor processor(instructions);
-    processor.start();
-  }
-  printf("\n");
-  return 0;
+int Processor::getRunningFlag() {
+  return runningFlag;
 }

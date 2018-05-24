@@ -56,7 +56,9 @@ class Processor {
   public:
     Processor(Instructions instructions);
 
-    void start();
+    void cycle();
+
+    void run();
 
     void fetch();
 
@@ -71,8 +73,8 @@ class Processor {
     void flushPipeline();
 
     void printInfo();
-};
 
-int processorMain(int argc, char *argv[]);
+    int getRunningFlag();
+};
 
 #endif

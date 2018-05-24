@@ -43,6 +43,8 @@ store_buffer
 SOURCES = $(addprefix $(SOURCE_DIR)/model/, $(addsuffix .cpp, $(MODEL_MODULES)))
 # Add all of the view files to the SOURCES macro
 SOURCES += $(SOURCE_DIR)/view/view.cpp
+# Add all of the controller files to the SOURCES macro
+SOURCES += $(SOURCE_DIR)/controller.cpp
 # Add the main file to the SOURCES macro
 SOURCES += $(SOURCE_DIR)/main.cpp
 
@@ -50,8 +52,10 @@ SOURCES += $(SOURCE_DIR)/main.cpp
 # OBJECTS contains a list of the object files that need to created
 # Add all of the model object files that we need to the OBJECTS macro
 OBJECTS = $(addprefix $(BUILD_DIR)/objects/model/, $(addsuffix .o, $(MODEL_MODULES)))
-# ADD all of the view object ilfes that we need to the OBJECTS macro
+# ADD all of the view object files that we need to the OBJECTS macro
 OBJECTS += $(BUILD_DIR)/objects/view/view.o
+# Add all of the controller object files that we need to the OJBECTS macro
+OBJECTS += $(BUILD_DIR)/objects/controller.o
 # Add the main object to the OBJECTS macro
 OBJECTS += $(BUILD_DIR)/objects/main.o
 

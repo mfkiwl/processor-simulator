@@ -5,28 +5,54 @@
 
 //=================================
 //forward declared dependencies
+class SDL_Window;
+class SDL_Renderer;
+class SDL_Texture;
 class SDL_Texture;
 
 //=================================
 // included dependencies
-#include <iostream>
+#include <string>
 
 //=================================
 // interface
 
-//Starts up SDL and creates window
-bool init();
+class View {
+ 
+  public:
+	//Screen dimension constants
+    const int SCREEN_WIDTH;
+    const int SCREEN_HEIGHT;
 
-//Loads media
-bool loadMedia();
+    //The window we'll be rendering to
+    SDL_Window* gWindow;
 
-//Frees media and shuts down SDL
-void close();
+    //The window renderer
+    SDL_Renderer* gRenderer;
 
-//Loads individual image as texture
-SDL_Texture* loadTexture( std::string path );
+    //Current displayed texture
+    SDL_Texture* gTexture;
 
+    //Main loop flag
+	bool quit;
 
-int viewmain(int argc, char *argv[]);
+    //Constructor
+    View();
+
+    //Starts up SDL and creates window
+    bool init();
+
+    //Loads media
+    bool loadMedia();
+
+    //Frees media and shuts down SDL
+    void close();
+
+    //Loads individual image as texture
+    SDL_Texture* loadTexture( std::string path );
+
+    //One frame of the application
+    void frame();
+};
 
 #endif
