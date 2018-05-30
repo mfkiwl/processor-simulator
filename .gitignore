@@ -1,6 +1,6 @@
-#exclude everything in the build folder
-build/*
-#except for these files, so that the build folder is added to the git repository
-!build/.gitkeep
-!build/model/.gitkeep
-!build/view/.gitkeep
+#ignore the executable and the object files
+build/processor
+build/objects/*.o
+build/objects/model/*.o
+build/objects/view/*.o
+
