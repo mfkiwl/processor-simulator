@@ -8,7 +8,7 @@ CC = g++
 CFLAGS = -Wall
 
 # LINKER_FLAGS specifies the libraries we're linking against
-LINKER_FLAGS = -lSDL2 -lSDL2_image
+LINKER_FLAGS = -lSDL2 -lSDL2_image -lSDL2_ttf
 
 # SOURCE_DIR specifies the source directory of the files to compile
 SOURCE_DIR = source
@@ -40,7 +40,8 @@ store_buffer
 
 # VIEW_MODULES contains a list of the "modules" in the view source code
 VIEW_MODULES = \
-view
+view \
+lTexture
 
 # CONTROLLER_MODULES contains a list of the "modules" in the controller source code
 CONTROLLER_MODULES = \

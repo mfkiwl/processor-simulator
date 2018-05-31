@@ -117,7 +117,7 @@ int Controller::start(Instructions instructions) {
     //perform one clock cycle
     model.cycle();
     
-    //draw the frame
+    //render and display the current frame
     view.frame();
   }
 

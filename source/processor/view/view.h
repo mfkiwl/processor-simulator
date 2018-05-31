@@ -10,9 +10,13 @@ class SDL_Renderer;
 class SDL_Texture;
 class SDL_Texture;
 
+
 //=================================
 // included dependencies
 #include <string>
+#include <SDL2/SDL_ttf.h>
+
+#include "lTexture.h"
 
 //=================================
 // interface
@@ -33,6 +37,12 @@ class View {
     //Current displayed texture
     SDL_Texture* gTexture;
 
+    //Globally used font
+    TTF_Font *gFont;
+
+    //Rendered texture
+    LTexture gTextTexture;
+
     //Main loop flag
 	bool quit;
 
@@ -51,8 +61,11 @@ class View {
     //Loads individual image as texture
     SDL_Texture* loadTexture( std::string path );
 
-    //One frame of the application
+    //render the current frame
     void frame();
+
+    //handle events
+    void eventHandler();
 };
 
 #endif
