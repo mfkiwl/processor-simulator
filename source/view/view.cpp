@@ -10,6 +10,7 @@ and may not be redistributed without written permission.*/
 // included dependencies
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <SDL2/SDL_thread.h>
 #include <stdio.h>
 #include <string>
 

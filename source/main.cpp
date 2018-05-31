@@ -13,10 +13,12 @@ int main(int argc, char *argv[]) {
   std::string inputFileName(argv[1]);
   Instructions instructions(inputFileName);
 
-  Controller controller(instructions);
+  //if we successfully loaded instructions then start the program
+  if(instructions.getNumOfInstructions() != -1 && instructions.getInstructions() != NULL) {
+    Controller controller(instructions);
 
-  //main functions
-  controller.processorMain(instructions);
-  controller.viewmain(argc, argv);
-  return 0;
+    //start the controller component
+    controller.start(instructions);
+    return 0;
+  }
 }

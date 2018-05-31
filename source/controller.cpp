@@ -16,35 +16,32 @@ Controller::Controller(Instructions instructions) :
   processor(instructions)
 {}
 
+//the original main function for the processor model
 int Controller::processorMain(Instructions instructions) {
   
-  //create processor object and start processing
-  if(instructions.getNumOfInstructions() != -1 && instructions.getInstructions() != NULL) {
-    
-    //running the processor
-    char str[3];
-    printf("Keep pressing ENTER to step through the program\n");
+  //running the processor
+  char str[3];
+  printf("Keep pressing ENTER to step through the program\n");
 
-    processor.printInfo();
+  processor.printInfo();
 
-    //step through the program
-    while(processor.getRunningFlag()) {
+  //step through the program
+  while(processor.getRunningFlag()) {
 
-      //hold up the program at each clock cycle
-      if(str[0] != 'e') {
-        fgets(str, 2, stdin);
-      }
-    
-      //perform one clock cycle
-      processor.cycle();
+    //hold up the program at each clock cycle
+    if(str[0] != 'e') {
+      fgets(str, 2, stdin);
     }
-
-    printf("PROGRAM FINISHED\n");
+    
+    //perform one clock cycle
+    processor.cycle();
   }
-  printf("\n");
+
+  printf("PROGRAM FINISHED\n");
   return 0;
 }
 
+//the original main function for the view
 int Controller::viewmain(int argc, char *argv[])
 {
 
@@ -60,8 +57,8 @@ int Controller::viewmain(int argc, char *argv[])
 	//Load media
 	if( !view.loadMedia() )
 	{
-        printf( "Failed to load media!\n" );
-        //Free resources and close SDL
+    printf( "Failed to load media!\n" );
+    //Free resources and close SDL
 		view.close();
 		return 1;
 	}
@@ -76,4 +73,58 @@ int Controller::viewmain(int argc, char *argv[])
 	view.close();
 
 	return 0;
+}
+
+
+int Controller::start(Instructions instructions) {
+
+  //Start up SDL and create window
+  if( !view.init() )
+  {
+    printf( "Failed to initialize!\n" );
+    //Free resources and close SDL
+    view.close();
+    return 1;
+  }
+  
+  //Load media
+  if( !view.loadMedia() )
+  {
+    printf( "Failed to load media!\n" );
+    //Free resources and close SDL
+    view.close();
+    return 1;
+  }
+
+  //buffer to hold the user input
+  char str[3];
+
+  printf("Keep pressing ENTER to step through the program\n");
+
+  //display initial information
+  processor.printInfo();
+  view.frame();
+
+  //While application is running
+  while( !view.quit && processor.getRunningFlag())
+  {
+
+    //hold up the program at each clock cycle
+    if(str[0] != 'e') {
+      fgets(str, 2, stdin);
+    }
+    
+    //perform one clock cycle
+    processor.cycle();
+    
+    //draw the frame
+    view.frame();
+  }
+
+  //Free resources and close SDL
+  view.close();
+
+  printf("PROGRAM FINISHED\n");
+
+  return 0;
 }

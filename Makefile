@@ -20,7 +20,7 @@ BUILD_DIR = build
 # EXEC specifies the name of the compiled executable file
 EXECUTABLE = processor
 
-# MODULES contains a list of the "modules" in the source code
+# MODEL_MODULES contains a list of the "modules" in the model source code
 MODEL_MODULES = \
 alu \
 alu_reservation_station \
@@ -38,13 +38,21 @@ register_file \
 reorder_buffer \
 store_buffer
 
+# VIEW_MODULES contains a list of the "modules" in the view source code
+VIEW_MODULES = \
+view
+
+# CONTROLLER_MODULES contains a list of the "modules" in the controller source code
+CONTROLLER_MODULES = \
+controller
+
 # SOURCES contains a list of all of the .cpp source code files
 # Add all of the model files to the SOURCES macro
 SOURCES = $(addprefix $(SOURCE_DIR)/model/, $(addsuffix .cpp, $(MODEL_MODULES)))
 # Add all of the view files to the SOURCES macro
-SOURCES += $(SOURCE_DIR)/view/view.cpp
+SOURCES += $(addprefix $(SOURCE_DIR)/view/, $(addsuffix .cpp, $(VIEW_MODULES)))
 # Add all of the controller files to the SOURCES macro
-SOURCES += $(SOURCE_DIR)/controller.cpp
+SOURCES += $(addprefix $(SOURCE_DIR)/, $(addsuffix .cpp, $(CONTROLLER_MODULES)))
 # Add the main file to the SOURCES macro
 SOURCES += $(SOURCE_DIR)/main.cpp
 
