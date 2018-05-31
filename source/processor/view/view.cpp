@@ -86,7 +86,7 @@ bool View::loadMedia()
 	bool success = true;
 
 	//Load PNG texture
-	gTexture = loadTexture( "source/texture.png" );
+	gTexture = loadTexture( "source/processor/view/texture.png" );
 	if( gTexture == NULL )
 	{
 		printf( "Failed to load texture image!\n" );

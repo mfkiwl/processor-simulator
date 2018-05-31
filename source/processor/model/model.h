@@ -1,7 +1,7 @@
 //===========================
 //include guard
-#ifndef PROCESSOR_H
-#define PROCESSOR_H
+#ifndef MODEL_H
+#define MODEL_H
 
 //=================================
 // included dependencies
@@ -20,7 +20,7 @@
 
 //===========================
 //class declaration
-class Processor {
+class Model {
 
     //information
     int memorySize;
@@ -54,7 +54,7 @@ class Processor {
     LoadStoreUnitReservationStation loadStoreUnitReservationStation;
 
   public:
-    Processor(Instructions instructions);
+    Model(Instructions instructions);
 
     void cycle();
 

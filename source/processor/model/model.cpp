@@ -1,6 +1,6 @@
 //===========================================
 //included header file containing interface
-#include "processor.h"
+#include "model.h"
 
 //===========================================
 // included dependencies
@@ -12,7 +12,7 @@
 
 using namespace std;
 
-Processor::Processor(Instructions instructions) : 
+Model::Model(Instructions instructions) : 
 
   //processor configuration
   memorySize(24),
@@ -46,7 +46,7 @@ Processor::Processor(Instructions instructions) :
   loadStoreUnitReservationStation(&registerFile, &reorderBuffer, &loadStoreUnit)
 {}
 
-void Processor::cycle() {
+void Model::cycle() {
   //writeback the results
   commit();
 
@@ -90,7 +90,7 @@ void Processor::cycle() {
   printInfo();
 }
 
-void Processor::run() {
+void Model::run() {
 
   char str[3];
   printf("Keep pressing ENTER to step through the program\n");
@@ -112,31 +112,31 @@ void Processor::run() {
   printf("PROGRAM FINISHED\n");
 }
 
-void Processor::fetch() {
+void Model::fetch() {
   fetchUnit.execute();
 }
 
-void Processor::decodeIssue() {
+void Model::decodeIssue() {
   decodeIssueUnit.execute();
 }
 
-void Processor::dispatch() {
+void Model::dispatch() {
   aluReservationStation.execute();
   branchUnitReservationStation.execute();
   loadStoreUnitReservationStation.execute();
 }
 
-void Processor::execute() {
+void Model::execute() {
   alu.execute();
   loadStoreUnit.execute();
   branchUnit.execute();
 }
 
-void Processor::commit() {
+void Model::commit() {
   reorderBuffer.retire();
 }
 
-void Processor::flushPipeline() {
+void Model::flushPipeline() {
   //flush decode unit
   decodeIssueUnit.flush();
   //flush reservation stations
@@ -158,7 +158,7 @@ void Processor::flushPipeline() {
   printf("FLUSHING PIPELINE!\n");
 }
 
-void Processor::printInfo() {
+void Model::printInfo() {
 
   printf("______________________________________\n\n");
 
@@ -185,6 +185,6 @@ void Processor::printInfo() {
   reorderBuffer.print();
 }
 
-int Processor::getRunningFlag() {
+int Model::getRunningFlag() {
   return runningFlag;
 }

@@ -33,7 +33,7 @@ load_buffer \
 load_store_unit \
 load_store_unit_reservation_station \
 memory \
-processor \
+model \
 register_file \
 reorder_buffer \
 store_buffer
@@ -48,22 +48,22 @@ controller
 
 # SOURCES contains a list of all of the .cpp source code files
 # Add all of the model files to the SOURCES macro
-SOURCES = $(addprefix $(SOURCE_DIR)/model/, $(addsuffix .cpp, $(MODEL_MODULES)))
+SOURCES = $(addprefix $(SOURCE_DIR)/processor/model/, $(addsuffix .cpp, $(MODEL_MODULES)))
 # Add all of the view files to the SOURCES macro
-SOURCES += $(addprefix $(SOURCE_DIR)/view/, $(addsuffix .cpp, $(VIEW_MODULES)))
+SOURCES += $(addprefix $(SOURCE_DIR)/processor/view/, $(addsuffix .cpp, $(VIEW_MODULES)))
 # Add all of the controller files to the SOURCES macro
-SOURCES += $(addprefix $(SOURCE_DIR)/, $(addsuffix .cpp, $(CONTROLLER_MODULES)))
+SOURCES += $(addprefix $(SOURCE_DIR)/processor/controller/, $(addsuffix .cpp, $(CONTROLLER_MODULES)))
 # Add the main file to the SOURCES macro
-SOURCES += $(SOURCE_DIR)/main.cpp
+SOURCES += $(SOURCE_DIR)/processor/main.cpp
 
 
 # OBJECTS contains a list of the object files that need to created
 # Add all of the model object files that we need to the OBJECTS macro
 OBJECTS = $(addprefix $(BUILD_DIR)/objects/model/, $(addsuffix .o, $(MODEL_MODULES)))
 # ADD all of the view object files that we need to the OBJECTS macro
-OBJECTS += $(BUILD_DIR)/objects/view/view.o
+OBJECTS += $(addprefix $(BUILD_DIR)/objects/view/, $(addsuffix .o, $(VIEW_MODULES)))
 # Add all of the controller object files that we need to the OJBECTS macro
-OBJECTS += $(BUILD_DIR)/objects/controller.o
+OBJECTS += $(addprefix $(BUILD_DIR)/objects/controller/, $(addsuffix .o, $(CONTROLLER_MODULES)))
 # Add the main object to the OBJECTS macro
 OBJECTS += $(BUILD_DIR)/objects/main.o
 
@@ -85,11 +85,11 @@ Build : $(OBJECTS) $(SOURCES)
 # $@ is the target (%.o)
 
 # rule for the main object file
-$(BUILD_DIR)/objects/main.o : $(SOURCE_DIR)/main.cpp
-	$(CC) $(CFLAGS) -c $(SOURCE_DIR)/main.cpp $(LINKER_FLAGS) -o $(BUILD_DIR)/objects/main.o
+$(BUILD_DIR)/objects/main.o : $(SOURCE_DIR)/processor/main.cpp
+	$(CC) $(CFLAGS) -c $(SOURCE_DIR)/processor/main.cpp $(LINKER_FLAGS) -o $(BUILD_DIR)/objects/main.o
 
 # pattern rule for the remaining objects files
-$(BUILD_DIR)/objects/%.o : $(SOURCE_DIR)/%.cpp $(SOURCE_DIR)/%.h
+$(BUILD_DIR)/objects/%.o : $(SOURCE_DIR)/processor/%.cpp $(SOURCE_DIR)/processor/%.h
 	$(CC) $(CFLAGS) -c $< $(LINKER_FLAGS) -o $@
 
 # rule for running the processor with the given assembly program
@@ -97,8 +97,8 @@ run: $(BUILD_DIR)/$(EXECUTABLE) $(PROGRAM_FILE)
 	$(BUILD_DIR)/$(EXECUTABLE) $(PROGRAM_FILE)
 
 # rule for compiling the assembler
-assembler : $(SOURCE_DIR)/assembler.cpp
-	$(CC) $(CFLAGS) $(SOURCE_DIR)/assembler.cpp -o $(BUILD_DIR)/assembler
+assembler : $(SOURCE_DIR)/assembler/assembler.cpp
+	$(CC) $(CFLAGS) $(SOURCE_DIR)/assembler/assembler.cpp -o $(BUILD_DIR)/assembler
 
 # rule for deleting all of the object files and the executables in the build directory
 # (trying to be specific on the files that are deleted for safety)

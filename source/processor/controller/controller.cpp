@@ -6,27 +6,27 @@
 // included dependencies
 #include <stdio.h>
 
-#include "model/processor.h"
-#include "view/view.h"
+#include "../model/model.h"
+#include "../view/view.h"
 
 //===========================================
 // class implementation
 
 Controller::Controller(Instructions instructions) :
-  processor(instructions)
+  model(instructions)
 {}
 
 //the original main function for the processor model
-int Controller::processorMain(Instructions instructions) {
+int Controller::modelMain(Instructions instructions) {
   
   //running the processor
   char str[3];
   printf("Keep pressing ENTER to step through the program\n");
 
-  processor.printInfo();
+  model.printInfo();
 
   //step through the program
-  while(processor.getRunningFlag()) {
+  while(model.getRunningFlag()) {
 
     //hold up the program at each clock cycle
     if(str[0] != 'e') {
@@ -34,7 +34,7 @@ int Controller::processorMain(Instructions instructions) {
     }
     
     //perform one clock cycle
-    processor.cycle();
+    model.cycle();
   }
 
   printf("PROGRAM FINISHED\n");
@@ -102,11 +102,11 @@ int Controller::start(Instructions instructions) {
   printf("Keep pressing ENTER to step through the program\n");
 
   //display initial information
-  processor.printInfo();
+  model.printInfo();
   view.frame();
 
   //While application is running
-  while( !view.quit && processor.getRunningFlag())
+  while( !view.quit && model.getRunningFlag())
   {
 
     //hold up the program at each clock cycle
@@ -115,7 +115,7 @@ int Controller::start(Instructions instructions) {
     }
     
     //perform one clock cycle
-    processor.cycle();
+    model.cycle();
     
     //draw the frame
     view.frame();
