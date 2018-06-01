@@ -30,6 +30,10 @@ class FetchUnit {
     void pipe();
 
     void flush();
+
+    //=============================
+    // getter functions
+    Instruction getCurrentInstruction();
 };
 
 #endif

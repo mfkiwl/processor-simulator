@@ -75,6 +75,26 @@ int Controller::viewmain(int argc, char *argv[])
 	return 0;
 }
 
+//Render the current frame with the appropriate information from the processor
+void Controller::updateView() {
+  //handle events
+  view.eventHandler();
+
+  //Clear screen
+  view.clearScreen();
+
+  //Render texture to screen
+  view.renderImage();
+
+  Instruction currentInstruction = model.getCurrentInstruction();
+
+  //Render current frame
+  view.renderText(std::to_string(currentInstruction.opcode));
+
+  //Update screen
+  view.showScreen();
+}
+
 
 int Controller::start(Instructions instructions) {
 
@@ -104,7 +124,7 @@ int Controller::start(Instructions instructions) {
 
   //display initial information
   model.printInfo();
-  view.frame();
+  updateView();
 
   //While application is running
   while( !view.quit && model.getRunningFlag())
@@ -118,8 +138,8 @@ int Controller::start(Instructions instructions) {
     //perform one clock cycle
     model.cycle();
     
-    //render and display the current frame
-    view.frame();
+    //update the display
+    updateView();
   }
 
   //Free resources and close SDL

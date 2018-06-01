@@ -24,6 +24,8 @@ class Controller {
 
     int viewmain(int argc, char *argv[]);
 
+    void updateView();
+
     int start(Instructions instruction);
 
 };

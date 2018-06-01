@@ -146,7 +146,7 @@ SDL_Texture* View::loadTexture( std::string path )
   return newTexture;
 }
 
-void View::renderText(std::string text, int x, int y) {
+void View::renderText(std::string text) {
   //Render text
   SDL_Color textColor = { 0, 0, 0 };
   if( !gTextTexture.loadFromRenderedText( text.c_str(), textColor, gFont, gRenderer ) ) {
@@ -169,7 +169,17 @@ void View::eventHandler() {
   }
 }
 
-int count = 0;
+void View::clearScreen() {
+	SDL_RenderClear(gRenderer);
+}
+
+void View::renderImage() {
+	SDL_RenderCopy(gRenderer, gTexture, NULL, NULL);
+}
+
+void View::showScreen() {
+	SDL_RenderPresent(gRenderer);
+}
 
 void View::frame() {
   
@@ -177,15 +187,14 @@ void View::frame() {
   eventHandler();
 
   //Clear screen
-  SDL_RenderClear( gRenderer );
+  clearScreen();
 
   //Render texture to screen
-  SDL_RenderCopy( gRenderer, gTexture, NULL, NULL );
+  renderImage();
 
   //Render current frame
-  renderText(std::to_string(count), ( SCREEN_WIDTH - gTextTexture.getWidth() ) / 2, ( SCREEN_HEIGHT - gTextTexture.getHeight() ) / 2);
-  count++;
+  renderText("nice");
 
   //Update screen
-  SDL_RenderPresent( gRenderer );
+  showScreen();
 }

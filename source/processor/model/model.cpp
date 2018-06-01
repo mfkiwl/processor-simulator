@@ -188,3 +188,9 @@ void Model::printInfo() {
 int Model::getRunningFlag() {
   return runningFlag;
 }
+
+//=============================================
+// getter functions
+Instruction Model::getCurrentInstruction() {
+  return fetchUnit.getCurrentInstruction();
+}

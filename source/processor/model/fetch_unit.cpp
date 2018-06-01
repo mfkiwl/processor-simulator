@@ -44,3 +44,9 @@ void FetchUnit::pipe() {
 void FetchUnit::flush() {
   currentInstruction = (Instruction) {0,0,0,0};
 }
+
+//======================================
+// getter functions
+Instruction FetchUnit::getCurrentInstruction() {
+  return currentInstruction;
+}

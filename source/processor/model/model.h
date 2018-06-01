@@ -75,6 +75,11 @@ class Model {
     void printInfo();
 
     int getRunningFlag();
+
+    //===============================
+    // getter functions
+    
+    Instruction getCurrentInstruction();
 };
 
 #endif

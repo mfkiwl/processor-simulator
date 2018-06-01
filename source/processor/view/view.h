@@ -61,13 +61,19 @@ class View {
     //Loads individual image as texture
     SDL_Texture* loadTexture( std::string path );
 
-    void renderText(std::string text, int x, int y);
+    void renderText(std::string text);
 
     //render the current frame
     void frame();
 
     //handle events
     void eventHandler();
+
+    void clearScreen();
+
+    void renderImage();
+
+    void showScreen();
 };
 
 #endif
