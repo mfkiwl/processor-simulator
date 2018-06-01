@@ -61,6 +61,8 @@ class View {
     //Loads individual image as texture
     SDL_Texture* loadTexture( std::string path );
 
+    void renderText(std::string text, int x, int y);
+
     //render the current frame
     void frame();
 

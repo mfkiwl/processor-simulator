@@ -94,14 +94,6 @@ bool View::loadMedia()
     printf( "Failed to load lazy font! SDL_ttf Error: %s\n", TTF_GetError() );
     success = false;
   }
-  else {
-    //Render text
-    SDL_Color textColor = { 0, 0, 0 };
-    if( !gTextTexture.loadFromRenderedText( "The quick brown fox jumps over the lazy dog", textColor, gFont, gRenderer ) ) {
-      printf( "Failed to render text texture!\n" );
-      success = false;
-    }
-  }
 
   return success;
 }
@@ -154,7 +146,17 @@ SDL_Texture* View::loadTexture( std::string path )
   return newTexture;
 }
 
-void View::frame() {
+void View::renderText(std::string text, int x, int y) {
+  //Render text
+  SDL_Color textColor = { 0, 0, 0 };
+  if( !gTextTexture.loadFromRenderedText( text.c_str(), textColor, gFont, gRenderer ) ) {
+    printf( "Failed to render text texture!\n" );
+  }
+  //Render current frame
+  gTextTexture.render( ( SCREEN_WIDTH - gTextTexture.getWidth() ) / 2, ( SCREEN_HEIGHT - gTextTexture.getHeight() ) / 2, gRenderer);
+}
+
+void View::eventHandler() {
   //Event handler
   SDL_Event e;
 
@@ -165,6 +167,14 @@ void View::frame() {
       quit = true;
     }
   }
+}
+
+int count = 0;
+
+void View::frame() {
+  
+  //handle events
+  eventHandler();
 
   //Clear screen
   SDL_RenderClear( gRenderer );
@@ -173,7 +183,8 @@ void View::frame() {
   SDL_RenderCopy( gRenderer, gTexture, NULL, NULL );
 
   //Render current frame
-  gTextTexture.render( ( SCREEN_WIDTH - gTextTexture.getWidth() ) / 2, ( SCREEN_HEIGHT - gTextTexture.getHeight() ) / 2, gRenderer);
+  renderText(std::to_string(count), ( SCREEN_WIDTH - gTextTexture.getWidth() ) / 2, ( SCREEN_HEIGHT - gTextTexture.getHeight() ) / 2);
+  count++;
 
   //Update screen
   SDL_RenderPresent( gRenderer );

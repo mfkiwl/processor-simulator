@@ -87,7 +87,7 @@ int Controller::start(Instructions instructions) {
     return 1;
   }
   
-  //Load media
+  //Load SDL media
   if( !view.loadMedia() )
   {
     printf( "Failed to load media!\n" );
@@ -99,6 +99,7 @@ int Controller::start(Instructions instructions) {
   //buffer to hold the user input
   char str[3];
 
+  //message to display in the terminal
   printf("Keep pressing ENTER to step through the program\n");
 
   //display initial information
