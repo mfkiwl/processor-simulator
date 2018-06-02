@@ -34,9 +34,6 @@ class View {
     //The window renderer
     SDL_Renderer* gRenderer;
 
-    //Current displayed texture
-    SDL_Texture* gTexture;
-
     //Globally used font
     TTF_Font *gFont;
 
@@ -66,8 +63,14 @@ class View {
     //handle events
     void eventHandler();
 
+    void drawRegisterTable();
+
+    void drawRegisterValues();
+
+    void drawRegisterFile();
+
     void clearScreen();
-    
+
     void updateScreen();
 };
 

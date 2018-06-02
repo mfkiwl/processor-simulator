@@ -83,6 +83,9 @@ void Controller::updateView() {
   //Clear screen
   view.clearScreen();
 
+  //draw the register file
+  view.drawRegisterFile();
+
   //render the number of instructions executed
   int noOfInstructionsExecuted = model.getNoOfInstructionsExecuted();
   std::string text = "Number of instructions executed: " + std::to_string(noOfInstructionsExecuted);

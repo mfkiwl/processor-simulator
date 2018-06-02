@@ -87,8 +87,6 @@ class Model {
     float getNoOfInstructionsExecutedPerCycle();
 
     int getPC();
-
-    Instruction getCurrentInstruction();
 };
 
 #endif

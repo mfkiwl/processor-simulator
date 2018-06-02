@@ -207,7 +207,3 @@ float Model::getNoOfInstructionsExecutedPerCycle() {
 int Model::getPC() {
   return pc;
 }
-
-Instruction Model::getCurrentInstruction() {
-  return fetchUnit.getCurrentInstruction();
-}

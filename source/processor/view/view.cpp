@@ -126,12 +126,52 @@ void View::eventHandler() {
   }
 }
 
+void View::drawRegisterTable() {
+
+  int noOfHorizontalCells = 16;
+  int noOfVerticalCells = 2;
+
+  int xPos = 60;
+  int yPos = 200;
+
+  int cellHeight = 20;
+  int cellWidth = 30;
+
+  //draw the horizontal lines
+  SDL_SetRenderDrawColor(gRenderer, 0x00, 0x00, 0x00, 0xFF);
+  int x1 = xPos;
+  int x2 = xPos + cellWidth * noOfHorizontalCells;
+  for(int i = 0; i < noOfVerticalCells + 1; i++) {
+  	int y1 = yPos + i * cellHeight;
+  	int y2 = yPos + i * cellHeight;
+  	SDL_RenderDrawLine(gRenderer, x1, y1, x2, y2);
+  }
+
+  //draw the vertical lines
+  int y1 = yPos;
+  int y2 = yPos + noOfVerticalCells * cellHeight;
+  for(int i = 0; i < noOfHorizontalCells + 1; i++) {
+  	int x1 = xPos + i * cellWidth;
+  	int x2 = xPos + i * cellWidth;
+  	SDL_RenderDrawLine(gRenderer, x1, y1, x2, y2);
+  }
+  SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
+}
+
+void View::drawRegisterValues() {
+  
+}
+
+void View::drawRegisterFile() {
+  drawRegisterTable();
+}
+
 void View::clearScreen() {
-	SDL_RenderClear(gRenderer);
+  SDL_RenderClear(gRenderer);
 }
 
 void View::updateScreen() {
-	SDL_RenderPresent(gRenderer);
+  SDL_RenderPresent(gRenderer);
 }
 
 void View::frame() {
