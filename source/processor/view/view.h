@@ -58,9 +58,6 @@ class View {
     //Frees media and shuts down SDL
     void close();
 
-    //Loads individual image as texture
-    SDL_Texture* loadTexture( std::string path );
-
     void renderText(int x, int y, std::string text);
 
     //render the current frame
@@ -70,10 +67,8 @@ class View {
     void eventHandler();
 
     void clearScreen();
-
-    void renderImage();
-
-    void showScreen();
+    
+    void updateScreen();
 };
 
 #endif
