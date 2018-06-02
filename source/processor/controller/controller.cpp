@@ -86,10 +86,21 @@ void Controller::updateView() {
   //Render texture to screen
   view.renderImage();
 
-  Instruction currentInstruction = model.getCurrentInstruction();
+  //render the number of instructions executed
+  int noOfInstructionsExecuted = model.getNoOfInstructionsExecuted();
+  std::string text = "Number of instructions executed: " + std::to_string(noOfInstructionsExecuted);
+  view.renderText(0, 0, text);
 
-  //Render current frame
-  view.renderText(std::to_string(currentInstruction.opcode));
+  //render the number of clock cycles performed
+  int noOfClockCycles = model.getNoOfClockCycles();
+  text = "Number of clock cycles performed: " + std::to_string(noOfClockCycles);
+  view.renderText(0, 20, text);
+
+  //render the number of the instructions executed per clock cycle
+  float noOfInstructionsExecutedPerCycle = model.getNoOfInstructionsExecutedPerCycle();
+  printf("ADSFASDFASDF: %f\n", noOfInstructionsExecutedPerCycle);
+  text = "Number of instructions executed per cycle: " + std::to_string(noOfInstructionsExecutedPerCycle);
+  view.renderText(0, 40, text);
 
   //Update screen
   view.showScreen();

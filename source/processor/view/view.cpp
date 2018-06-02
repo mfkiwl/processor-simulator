@@ -88,8 +88,8 @@ bool View::loadMedia()
     success = false;
   }
 
-  //Open the font
-  gFont = TTF_OpenFont( "source/processor/view/lazy.ttf", 28 );
+  //Open the font (font size was originally 28)
+  gFont = TTF_OpenFont( "source/processor/view/OpenSans-Bold.ttf", 20 );
   if( gFont == NULL ) {
     printf( "Failed to load lazy font! SDL_ttf Error: %s\n", TTF_GetError() );
     success = false;
@@ -146,14 +146,17 @@ SDL_Texture* View::loadTexture( std::string path )
   return newTexture;
 }
 
-void View::renderText(std::string text) {
+void View::renderText(int x, int y, std::string text) {
   //Render text
   SDL_Color textColor = { 0, 0, 0 };
   if( !gTextTexture.loadFromRenderedText( text.c_str(), textColor, gFont, gRenderer ) ) {
     printf( "Failed to render text texture!\n" );
   }
   //Render current frame
-  gTextTexture.render( ( SCREEN_WIDTH - gTextTexture.getWidth() ) / 2, ( SCREEN_HEIGHT - gTextTexture.getHeight() ) / 2, gRenderer);
+  //gTextTexture.render( ( SCREEN_WIDTH - gTextTexture.getWidth() ) / 2, ( SCREEN_HEIGHT - gTextTexture.getHeight() ) / 2, gRenderer);
+
+  //Render current frame
+  gTextTexture.render( x, y, gRenderer);
 }
 
 void View::eventHandler() {
@@ -193,7 +196,7 @@ void View::frame() {
   renderImage();
 
   //Render current frame
-  renderText("nice");
+  renderText(0, 0, "nice");
 
   //Update screen
   showScreen();

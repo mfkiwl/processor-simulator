@@ -20,6 +20,7 @@ Model::Model(Instructions instructions) :
   //general stats
   noOfInstructionsExecuted(0),
   noOfClockCycles(0),
+  noOfInstructionsPerCycle(0),
 
   //instruction info
   instructions(instructions),
@@ -162,16 +163,15 @@ void Model::printInfo() {
 
   printf("______________________________________\n\n");
 
-  printf("Number of clock cycles: %d\n", noOfClockCycles);
   printf("Number of instructions executed: %d\n", noOfInstructionsExecuted);
-  float instructionsPerCycle;
+  printf("Number of clock cycles: %d\n", noOfClockCycles);
   if(noOfClockCycles == 0) {
-    instructionsPerCycle = 0;
+    noOfInstructionsPerCycle = 0;
   }
   else {
-    instructionsPerCycle = (float) noOfInstructionsExecuted / (float) noOfClockCycles;
+    noOfInstructionsPerCycle = (float) noOfInstructionsExecuted / (float) noOfClockCycles;
   }
-  printf("Instruction per cycle: %.2f\n", instructionsPerCycle);
+  printf("Instruction per cycle: %.2f\n", noOfInstructionsPerCycle);
   printf("\n");
   printf("PC: %d\n", pc);
   registerFile.printRegisters();
@@ -191,6 +191,23 @@ int Model::getRunningFlag() {
 
 //=============================================
 // getter functions
+
+int Model::getNoOfInstructionsExecuted() {
+  return noOfInstructionsExecuted;
+}
+
+int Model::getNoOfClockCycles() {
+  return noOfClockCycles;
+}
+
+float Model::getNoOfInstructionsExecutedPerCycle() {
+  return noOfInstructionsPerCycle;
+}
+
+int Model::getPC() {
+  return pc;
+}
+
 Instruction Model::getCurrentInstruction() {
   return fetchUnit.getCurrentInstruction();
 }

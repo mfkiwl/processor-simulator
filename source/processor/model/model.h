@@ -28,6 +28,7 @@ class Model {
     //general stats
     int noOfInstructionsExecuted;
     int noOfClockCycles;
+    float noOfInstructionsPerCycle;
 
     //Instructions to execute
     Instructions instructions;
@@ -78,7 +79,15 @@ class Model {
 
     //===============================
     // getter functions
-    
+
+    int getNoOfInstructionsExecuted();
+
+    int getNoOfClockCycles();
+
+    float getNoOfInstructionsExecutedPerCycle();
+
+    int getPC();
+
     Instruction getCurrentInstruction();
 };
 
