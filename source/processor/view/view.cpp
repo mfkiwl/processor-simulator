@@ -100,19 +100,6 @@ void View::close()
   SDL_Quit();
 }
 
-void View::renderText(int x, int y, std::string text) {
-  //Render text
-  SDL_Color textColor = { 0, 0, 0 };
-  if( !gTextTexture.loadFromRenderedText( text.c_str(), textColor, gFont, gRenderer ) ) {
-    printf( "Failed to render text texture!\n" );
-  }
-  //Render current frame
-  //gTextTexture.render( ( SCREEN_WIDTH - gTextTexture.getWidth() ) / 2, ( SCREEN_HEIGHT - gTextTexture.getHeight() ) / 2, gRenderer);
-
-  //Render current frame
-  gTextTexture.render( x, y, gRenderer);
-}
-
 void View::eventHandler() {
   //Event handler
   SDL_Event e;
@@ -126,19 +113,33 @@ void View::eventHandler() {
   }
 }
 
-void View::drawRegisterTable() {
+void View::renderText(int x, int y, std::string text) {
+  //Render text
+  SDL_Color textColor = { 0, 0, 0 };
+  if( !gTextTexture.loadFromRenderedText( text.c_str(), textColor, gFont, gRenderer ) ) {
+    printf( "Failed to render text texture!\n" );
+  }
+  //Render current frame
+  //gTextTexture.render( ( SCREEN_WIDTH - gTextTexture.getWidth() ) / 2, ( SCREEN_HEIGHT - gTextTexture.getHeight() ) / 2, gRenderer);
 
+  //Render current frame
+  gTextTexture.render( x, y, gRenderer);
+}
+
+void View::drawRegisterFile(int* registerValues) {
+
+  //table info
   int noOfHorizontalCells = 16;
   int noOfVerticalCells = 2;
-
-  int xPos = 60;
-  int yPos = 200;
-
+  int xPos = 40;
+  int yPos = 100;
   int cellHeight = 20;
-  int cellWidth = 30;
+  int cellWidth = 35;
+
+  //set the draw color to black
+  SDL_SetRenderDrawColor(gRenderer, 0x00, 0x00, 0x00, 0xFF);
 
   //draw the horizontal lines
-  SDL_SetRenderDrawColor(gRenderer, 0x00, 0x00, 0x00, 0xFF);
   int x1 = xPos;
   int x2 = xPos + cellWidth * noOfHorizontalCells;
   for(int i = 0; i < noOfVerticalCells + 1; i++) {
@@ -155,15 +156,24 @@ void View::drawRegisterTable() {
   	int x2 = xPos + i * cellWidth;
   	SDL_RenderDrawLine(gRenderer, x1, y1, x2, y2);
   }
+
+  //int xOffset = 2;
+  int yOffset = -5;
+
+  //draw the register numbers
+  for(int i = 0; i < noOfHorizontalCells; i++) {
+  	std::string text = "R" + std::to_string(i);
+  	renderText(xPos + i * cellWidth, yPos + yOffset, text);
+  }
+
+  //draw the register values
+  for(int i = 0; i < noOfHorizontalCells; i++) {
+  	std::string text = std::to_string(registerValues[i]);
+  	renderText(xPos + i * cellWidth, yPos + cellHeight + yOffset, text);
+  }
+
+  //reset the draw color to white
   SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
-}
-
-void View::drawRegisterValues() {
-  
-}
-
-void View::drawRegisterFile() {
-  drawRegisterTable();
 }
 
 void View::clearScreen() {
@@ -187,4 +197,22 @@ void View::frame() {
 
   //Update screen
   updateScreen();
+}
+
+//====================================
+// getter functions
+
+int View::hasQuit() {
+  return quit;
+}
+
+//====================================
+// setter functions
+
+void View::setNumOfRegisters(int n) {
+  numOfRegisters = n;
+}
+
+void View::setMemorySize(int n) {
+  memorySize = n;
 }

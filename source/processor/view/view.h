@@ -23,7 +23,6 @@ class SDL_Texture;
 
 class View {
  
-  public:
 	//Screen dimension constants
     const int SCREEN_WIDTH;
     const int SCREEN_HEIGHT;
@@ -42,6 +41,12 @@ class View {
 
     //Main loop flag
 	bool quit;
+
+    //processor information
+    int numOfRegisters;
+    int memorySize;
+
+  public:
 
     //Constructor
     View();
@@ -65,13 +70,25 @@ class View {
 
     void drawRegisterTable();
 
-    void drawRegisterValues();
+    void drawRegisterValues(int* registerValues);
 
-    void drawRegisterFile();
+    void drawRegisterFile(int* registerValues);
 
     void clearScreen();
 
     void updateScreen();
+
+    //============================================
+    // getter functions
+
+    int hasQuit();
+
+    //============================================
+    // setter functions
+
+    void setNumOfRegisters(int n);
+
+    void setMemorySize(int n);
 };
 
 #endif

@@ -124,7 +124,7 @@ void printInstruction(Instruction instruction) {
       printf("LW R%d %d\n", instruction.operands[0], instruction.operands[1]);
       break;
     case LWR:
-      printf("LWR R%d R%d", instruction.operands[0], instruction.operands[1]);
+      printf("LWR R%d R%d\n", instruction.operands[0], instruction.operands[1]);
       break;
     case SW:
       printf("SW R%d %d\n", instruction.operands[0], instruction.operands[1]);

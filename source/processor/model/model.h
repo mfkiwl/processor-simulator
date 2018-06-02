@@ -23,7 +23,8 @@
 class Model {
 
     //information
-    int memorySize;
+    const int numOfRegisters;
+    const int memorySize;
 
     //general stats
     int noOfInstructionsExecuted;
@@ -31,7 +32,7 @@ class Model {
     float noOfInstructionsPerCycle;
 
     //Instructions to execute
-    Instructions instructions;
+    const Instructions instructions;
 
     //registers
     int pc;
@@ -75,10 +76,14 @@ class Model {
 
     void printInfo();
 
-    int getRunningFlag();
-
     //===============================
     // getter functions
+
+    int getRunningFlag();
+
+    int getNumOfRegisters();
+
+    int getMemorySize();
 
     int getNoOfInstructionsExecuted();
 
@@ -87,6 +92,8 @@ class Model {
     float getNoOfInstructionsExecutedPerCycle();
 
     int getPC();
+
+    void getAllRegisterValues(int* copy);
 };
 
 #endif

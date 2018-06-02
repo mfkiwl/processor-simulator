@@ -14,8 +14,8 @@
 
 using namespace std;
 
-RegisterFile::RegisterFile() :   
-  numOfArchitecturalRegisters(16) 
+RegisterFile::RegisterFile(int numOfRegisters) :   
+  numOfArchitecturalRegisters(numOfRegisters) 
 {
   registers = new int[numOfArchitecturalRegisters];
   for(int i = 0; i < numOfArchitecturalRegisters; i++) {
@@ -29,6 +29,12 @@ RegisterFile::RegisterFile() :
 
 int RegisterFile::getNumOfArchitecturalRegisters() {
   return numOfArchitecturalRegisters;
+}
+
+void RegisterFile::getAllRegisterValues(int* copy) {
+  for(int i = 0; i < numOfArchitecturalRegisters; i++) {
+    copy[i] = registers[i];
+  }
 }
 
 int RegisterFile::getRegisterValue(int i) {

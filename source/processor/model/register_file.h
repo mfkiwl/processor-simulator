@@ -7,14 +7,16 @@
 //class declaration
 class RegisterFile {
 
-    int numOfArchitecturalRegisters;
+    const int numOfArchitecturalRegisters;
     int* registers;
     int* scoreBoard;
 
   public: 
-    RegisterFile();
+    RegisterFile(int numOfRegisters);
 
     int getNumOfArchitecturalRegisters();
+
+    void getAllRegisterValues(int* copy);
 
     int getRegisterValue(int i);
 

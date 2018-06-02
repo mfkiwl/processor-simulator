@@ -15,6 +15,7 @@ using namespace std;
 Model::Model(Instructions instructions) : 
 
   //processor configuration
+  numOfRegisters(16),
   memorySize(24),
 
   //general stats
@@ -34,7 +35,7 @@ Model::Model(Instructions instructions) :
   decodeUnitBlockingFlag(0),
 
   //components
-  registerFile(), 
+  registerFile(numOfRegisters), 
   memory(memorySize),
   reorderBuffer(&registerFile, &memory, &pc, &flushFlag, &runningFlag, &noOfInstructionsExecuted),
   fetchUnit(instructions, &pc, &decodeIssueUnit),
@@ -185,12 +186,20 @@ void Model::printInfo() {
   reorderBuffer.print();
 }
 
+//=============================================
+// getter functions
+
+int Model::getNumOfRegisters() {
+  return numOfRegisters;
+}
+
+int Model::getMemorySize() {
+  return memorySize;
+}
+
 int Model::getRunningFlag() {
   return runningFlag;
 }
-
-//=============================================
-// getter functions
 
 int Model::getNoOfInstructionsExecuted() {
   return noOfInstructionsExecuted;
@@ -206,4 +215,8 @@ float Model::getNoOfInstructionsExecutedPerCycle() {
 
 int Model::getPC() {
   return pc;
+}
+
+void Model::getAllRegisterValues(int* copy) {
+  registerFile.getAllRegisterValues(copy);
 }

@@ -14,7 +14,11 @@
 
 Controller::Controller(Instructions instructions) :
   model(instructions)
-{}
+{
+  //give the view component necessary information about the processor
+  view.setNumOfRegisters(model.getNumOfRegisters());
+  view.setMemorySize(model.getMemorySize());
+}
 
 //the original main function for the processor model
 int Controller::modelMain(Instructions instructions) {
@@ -64,7 +68,7 @@ int Controller::viewmain(int argc, char *argv[])
 	}
 
 	//While application is running
-	while( !view.quit )
+	while( !view.hasQuit() )
 	{
         view.frame();
 	}
@@ -84,7 +88,9 @@ void Controller::updateView() {
   view.clearScreen();
 
   //draw the register file
-  view.drawRegisterFile();
+  int registerValues[model.getNumOfRegisters()];
+  model.getAllRegisterValues(registerValues);
+  view.drawRegisterFile(registerValues);
 
   //render the number of instructions executed
   int noOfInstructionsExecuted = model.getNoOfInstructionsExecuted();
@@ -137,7 +143,7 @@ int Controller::start(Instructions instructions) {
   updateView();
 
   //While application is running
-  while( !view.quit && model.getRunningFlag())
+  while( !view.hasQuit() && model.getRunningFlag())
   {
 
     //hold up the program at each clock cycle
