@@ -68,7 +68,9 @@ class View {
     //handle events
     void eventHandler();
 
-    void drawRegisterTable();
+    void drawTable(int xPos, int yPos, int noOfHorizontalCells, int noOfVerticalCells, int cellWidth, int cellHeight);
+
+    void drawTextCell(int xPos, int yPos, int width, int height, std::string text, int xOffset, int yOffset);
 
     void drawRegisterFile(int* registerValues);
 
