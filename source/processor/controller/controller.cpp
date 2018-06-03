@@ -92,6 +92,11 @@ void Controller::updateView() {
   model.getAllRegisterValues(registerValues);
   view.drawRegisterFile(registerValues);
 
+  //draw the memory
+  int memoryValues[model.getMemorySize()];
+  model.getAllMemoryValues(memoryValues);
+  view.drawMemory(memoryValues);
+
   //render the number of instructions executed
   int noOfInstructionsExecuted = model.getNoOfInstructionsExecuted();
   std::string text = "Number of instructions executed: " + std::to_string(noOfInstructionsExecuted);

@@ -14,6 +14,8 @@ class Memory {
   public:
     Memory(int size);
 
+    void getAllMemoryValues(int* copy);
+
     int loadFromMemory(int address);
 
     void storeInMemory(int address, int value);

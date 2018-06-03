@@ -94,6 +94,8 @@ class Model {
     int getPC();
 
     void getAllRegisterValues(int* copy);
+
+    void getAllMemoryValues(int* copy);
 };
 
 #endif

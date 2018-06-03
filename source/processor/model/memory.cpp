@@ -16,6 +16,12 @@ Memory::Memory(int size) : size(size) {
   }
 }
 
+void Memory::getAllMemoryValues(int* copy) {
+  for(int i = 0; i < size; i++) {
+    copy[i] = memory[i];
+  }
+}
+
 int Memory::loadFromMemory(int address) {
   if(address < 0 || address > size - 1) {
     printf("Register index %d is out of bounds.\n", address);

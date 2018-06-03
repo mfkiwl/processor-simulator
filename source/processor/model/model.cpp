@@ -220,3 +220,7 @@ int Model::getPC() {
 void Model::getAllRegisterValues(int* copy) {
   registerFile.getAllRegisterValues(copy);
 }
+
+void Model::getAllMemoryValues(int* copy) {
+  memory.getAllMemoryValues(copy);
+}

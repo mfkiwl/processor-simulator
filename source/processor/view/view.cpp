@@ -129,7 +129,7 @@ void View::renderText(int x, int y, std::string text) {
 void View::drawRegisterFile(int* registerValues) {
 
   //table info
-  int noOfHorizontalCells = 16;
+  int noOfHorizontalCells = numOfRegisters;
   int noOfVerticalCells = 2;
   int xPos = 40;
   int yPos = 100;
@@ -174,6 +174,56 @@ void View::drawRegisterFile(int* registerValues) {
 
   //reset the draw color to white
   SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
+}
+
+void View::drawMemory(int* memoryValues) {
+  //table info
+  int noOfHorizontalCells = memorySize;
+  int noOfVerticalCells = 2;
+  int xPos = 20;
+  int yPos = 150;
+  int cellHeight = 20;
+  int cellWidth = 25;
+
+  //set the draw color to black
+  SDL_SetRenderDrawColor(gRenderer, 0x00, 0x00, 0x00, 0xFF);
+
+  //draw the horizontal lines
+  int x1 = xPos;
+  int x2 = xPos + cellWidth * noOfHorizontalCells;
+  for(int i = 0; i < noOfVerticalCells + 1; i++) {
+  	int y1 = yPos + i * cellHeight;
+  	int y2 = yPos + i * cellHeight;
+  	SDL_RenderDrawLine(gRenderer, x1, y1, x2, y2);
+  }
+
+  //draw the vertical lines
+  int y1 = yPos;
+  int y2 = yPos + noOfVerticalCells * cellHeight;
+  for(int i = 0; i < noOfHorizontalCells + 1; i++) {
+  	int x1 = xPos + i * cellWidth;
+  	int x2 = xPos + i * cellWidth;
+  	SDL_RenderDrawLine(gRenderer, x1, y1, x2, y2);
+  }
+
+  //int xOffset = 2;
+  int yOffset = -5;
+
+  //draw the register numbers
+  for(int i = 0; i < noOfHorizontalCells; i++) {
+  	std::string text = std::to_string(i);
+  	renderText(xPos + i * cellWidth, yPos + yOffset, text);
+  }
+
+  //draw the register values
+  for(int i = 0; i < noOfHorizontalCells; i++) {
+  	std::string text = std::to_string(memoryValues[i]);
+  	renderText(xPos + i * cellWidth, yPos + cellHeight + yOffset, text);
+  }
+
+  //reset the draw color to white
+  SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
+
 }
 
 void View::clearScreen() {

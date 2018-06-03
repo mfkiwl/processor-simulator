@@ -70,9 +70,9 @@ class View {
 
     void drawRegisterTable();
 
-    void drawRegisterValues(int* registerValues);
-
     void drawRegisterFile(int* registerValues);
+
+    void drawMemory(int* memoryValues);
 
     void clearScreen();
 
