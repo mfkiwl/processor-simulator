@@ -164,3 +164,79 @@ void printInstruction(Instruction instruction) {
       break;
   }
 }
+
+std::string instructionToString(Instruction instruction) {
+  switch(instruction.opcode) {
+    case NOOP:
+      return "NOOP";
+      break;
+    case ADD:
+      return "ADD R" + std::to_string(instruction.operands[0]) + " R" + std::to_string(instruction.operands[1]) + 
+      " R" + std::to_string(instruction.operands[2]);
+      break;
+    case ADDI:
+      return "ADDI R" + std::to_string(instruction.operands[0]) + " R" + std::to_string(instruction.operands[1]) + 
+      " " + std::to_string(instruction.operands[2]);
+      break;
+    case AND:
+      return "AND R" + std::to_string(instruction.operands[0]) + " R" + std::to_string(instruction.operands[1]) + 
+      " R" + std::to_string(instruction.operands[2]);
+      break;
+    case MULT:
+      return "MULT R" + std::to_string(instruction.operands[0]) + " R" + std::to_string(instruction.operands[1]) + 
+      " R" + std::to_string(instruction.operands[2]);
+      break;
+    case OR:
+      return "OR R" + std::to_string(instruction.operands[0]) + " R" + std::to_string(instruction.operands[1]) + 
+      " R" + std::to_string(instruction.operands[2]);
+      break;
+    case SUB:
+      return "SUB R" + std::to_string(instruction.operands[0]) + " R" + std::to_string(instruction.operands[1]) + 
+      " R" + std::to_string(instruction.operands[2]);
+      break;
+    case LW:
+      return "LW R" + std::to_string(instruction.operands[0]) + " " + std::to_string(instruction.operands[1]);
+      break;
+    case LWR:
+      return "LWR R" + std::to_string(instruction.operands[0]) + " R" + std::to_string(instruction.operands[1]);
+      break;
+    case SW:
+      return "SW R" + std::to_string(instruction.operands[0]) + " " + std::to_string(instruction.operands[1]);
+      break;
+    case SWR:
+      return "SWR R" + std::to_string(instruction.operands[0]) + " R" + std::to_string(instruction.operands[1]);
+      break;
+    case BEQ:
+      return "BEQ R" +  std::to_string(instruction.operands[0]) + " R" + std::to_string(instruction.operands[1]) + 
+      " " +  std::to_string(instruction.operands[2]);
+      break;
+    case BGEZ:
+      return "BGEZ R" + std::to_string(instruction.operands[0]) + " " + std::to_string(instruction.operands[1]);
+      break;
+    case BGTZ:
+      return "BGTZ R" + std::to_string(instruction.operands[0]) + " " + std::to_string(instruction.operands[1]);
+      break;
+    case BLEZ:
+      return "BLEZ R" + std::to_string(instruction.operands[0]) + " " + std::to_string(instruction.operands[1]);
+      break;
+    case BLTZ:
+      return "BLTZ R" + std::to_string(instruction.operands[0]) + " " + std::to_string(instruction.operands[1]);
+      break;
+    case BNE:
+      return "BNE R" + std::to_string(instruction.operands[0]) + " R" + std::to_string(instruction.operands[1]) + 
+      " " + std::to_string(instruction.operands[2]);
+      break;
+    case J:
+      return "J " + std::to_string(instruction.operands[0]);
+      break;
+    case JR:
+      return "JR R" + std::to_string(instruction.operands[0]) + "\n";
+      break;
+    case HALT:
+      return "HALT\n";
+      break;
+    default:
+      return "";
+      break;
+  }
+}

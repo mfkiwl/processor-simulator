@@ -40,4 +40,6 @@ public:
 
 void printInstruction(Instruction instruction);
 
+std::string instructionToString(Instruction instruction);
+
 #endif

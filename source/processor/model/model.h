@@ -96,6 +96,8 @@ class Model {
     void getAllRegisterValues(int* copy);
 
     void getAllMemoryValues(int* copy);
+
+    Instruction getCurrentInstruction();
 };
 
 #endif

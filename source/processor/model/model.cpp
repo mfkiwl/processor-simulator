@@ -224,3 +224,7 @@ void Model::getAllRegisterValues(int* copy) {
 void Model::getAllMemoryValues(int* copy) {
   memory.getAllMemoryValues(copy);
 }
+
+Instruction Model::getCurrentInstruction() {
+  return fetchUnit.getCurrentInstruction();
+}

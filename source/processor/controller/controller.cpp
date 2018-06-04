@@ -81,11 +81,19 @@ int Controller::viewmain(int argc, char *argv[])
 
 //Render the current frame with the appropriate information from the processor
 void Controller::updateView() {
+
   //handle events
   view.eventHandler();
 
-  //Clear screen
+  //Clear the screen
   view.clearScreen();
+
+  //render the processor stats
+  int numOfInstructionsExecuted = model.getNoOfInstructionsExecuted();
+  int numOfClockCycles = model.getNoOfClockCycles();
+  float numOfInstructionsExecutedPerCycle = model.getNoOfInstructionsExecutedPerCycle();
+  view.drawProcessorStats(numOfInstructionsExecuted, numOfClockCycles, numOfInstructionsExecutedPerCycle);
+  
 
   //draw the register file
   int registerValues[model.getNumOfRegisters()];
@@ -97,22 +105,11 @@ void Controller::updateView() {
   model.getAllMemoryValues(memoryValues);
   view.drawMemory(memoryValues);
 
-  //render the number of instructions executed
-  int noOfInstructionsExecuted = model.getNoOfInstructionsExecuted();
-  std::string text = "Number of instructions executed: " + std::to_string(noOfInstructionsExecuted);
-  view.renderText(0, 0, text);
+  //draw the current instruction
+  Instruction currentInstruction = model.getCurrentInstruction();
+  view.drawFetchedInstruction(currentInstruction);
 
-  //render the number of clock cycles performed
-  int noOfClockCycles = model.getNoOfClockCycles();
-  text = "Number of clock cycles performed: " + std::to_string(noOfClockCycles);
-  view.renderText(0, 20, text);
-
-  //render the number of the instructions executed per clock cycle
-  float noOfInstructionsExecutedPerCycle = model.getNoOfInstructionsExecutedPerCycle();
-  text = "Number of instructions executed per cycle: " + std::to_string(noOfInstructionsExecutedPerCycle);
-  view.renderText(0, 40, text);
-
-  //Update screen
+  //Update  the screen
   view.updateScreen();
 }
 

@@ -14,6 +14,7 @@ and may not be redistributed without written permission.*/
 #include <string>
 
 #include "lTexture.h"
+#include "../model/instructions.h"
 
 //===========================================
 // implementation
@@ -176,7 +177,7 @@ void View::drawRegisterFile(int* registerValues) {
   int noOfHorizontalCells = numOfRegisters;
   int noOfVerticalCells = 2;
   int xPos = 40;
-  int yPos = 100;
+  int yPos = 150;
   int cellWidth = 30;
   int cellHeight = 20;
   int textCellWidth = 80;
@@ -211,7 +212,7 @@ void View::drawMemory(int* memoryValues) {
   int noOfHorizontalCells = memorySize;
   int noOfVerticalCells = 2;
   int xPos = 40;
-  int yPos = 150;
+  int yPos = 200;
   int cellWidth = 20;
   int cellHeight = 20;
   int textCellWidth = 80;
@@ -236,6 +237,33 @@ void View::drawMemory(int* memoryValues) {
   	renderText(xPos + textCellWidth + i * cellWidth + xOffset, yPos + cellHeight + yOffset, text);
   }
 
+}
+
+void View::drawFetchedInstruction(Instruction currentInstruction) {
+  int xPos = 0;
+  int yPos = 80;
+
+  std::string text = "Fetched instruction : " + instructionToString(currentInstruction);
+  renderText(xPos, yPos, text);
+}
+
+void View::drawProcessorStats(int numOfInstructionsExecuted, int numOfClockCycles, float numOfInstructionsExecutedPerCycle) {
+  
+  int xPos = 0;
+  int yPos = 0;
+  int ySpace = 20;
+
+  //render the number of instructions executed
+  std::string text = "Number of instructions executed: " + std::to_string(numOfInstructionsExecuted);
+  renderText(xPos, yPos, text);
+
+  //render the number of clock cycles performed
+  text = "Number of clock cycles performed: " + std::to_string(numOfClockCycles);
+  renderText(xPos, yPos + ySpace, text);
+
+  //render the number of the instructions executed per clock cycle
+  text = "Number of instructions executed per cycle: " + std::to_string(numOfInstructionsExecutedPerCycle);
+  renderText(xPos, yPos + 2 * ySpace, text);
 }
 
 void View::clearScreen() {

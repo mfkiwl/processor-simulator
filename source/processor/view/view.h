@@ -9,6 +9,7 @@ class SDL_Window;
 class SDL_Renderer;
 class SDL_Texture;
 class SDL_Texture;
+class Instruction;
 
 
 //=================================
@@ -75,6 +76,10 @@ class View {
     void drawRegisterFile(int* registerValues);
 
     void drawMemory(int* memoryValues);
+
+    void drawFetchedInstruction(Instruction currentInstruction);
+
+    void drawProcessorStats(int numOfInstructionsExecuted, int numOfClockCycles, float numOfInstructionsExecutedPerCycle);
 
     void clearScreen();
 
