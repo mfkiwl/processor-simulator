@@ -46,6 +46,7 @@ class View {
     //processor information
     int numOfRegisters;
     int memorySize;
+    int aluReservationStationSize;
 
   public:
 
@@ -80,6 +81,8 @@ class View {
 
     void drawDecodeIssueUnit(Instruction instruction);
 
+    void drawAluReservationStation(Instruction* instructions);
+
     void clearScreen();
 
     void updateScreen();
@@ -95,6 +98,8 @@ class View {
     void setNumOfRegisters(int n);
 
     void setMemorySize(int n);
+
+    void setAluReservationStationSize(int n);
 };
 
 #endif

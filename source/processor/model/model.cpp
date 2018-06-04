@@ -17,6 +17,7 @@ Model::Model(Instructions instructions) :
   //processor configuration
   numOfRegisters(16),
   memorySize(24),
+  aluReservationStationSize(4),
 
   //general stats
   noOfInstructionsExecuted(0),
@@ -41,7 +42,7 @@ Model::Model(Instructions instructions) :
   fetchUnit(instructions, &pc, &decodeIssueUnit),
   decodeIssueUnit(&registerFile, &reorderBuffer, &aluReservationStation, &branchUnitReservationStation, &loadStoreUnitReservationStation, &decodeUnitBlockingFlag),
   alu(&registerFile, &reorderBuffer),
-  aluReservationStation(&registerFile, &alu),
+  aluReservationStation(&registerFile, &alu, aluReservationStationSize),
   branchUnit(&reorderBuffer),
   branchUnitReservationStation(&registerFile, &branchUnit),
   loadStoreUnit(&memory, &reorderBuffer),
@@ -197,6 +198,10 @@ int Model::getMemorySize() {
   return memorySize;
 }
 
+int Model::getAluReservationStationSize() {
+  return aluReservationStationSize;
+}
+
 int Model::getRunningFlag() {
   return runningFlag;
 }
@@ -231,4 +236,8 @@ Instruction Model::getFetchUnitInstruction() {
 
 Instruction Model::getDecodeIssueUnitInstruction() {
   return decodeIssueUnit.getCurrentInstruction();
+}
+
+void Model::getAluReservationStationInstructions(Instruction* copy) {
+  aluReservationStation.getCurrentInstructions(copy);
 }

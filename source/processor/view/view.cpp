@@ -177,7 +177,7 @@ void View::drawRegisterFile(int* registerValues) {
   int noOfHorizontalCells = numOfRegisters;
   int noOfVerticalCells = 2;
   int xPos = 40;
-  int yPos = 150;
+  int yPos = 250;
   int cellWidth = 30;
   int cellHeight = 20;
   int textCellWidth = 80;
@@ -212,7 +212,7 @@ void View::drawMemory(int* memoryValues) {
   int noOfHorizontalCells = memorySize;
   int noOfVerticalCells = 2;
   int xPos = 40;
-  int yPos = 200;
+  int yPos = 300;
   int cellWidth = 20;
   int cellHeight = 20;
   int textCellWidth = 80;
@@ -274,6 +274,20 @@ void View::drawDecodeIssueUnit(Instruction instruction) {
   renderText(xPos, yPos, text);
 }
 
+void View::drawAluReservationStation(Instruction* instructions) {
+  int xPos = 0;
+  int yPos = 120;
+  int xOffset = 200;
+  int ySpace = 20;
+
+  std::string text = "ALU Reservation Station : ";
+  renderText(xPos, yPos, text);
+
+  for(int i = 0; i < aluReservationStationSize; i++) {
+    renderText(xPos + xOffset, yPos + i * ySpace, instructionToString(instructions[i]));
+  }
+}
+
 void View::clearScreen() {
   SDL_RenderClear(gRenderer);
 }
@@ -298,4 +312,8 @@ void View::setNumOfRegisters(int n) {
 
 void View::setMemorySize(int n) {
   memorySize = n;
+}
+
+void View::setAluReservationStationSize(int n) {
+  aluReservationStationSize = n;
 }

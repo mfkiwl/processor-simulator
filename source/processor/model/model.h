@@ -25,6 +25,7 @@ class Model {
     //processor configuration
     const int numOfRegisters;
     const int memorySize;
+    const int aluReservationStationSize;
 
     //general stats
     int noOfInstructionsExecuted;
@@ -83,6 +84,8 @@ class Model {
 
     int getNumOfRegisters();
 
+    int getAluReservationStationSize();
+
     int getMemorySize();
 
     int getNoOfInstructionsExecuted();
@@ -100,6 +103,8 @@ class Model {
     Instruction getFetchUnitInstruction();
 
     Instruction getDecodeIssueUnitInstruction();
+
+    void getAluReservationStationInstructions(Instruction* copy);
 };
 
 #endif

@@ -18,6 +18,7 @@ Controller::Controller(Instructions instructions) :
   //give the view component necessary information about the processor
   view.setNumOfRegisters(model.getNumOfRegisters());
   view.setMemorySize(model.getMemorySize());
+  view.setAluReservationStationSize(model.getAluReservationStationSize());
 }
 
 //the original main function for the processor model
@@ -101,6 +102,11 @@ void Controller::updateView() {
   //draw the instruction in the decode issue unit
   Instruction decodeIssueUnitInstruction = model.getDecodeIssueUnitInstruction();
   view.drawDecodeIssueUnit(decodeIssueUnitInstruction);
+
+  //draw the instructions in the alu reservation station
+  Instruction aluReservationStationInstructions[model.getAluReservationStationSize()];
+  model.getAluReservationStationInstructions(aluReservationStationInstructions);
+  view.drawAluReservationStation(aluReservationStationInstructions);
 
   //draw the register file
   int registerValues[model.getNumOfRegisters()];

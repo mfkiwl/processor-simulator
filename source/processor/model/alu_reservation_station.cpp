@@ -16,10 +16,10 @@
 
 using namespace std;
 
-ALUReservationStation::ALUReservationStation(RegisterFile* registerFile, ALU* alu) : 
+ALUReservationStation::ALUReservationStation(RegisterFile* registerFile, ALU* alu, int size) : 
   registerFile(registerFile),
   alu(alu),
-  size(4),
+  size(size),
   opcode(0),
   reorderBufferIndex(-1)
 {
@@ -170,5 +170,11 @@ void ALUReservationStation::dispatch(Instruction instruction) {
       val = registerFile->getRegisterValue(registerNum);
       operands[1] = val;
       break;
+  }
+}
+
+void ALUReservationStation::getCurrentInstructions(Instruction* copy) {
+  for(int i = 0; i < size; i++) {
+    copy[i] = instructions[i];
   }
 }

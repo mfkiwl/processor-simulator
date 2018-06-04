@@ -25,7 +25,7 @@ class ALUReservationStation {
     int reorderBufferIndex;
 
   public:
-    ALUReservationStation(RegisterFile* registerFile, ALU* alu);
+    ALUReservationStation(RegisterFile* registerFile, ALU* alu, int size);
 
     void execute();
 
@@ -38,6 +38,8 @@ class ALUReservationStation {
     void flush();
 
     void print();
+
+    void getCurrentInstructions(Instruction* copy);
 
   private:
 
