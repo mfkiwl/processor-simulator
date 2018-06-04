@@ -225,6 +225,10 @@ void Model::getAllMemoryValues(int* copy) {
   memory.getAllMemoryValues(copy);
 }
 
-Instruction Model::getCurrentInstruction() {
+Instruction Model::getFetchUnitInstruction() {
   return fetchUnit.getCurrentInstruction();
+}
+
+Instruction Model::getDecodeIssueUnitInstruction() {
+  return decodeIssueUnit.getCurrentInstruction();
 }

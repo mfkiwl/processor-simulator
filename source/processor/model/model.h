@@ -22,7 +22,7 @@
 //class declaration
 class Model {
 
-    //information
+    //processor configuration
     const int numOfRegisters;
     const int memorySize;
 
@@ -97,7 +97,9 @@ class Model {
 
     void getAllMemoryValues(int* copy);
 
-    Instruction getCurrentInstruction();
+    Instruction getFetchUnitInstruction();
+
+    Instruction getDecodeIssueUnitInstruction();
 };
 
 #endif

@@ -185,3 +185,7 @@ void DecodeIssueUnit::flush() {
   nextInstruction = (Instruction) {0,0,0,0};
   currentInstruction = (Instruction) {0,0,0,0};
 }
+
+Instruction DecodeIssueUnit::getCurrentInstruction() {
+  return currentInstruction;
+}

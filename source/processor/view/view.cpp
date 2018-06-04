@@ -239,14 +239,6 @@ void View::drawMemory(int* memoryValues) {
 
 }
 
-void View::drawFetchedInstruction(Instruction currentInstruction) {
-  int xPos = 0;
-  int yPos = 80;
-
-  std::string text = "Fetched instruction : " + instructionToString(currentInstruction);
-  renderText(xPos, yPos, text);
-}
-
 void View::drawProcessorStats(int numOfInstructionsExecuted, int numOfClockCycles, float numOfInstructionsExecutedPerCycle) {
   
   int xPos = 0;
@@ -266,27 +258,28 @@ void View::drawProcessorStats(int numOfInstructionsExecuted, int numOfClockCycle
   renderText(xPos, yPos + 2 * ySpace, text);
 }
 
+void View::drawFetchUnit(Instruction instruction) {
+  int xPos = 0;
+  int yPos = 80;
+
+  std::string text = "Fetch Unit : " + instructionToString(instruction);
+  renderText(xPos, yPos, text);
+}
+
+void View::drawDecodeIssueUnit(Instruction instruction) {
+  int xPos = 0;
+  int yPos = 100;
+
+  std::string text = "Decode Issue Unit : " + instructionToString(instruction);
+  renderText(xPos, yPos, text);
+}
+
 void View::clearScreen() {
   SDL_RenderClear(gRenderer);
 }
 
 void View::updateScreen() {
   SDL_RenderPresent(gRenderer);
-}
-
-void View::frame() {
-  
-  //handle events
-  eventHandler();
-
-  //Clear screen
-  clearScreen();
-
-  //Render current frame
-  renderText(0, 0, "nice");
-
-  //Update screen
-  updateScreen();
 }
 
 //====================================

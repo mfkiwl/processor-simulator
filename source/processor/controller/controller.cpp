@@ -70,7 +70,7 @@ int Controller::viewmain(int argc, char *argv[])
 	//While application is running
 	while( !view.hasQuit() )
 	{
-        view.frame();
+        //view.frame();
 	}
 
 	//Free resources and close SDL
@@ -94,6 +94,13 @@ void Controller::updateView() {
   float numOfInstructionsExecutedPerCycle = model.getNoOfInstructionsExecutedPerCycle();
   view.drawProcessorStats(numOfInstructionsExecuted, numOfClockCycles, numOfInstructionsExecutedPerCycle);
   
+  //draw the instruction in the fetch unit
+  Instruction fetchUnitInstruction = model.getFetchUnitInstruction();
+  view.drawFetchUnit(fetchUnitInstruction);
+
+  //draw the instruction in the decode issue unit
+  Instruction decodeIssueUnitInstruction = model.getDecodeIssueUnitInstruction();
+  view.drawDecodeIssueUnit(decodeIssueUnitInstruction);
 
   //draw the register file
   int registerValues[model.getNumOfRegisters()];
@@ -104,10 +111,6 @@ void Controller::updateView() {
   int memoryValues[model.getMemorySize()];
   model.getAllMemoryValues(memoryValues);
   view.drawMemory(memoryValues);
-
-  //draw the current instruction
-  Instruction currentInstruction = model.getCurrentInstruction();
-  view.drawFetchedInstruction(currentInstruction);
 
   //Update  the screen
   view.updateScreen();

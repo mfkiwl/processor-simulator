@@ -63,9 +63,6 @@ class View {
 
     void renderText(int x, int y, std::string text);
 
-    //render the current frame
-    void frame();
-
     //handle events
     void eventHandler();
 
@@ -77,9 +74,11 @@ class View {
 
     void drawMemory(int* memoryValues);
 
-    void drawFetchedInstruction(Instruction currentInstruction);
-
     void drawProcessorStats(int numOfInstructionsExecuted, int numOfClockCycles, float numOfInstructionsExecutedPerCycle);
+
+    void drawFetchUnit(Instruction currentInstruction);
+
+    void drawDecodeIssueUnit(Instruction instruction);
 
     void clearScreen();
 

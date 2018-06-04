@@ -53,6 +53,9 @@ class DecodeIssueUnit {
     void setNextInstruction(Instruction x);
 
     void flush();
+
+    Instruction getCurrentInstruction();
+
 };
 
 #endif
