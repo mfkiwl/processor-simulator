@@ -15,10 +15,18 @@ class Controller {
 
   public:
 
+  	const int numOfRegisters;
+  	const int memorySize;
+    const int aluReservationStationSize;
+    const int branchUnitReservationStationSize;
+    const int decodeIssueUnitReservationStationSize;
+
     Model model;
     View view;
 
-    Controller(const Instructions instructions);
+    Controller(const Instructions instructions, const int numOfRegisters, const int memorySize, 
+  const int aluReservationStationSize, const int branchUnitReservationStationSize, 
+  const int decodeIssueUnitReservationStationSize);
 
     int modelMain(const Instructions instructions);
 

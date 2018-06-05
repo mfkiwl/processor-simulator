@@ -10,12 +10,18 @@ int main(int argc, char *argv[]) {
     printf("Machine code file not valid.\n");
     return 1;
   }
-  std::string inputFileName(argv[1]);
-  Instructions instructions(inputFileName);
+  const std::string inputFileName(argv[1]);
+  const Instructions instructions(inputFileName);
+  const int numOfRegisters = 16;
+  const int memorySize = 24;
+  const int aluReservationStationSize = 4;
+  const int branchUnitReservationStationSize = 4;
+  const int decodeIssueUnitReservationStationSize = 4;
 
   //if we successfully loaded instructions then start the program
   if(instructions.getNumOfInstructions() != -1 && instructions.getInstructions() != NULL) {
-    Controller controller(instructions);
+    Controller controller(instructions, numOfRegisters, memorySize, aluReservationStationSize, 
+      branchUnitReservationStationSize, decodeIssueUnitReservationStationSize);
 
     //start the controller component
     controller.start(instructions);

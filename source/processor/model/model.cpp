@@ -10,14 +10,16 @@
 //===========================================
 //class implementation
 
-Model::Model(const Instructions instructions) : 
+Model::Model(const Instructions instructions, const int numOfRegisters, const int memorySize, 
+  const int aluReservationStationSize, const int branchUnitReservationStationSize, 
+  const int decodeIssueUnitReservationStationSize) : 
 
   //processor configuration
-  numOfRegisters(16),
-  memorySize(24),
-  aluReservationStationSize(4),
-  branchUnitReservationStationSize(4),
-  decodeIssueUnitReservationStationSize(4),
+  numOfRegisters(numOfRegisters),
+  memorySize(memorySize),
+  aluReservationStationSize(aluReservationStationSize),
+  branchUnitReservationStationSize(branchUnitReservationStationSize),
+  decodeIssueUnitReservationStationSize(decodeIssueUnitReservationStationSize),
 
   //general stats
   noOfInstructionsExecuted(0),

@@ -12,15 +12,19 @@
 //===========================================
 // class implementation
 
-Controller::Controller(const Instructions instructions) :
-  model(instructions)
-{
-  //give the view component necessary information about the processor
-  view.setNumOfRegisters(model.getNumOfRegisters());
-  view.setMemorySize(model.getMemorySize());
-  view.setAluReservationStationSize(model.getAluReservationStationSize());
-  view.setBranchUnitReservationStationSize(model.getBranchUnitReservationStationSize());
-}
+Controller::Controller(const Instructions instructions, const int numOfRegisters, const int memorySize, 
+  const int aluReservationStationSize, const int branchUnitReservationStationSize, 
+  const int decodeIssueUnitReservationStationSize) :
+  numOfRegisters(numOfRegisters),
+  memorySize(memorySize),
+  aluReservationStationSize(aluReservationStationSize),
+  branchUnitReservationStationSize(branchUnitReservationStationSize),
+  decodeIssueUnitReservationStationSize(decodeIssueUnitReservationStationSize),
+  model(instructions, numOfRegisters, memorySize, aluReservationStationSize, 
+    branchUnitReservationStationSize, decodeIssueUnitReservationStationSize),
+  view(numOfRegisters, memorySize, aluReservationStationSize, branchUnitReservationStationSize,
+    decodeIssueUnitReservationStationSize)
+{}
 
 //the original main function for the processor model
 int Controller::modelMain(const Instructions instructions) {

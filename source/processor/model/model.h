@@ -61,7 +61,9 @@ class Model {
     LoadStoreUnitReservationStation loadStoreUnitReservationStation;
 
   public:
-    Model(const Instructions instructions);
+    Model(const Instructions instructions, const int numOfRegisters, const int memorySize, 
+  const int aluReservationStationSize, const int branchUnitReservationStationSize, 
+  const int decodeIssueUnitReservationStationSize);
 
     void updateStats();
 

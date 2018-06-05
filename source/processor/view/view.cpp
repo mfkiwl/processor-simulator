@@ -19,13 +19,19 @@ and may not be redistributed without written permission.*/
 //===========================================
 // implementation
 
-View::View() :
+View::View(const int numOfRegisters, const int memorySize, const int aluReservationStationSize, 
+  const int branchUnitReservationStationSize, const int decodeIssueUnitReservationStationSize) :
   SCREEN_WIDTH(640),
   SCREEN_HEIGHT(480),
   gWindow(NULL),
   gRenderer(NULL),
   gFont(NULL),
-  quit(false)
+  quit(false),
+  numOfRegisters(numOfRegisters),
+  memorySize(memorySize),
+  aluReservationStationSize(aluReservationStationSize),
+  branchUnitReservationStationSize(branchUnitReservationStationSize),
+  decodeIssueUnitReservationStationSize(decodeIssueUnitReservationStationSize)
 {}
 
 bool View::init()
@@ -315,23 +321,4 @@ void View::updateScreen() {
 
 int View::hasQuit() const {
   return quit;
-}
-
-//====================================
-// setter functions
-
-void View::setNumOfRegisters(const int n) {
-  numOfRegisters = n;
-}
-
-void View::setMemorySize(const int n) {
-  memorySize = n;
-}
-
-void View::setAluReservationStationSize(const int n) {
-  aluReservationStationSize = n;
-}
-
-void View::setBranchUnitReservationStationSize(const int n) {
-  branchUnitReservationStationSize = n;
 }

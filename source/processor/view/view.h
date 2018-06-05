@@ -44,15 +44,17 @@ class View {
 	bool quit;
 
     //processor information
-    int numOfRegisters;
-    int memorySize;
-    int aluReservationStationSize;
-    int branchUnitReservationStationSize;
+    const int numOfRegisters;
+    const int memorySize;
+    const int aluReservationStationSize;
+    const int branchUnitReservationStationSize;
+    const int decodeIssueUnitReservationStationSize;
 
   public:
 
     //Constructor
-    View();
+    View(const int numOfRegisters, const int memorySize, const int aluReservationStationSize, 
+        const int branchUnitReservationStationSize, const int decodeIssueUnitReservationStationSize);
 
     //Starts up SDL and creates window
     bool init();
@@ -94,17 +96,6 @@ class View {
     // getter functions
 
     int hasQuit() const;
-
-    //============================================
-    // setter functions
-
-    void setNumOfRegisters(const int n);
-
-    void setMemorySize(const int n);
-
-    void setAluReservationStationSize(const int n);
-
-    void setBranchUnitReservationStationSize(const int n);
 };
 
 #endif
