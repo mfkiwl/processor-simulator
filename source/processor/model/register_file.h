@@ -10,8 +10,8 @@ class RegisterFile {
   private:
 
     const int numOfArchitecturalRegisters;
-    int* registers;
-    int* scoreBoard;
+    int* const registers;
+    int* const scoreBoard;
 
   public: 
     RegisterFile(const int numOfRegisters);

@@ -17,19 +17,19 @@ class LoadBuffer {
     Memory* const memory;
     ReorderBuffer* const reorderBuffer;
 
-    //write buffer to hold inflight write operation info
-    int** buffer;
-    const int size;
-    int head;
-    int tail;
-    const int steps;
-
     //index constants
     static const int entryFields = 4;
     static const int DESTINATION = 0;
     static const int ADDRESS = 1;
     static const int REORDER_BUFFER_INDEX = 2;
     static const int STEP = 3;
+
+    //write buffer to hold inflight write operation info
+    const int size;
+    int** const buffer;
+    int head;
+    int tail;
+    const int steps;
 
   public:
 	  LoadBuffer(Memory* const memory, ReorderBuffer* const reorderBuffer, const int size, const int steps);

@@ -18,8 +18,8 @@ class StoreBuffer {
     ReorderBuffer* const reorderBuffer;
 
     //write buffer to hold inflight write operation info
-    int** buffer;
     const int size;
+    int** const buffer;
     int head;
     int tail;
     const int steps;

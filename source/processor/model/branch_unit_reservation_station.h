@@ -19,11 +19,11 @@ class BranchUnitReservationStation {
     BranchUnit* const branchUnit;
 
     const int size;
-    Instruction* instructions;
-    int* reorderBufferIndexes;
+    Instruction* const instructions;
+    int* const reorderBufferIndexes;
 
     int opcode;
-    int* operands;
+    int operands[3];
     int reorderBufferIndex;
 
   public:

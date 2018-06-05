@@ -14,12 +14,12 @@ StoreBuffer::StoreBuffer(Memory* const memory, ReorderBuffer* const reorderBuffe
   memory(memory),
   reorderBuffer(reorderBuffer),
   size(size),
+  buffer(new int*[size]),
   head(0),
   tail(0),
   steps(steps)
 {
   //dynamically allocated a 2d array to the read and write buffer
-  buffer = new int*[size];
   for(int i = 0; i < size; i++) {
     buffer[i] = new int[entryFields];
   }

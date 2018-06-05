@@ -10,8 +10,6 @@
 //===========================================
 //class implementation
 
-using namespace std;
-
 Model::Model(const Instructions instructions) : 
 
   //processor configuration

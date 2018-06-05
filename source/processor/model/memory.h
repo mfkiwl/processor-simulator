@@ -11,7 +11,7 @@ class Memory {
 
     //the number of bytes the memory has
     const int size;
-    int* memory;
+    int* const memory;
 
   public:
     Memory(const int size);

@@ -9,8 +9,11 @@
 //===========================================
 //class implementation
 
-Memory::Memory(const int size) : size(size) {
-  memory = new int[size];
+Memory::Memory(const int size) : 
+  size(size), 
+  memory(new int[size]) 
+{
+  //set all memory values to 0
   for(int i = 0; i < size; i++) {
     memory[i] = 0;
   }

@@ -15,13 +15,15 @@
 using namespace std;
 
 RegisterFile::RegisterFile(const int numOfRegisters) :   
-  numOfArchitecturalRegisters(numOfRegisters) 
+  numOfArchitecturalRegisters(numOfRegisters),
+  registers(new int[numOfArchitecturalRegisters]),
+  scoreBoard(new int[numOfArchitecturalRegisters])
 {
-  registers = new int[numOfArchitecturalRegisters];
+  //zero out the register valeus
   for(int i = 0; i < numOfArchitecturalRegisters; i++) {
     registers[i] = 0;
   }
-  scoreBoard = new int[numOfArchitecturalRegisters];
+  //set all scoreboard values to 1
   for(int i = 0; i < numOfArchitecturalRegisters; i++) {
     scoreBoard[i] = 1;
   }

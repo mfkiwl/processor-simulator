@@ -29,6 +29,8 @@ class Model {
     const int memorySize;
     const int aluReservationStationSize;
 
+    int a;
+
     //general stats
     int noOfInstructionsExecuted;
     int noOfClockCycles;

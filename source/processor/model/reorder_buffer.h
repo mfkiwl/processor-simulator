@@ -26,15 +26,15 @@ class ReorderBuffer {
     int* const flushFlag;
     int* const runningFlag;
 
-    int** buffer;
     const int size;
+    int** const buffer;
     int head;
     int tail;
 
     const int bufferEntryFields;
 
     //stores the original instruction issued
-    Instruction* instructions;
+    Instruction* const instructions;
 
     //no of instruction executed by the processor
     int* const noOfInstructionsExecuted;

@@ -23,13 +23,14 @@ ReorderBuffer::ReorderBuffer(RegisterFile* const registerFile, Memory* const mem
   flushFlag(flushFlag),
   runningFlag(runningFlag),
   size(100),
+  buffer(new int*[size]),
   head(0),
   tail(0),
   bufferEntryFields(4),
+  instructions(new Instruction[size]),
   noOfInstructionsExecuted(noOfInstructionsExecuted)
 {
   //dynamically allocated a 2d array to the read and write buffer
-  buffer = new int*[size];
   for(int i = 0; i < size; i++) {
     buffer[i] = new int[bufferEntryFields];
   }
@@ -39,8 +40,6 @@ ReorderBuffer::ReorderBuffer(RegisterFile* const registerFile, Memory* const mem
       buffer[i][j] = -1;
     }
   }
-  //allocate memory to the list of inflight instructions
-  instructions = new Instruction[size];
   //initialise all of the instructions
   for(int i = 0; i < size; i++) {
     instructions[i] = (Instruction) {0,0,0,0};

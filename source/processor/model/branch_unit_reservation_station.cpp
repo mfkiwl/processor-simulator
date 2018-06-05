@@ -18,24 +18,20 @@ BranchUnitReservationStation::BranchUnitReservationStation(RegisterFile* const r
   registerFile(registerFile),
   branchUnit(branchUnit),
   size(4),
+  instructions(new Instruction[size]),
+  reorderBufferIndexes(new int[size]),
   opcode(0),
   reorderBufferIndex(-1)
 {
-  //allocate memory to the buffer
-  instructions = new Instruction[size];
-  //inialise all instructions to NOOPs
+  //set all instructions to NOOPs
   for(int i = 0; i < size; i++) {
     instructions[i] = (Instruction) {0,0,0,0};
   }
-  //allocate memory to the reorder buffer indexes array
-  reorderBufferIndexes = new int[size];
-  //initialise all reorder buffer indexes to -1
+  //set all reorder buffer indexes to -1
   for(int i = 0; i < size; i++) {
     reorderBufferIndexes[i] = -1;
   }
-  //allocate memory for the operands array
-  operands = new int[3];
-  //initialising operands
+  //zero out operands
   for(int i = 0; i < 3; i++) {
     operands[i] = 0;
   }
@@ -151,7 +147,6 @@ int BranchUnitReservationStation::readyToDispatch(const Instruction instruction)
 void BranchUnitReservationStation::dispatch(const Instruction instruction) {
   //getting the opcode and incomplete operands from the instruction
   opcode = instruction.opcode;
-  operands = new int[3];
   for(int i = 0; i < 3; i++) {
     operands[i] = instruction.operands[i];
   }
