@@ -47,6 +47,7 @@ class View {
     int numOfRegisters;
     int memorySize;
     int aluReservationStationSize;
+    int branchUnitReservationStationSize;
 
   public:
 
@@ -83,6 +84,8 @@ class View {
 
     void drawAluReservationStation(const Instruction* const instructions);
 
+    void drawBranchUnitReservationStation(const Instruction* const instructions);
+
     void clearScreen();
 
     void updateScreen();
@@ -90,7 +93,7 @@ class View {
     //============================================
     // getter functions
 
-    int hasQuit();
+    int hasQuit() const;
 
     //============================================
     // setter functions
@@ -100,6 +103,8 @@ class View {
     void setMemorySize(const int n);
 
     void setAluReservationStationSize(const int n);
+
+    void setBranchUnitReservationStationSize(const int n);
 };
 
 #endif

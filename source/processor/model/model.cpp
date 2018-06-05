@@ -16,6 +16,8 @@ Model::Model(const Instructions instructions) :
   numOfRegisters(16),
   memorySize(24),
   aluReservationStationSize(4),
+  branchUnitReservationStationSize(4),
+  decodeIssueUnitReservationStationSize(4),
 
   //general stats
   noOfInstructionsExecuted(0),
@@ -42,7 +44,7 @@ Model::Model(const Instructions instructions) :
   alu(&reorderBuffer),
   aluReservationStation(&registerFile, &alu, aluReservationStationSize),
   branchUnit(&reorderBuffer),
-  branchUnitReservationStation(&registerFile, &branchUnit),
+  branchUnitReservationStation(&registerFile, &branchUnit, branchUnitReservationStationSize),
   loadStoreUnit(&memory, &reorderBuffer),
   loadStoreUnitReservationStation(&registerFile, &reorderBuffer, &loadStoreUnit)
 {}
@@ -203,6 +205,10 @@ int Model::getAluReservationStationSize() const {
   return aluReservationStationSize;
 }
 
+int Model::getBranchUnitReservationStationSize() const {
+  return branchUnitReservationStationSize;
+}
+
 int Model::getRunningFlag() const {
   return runningFlag;
 }
@@ -241,4 +247,8 @@ Instruction Model::getDecodeIssueUnitInstruction() const {
 
 void Model::getAluReservationStationInstructions(Instruction* const copy) const {
   aluReservationStation.getCurrentInstructions(copy);
+}
+
+void Model::getBranchUnitReservationStationInstructions(Instruction* const copy) const {
+  branchUnitReservationStation.getCurrentInstructions(copy);
 }

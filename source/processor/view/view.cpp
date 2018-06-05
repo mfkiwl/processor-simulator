@@ -177,7 +177,7 @@ void View::drawRegisterFile(const int* const registerValues) {
   int noOfHorizontalCells = numOfRegisters;
   int noOfVerticalCells = 2;
   int xPos = 40;
-  int yPos = 250;
+  int yPos = 300;
   int cellWidth = 30;
   int cellHeight = 20;
   int textCellWidth = 80;
@@ -212,7 +212,7 @@ void View::drawMemory(const int* const memoryValues) {
   int noOfHorizontalCells = memorySize;
   int noOfVerticalCells = 2;
   int xPos = 40;
-  int yPos = 300;
+  int yPos = 350;
   int cellWidth = 20;
   int cellHeight = 20;
   int textCellWidth = 80;
@@ -288,6 +288,20 @@ void View::drawAluReservationStation(const Instruction* const instructions) {
   }
 }
 
+void View::drawBranchUnitReservationStation(const Instruction* const instructions) {
+  int xPos = 0;
+  int yPos = 200;
+  int xOffset = 250;
+  int ySpace = 20;
+
+  std::string text = "Branch Unit ReservationStation : ";
+  renderText(xPos, yPos, text);
+
+  for(int i = 0; i < branchUnitReservationStationSize; i++) {
+    renderText(xPos + xOffset, yPos + i * ySpace, instructionToString(instructions[i]));
+  }
+}
+
 void View::clearScreen() {
   SDL_RenderClear(gRenderer);
 }
@@ -299,7 +313,7 @@ void View::updateScreen() {
 //====================================
 // getter functions
 
-int View::hasQuit() {
+int View::hasQuit() const {
   return quit;
 }
 
@@ -316,4 +330,8 @@ void View::setMemorySize(const int n) {
 
 void View::setAluReservationStationSize(const int n) {
   aluReservationStationSize = n;
+}
+
+void View::setBranchUnitReservationStationSize(const int n) {
+  branchUnitReservationStationSize = n;
 }

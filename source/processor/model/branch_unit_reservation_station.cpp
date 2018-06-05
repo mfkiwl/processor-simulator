@@ -14,10 +14,10 @@
 //===========================================
 //class implementation
 
-BranchUnitReservationStation::BranchUnitReservationStation(RegisterFile* const registerFile, BranchUnit* const branchUnit) : 
+BranchUnitReservationStation::BranchUnitReservationStation(RegisterFile* const registerFile, BranchUnit* const branchUnit, const int size) : 
   registerFile(registerFile),
   branchUnit(branchUnit),
-  size(4),
+  size(size),
   instructions(new Instruction[size]),
   reorderBufferIndexes(new int[size]),
   opcode(0),
@@ -115,6 +115,12 @@ void BranchUnitReservationStation::print() const {
     if(instructions[i].opcode != NOOP) {
       printInstruction(instructions[i]);
     }
+  }
+}
+
+void BranchUnitReservationStation::getCurrentInstructions(Instruction* const copy) const {
+  for(int i = 0; i < size; i++) {
+    copy[i] = instructions[i];
   }
 }
 

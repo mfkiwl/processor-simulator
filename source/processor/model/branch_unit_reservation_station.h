@@ -27,7 +27,7 @@ class BranchUnitReservationStation {
     int reorderBufferIndex;
 
   public:
-    BranchUnitReservationStation(RegisterFile* const registerFile, BranchUnit* const branchUnit);
+    BranchUnitReservationStation(RegisterFile* const registerFile, BranchUnit* const branchUnit, const int size);
 
     void execute();
 
@@ -40,6 +40,8 @@ class BranchUnitReservationStation {
     void flush();
 
     void print() const;
+
+    void getCurrentInstructions(Instruction* const copy) const;
 
   private:
 

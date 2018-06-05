@@ -19,6 +19,7 @@ Controller::Controller(const Instructions instructions) :
   view.setNumOfRegisters(model.getNumOfRegisters());
   view.setMemorySize(model.getMemorySize());
   view.setAluReservationStationSize(model.getAluReservationStationSize());
+  view.setBranchUnitReservationStationSize(model.getBranchUnitReservationStationSize());
 }
 
 //the original main function for the processor model
@@ -107,6 +108,11 @@ void Controller::updateView() {
   Instruction aluReservationStationInstructions[model.getAluReservationStationSize()];
   model.getAluReservationStationInstructions(aluReservationStationInstructions);
   view.drawAluReservationStation(aluReservationStationInstructions);
+
+  //draw the instructions in the branch unit reservation station
+  Instruction branchUnitReservationStationInstructions[model.getBranchUnitReservationStationSize()];
+  model.getBranchUnitReservationStationInstructions(branchUnitReservationStationInstructions);
+  view.drawBranchUnitReservationStation(branchUnitReservationStationInstructions);
 
   //draw the register file
   int registerValues[model.getNumOfRegisters()];

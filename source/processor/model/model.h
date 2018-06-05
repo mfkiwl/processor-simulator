@@ -28,8 +28,8 @@ class Model {
     const int numOfRegisters;
     const int memorySize;
     const int aluReservationStationSize;
-
-    int a;
+    const int branchUnitReservationStationSize;
+    const int decodeIssueUnitReservationStationSize;
 
     //general stats
     int noOfInstructionsExecuted;
@@ -92,6 +92,8 @@ class Model {
 
     int getAluReservationStationSize() const;
 
+    int getBranchUnitReservationStationSize() const;
+
     int getMemorySize() const;
 
     int getNoOfInstructionsExecuted() const;
@@ -111,6 +113,8 @@ class Model {
     Instruction getDecodeIssueUnitInstruction() const;
 
     void getAluReservationStationInstructions(Instruction* const copy) const;
+
+    void getBranchUnitReservationStationInstructions(Instruction* const copy) const;
 };
 
 #endif
