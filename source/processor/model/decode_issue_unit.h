@@ -19,14 +19,15 @@ class LoadStoreUnit;
 //===========================
 //class declaration
 class DecodeIssueUnit {
+
+  private:
     
     //forward components
-    RegisterFile* registerFile;
-    ReorderBuffer* reorderBuffer;
-    ALUReservationStation* aluReservationStation;
-    BranchUnitReservationStation* branchUnitReservationStation;
-    LoadStoreUnitReservationStation* loadStoreUnitReservationStation;
-    LoadStoreUnit* loadStoreUnit;
+    RegisterFile* const registerFile;
+    ReorderBuffer* const reorderBuffer;
+    ALUReservationStation* const aluReservationStation;
+    BranchUnitReservationStation* const branchUnitReservationStation;
+    LoadStoreUnitReservationStation* const loadStoreUnitReservationStation;
 
     //Instruction given from the fetch unit
     Instruction nextInstruction;
@@ -37,10 +38,10 @@ class DecodeIssueUnit {
     int reorderBufferIndex;
 
     //tells the processor whether or not to block the pipeline
-    int* blockingFlag;
+    int* const blockingFlag;
 
   public:
-    DecodeIssueUnit(RegisterFile* registerFile, ReorderBuffer* reorderBuffer, ALUReservationStation* aluReservationStation, BranchUnitReservationStation* branchUnitReservationStation, LoadStoreUnitReservationStation* loadStoreUnitReservationStation, int* blockingFlag);
+    DecodeIssueUnit(RegisterFile* const registerFile, ReorderBuffer* const reorderBuffer, ALUReservationStation* const aluReservationStation, BranchUnitReservationStation* const branchUnitReservationStation, LoadStoreUnitReservationStation* const loadStoreUnitReservationStation, int* const blockingFlag);
 
     void execute();
 
@@ -48,13 +49,13 @@ class DecodeIssueUnit {
 
     void pipe();
 
-    void print();
+    void print() const;
 
-    void setNextInstruction(Instruction x);
+    void setNextInstruction(const Instruction x);
 
     void flush();
 
-    Instruction getCurrentInstruction();
+    Instruction getCurrentInstruction() const;
 
 };
 

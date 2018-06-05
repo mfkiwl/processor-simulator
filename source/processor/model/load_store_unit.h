@@ -17,17 +17,19 @@ class ReorderBuffer;
 //class declaration
 class LoadStoreUnit {
 
+  private:
+
     //forward components
-    Memory* memory;
-    ReorderBuffer* reorderBuffer;
+    Memory* const memory;
+    ReorderBuffer* const reorderBuffer;
 
     //decoded instruction
     int opcode;
     int operands[3];
 
-    int bufferSize;
-    int writeCycles;
-    int readCycles;
+    const int bufferSize;
+    const int writeCycles;
+    const int readCycles;
 
     //Read and write buffers to store load and store instruciton in operation
     StoreBuffer storeBuffer;
@@ -37,21 +39,21 @@ class LoadStoreUnit {
     int reorderBufferIndex;
 
   public:
-    LoadStoreUnit(Memory* memory, ReorderBuffer* reorderBuffer);
+    LoadStoreUnit(Memory* const memory, ReorderBuffer* const reorderBuffer);
 
     void execute();
 
     void pipe();
 
-    void setOpcode(int x);
+    void setOpcode(const int x);
 
-    void setOperands(int x[3]);
+    void setOperands(const int x[3]);
 
     void flush();
 
-    void setReorderBufferIndex(int i);
+    void setReorderBufferIndex(const int i);
 
-    int waitingForStore();
+    int waitingForStore() const ;
 };
 
 #endif

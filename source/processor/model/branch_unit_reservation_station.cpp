@@ -14,7 +14,7 @@
 //===========================================
 //class implementation
 
-BranchUnitReservationStation::BranchUnitReservationStation(RegisterFile* registerFile, BranchUnit* branchUnit) : 
+BranchUnitReservationStation::BranchUnitReservationStation(RegisterFile* const registerFile, BranchUnit* const branchUnit) : 
   registerFile(registerFile),
   branchUnit(branchUnit),
   size(4),
@@ -62,7 +62,7 @@ void BranchUnitReservationStation::execute() {
   }
 }
 
-void BranchUnitReservationStation::addInstruction(Instruction instruction, int rbi) {
+void BranchUnitReservationStation::addInstruction(const Instruction instruction, const int rbi) {
   //printf("ADDED INSTRUCTION: ");
   //printInstruction(instruction);
   int index = findFreePosition();
@@ -113,7 +113,7 @@ void BranchUnitReservationStation::flush() {
   reorderBufferIndex = -1;
 }
 
-void BranchUnitReservationStation::print() {
+void BranchUnitReservationStation::print() const {
   printf("Branch Unit reservation station::\n");
   for(int i = 0; i < size; i++) {
     if(instructions[i].opcode != NOOP) {
@@ -122,7 +122,7 @@ void BranchUnitReservationStation::print() {
   }
 }
 
-int BranchUnitReservationStation::readyToDispatch(Instruction instruction) {
+int BranchUnitReservationStation::readyToDispatch(const Instruction instruction) const {
   //check that the source register are ready to use
   switch(instruction.opcode) {
     case BEQ:
@@ -148,7 +148,7 @@ int BranchUnitReservationStation::readyToDispatch(Instruction instruction) {
   return 0;
 }
 
-void BranchUnitReservationStation::dispatch(Instruction instruction) {
+void BranchUnitReservationStation::dispatch(const Instruction instruction) {
   //getting the opcode and incomplete operands from the instruction
   opcode = instruction.opcode;
   operands = new int[3];

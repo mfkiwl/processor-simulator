@@ -14,18 +14,20 @@ class DecodeIssueUnit;
 //===========================
 //class declaration
 class FetchUnit {
+
+  private:
     
-    Instructions instructions;
-    int* pc;
-    DecodeIssueUnit* decodeIssueUnit;
+    const Instructions instructions;
+    int* const pc;
+    DecodeIssueUnit* const decodeIssueUnit;
     Instruction currentInstruction;
 
   public:
-    FetchUnit(Instructions instructions, int* pc, DecodeIssueUnit* decodeIssueUnit);
+    FetchUnit(const Instructions instructions, int* const pc, DecodeIssueUnit* const decodeIssueUnit);
 
     void execute();
 
-    void print();
+    void print() const;
 
     void pipe();
 
@@ -33,7 +35,8 @@ class FetchUnit {
 
     //=============================
     // getter functions
-    Instruction getCurrentInstruction();
+    
+    Instruction getCurrentInstruction() const;
 };
 
 #endif

@@ -16,30 +16,35 @@ struct Instruction {
 };
 
 class Instructions {
+
+  private:
+
     int numOfInstructions;
     Instruction* instructions;
 
-public:
-    Instructions(std::string inputFileName);
+  public:
+    Instructions(const std::string inputFileName);
 
-    int getNumOfInstructions();
+    int getNumOfInstructions() const;
 
-    Instruction* getInstructions();
+    Instruction* getInstructions() const;
 
-    Instruction at(int i);
+    Instruction at(const int i) const;
 
     private:
 
     //return the number of instruction in the given file
-    void loadNumOfInstructions(std::string inputFileName);
+    void loadNumOfInstructions(const std::string inputFileName);
 
     //return an array of Instructions which contain the instructions in the given file
-    void loadInstructions(std::string inputFileName);
+    void loadInstructions(const std::string inputFileName);
 
 };
 
-void printInstruction(Instruction instruction);
+void printInstruction(const Instruction instruction);
 
-std::string instructionToString(Instruction instruction);
+std::string intToString(const int i);
+
+std::string instructionToString(const Instruction instruction);
 
 #endif

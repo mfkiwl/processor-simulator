@@ -14,7 +14,7 @@
 //===========================================
 //class implementation
 
-LoadStoreUnitReservationStation::LoadStoreUnitReservationStation(RegisterFile* registerFile, ReorderBuffer* reorderBuffer, LoadStoreUnit* loadStoreUnit) : 
+LoadStoreUnitReservationStation::LoadStoreUnitReservationStation(RegisterFile* const registerFile, ReorderBuffer* const reorderBuffer, LoadStoreUnit* const loadStoreUnit) : 
   registerFile(registerFile),
   reorderBuffer(reorderBuffer),
   loadStoreUnit(loadStoreUnit),
@@ -61,7 +61,7 @@ void LoadStoreUnitReservationStation::execute() {
   }
 }
 
-void LoadStoreUnitReservationStation::addInstruction(Instruction instruction, int rbi) {
+void LoadStoreUnitReservationStation::addInstruction(const Instruction instruction, const int rbi) {
   //printf("ADDED INSTRUCTION: ");
   //printInstruction(instruction);
   instructions[head] = instruction;
@@ -69,7 +69,7 @@ void LoadStoreUnitReservationStation::addInstruction(Instruction instruction, in
   head = (head + 1) % size;
 }
 
-int LoadStoreUnitReservationStation::spaceInQueue() {
+int LoadStoreUnitReservationStation::spaceInQueue() const {
   if(tail == head && instructions[head].opcode != NOOP) {
     return 0;
   }
@@ -109,7 +109,7 @@ void LoadStoreUnitReservationStation::flush() {
   reorderBufferIndex = -1;
 }
 
-void LoadStoreUnitReservationStation::print() {
+void LoadStoreUnitReservationStation::print() const {
   printf("Load/Store Unit reservation station:\n");
   for(int i = 0; i < size; i++) {
     if(instructions[i].opcode != NOOP) {
@@ -118,7 +118,7 @@ void LoadStoreUnitReservationStation::print() {
   }
 }
 
-int LoadStoreUnitReservationStation::readyToDispatch(int index) {
+int LoadStoreUnitReservationStation::readyToDispatch(const int index) const {
   Instruction instruction = instructions[index];
   //check that the source register are ready to use
   switch(instruction.opcode) {
@@ -149,7 +149,7 @@ int LoadStoreUnitReservationStation::readyToDispatch(int index) {
 }
 
 //dispatch bound fetch
-void LoadStoreUnitReservationStation::dispatch(int index) {
+void LoadStoreUnitReservationStation::dispatch(const int index) {
   Instruction instruction = instructions[index];
   //getting the opcode and incomplete operands from the instruction
   opcode = instruction.opcode;

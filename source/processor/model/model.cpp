@@ -12,7 +12,7 @@
 
 using namespace std;
 
-Model::Model(Instructions instructions) : 
+Model::Model(const Instructions instructions) : 
 
   //processor configuration
   numOfRegisters(16),
@@ -41,13 +41,25 @@ Model::Model(Instructions instructions) :
   reorderBuffer(&registerFile, &memory, &pc, &flushFlag, &runningFlag, &noOfInstructionsExecuted),
   fetchUnit(instructions, &pc, &decodeIssueUnit),
   decodeIssueUnit(&registerFile, &reorderBuffer, &aluReservationStation, &branchUnitReservationStation, &loadStoreUnitReservationStation, &decodeUnitBlockingFlag),
-  alu(&registerFile, &reorderBuffer),
+  alu(&reorderBuffer),
   aluReservationStation(&registerFile, &alu, aluReservationStationSize),
   branchUnit(&reorderBuffer),
   branchUnitReservationStation(&registerFile, &branchUnit),
   loadStoreUnit(&memory, &reorderBuffer),
   loadStoreUnitReservationStation(&registerFile, &reorderBuffer, &loadStoreUnit)
 {}
+
+void Model::updateStats() {
+  //increment the number of clock cycles performed
+  noOfClockCycles++;
+  //calculate the number of instructions exected per clock cycles
+  if(noOfClockCycles == 0) {
+    noOfInstructionsPerCycle = 0;
+  }
+  else {
+    noOfInstructionsPerCycle = (float) noOfInstructionsExecuted / (float) noOfClockCycles;
+  }
+}
 
 void Model::cycle() {
   //writeback the results
@@ -86,8 +98,7 @@ void Model::cycle() {
   branchUnitReservationStation.pipe();
   loadStoreUnitReservationStation.pipe();
 
-  //update info
-  noOfClockCycles++;
+  updateStats();
 
   //print register info
   printInfo();
@@ -161,18 +172,10 @@ void Model::flushPipeline() {
   printf("FLUSHING PIPELINE!\n");
 }
 
-void Model::printInfo() {
-
+void Model::printInfo() const {
   printf("______________________________________\n\n");
-
   printf("Number of instructions executed: %d\n", noOfInstructionsExecuted);
   printf("Number of clock cycles: %d\n", noOfClockCycles);
-  if(noOfClockCycles == 0) {
-    noOfInstructionsPerCycle = 0;
-  }
-  else {
-    noOfInstructionsPerCycle = (float) noOfInstructionsExecuted / (float) noOfClockCycles;
-  }
   printf("Instruction per cycle: %.2f\n", noOfInstructionsPerCycle);
   printf("\n");
   printf("PC: %d\n", pc);
@@ -190,54 +193,54 @@ void Model::printInfo() {
 //=============================================
 // getter functions
 
-int Model::getNumOfRegisters() {
+int Model::getNumOfRegisters() const {
   return numOfRegisters;
 }
 
-int Model::getMemorySize() {
+int Model::getMemorySize() const {
   return memorySize;
 }
 
-int Model::getAluReservationStationSize() {
+int Model::getAluReservationStationSize() const {
   return aluReservationStationSize;
 }
 
-int Model::getRunningFlag() {
+int Model::getRunningFlag() const {
   return runningFlag;
 }
 
-int Model::getNoOfInstructionsExecuted() {
+int Model::getNoOfInstructionsExecuted() const {
   return noOfInstructionsExecuted;
 }
 
-int Model::getNoOfClockCycles() {
+int Model::getNoOfClockCycles() const {
   return noOfClockCycles;
 }
 
-float Model::getNoOfInstructionsExecutedPerCycle() {
+float Model::getNoOfInstructionsExecutedPerCycle() const {
   return noOfInstructionsPerCycle;
 }
 
-int Model::getPC() {
+int Model::getPC() const {
   return pc;
 }
 
-void Model::getAllRegisterValues(int* copy) {
+void Model::getAllRegisterValues(int* const copy) const {
   registerFile.getAllRegisterValues(copy);
 }
 
-void Model::getAllMemoryValues(int* copy) {
+void Model::getAllMemoryValues(int* const copy) const {
   memory.getAllMemoryValues(copy);
 }
 
-Instruction Model::getFetchUnitInstruction() {
+Instruction Model::getFetchUnitInstruction() const {
   return fetchUnit.getCurrentInstruction();
 }
 
-Instruction Model::getDecodeIssueUnitInstruction() {
+Instruction Model::getDecodeIssueUnitInstruction() const {
   return decodeIssueUnit.getCurrentInstruction();
 }
 
-void Model::getAluReservationStationInstructions(Instruction* copy) {
+void Model::getAluReservationStationInstructions(Instruction* const copy) const {
   aluReservationStation.getCurrentInstructions(copy);
 }

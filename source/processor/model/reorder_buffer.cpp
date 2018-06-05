@@ -16,7 +16,7 @@
 
 using namespace std;
 
-ReorderBuffer::ReorderBuffer(RegisterFile* registerFile, Memory* memory, int* pc, int* flushFlag, int* runningFlag, int* noOfInstructionsExecuted) : 
+ReorderBuffer::ReorderBuffer(RegisterFile* const registerFile, Memory* const memory, int* const pc, int* const flushFlag, int* const runningFlag, int* const noOfInstructionsExecuted) : 
   registerFile(registerFile),
   memory(memory),
   pc(pc),
@@ -47,7 +47,7 @@ ReorderBuffer::ReorderBuffer(RegisterFile* registerFile, Memory* memory, int* pc
   }
 }
 
-int ReorderBuffer::addEntry(Type type, int destination, Instruction instruction) {
+int ReorderBuffer::addEntry(const Type type, const int destination, const Instruction instruction) {
   buffer[head][TYPE] = type;
   buffer[head][DESTINATION] = destination;
   buffer[head][RESULT] = 0;
@@ -58,7 +58,7 @@ int ReorderBuffer::addEntry(Type type, int destination, Instruction instruction)
   return index;
 }
 
-int ReorderBuffer::getTailIndex() {
+int ReorderBuffer::getTailIndex() const {
   return tail;
 }
 
@@ -93,27 +93,27 @@ void ReorderBuffer::retire() {
   }
 }
 
-void ReorderBuffer::resetEntry(int index) {
+void ReorderBuffer::resetEntry(const int index) {
   instructions[index] = (Instruction) {0,0,0,0};
   for(int i = 0; i < bufferEntryFields; i++) {
     buffer[index][i] = -1;
   }
 }
 
-void ReorderBuffer::executingEntry(int i) {
+void ReorderBuffer::executingEntry(const int i) {
   buffer[i][STATUS] = EXECUTING;
 }
 
-void ReorderBuffer::finishedEntry(int i, int result) {
+void ReorderBuffer::finishedEntry(const int i, const int result) {
   buffer[i][STATUS] = FINISHED;
   buffer[i][RESULT] = result;
 }
 
-void ReorderBuffer::setEntryResult(int i, int r) {
+void ReorderBuffer::setEntryResult(const int i, const int r) {
   buffer[i][RESULT] = r;
 }
 
-void ReorderBuffer::writeResult(int i, int r) {
+void ReorderBuffer::writeResult(const int i, const int r) {
   buffer[i][RESULT] = r;
 }
 
@@ -129,12 +129,12 @@ void ReorderBuffer::flush() {
   tail = 0;
 }
 
-void ReorderBuffer::printTail() {
+void ReorderBuffer::printTail() const {
   printf("REORDER BUFFER TAIL:");
   printInstruction(instructions[tail]);
 }
 
-void ReorderBuffer::print() {
+void ReorderBuffer::print() const {
   printf("Reorder Buffer:\n");
   for(int i = tail; i < head; i++) {
     if(buffer[i][STATUS] == FINISHED) {

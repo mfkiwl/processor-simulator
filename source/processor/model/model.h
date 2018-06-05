@@ -22,6 +22,8 @@
 //class declaration
 class Model {
 
+  private:
+
     //processor configuration
     const int numOfRegisters;
     const int memorySize;
@@ -57,7 +59,9 @@ class Model {
     LoadStoreUnitReservationStation loadStoreUnitReservationStation;
 
   public:
-    Model(Instructions instructions);
+    Model(const Instructions instructions);
+
+    void updateStats();
 
     void cycle();
 
@@ -75,36 +79,36 @@ class Model {
 
     void flushPipeline();
 
-    void printInfo();
+    void printInfo() const;
 
     //===============================
     // getter functions
 
-    int getRunningFlag();
+    int getRunningFlag() const;
 
-    int getNumOfRegisters();
+    int getNumOfRegisters() const;
 
-    int getAluReservationStationSize();
+    int getAluReservationStationSize() const;
 
-    int getMemorySize();
+    int getMemorySize() const;
 
-    int getNoOfInstructionsExecuted();
+    int getNoOfInstructionsExecuted() const;
 
-    int getNoOfClockCycles();
+    int getNoOfClockCycles() const;
 
-    float getNoOfInstructionsExecutedPerCycle();
+    float getNoOfInstructionsExecutedPerCycle() const;
 
-    int getPC();
+    int getPC() const;
 
-    void getAllRegisterValues(int* copy);
+    void getAllRegisterValues(int* const copy) const;
 
-    void getAllMemoryValues(int* copy);
+    void getAllMemoryValues(int* const copy) const;
 
-    Instruction getFetchUnitInstruction();
+    Instruction getFetchUnitInstruction() const;
 
-    Instruction getDecodeIssueUnitInstruction();
+    Instruction getDecodeIssueUnitInstruction() const;
 
-    void getAluReservationStationInstructions(Instruction* copy);
+    void getAluReservationStationInstructions(Instruction* const copy) const;
 };
 
 #endif

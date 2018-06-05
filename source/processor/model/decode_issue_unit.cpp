@@ -16,7 +16,7 @@
 //===========================================
 //class implementation
 
-DecodeIssueUnit::DecodeIssueUnit(RegisterFile* registerFile, ReorderBuffer* reorderBuffer, ALUReservationStation* aluReservationStation, BranchUnitReservationStation* branchUnitReservationStation, LoadStoreUnitReservationStation* loadStoreUnitReservationStation, int* blockingFlag) :
+DecodeIssueUnit::DecodeIssueUnit(RegisterFile* const registerFile, ReorderBuffer* const reorderBuffer, ALUReservationStation* const aluReservationStation, BranchUnitReservationStation* const branchUnitReservationStation, LoadStoreUnitReservationStation* const loadStoreUnitReservationStation, int* const blockingFlag) :
   registerFile(registerFile),
   reorderBuffer(reorderBuffer),
   aluReservationStation(aluReservationStation),
@@ -172,12 +172,12 @@ void DecodeIssueUnit::pipe() {
   }
 }
 
-void DecodeIssueUnit::print() {
+void DecodeIssueUnit::print() const {
   printf("DECODE ISSUE UNIT:");
   printInstruction(currentInstruction);
 }
 
-void DecodeIssueUnit::setNextInstruction(Instruction x) {
+void DecodeIssueUnit::setNextInstruction(const Instruction x) {
   nextInstruction = x;
 }
 
@@ -186,6 +186,6 @@ void DecodeIssueUnit::flush() {
   currentInstruction = (Instruction) {0,0,0,0};
 }
 
-Instruction DecodeIssueUnit::getCurrentInstruction() {
+Instruction DecodeIssueUnit::getCurrentInstruction() const {
   return currentInstruction;
 }

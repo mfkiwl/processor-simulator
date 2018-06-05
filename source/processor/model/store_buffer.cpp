@@ -10,19 +10,13 @@
 //===========================================
 //class implementation
 
-StoreBuffer::StoreBuffer(Memory* memory, ReorderBuffer* reorderBuffer, int size, int steps) : 
+StoreBuffer::StoreBuffer(Memory* const memory, ReorderBuffer* const reorderBuffer, const int size, const int steps) : 
   memory(memory),
   reorderBuffer(reorderBuffer),
   size(size),
   head(0),
   tail(0),
-  steps(steps),
-  entryFields(4),
-  ADDRESS(0),
-  VALUE(1),
-  REORDER_BUFFER_INDEX(2),
-  STEP(3),
-  numberReady(0)
+  steps(steps)
 {
   //dynamically allocated a 2d array to the read and write buffer
   buffer = new int*[size];
@@ -48,7 +42,7 @@ void StoreBuffer::flush() {
   tail = 0;
 }
 
-void StoreBuffer::addToBuffer(int address, int value, int reorderBufferIndex) {
+void StoreBuffer::addToBuffer(const int address, const int value, const int reorderBufferIndex) {
   //if the start of the buffer is empty then add here
   if(head > 0) {
     head -= 1;
@@ -74,19 +68,8 @@ void StoreBuffer::stepInstructions() {
   }
 }
 
-void StoreBuffer::checkIfReady() {
-  numberReady = 0;
-  //check if each entry in the buffer is ready to write
-  for(int i = head; i < tail; i++) {
-    if(buffer[i][STEP] >= steps) {
-      numberReady++;
-    }
-  }
-}
-
-int StoreBuffer::waitingForStore() {
-  checkIfReady();
-  if((tail - head) != numberReady) {
+int StoreBuffer::waitingForStore() const {
+  if(tail != head) {
     return 1;
   }
   else {

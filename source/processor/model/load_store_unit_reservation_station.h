@@ -14,13 +14,13 @@ class Instruction;
 //class declaration
 class LoadStoreUnitReservationStation {
 
-    RegisterFile* registerFile;
-    ReorderBuffer* reorderBuffer;
-    LoadStoreUnit* loadStoreUnit;
+    RegisterFile* const registerFile;
+    ReorderBuffer* const reorderBuffer;
+    LoadStoreUnit* const loadStoreUnit;
 
     int tail;
     int head;
-    int size;
+    const int size;
     Instruction* instructions;
     int* reorderBufferIndexes;
 
@@ -29,26 +29,26 @@ class LoadStoreUnitReservationStation {
     int reorderBufferIndex;
 
   public:
-    LoadStoreUnitReservationStation(RegisterFile* registerFile, ReorderBuffer* reorderBuffer, LoadStoreUnit* loadStoreUnit);
+    LoadStoreUnitReservationStation(RegisterFile* const registerFile, ReorderBuffer* const reorderBuffer, LoadStoreUnit* const loadStoreUnit);
 
     void execute();
 
-    void addInstruction(Instruction instruction, int rbi);
+    void addInstruction(const Instruction instruction, const int rbi);
 
-    int spaceInQueue();
+    int spaceInQueue() const;
 
     void pipe();
 
     void flush();
 
-    void print();
+    void print() const;
 
   private:
 
-    int readyToDispatch(int index);
+    int readyToDispatch(const int index) const;
 
     //dispatch bound fetch
-    void dispatch(int index);
+    void dispatch(const int index);
 
 };
 

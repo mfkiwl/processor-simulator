@@ -10,19 +10,13 @@
 //===========================================
 //class implementation
 
-LoadBuffer::LoadBuffer(Memory* memory, ReorderBuffer* reorderBuffer, int size, int steps) : 
+LoadBuffer::LoadBuffer(Memory* const memory, ReorderBuffer* const reorderBuffer, const int size, const int steps) : 
   memory(memory),
   reorderBuffer(reorderBuffer),
   size(size),
   head(0),
   tail(0),
-  steps(steps),
-  entryFields(4),
-  DESTINATION(0),
-  ADDRESS(1),
-  REORDER_BUFFER_INDEX(2),
-  STEP(3),
-  numberReady(0)
+  steps(steps)
 {
   //dynamically allocated a 2d array to the read and write buffer
   buffer = new int*[size];
@@ -55,18 +49,7 @@ void LoadBuffer::stepInstructions() {
   }
 }
 
-void LoadBuffer::checkIfReady() {
-  numberReady = 0;
-  //check if each entry in the buffer is ready to write
-  for(int i = head; i < tail; i++) {
-    if(buffer[i][STEP] >= steps) {
-      numberReady++;
-    }
-  }
-}
-
-int LoadBuffer::waitingForReadOperation() {
-  checkIfReady();
+int LoadBuffer::waitingForReadOperation() const {
   if(head != tail) {
     return 1;
   }
@@ -75,7 +58,7 @@ int LoadBuffer::waitingForReadOperation() {
   }
 }
 
-void LoadBuffer::addToBuffer(int destinationRegister, int address, int reorderBufferIndex) {
+void LoadBuffer::addToBuffer(const int destinationRegister, const int address, const int reorderBufferIndex) {
   //if the start of the buffer is empty then add here
   if(head > 0) {
     head -= 1;

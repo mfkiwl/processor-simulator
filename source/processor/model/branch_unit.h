@@ -10,8 +10,10 @@ class ReorderBuffer;
 //===========================
 //class declaration
 class BranchUnit {
+
+  private:
 	
-    ReorderBuffer* reorderBuffer;
+    ReorderBuffer* const reorderBuffer;
 
     //decoded instruction
     int opcode;
@@ -24,19 +26,19 @@ class BranchUnit {
     int successful;
 
   public:
-    BranchUnit(ReorderBuffer* reorderBuffer);
+    BranchUnit(ReorderBuffer* const reorderBuffer);
 
     void execute();
 
     void pipe();
 
-    void setOpcode(int x);
+    void setOpcode(const int x);
 
-    void setOperands(int x[3]);
+    void setOperands(const int x[3]);
 
     void flush();
 
-    void setReorderBufferIndex(int i);
+    void setReorderBufferIndex(const int i);
 };
 
 #endif

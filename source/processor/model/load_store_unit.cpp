@@ -10,7 +10,7 @@
 //===========================================
 //class implementation
 
-LoadStoreUnit::LoadStoreUnit(Memory* memory, ReorderBuffer* reorderBuffer) :
+LoadStoreUnit::LoadStoreUnit(Memory* const memory, ReorderBuffer* const reorderBuffer) :
   memory(memory),
   reorderBuffer(reorderBuffer),
   opcode(0),
@@ -74,11 +74,11 @@ void LoadStoreUnit::pipe() {
   loadBuffer.readIfReady();
 }
 
-void LoadStoreUnit::setOpcode(int x) {
+void LoadStoreUnit::setOpcode(const int x) {
   opcode = x;
 }
 
-void LoadStoreUnit::setOperands(int x[3]) {
+void LoadStoreUnit::setOperands(const int x[3]) {
   for(int i = 0; i < 3; i++) {
     operands[i] = x[i];
   }
@@ -94,10 +94,10 @@ void LoadStoreUnit::flush() {
   loadBuffer.flush();
 }
 
-void LoadStoreUnit::setReorderBufferIndex(int i) {
+void LoadStoreUnit::setReorderBufferIndex(const int i) {
   reorderBufferIndex = i;
 }
 
-int LoadStoreUnit::waitingForStore() {
+int LoadStoreUnit::waitingForStore() const {
   return storeBuffer.waitingForStore();
 }

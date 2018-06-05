@@ -16,7 +16,7 @@
 
 using namespace std;
 
-ALUReservationStation::ALUReservationStation(RegisterFile* registerFile, ALU* alu, int size) : 
+ALUReservationStation::ALUReservationStation(RegisterFile* const registerFile, ALU* const alu, const int size) : 
   registerFile(registerFile),
   alu(alu),
   size(size),
@@ -63,7 +63,7 @@ void ALUReservationStation::execute() {
   }
 }
 
-void ALUReservationStation::addInstruction(Instruction instruction, int rbi) {
+void ALUReservationStation::addInstruction(const Instruction instruction, const int rbi) {
   //printf("ADDED INSTRUCTION: ");
   //printInstruction(instruction);
   int index = findFreePosition();
@@ -109,7 +109,7 @@ void ALUReservationStation::flush() {
   reorderBufferIndex = -1;
 }
 
-void ALUReservationStation::print() {
+void ALUReservationStation::print() const {
   printf("ALU reservation station:\n");
   for(int i = 0; i < size; i++) {
     if(instructions[i].opcode != NOOP) {
@@ -118,7 +118,13 @@ void ALUReservationStation::print() {
   }
 }
 
-int ALUReservationStation::readyToDispatch(Instruction instruction) {
+void ALUReservationStation::getCurrentInstructions(Instruction* const copy) const {
+  for(int i = 0; i < size; i++) {
+    copy[i] = instructions[i];
+  }
+}
+
+int ALUReservationStation::readyToDispatch(const Instruction instruction) const {
   //check that the source registers are ready to use
   switch(instruction.opcode) {
     case ADD:
@@ -142,7 +148,7 @@ int ALUReservationStation::readyToDispatch(Instruction instruction) {
   return 0;
 }
 
-void ALUReservationStation::dispatch(Instruction instruction) {
+void ALUReservationStation::dispatch(const Instruction instruction) {
   //getting the opcode and incomplete operands from the instruction
   opcode = instruction.opcode;
   operands = new int[3];
@@ -170,11 +176,5 @@ void ALUReservationStation::dispatch(Instruction instruction) {
       val = registerFile->getRegisterValue(registerNum);
       operands[1] = val;
       break;
-  }
-}
-
-void ALUReservationStation::getCurrentInstructions(Instruction* copy) {
-  for(int i = 0; i < size; i++) {
-    copy[i] = instructions[i];
   }
 }

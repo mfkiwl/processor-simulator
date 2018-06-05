@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <fstream>
+#include <sstream>
 
 #include "constants.h"
 
@@ -15,25 +16,25 @@
 
 using namespace std;
 
-Instructions::Instructions(std::string inputFileName) {
+Instructions::Instructions(const std::string inputFileName) {
   loadNumOfInstructions(inputFileName);
   loadInstructions(inputFileName);
 }
 
-int Instructions::getNumOfInstructions() {
+int Instructions::getNumOfInstructions() const {
   return numOfInstructions;
 }
 
-Instruction* Instructions::getInstructions() {
+Instruction* Instructions::getInstructions() const {
   return instructions;
 }
 
-Instruction Instructions::at(int i) {
+Instruction Instructions::at(const int i) const {
   return instructions[i];
 }
 
 //return the number of instruction in the given file
-void Instructions::loadNumOfInstructions(std::string inputFileName) {
+void Instructions::loadNumOfInstructions(const std::string inputFileName) {
   std::ifstream inputFile(inputFileName.c_str());
   if(inputFile.is_open()) {
     int i = 0;
@@ -49,7 +50,7 @@ void Instructions::loadNumOfInstructions(std::string inputFileName) {
   }
 }
 
-void Instructions::loadInstructions(std::string inputFileName) {
+void Instructions::loadInstructions(const std::string inputFileName) {
   //open file
   std::ifstream inputFile(inputFileName.c_str());
   //if file is open then get the instruction information from each line
@@ -97,7 +98,7 @@ void Instructions::loadInstructions(std::string inputFileName) {
   }
 }
 
-void printInstruction(Instruction instruction) {
+void printInstruction(const Instruction instruction) {
   switch(instruction.opcode) {
     case NOOP:
       printf("NOOP\n");
@@ -165,75 +166,83 @@ void printInstruction(Instruction instruction) {
   }
 }
 
-std::string instructionToString(Instruction instruction) {
+std::string intToString(const int i) {
+  std::stringstream ss;
+  ss << i;
+  std::string output = ss.str();
+  return output;
+}
+
+std::string instructionToString(const Instruction instruction) {
+  std::stringstream ss;
   switch(instruction.opcode) {
     case NOOP:
       return "NOOP";
       break;
     case ADD:
-      return "ADD R" + std::to_string(instruction.operands[0]) + " R" + std::to_string(instruction.operands[1]) + 
-      " R" + std::to_string(instruction.operands[2]);
+      return "ADD R" + intToString(instruction.operands[0]) + " R" + intToString(instruction.operands[1]) + 
+      " R" + intToString(instruction.operands[2]);
       break;
     case ADDI:
-      return "ADDI R" + std::to_string(instruction.operands[0]) + " R" + std::to_string(instruction.operands[1]) + 
-      " " + std::to_string(instruction.operands[2]);
+      return "ADDI R" + intToString(instruction.operands[0]) + " R" + intToString(instruction.operands[1]) + 
+      " " + intToString(instruction.operands[2]);
       break;
     case AND:
-      return "AND R" + std::to_string(instruction.operands[0]) + " R" + std::to_string(instruction.operands[1]) + 
-      " R" + std::to_string(instruction.operands[2]);
+      return "AND R" + intToString(instruction.operands[0]) + " R" + intToString(instruction.operands[1]) + 
+      " R" + intToString(instruction.operands[2]);
       break;
     case MULT:
-      return "MULT R" + std::to_string(instruction.operands[0]) + " R" + std::to_string(instruction.operands[1]) + 
-      " R" + std::to_string(instruction.operands[2]);
+      return "MULT R" + intToString(instruction.operands[0]) + " R" + intToString(instruction.operands[1]) + 
+      " R" + intToString(instruction.operands[2]);
       break;
     case OR:
-      return "OR R" + std::to_string(instruction.operands[0]) + " R" + std::to_string(instruction.operands[1]) + 
-      " R" + std::to_string(instruction.operands[2]);
+      return "OR R" + intToString(instruction.operands[0]) + " R" + intToString(instruction.operands[1]) + 
+      " R" + intToString(instruction.operands[2]);
       break;
     case SUB:
-      return "SUB R" + std::to_string(instruction.operands[0]) + " R" + std::to_string(instruction.operands[1]) + 
-      " R" + std::to_string(instruction.operands[2]);
+      return "SUB R" + intToString(instruction.operands[0]) + " R" + intToString(instruction.operands[1]) + 
+      " R" + intToString(instruction.operands[2]);
       break;
     case LW:
-      return "LW R" + std::to_string(instruction.operands[0]) + " " + std::to_string(instruction.operands[1]);
+      return "LW R" + intToString(instruction.operands[0]) + " " + intToString(instruction.operands[1]);
       break;
     case LWR:
-      return "LWR R" + std::to_string(instruction.operands[0]) + " R" + std::to_string(instruction.operands[1]);
+      return "LWR R" + intToString(instruction.operands[0]) + " R" + intToString(instruction.operands[1]);
       break;
     case SW:
-      return "SW R" + std::to_string(instruction.operands[0]) + " " + std::to_string(instruction.operands[1]);
+      return "SW R" + intToString(instruction.operands[0]) + " " + intToString(instruction.operands[1]);
       break;
     case SWR:
-      return "SWR R" + std::to_string(instruction.operands[0]) + " R" + std::to_string(instruction.operands[1]);
+      return "SWR R" + intToString(instruction.operands[0]) + " R" + intToString(instruction.operands[1]);
       break;
     case BEQ:
-      return "BEQ R" +  std::to_string(instruction.operands[0]) + " R" + std::to_string(instruction.operands[1]) + 
-      " " +  std::to_string(instruction.operands[2]);
+      return "BEQ R" +  intToString(instruction.operands[0]) + " R" + intToString(instruction.operands[1]) + 
+      " " +  intToString(instruction.operands[2]);
       break;
     case BGEZ:
-      return "BGEZ R" + std::to_string(instruction.operands[0]) + " " + std::to_string(instruction.operands[1]);
+      return "BGEZ R" + intToString(instruction.operands[0]) + " " + intToString(instruction.operands[1]);
       break;
     case BGTZ:
-      return "BGTZ R" + std::to_string(instruction.operands[0]) + " " + std::to_string(instruction.operands[1]);
+      return "BGTZ R" + intToString(instruction.operands[0]) + " " + intToString(instruction.operands[1]);
       break;
     case BLEZ:
-      return "BLEZ R" + std::to_string(instruction.operands[0]) + " " + std::to_string(instruction.operands[1]);
+      return "BLEZ R" + intToString(instruction.operands[0]) + " " + intToString(instruction.operands[1]);
       break;
     case BLTZ:
-      return "BLTZ R" + std::to_string(instruction.operands[0]) + " " + std::to_string(instruction.operands[1]);
+      return "BLTZ R" + intToString(instruction.operands[0]) + " " + intToString(instruction.operands[1]);
       break;
     case BNE:
-      return "BNE R" + std::to_string(instruction.operands[0]) + " R" + std::to_string(instruction.operands[1]) + 
-      " " + std::to_string(instruction.operands[2]);
+      return "BNE R" + intToString(instruction.operands[0]) + " R" + intToString(instruction.operands[1]) + 
+      " " + intToString(instruction.operands[2]);
       break;
     case J:
-      return "J " + std::to_string(instruction.operands[0]);
+      return "J " + intToString(instruction.operands[0]);
       break;
     case JR:
-      return "JR R" + std::to_string(instruction.operands[0]) + "\n";
+      return "JR R" + intToString(instruction.operands[0]) + "\n";
       break;
     case HALT:
-      return "HALT\n";
+      return "HALT";
       break;
     default:
       return "";

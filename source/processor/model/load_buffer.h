@@ -12,40 +12,36 @@ class ReorderBuffer;
 //class declaration
 class LoadBuffer {
 
-    Memory* memory;
-    ReorderBuffer* reorderBuffer;
+  private:
+
+    Memory* const memory;
+    ReorderBuffer* const reorderBuffer;
 
     //write buffer to hold inflight write operation info
     int** buffer;
-    int size;
+    const int size;
     int head;
     int tail;
-    int steps;
-
-    int entryFields;
+    const int steps;
 
     //index constants
-    const int DESTINATION;
-    const int ADDRESS;
-    const int REORDER_BUFFER_INDEX;
-    const int STEP;
-
-    //the number of entries in the buffer ready to read
-    int numberReady;
+    static const int entryFields = 4;
+    static const int DESTINATION = 0;
+    static const int ADDRESS = 1;
+    static const int REORDER_BUFFER_INDEX = 2;
+    static const int STEP = 3;
 
   public:
-	  LoadBuffer(Memory* memory, ReorderBuffer* reorderBuffer, int size, int steps);
+	  LoadBuffer(Memory* const memory, ReorderBuffer* const reorderBuffer, const int size, const int steps);
 
     void flush();
 
     void stepInstructions();
 
-    void checkIfReady();
-
     //return 1 if we are waiting for a write operation to complete
-    int waitingForReadOperation();
+    int waitingForReadOperation() const;
 
-    void addToBuffer(int destinationRegister, int address, int reorderBufferIndex);
+    void addToBuffer(const int destinationRegister, const int address, const int reorderBufferIndex);
 
     void readIfReady();
 };

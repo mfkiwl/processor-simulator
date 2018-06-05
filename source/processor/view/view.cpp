@@ -193,13 +193,13 @@ void View::drawRegisterFile(int* registerValues) {
 
   //draw the register numbers
   for(int i = 0; i < noOfHorizontalCells; i++) {
-  	std::string text = "R" + std::to_string(i);
+  	std::string text = "R" + intToString(i);
   	renderText(xPos + textCellWidth + i * cellWidth + xOffset, yPos + yOffset, text);
   }
 
   //draw the register values
   for(int i = 0; i < noOfHorizontalCells; i++) {
-  	std::string text = std::to_string(registerValues[i]);
+  	std::string text = intToString(registerValues[i]);
   	renderText(xPos + textCellWidth + i * cellWidth + xOffset, yPos + cellHeight + yOffset, text);
   }
 
@@ -227,13 +227,13 @@ void View::drawMemory(int* memoryValues) {
 
   //draw the register numbers
   for(int i = 0; i < noOfHorizontalCells; i++) {
-  	std::string text = std::to_string(i);
+  	std::string text = intToString(i);
   	renderText(xPos + textCellWidth + i * cellWidth + xOffset, yPos + yOffset, text);
   }
 
   //draw the register values
   for(int i = 0; i < noOfHorizontalCells; i++) {
-  	std::string text = std::to_string(memoryValues[i]);
+  	std::string text = intToString(memoryValues[i]);
   	renderText(xPos + textCellWidth + i * cellWidth + xOffset, yPos + cellHeight + yOffset, text);
   }
 
@@ -246,15 +246,15 @@ void View::drawProcessorStats(int numOfInstructionsExecuted, int numOfClockCycle
   int ySpace = 20;
 
   //render the number of instructions executed
-  std::string text = "Number of instructions executed: " + std::to_string(numOfInstructionsExecuted);
+  std::string text = "Number of instructions executed: " + intToString(numOfInstructionsExecuted);
   renderText(xPos, yPos, text);
 
   //render the number of clock cycles performed
-  text = "Number of clock cycles performed: " + std::to_string(numOfClockCycles);
+  text = "Number of clock cycles performed: " + intToString(numOfClockCycles);
   renderText(xPos, yPos + ySpace, text);
 
   //render the number of the instructions executed per clock cycle
-  text = "Number of instructions executed per cycle: " + std::to_string(numOfInstructionsExecutedPerCycle);
+  text = "Number of instructions executed per cycle: " + intToString(numOfInstructionsExecutedPerCycle);
   renderText(xPos, yPos + 2 * ySpace, text);
 }
 

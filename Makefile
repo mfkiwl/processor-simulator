@@ -5,7 +5,7 @@
 CC = g++
 
 # CFLAGS specifies the additional compilation options we're using
-CFLAGS = -Wall -std=c++11
+CFLAGS = -Wall
 
 # LINKER_FLAGS specifies the libraries we're linking against
 LINKER_FLAGS = -lSDL2 -lSDL2_image -lSDL2_ttf
@@ -104,4 +104,4 @@ assembler : $(SOURCE_DIR)/assembler/assembler.cpp
 # rule for deleting all of the object files and the executables in the build directory
 # (trying to be specific on the files that are deleted for safety)
 clean :
-	rm build/objects/*.o build/objects/model/*.o build/objects/view/*.o build/processor build/assembler
+	rm build/objects/*.o build/objects/controller/*.o build/objects/model/*.o build/objects/view/*.o build/processor build/assembler

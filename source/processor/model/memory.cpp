@@ -9,34 +9,34 @@
 //===========================================
 //class implementation
 
-Memory::Memory(int size) : size(size) {
+Memory::Memory(const int size) : size(size) {
   memory = new int[size];
   for(int i = 0; i < size; i++) {
     memory[i] = 0;
   }
 }
 
-void Memory::getAllMemoryValues(int* copy) {
+void Memory::getAllMemoryValues(int* const copy) const {
   for(int i = 0; i < size; i++) {
     copy[i] = memory[i];
   }
 }
 
-int Memory::loadFromMemory(int address) {
+int Memory::loadFromMemory(const int address) const {
   if(address < 0 || address > size - 1) {
     printf("Register index %d is out of bounds.\n", address);
   }
   return memory[address];
 }
 
-void Memory::storeInMemory(int address, int value) {
+void Memory::storeInMemory(const int address, const int value) {
   if(address < 0 || address > size - 1) {
     printf("Register index %d is out of bounds.\n", address);
   }
   memory[address] = value;
 }
 
-void Memory::print() {
+void Memory::print() const {
   printf("Memory:\n");
   for(int i = 0; i < size; i++) {
     printf("%d ", memory[i]);

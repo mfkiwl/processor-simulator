@@ -7,30 +7,32 @@
 //class declaration
 class RegisterFile {
 
+  private:
+
     const int numOfArchitecturalRegisters;
     int* registers;
     int* scoreBoard;
 
   public: 
-    RegisterFile(int numOfRegisters);
+    RegisterFile(const int numOfRegisters);
 
-    int getNumOfArchitecturalRegisters();
+    int getNumOfArchitecturalRegisters() const;
 
-    void getAllRegisterValues(int* copy);
+    void getAllRegisterValues(int* const copy) const;
 
-    int getRegisterValue(int i);
+    int getRegisterValue(const int i) const;
 
-    void setRegisterValue(int i, int val);
+    void setRegisterValue(const int i, const int val);
 
-    int getScoreBoardValue(int i );
+    int getScoreBoardValue(const int i) const;
 
-    void setScoreBoardValue(int i, int val);
+    void setScoreBoardValue(const int i, const int val);
 
     void resetScoreBoard();
 
-    void printRegisters();
+    void printRegisters() const;
 
-    void printScoreBoard();
+    void printScoreBoard() const;
 };
 
 #endif

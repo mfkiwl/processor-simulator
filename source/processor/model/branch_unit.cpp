@@ -12,7 +12,7 @@
 //===========================================
 //class implementation
 
-BranchUnit::BranchUnit(ReorderBuffer* reorderBuffer) : 
+BranchUnit::BranchUnit(ReorderBuffer* const reorderBuffer) : 
   reorderBuffer(reorderBuffer),
   opcode(0),
   reorderBufferIndex(-1),
@@ -84,11 +84,11 @@ void BranchUnit::pipe() {
       }
     }
 
-void BranchUnit::setOpcode(int x) {
+void BranchUnit::setOpcode(const int x) {
       opcode = x;
     }
 
-void BranchUnit::setOperands(int x[3]) {
+void BranchUnit::setOperands(const int x[3]) {
       for(int i = 0; i < 3; i++) {
         operands[i] = x[i];
       }
@@ -102,6 +102,6 @@ void BranchUnit::flush() {
       reorderBufferIndex = -1;
     }
 
-void BranchUnit::setReorderBufferIndex(int i) {
+void BranchUnit::setReorderBufferIndex(const int i) {
       reorderBufferIndex = i;
     }

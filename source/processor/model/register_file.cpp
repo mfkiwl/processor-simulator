@@ -14,7 +14,7 @@
 
 using namespace std;
 
-RegisterFile::RegisterFile(int numOfRegisters) :   
+RegisterFile::RegisterFile(const int numOfRegisters) :   
   numOfArchitecturalRegisters(numOfRegisters) 
 {
   registers = new int[numOfArchitecturalRegisters];
@@ -27,38 +27,38 @@ RegisterFile::RegisterFile(int numOfRegisters) :
   }
 }
 
-int RegisterFile::getNumOfArchitecturalRegisters() {
+int RegisterFile::getNumOfArchitecturalRegisters() const {
   return numOfArchitecturalRegisters;
 }
 
-void RegisterFile::getAllRegisterValues(int* copy) {
+void RegisterFile::getAllRegisterValues(int* const copy) const {
   for(int i = 0; i < numOfArchitecturalRegisters; i++) {
     copy[i] = registers[i];
   }
 }
 
-int RegisterFile::getRegisterValue(int i) {
+int RegisterFile::getRegisterValue(const int i) const {
   if(i < 0 || i >= numOfArchitecturalRegisters) {
     printf("Register index %d is out of range.\n", i);
   }
   return registers[i];
 }
 
-void RegisterFile::setRegisterValue(int i, int val) {
+void RegisterFile::setRegisterValue(const int i, const int val) {
   if(i < 0 || i >= numOfArchitecturalRegisters) {
     printf("Register index %d is out of range.\n", i);
   }
   registers[i] = val;
 }
 
-int RegisterFile::getScoreBoardValue(int i ) {
+int RegisterFile::getScoreBoardValue(const int i) const {
   if(i < 0 || i >= numOfArchitecturalRegisters) {
     printf("ScoreBoard index %d is out of range.\n", i);
   }
   return scoreBoard[i];
 }
 
-void RegisterFile::setScoreBoardValue(int i, int val) {
+void RegisterFile::setScoreBoardValue(const int i, const int val) {
   if(i < 0 || i >= numOfArchitecturalRegisters) {
     printf("ScoreBoard index %d is our of range.\n", i);
   }
@@ -71,7 +71,7 @@ void RegisterFile::resetScoreBoard() {
   }
 }
 
-int intLength(int n) {
+int intLength(const int n) {
   if(n == 0) {
     return 1;
   } else {
@@ -83,7 +83,7 @@ int intLength(int n) {
   }
 }
 
-void RegisterFile::printRegisters() {
+void RegisterFile::printRegisters() const {
 
   //print register names
   printf("Registers: ");
@@ -117,7 +117,7 @@ void RegisterFile::printRegisters() {
   printf("\n");
 }
 
-void RegisterFile::printScoreBoard() {
+void RegisterFile::printScoreBoard() const {
   printf("ScoreBoard:\n");
   for(int i = 0; i < numOfArchitecturalRegisters; i++) {
     printf("%d ", scoreBoard[i]);

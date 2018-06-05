@@ -12,9 +12,10 @@ class ReorderBuffer;
 //class declaration
 class ALU {
 
+  private:
+
     //forward components
-    RegisterFile* registerFile;
-    ReorderBuffer* reorderBuffer;
+    ReorderBuffer* const reorderBuffer;
 
     //decoded instruction
     int opcode;
@@ -29,19 +30,19 @@ class ALU {
     int currentReorderBufferIndex;
 
   public:
-    ALU(RegisterFile* registerFile, ReorderBuffer* reorderBuffer);
+    ALU(ReorderBuffer* const reorderBuffer);
 
     void execute();
 
     void pipe();
 
-    void setOpcode(int x);
+    void setOpcode(const int x);
 
-    void setOperands(int x[3]);
+    void setOperands(const int x[3]);
 
     void flush();
 
-    void setReorderBufferIndex(int i);
+    void setReorderBufferIndex(const int i);
 };
 
 #endif

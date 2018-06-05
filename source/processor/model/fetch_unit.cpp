@@ -11,7 +11,7 @@
 //===========================================
 //class implementation
 
-FetchUnit::FetchUnit(Instructions instructions, int* pc, DecodeIssueUnit* decodeIssueUnit) :
+FetchUnit::FetchUnit(const Instructions instructions, int* const pc, DecodeIssueUnit* const decodeIssueUnit) :
   instructions(instructions),
   pc(pc),
   decodeIssueUnit(decodeIssueUnit),
@@ -31,7 +31,7 @@ void FetchUnit::execute() {
   }
 }
 
-void FetchUnit::print() {
+void FetchUnit::print() const {
   printf("FETCHED INSTRUCTION: ");
   printInstruction(currentInstruction);
 }
@@ -47,6 +47,7 @@ void FetchUnit::flush() {
 
 //======================================
 // getter functions
-Instruction FetchUnit::getCurrentInstruction() {
+
+Instruction FetchUnit::getCurrentInstruction() const {
   return currentInstruction;
 }

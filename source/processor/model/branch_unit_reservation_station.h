@@ -12,11 +12,13 @@ class Instruction;
 //===========================
 //class declaration
 class BranchUnitReservationStation {
-    
-    RegisterFile* registerFile;
-    BranchUnit* branchUnit;
 
-    int size;
+  private:
+    
+    RegisterFile* const registerFile;
+    BranchUnit* const branchUnit;
+
+    const int size;
     Instruction* instructions;
     int* reorderBufferIndexes;
 
@@ -25,11 +27,11 @@ class BranchUnitReservationStation {
     int reorderBufferIndex;
 
   public:
-    BranchUnitReservationStation(RegisterFile* registerFile, BranchUnit* branchUnit);
+    BranchUnitReservationStation(RegisterFile* const registerFile, BranchUnit* const branchUnit);
 
     void execute();
 
-    void addInstruction(Instruction instruction, int rbi);
+    void addInstruction(const Instruction instruction, const int rbi);
 
     int findFreePosition();
 
@@ -37,14 +39,14 @@ class BranchUnitReservationStation {
 
     void flush();
 
-    void print();
+    void print() const;
 
   private:
 
-    int readyToDispatch(Instruction instruction);
+    int readyToDispatch(const Instruction instruction) const;
 
     //dispatch bound fetch
-    void dispatch(Instruction instruction);
+    void dispatch(const Instruction instruction);
 
 };
 

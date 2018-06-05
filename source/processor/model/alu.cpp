@@ -11,8 +11,7 @@
 //===========================================
 // class implementation
 
-ALU::ALU(RegisterFile* registerFile, ReorderBuffer* reorderBuffer) : 
-  registerFile(registerFile),
+ALU::ALU(ReorderBuffer* const reorderBuffer) : 
   reorderBuffer(reorderBuffer),
   opcode(0),
   destinationRegister(-1),
@@ -68,11 +67,11 @@ void ALU::pipe() {
   }
 }
 
-void ALU::setOpcode(int x) {
+void ALU::setOpcode(const int x) {
   opcode = x;
 }
 
-void ALU::setOperands(int x[3]) {
+void ALU::setOperands(const int x[3]) {
   for(int i = 0; i < 3; i++) {
     operands[i] = x[i];
   }
@@ -89,6 +88,6 @@ void ALU::flush() {
   result = 0;
 }
 
-void ALU::setReorderBufferIndex(int i) {
+void ALU::setReorderBufferIndex(const int i) {
   nextReorderBufferIndex = i;
 }

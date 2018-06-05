@@ -7,20 +7,22 @@
 //class declaration
 class Memory {
 
+  private:
+
     //the number of bytes the memory has
-    int size;
+    const int size;
     int* memory;
 
   public:
-    Memory(int size);
+    Memory(const int size);
 
-    void getAllMemoryValues(int* copy);
+    void getAllMemoryValues(int* const copy) const;
 
-    int loadFromMemory(int address);
+    int loadFromMemory(const int address) const;
 
-    void storeInMemory(int address, int value);
+    void storeInMemory(const int address, const int value);
 
-    void print();
+    void print() const;
 };
 
 #endif

@@ -12,11 +12,13 @@ class Instruction;
 //===========================
 //class declaration
 class ALUReservationStation {
-    
-    RegisterFile* registerFile;
-    ALU* alu;
 
-    int size;
+  private:
+    
+    RegisterFile* const registerFile;
+    ALU* const alu;
+
+    const int size;
     Instruction* instructions;
     int* reorderBufferIndexes;
 
@@ -25,11 +27,11 @@ class ALUReservationStation {
     int reorderBufferIndex;
 
   public:
-    ALUReservationStation(RegisterFile* registerFile, ALU* alu, int size);
+    ALUReservationStation(RegisterFile* const registerFile, ALU* const alu, const int size);
 
     void execute();
 
-    void addInstruction(Instruction instruction, int rbi);
+    void addInstruction(const Instruction instruction, const int rbi);
 
     int findFreePosition();
 
@@ -37,16 +39,16 @@ class ALUReservationStation {
 
     void flush();
 
-    void print();
+    void print() const;
 
-    void getCurrentInstructions(Instruction* copy);
+    void getCurrentInstructions(Instruction* const copy) const;
 
   private:
 
-    int readyToDispatch(Instruction instruction);
+    int readyToDispatch(const Instruction instruction) const;
 
     //dispatch bound fetch
-    void dispatch(Instruction instruction);
+    void dispatch(const Instruction instruction);
 };
 
 #endif

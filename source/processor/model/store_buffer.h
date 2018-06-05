@@ -12,39 +12,36 @@ class ReorderBuffer;
 //class declaration
 class StoreBuffer {
 
-    Memory* memory;
-    ReorderBuffer* reorderBuffer;
+  private:
+
+    Memory* const memory;
+    ReorderBuffer* const reorderBuffer;
 
     //write buffer to hold inflight write operation info
     int** buffer;
-    int size;
+    const int size;
     int head;
     int tail;
-    int steps;
-
-    int entryFields;
+    const int steps;
 
     //index constants
-    const int ADDRESS;
-    const int VALUE;
-    const int REORDER_BUFFER_INDEX;
-    const int STEP;
-
-    int numberReady;
+    static const int entryFields = 4;
+    static const int ADDRESS = 0;
+    static const int VALUE = 1;
+    static const int REORDER_BUFFER_INDEX = 2;
+    static const int STEP = 3;
 
   public:
-    StoreBuffer(Memory* memory, ReorderBuffer* reorderBuffer, int size, int steps);
+    StoreBuffer(Memory* const memory, ReorderBuffer* const reorderBuffer, const int size, const int steps);
 
     void flush();
 
-    void addToBuffer(int address, int value, int reorderBufferIndex);
+    void addToBuffer(const int address, const int value, const int reorderBufferIndex);
 
     void stepInstructions();
 
-    void checkIfReady();
-
     //return 1 if we are waiting for a write operation to complete
-    int waitingForStore();
+    int waitingForStore() const;
 
     void writeIfReady();
 };
