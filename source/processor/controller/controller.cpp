@@ -12,7 +12,7 @@
 //===========================================
 // class implementation
 
-Controller::Controller(Instructions instructions) :
+Controller::Controller(const Instructions instructions) :
   model(instructions)
 {
   //give the view component necessary information about the processor
@@ -22,7 +22,7 @@ Controller::Controller(Instructions instructions) :
 }
 
 //the original main function for the processor model
-int Controller::modelMain(Instructions instructions) {
+int Controller::modelMain(const Instructions instructions) {
   
   //running the processor
   char str[3];
@@ -47,7 +47,7 @@ int Controller::modelMain(Instructions instructions) {
 }
 
 //the original main function for the view
-int Controller::viewmain(int argc, char *argv[])
+int Controller::viewmain(const int argc, const char *argv[])
 {
 
 	//Start up SDL and create window
@@ -123,7 +123,7 @@ void Controller::updateView() {
 }
 
 
-int Controller::start(Instructions instructions) {
+int Controller::start(const Instructions instructions) {
 
   //Start up SDL and create window
   if( !view.init() )

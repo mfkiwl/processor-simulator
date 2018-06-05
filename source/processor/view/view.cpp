@@ -114,7 +114,7 @@ void View::eventHandler() {
   }
 }
 
-void View::renderText(int x, int y, std::string text) {
+void View::renderText(const int x, const int y, const std::string text) {
   //Render text
   SDL_Color textColor = { 0, 0, 0 };
   if( !gTextTexture.loadFromRenderedText( text.c_str(), textColor, gFont, gRenderer ) ) {
@@ -127,7 +127,7 @@ void View::renderText(int x, int y, std::string text) {
   gTextTexture.render( x, y, gRenderer);
 }
 
-void View::drawTable(int xPos, int yPos, int noOfHorizontalCells, int noOfVerticalCells, int cellWidth, int cellHeight) {
+void View::drawTable(const int xPos, const int yPos, const int noOfHorizontalCells, const int noOfVerticalCells, const int cellWidth, const int cellHeight) {
   //set the draw color to black
   SDL_SetRenderDrawColor(gRenderer, 0x00, 0x00, 0x00, 0xFF);
 
@@ -153,7 +153,7 @@ void View::drawTable(int xPos, int yPos, int noOfHorizontalCells, int noOfVertic
   SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
 }
 
-void View::drawTextCell(int xPos, int yPos, int width, int height, std::string text, int xOffset, int yOffset) {
+void View::drawTextCell(const int xPos, const int yPos, const int width, const int height, const std::string text, const int xOffset, const int yOffset) {
 
   //set the draw color to black
   SDL_SetRenderDrawColor(gRenderer, 0x00, 0x00, 0x00, 0xFF);
@@ -171,7 +171,7 @@ void View::drawTextCell(int xPos, int yPos, int width, int height, std::string t
   SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
 }
 
-void View::drawRegisterFile(int* registerValues) {
+void View::drawRegisterFile(const int* const registerValues) {
 
   //table info
   int noOfHorizontalCells = numOfRegisters;
@@ -207,7 +207,7 @@ void View::drawRegisterFile(int* registerValues) {
   SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
 }
 
-void View::drawMemory(int* memoryValues) {
+void View::drawMemory(const int* const memoryValues) {
   //table info
   int noOfHorizontalCells = memorySize;
   int noOfVerticalCells = 2;
@@ -239,7 +239,7 @@ void View::drawMemory(int* memoryValues) {
 
 }
 
-void View::drawProcessorStats(int numOfInstructionsExecuted, int numOfClockCycles, float numOfInstructionsExecutedPerCycle) {
+void View::drawProcessorStats(const int numOfInstructionsExecuted, const int numOfClockCycles, const float numOfInstructionsExecutedPerCycle) {
   
   int xPos = 0;
   int yPos = 0;
@@ -258,7 +258,7 @@ void View::drawProcessorStats(int numOfInstructionsExecuted, int numOfClockCycle
   renderText(xPos, yPos + 2 * ySpace, text);
 }
 
-void View::drawFetchUnit(Instruction instruction) {
+void View::drawFetchUnit(const Instruction instruction) {
   int xPos = 0;
   int yPos = 80;
 
@@ -266,7 +266,7 @@ void View::drawFetchUnit(Instruction instruction) {
   renderText(xPos, yPos, text);
 }
 
-void View::drawDecodeIssueUnit(Instruction instruction) {
+void View::drawDecodeIssueUnit(const Instruction instruction) {
   int xPos = 0;
   int yPos = 100;
 
@@ -274,7 +274,7 @@ void View::drawDecodeIssueUnit(Instruction instruction) {
   renderText(xPos, yPos, text);
 }
 
-void View::drawAluReservationStation(Instruction* instructions) {
+void View::drawAluReservationStation(const Instruction* const instructions) {
   int xPos = 0;
   int yPos = 120;
   int xOffset = 200;
@@ -306,14 +306,14 @@ int View::hasQuit() {
 //====================================
 // setter functions
 
-void View::setNumOfRegisters(int n) {
+void View::setNumOfRegisters(const int n) {
   numOfRegisters = n;
 }
 
-void View::setMemorySize(int n) {
+void View::setMemorySize(const int n) {
   memorySize = n;
 }
 
-void View::setAluReservationStationSize(int n) {
+void View::setAluReservationStationSize(const int n) {
   aluReservationStationSize = n;
 }

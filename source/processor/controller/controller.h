@@ -18,15 +18,15 @@ class Controller {
     Model model;
     View view;
 
-    Controller(Instructions instructions);
+    Controller(const Instructions instructions);
 
-    int modelMain(Instructions instructions);
+    int modelMain(const Instructions instructions);
 
-    int viewmain(int argc, char *argv[]);
+    int viewmain(const int argc, const char *argv[]);
 
     void updateView();
 
-    int start(Instructions instruction);
+    int start(const Instructions instruction);
 
 };
 

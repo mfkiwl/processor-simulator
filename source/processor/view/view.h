@@ -35,7 +35,7 @@ class View {
     SDL_Renderer* gRenderer;
 
     //Globally used font
-    TTF_Font *gFont;
+    TTF_Font* gFont;
 
     //Rendered texture
     LTexture gTextTexture;
@@ -62,26 +62,26 @@ class View {
     //Frees media and shuts down SDL
     void close();
 
-    void renderText(int x, int y, std::string text);
+    void renderText(const int x, const int y, const std::string text);
 
     //handle events
     void eventHandler();
 
-    void drawTable(int xPos, int yPos, int noOfHorizontalCells, int noOfVerticalCells, int cellWidth, int cellHeight);
+    void drawTable(const int xPos, const int yPos, const int noOfHorizontalCells, const int noOfVerticalCells, const int cellWidth, const int cellHeight);
 
-    void drawTextCell(int xPos, int yPos, int width, int height, std::string text, int xOffset, int yOffset);
+    void drawTextCell(const int xPos, const int yPos, const int width, const int height, const std::string text, const int xOffset, const int yOffset);
 
-    void drawRegisterFile(int* registerValues);
+    void drawRegisterFile(const int* const registerValues);
 
-    void drawMemory(int* memoryValues);
+    void drawMemory(const int* const memoryValues);
 
-    void drawProcessorStats(int numOfInstructionsExecuted, int numOfClockCycles, float numOfInstructionsExecutedPerCycle);
+    void drawProcessorStats(const int numOfInstructionsExecuted, const int numOfClockCycles, const float numOfInstructionsExecutedPerCycle);
 
-    void drawFetchUnit(Instruction currentInstruction);
+    void drawFetchUnit(const Instruction currentInstruction);
 
-    void drawDecodeIssueUnit(Instruction instruction);
+    void drawDecodeIssueUnit(const Instruction instruction);
 
-    void drawAluReservationStation(Instruction* instructions);
+    void drawAluReservationStation(const Instruction* const instructions);
 
     void clearScreen();
 
@@ -95,11 +95,11 @@ class View {
     //============================================
     // setter functions
 
-    void setNumOfRegisters(int n);
+    void setNumOfRegisters(const int n);
 
-    void setMemorySize(int n);
+    void setMemorySize(const int n);
 
-    void setAluReservationStationSize(int n);
+    void setAluReservationStationSize(const int n);
 };
 
 #endif
