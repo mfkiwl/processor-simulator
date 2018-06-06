@@ -46,7 +46,7 @@ void DecodeIssueUnit::issue() {
     case OR:
     case SUB:
       //if there is space in the reservation then issue the instruction
-      if(aluReservationStation->findFreePosition() != -1 && registerFile->getScoreBoardValue(currentInstruction.operands[0])) {
+      if(aluReservationStation->spaceInBuffer() && registerFile->getScoreBoardValue(currentInstruction.operands[0])) {
         //Instruction has been issued so add entry to the reorder buffer
         reorderBufferIndex = reorderBuffer->addEntry(STORE_TO_REGISTER, currentInstruction.operands[0], currentInstruction);
         //Set the scoreboard value of the destination register to zero
@@ -90,7 +90,7 @@ void DecodeIssueUnit::issue() {
     //Branch unit instructions
     case BEQ:
     case BNE:
-      if(branchUnitReservationStation->findFreePosition() != -1) {
+      if(branchUnitReservationStation->spaceInBuffer()) {
         //Instruction has been issued so add entry to the reorder buffer
         reorderBufferIndex = reorderBuffer->addEntry(JUMP, currentInstruction.operands[2], currentInstruction);
         *blockingFlag = 0;
@@ -106,7 +106,7 @@ void DecodeIssueUnit::issue() {
       break;
     case J:
     case JR:
-      if(branchUnitReservationStation->findFreePosition() != -1) {
+      if(branchUnitReservationStation->spaceInBuffer()) {
         //Instruction has been issued so add entry to the reorder buffer
         reorderBufferIndex = reorderBuffer->addEntry(JUMP, currentInstruction.operands[0], currentInstruction);
         *blockingFlag = 0;
@@ -118,7 +118,7 @@ void DecodeIssueUnit::issue() {
                     
     //Instruction to finish the program
     case HALT:
-      if(branchUnitReservationStation->findFreePosition() != -1) {
+      if(branchUnitReservationStation->spaceInBuffer()) {
         //Instruction has been issued so add entry to the reorder buffer
         reorderBufferIndex = reorderBuffer->addEntry(SYSCALL, currentInstruction.operands[0], currentInstruction);
         *blockingFlag = 0;

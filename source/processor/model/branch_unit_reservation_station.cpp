@@ -66,13 +66,17 @@ void BranchUnitReservationStation::addInstruction(const Instruction instruction,
   reorderBufferIndexes[index] = rbi;
 }
 
-int BranchUnitReservationStation::findFreePosition() {
+int BranchUnitReservationStation::findFreePosition() const {
   for(int i = 0; i < size; i++) {
     if(instructions[i].opcode == NOOP) {
       return i;
     }
   }
   return -1;
+}
+
+bool BranchUnitReservationStation::spaceInBuffer() const {
+  return findFreePosition() != -1;
 }
 
 void BranchUnitReservationStation::pipe() {

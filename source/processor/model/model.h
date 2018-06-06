@@ -29,7 +29,7 @@ class Model {
     const int memorySize;
     const int aluReservationStationSize;
     const int branchUnitReservationStationSize;
-    const int decodeIssueUnitReservationStationSize;
+    const int loadStoreUnitReservationStationSize;
 
     //general stats
     int noOfInstructionsExecuted;
@@ -63,7 +63,7 @@ class Model {
   public:
     Model(const Instructions instructions, const int numOfRegisters, const int memorySize, 
   const int aluReservationStationSize, const int branchUnitReservationStationSize, 
-  const int decodeIssueUnitReservationStationSize);
+  const int loadStoreUnitReservationStationSize);
 
     void updateStats();
 
@@ -96,6 +96,8 @@ class Model {
 
     int getBranchUnitReservationStationSize() const;
 
+    int getLoadStoreUnitReservationStationSize() const;
+
     int getMemorySize() const;
 
     int getNoOfInstructionsExecuted() const;
@@ -117,6 +119,8 @@ class Model {
     void getAluReservationStationInstructions(Instruction* const copy) const;
 
     void getBranchUnitReservationStationInstructions(Instruction* const copy) const;
+
+    void getLoadStoreUnitReservationStationInstructions(Instruction* const copy) const;
 };
 
 #endif

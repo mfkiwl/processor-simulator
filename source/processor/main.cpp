@@ -16,12 +16,12 @@ int main(int argc, char *argv[]) {
   const int memorySize = 24;
   const int aluReservationStationSize = 4;
   const int branchUnitReservationStationSize = 4;
-  const int decodeIssueUnitReservationStationSize = 4;
+  const int loadStoreUnitReservationStationSize = 4;
 
   //if we successfully loaded instructions then start the program
   if(instructions.getNumOfInstructions() != -1 && instructions.getInstructions() != NULL) {
     Controller controller(instructions, numOfRegisters, memorySize, aluReservationStationSize, 
-      branchUnitReservationStationSize, decodeIssueUnitReservationStationSize);
+      branchUnitReservationStationSize, loadStoreUnitReservationStationSize);
 
     //start the controller component
     controller.start(instructions);

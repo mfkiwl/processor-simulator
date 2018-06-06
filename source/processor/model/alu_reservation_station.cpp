@@ -67,13 +67,17 @@ void ALUReservationStation::addInstruction(const Instruction instruction, const 
   reorderBufferIndexes[index] = rbi;
 }
 
-int ALUReservationStation::findFreePosition() {
+int ALUReservationStation::findFreePosition() const {
   for(int i = 0; i < size; i++) {
     if(instructions[i].opcode == NOOP) {
       return i;
     }
   }
   return -1;
+}
+
+bool ALUReservationStation::spaceInBuffer() const {
+  return findFreePosition() != -1;
 }
 
 void ALUReservationStation::pipe() {

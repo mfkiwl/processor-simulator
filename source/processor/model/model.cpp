@@ -12,14 +12,14 @@
 
 Model::Model(const Instructions instructions, const int numOfRegisters, const int memorySize, 
   const int aluReservationStationSize, const int branchUnitReservationStationSize, 
-  const int decodeIssueUnitReservationStationSize) : 
+  const int loadStoreUnitReservationStationSize) : 
 
   //processor configuration
   numOfRegisters(numOfRegisters),
   memorySize(memorySize),
   aluReservationStationSize(aluReservationStationSize),
   branchUnitReservationStationSize(branchUnitReservationStationSize),
-  decodeIssueUnitReservationStationSize(decodeIssueUnitReservationStationSize),
+  loadStoreUnitReservationStationSize(loadStoreUnitReservationStationSize),
 
   //general stats
   noOfInstructionsExecuted(0),
@@ -48,7 +48,7 @@ Model::Model(const Instructions instructions, const int numOfRegisters, const in
   branchUnit(&reorderBuffer),
   branchUnitReservationStation(&registerFile, &branchUnit, branchUnitReservationStationSize),
   loadStoreUnit(&memory, &reorderBuffer),
-  loadStoreUnitReservationStation(&registerFile, &reorderBuffer, &loadStoreUnit)
+  loadStoreUnitReservationStation(&registerFile, &reorderBuffer, &loadStoreUnit, loadStoreUnitReservationStationSize)
 {}
 
 void Model::updateStats() {
@@ -211,6 +211,10 @@ int Model::getBranchUnitReservationStationSize() const {
   return branchUnitReservationStationSize;
 }
 
+int Model::getLoadStoreUnitReservationStationSize() const {
+  return loadStoreUnitReservationStationSize;
+}
+
 int Model::getRunningFlag() const {
   return runningFlag;
 }
@@ -253,4 +257,8 @@ void Model::getAluReservationStationInstructions(Instruction* const copy) const 
 
 void Model::getBranchUnitReservationStationInstructions(Instruction* const copy) const {
   branchUnitReservationStation.getCurrentInstructions(copy);
+}
+
+void Model::getLoadStoreUnitReservationStationInstructions(Instruction* const copy) const {
+  loadStoreUnitReservationStation.getCurrentInstructions(copy);
 }

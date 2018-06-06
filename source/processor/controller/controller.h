@@ -19,14 +19,14 @@ class Controller {
   	const int memorySize;
     const int aluReservationStationSize;
     const int branchUnitReservationStationSize;
-    const int decodeIssueUnitReservationStationSize;
+    const int loadStoreUnitReservationStationSize;
 
     Model model;
     View view;
 
     Controller(const Instructions instructions, const int numOfRegisters, const int memorySize, 
   const int aluReservationStationSize, const int branchUnitReservationStationSize, 
-  const int decodeIssueUnitReservationStationSize);
+  const int loadStoreUnitReservationStationSize);
 
     int modelMain(const Instructions instructions);
 

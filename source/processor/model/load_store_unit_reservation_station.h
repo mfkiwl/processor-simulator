@@ -29,7 +29,7 @@ class LoadStoreUnitReservationStation {
     int reorderBufferIndex;
 
   public:
-    LoadStoreUnitReservationStation(RegisterFile* const registerFile, ReorderBuffer* const reorderBuffer, LoadStoreUnit* const loadStoreUnit);
+    LoadStoreUnitReservationStation(RegisterFile* const registerFile, ReorderBuffer* const reorderBuffer, LoadStoreUnit* const loadStoreUnit, const int size);
 
     void execute();
 
@@ -42,6 +42,8 @@ class LoadStoreUnitReservationStation {
     void flush();
 
     void print() const;
+
+    void getCurrentInstructions(Instruction* const copy) const;
 
   private:
 

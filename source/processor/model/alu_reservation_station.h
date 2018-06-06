@@ -33,7 +33,9 @@ class ALUReservationStation {
 
     void addInstruction(const Instruction instruction, const int rbi);
 
-    int findFreePosition();
+    int findFreePosition() const;
+
+    bool spaceInBuffer() const;
 
     void pipe();
 

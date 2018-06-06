@@ -14,16 +14,16 @@
 
 Controller::Controller(const Instructions instructions, const int numOfRegisters, const int memorySize, 
   const int aluReservationStationSize, const int branchUnitReservationStationSize, 
-  const int decodeIssueUnitReservationStationSize) :
+  const int loadStoreUnitReservationStationSize) :
   numOfRegisters(numOfRegisters),
   memorySize(memorySize),
   aluReservationStationSize(aluReservationStationSize),
   branchUnitReservationStationSize(branchUnitReservationStationSize),
-  decodeIssueUnitReservationStationSize(decodeIssueUnitReservationStationSize),
+  loadStoreUnitReservationStationSize(loadStoreUnitReservationStationSize),
   model(instructions, numOfRegisters, memorySize, aluReservationStationSize, 
-    branchUnitReservationStationSize, decodeIssueUnitReservationStationSize),
+    branchUnitReservationStationSize, loadStoreUnitReservationStationSize),
   view(numOfRegisters, memorySize, aluReservationStationSize, branchUnitReservationStationSize,
-    decodeIssueUnitReservationStationSize)
+    loadStoreUnitReservationStationSize)
 {}
 
 //the original main function for the processor model
@@ -109,14 +109,19 @@ void Controller::updateView() {
   view.drawDecodeIssueUnit(decodeIssueUnitInstruction);
 
   //draw the instructions in the alu reservation station
-  Instruction aluReservationStationInstructions[model.getAluReservationStationSize()];
+  Instruction aluReservationStationInstructions[aluReservationStationSize];
   model.getAluReservationStationInstructions(aluReservationStationInstructions);
   view.drawAluReservationStation(aluReservationStationInstructions);
 
   //draw the instructions in the branch unit reservation station
-  Instruction branchUnitReservationStationInstructions[model.getBranchUnitReservationStationSize()];
+  Instruction branchUnitReservationStationInstructions[branchUnitReservationStationSize];
   model.getBranchUnitReservationStationInstructions(branchUnitReservationStationInstructions);
   view.drawBranchUnitReservationStation(branchUnitReservationStationInstructions);
+
+  //draw the instructions in the load store unit reservation station
+  Instruction loadStoreUnitReservationStationInstructions[loadStoreUnitReservationStationSize];
+  model.getLoadStoreUnitReservationStationInstructions(loadStoreUnitReservationStationInstructions);
+  view.drawLoadStoreUnitReservationStation(loadStoreUnitReservationStationInstructions);
 
   //draw the register file
   int registerValues[model.getNumOfRegisters()];

@@ -14,13 +14,13 @@
 //===========================================
 //class implementation
 
-LoadStoreUnitReservationStation::LoadStoreUnitReservationStation(RegisterFile* const registerFile, ReorderBuffer* const reorderBuffer, LoadStoreUnit* const loadStoreUnit) : 
+LoadStoreUnitReservationStation::LoadStoreUnitReservationStation(RegisterFile* const registerFile, ReorderBuffer* const reorderBuffer, LoadStoreUnit* const loadStoreUnit, const int size) : 
   registerFile(registerFile),
   reorderBuffer(reorderBuffer),
   loadStoreUnit(loadStoreUnit),
   tail(0),
   head(0),
-  size(4),
+  size(size),
   instructions(new Instruction[size]),
   reorderBufferIndexes(new int[size]),
   opcode(0),
@@ -111,6 +111,12 @@ void LoadStoreUnitReservationStation::print() const {
     if(instructions[i].opcode != NOOP) {
       printInstruction(instructions[i]);
     }
+  }
+}
+
+void LoadStoreUnitReservationStation::getCurrentInstructions(Instruction* const copy) const {
+  for(int i = 0; i < size; i++) {
+    copy[i] = instructions[i];
   }
 }
 
