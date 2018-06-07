@@ -23,7 +23,7 @@ class ALUReservationStation {
     int* const reorderBufferIndexes;
 
     int opcode;
-    int operands[3];
+    int* const operands;
     int reorderBufferIndex;
 
   public:

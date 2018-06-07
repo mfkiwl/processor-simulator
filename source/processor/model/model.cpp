@@ -86,8 +86,8 @@ void Model::cycle() {
     //fetch the next instruction
     fetch();
     //propogate outputs of the decode/issue unit and the fetch unit through pipeline
-    decodeIssueUnit.pipe();
     fetchUnit.pipe();
+    decodeIssueUnit.pipe();
   }
 
   //propogate the outputs of the reservation stations through the pipeline

@@ -29,14 +29,16 @@ DecodeIssueUnit::DecodeIssueUnit(RegisterFile* const registerFile, ReorderBuffer
 {}
 
 void DecodeIssueUnit::execute() {
-  if(nextInstruction.opcode != 0) {
-    currentInstruction = nextInstruction;
-    issue();
-  }
+  currentInstruction = nextInstruction;
+  issue();
 }
 
 void DecodeIssueUnit::issue() {
   switch(currentInstruction.opcode) {
+
+    //NOOP instruction
+    case NOOP:
+      break;
 
     //ALU instructions
     case ADD:
@@ -131,44 +133,44 @@ void DecodeIssueUnit::issue() {
 }
 
 void DecodeIssueUnit::pipe() {
-  if(reorderBufferIndex != -1) {
-    switch(currentInstruction.opcode) {
+  switch(currentInstruction.opcode) {
 
-      //ALU instructions
-      case ADD:
-      case ADDI:
-      case AND:
-      case MULT:
-      case OR:
-      case SUB:
-        aluReservationStation->addInstruction(currentInstruction, reorderBufferIndex);
-        break;
+    //NOOP instruction
+    case NOOP:
+      break;
 
-      //Load Store unit instructions
-      case LW:
-      case LWR:
-      case SW:
-      case SWR:
-        loadStoreUnitReservationStation->addInstruction(currentInstruction, reorderBufferIndex);
-        break;
+    //ALU instructions
+    case ADD:
+    case ADDI:
+    case AND:
+    case MULT:
+    case OR:
+    case SUB:
+      aluReservationStation->addInstruction(currentInstruction, reorderBufferIndex);
+      break;
 
-      //Branch unit instructions
-      case BEQ:
-      case BNE:
-      case BGEZ:
-      case BGTZ:
-      case BLEZ:
-      case BLTZ:
-      case J:
-      case JR:
+    //Load Store unit instructions
+    case LW:
+    case LWR:
+    case SW:
+    case SWR:
+      loadStoreUnitReservationStation->addInstruction(currentInstruction, reorderBufferIndex);
+      break;
 
-      //Instruction to finish the program
-      case HALT:
-        branchUnitReservationStation->addInstruction(currentInstruction, reorderBufferIndex);
-        break;
-    }
-    reorderBufferIndex = -1;
-    nextInstruction = (Instruction) {0,0,0,0};
+    //Branch unit instructions
+    case BEQ:
+    case BNE:
+    case BGEZ:
+    case BGTZ:
+    case BLEZ:
+    case BLTZ:
+    case J:
+    case JR:
+
+    //Instruction to finish the program
+    case HALT:
+      branchUnitReservationStation->addInstruction(currentInstruction, reorderBufferIndex);
+      break;
   }
 }
 
@@ -184,6 +186,7 @@ void DecodeIssueUnit::setNextInstruction(const Instruction x) {
 void DecodeIssueUnit::flush() {
   nextInstruction = (Instruction) {0,0,0,0};
   currentInstruction = (Instruction) {0,0,0,0};
+  reorderBufferIndex = -1;
 }
 
 Instruction DecodeIssueUnit::getCurrentInstruction() const {

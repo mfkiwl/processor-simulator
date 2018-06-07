@@ -23,6 +23,7 @@ ALUReservationStation::ALUReservationStation(RegisterFile* const registerFile, A
   instructions(new Instruction[size]),
   reorderBufferIndexes(new int[size]),
   opcode(0),
+  operands(new int[3]),
   reorderBufferIndex(-1)
 {
   //inialise all instructions to NOOPs
@@ -42,19 +43,17 @@ ALUReservationStation::ALUReservationStation(RegisterFile* const registerFile, A
 void ALUReservationStation::execute() {
   //try and find an instruction that can be dispatched
   for(int i = 0; i < size; i++) {
-    if(instructions[i].opcode != NOOP) {
-      if(readyToDispatch(instructions[i])) {
-        dispatch(instructions[i]);
-        reorderBufferIndex = reorderBufferIndexes[i];
+    if(readyToDispatch(instructions[i])) {
+      dispatch(instructions[i]);
+      reorderBufferIndex = reorderBufferIndexes[i];
 
-        //printf("DISPATCHING INSTRUCTION: ");
-        //printInstruction(instructions[i]);
+      //printf("DISPATCHING INSTRUCTION: ");
+      //printInstruction(instructions[i]);
 
-        //clear the dispatched instruction from the reservation station
-        instructions[i] = (Instruction) {0,0,0,0};
-        reorderBufferIndexes[i] = -1;
-        break;
-      }
+      //clear the dispatched instruction from the reservation station
+      instructions[i] = (Instruction) {0,0,0,0};
+      reorderBufferIndexes[i] = -1;
+      break;
     }
   }
 }
@@ -127,6 +126,9 @@ void ALUReservationStation::getCurrentInstructions(Instruction* const copy) cons
 int ALUReservationStation::readyToDispatch(const Instruction instruction) const {
   //check that the source registers are ready to use
   switch(instruction.opcode) {
+    case NOOP:
+      return 0;
+      break;
     case ADD:
     case AND:
     case MULT:
