@@ -39,6 +39,12 @@ void RegisterFile::getAllRegisterValues(int* const copy) const {
   }
 }
 
+void RegisterFile::getScoreBoard(int* const copy) const {
+  for(int i = 0; i < numOfArchitecturalRegisters; i++) {
+    copy[i] = scoreBoard[i];
+  }
+}
+
 int RegisterFile::getRegisterValue(const int i) const {
   if(i < 0 || i >= numOfArchitecturalRegisters) {
     printf("Register index %d is out of range.\n", i);

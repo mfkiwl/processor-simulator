@@ -110,6 +110,8 @@ class Model {
 
     void getAllRegisterValues(int* const copy) const;
 
+    void getScoreBoard(int* const copy) const;
+
     void getAllMemoryValues(int* const copy) const;
 
     Instruction getFetchUnitInstruction() const;

@@ -177,16 +177,16 @@ void View::drawTextCell(const int xPos, const int yPos, const int width, const i
   SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
 }
 
-void View::drawRegisterFile(const int* const registerValues) {
+void View::drawRegisterFile(const int* const registerValues, const int* const scoreBoard) {
 
   //table info
   int noOfHorizontalCells = numOfRegisters;
-  int noOfVerticalCells = 2;
+  int noOfVerticalCells = 3;
   int xPos = 40;
-  int yPos = 380;
+  int yPos = 360;
   int cellWidth = 30;
   int cellHeight = 20;
-  int textCellWidth = 80;
+  int textCellWidth = 100;
 
   //the offset the text should be drawn at
   int xOffset = 1;
@@ -196,6 +196,7 @@ void View::drawRegisterFile(const int* const registerValues) {
   drawTable(xPos + textCellWidth, yPos, noOfHorizontalCells, noOfVerticalCells, cellWidth, cellHeight);
   drawTextCell(xPos, yPos, textCellWidth, cellHeight, "Register :", xOffset, yOffset);
   drawTextCell(xPos, yPos + cellHeight, textCellWidth, cellHeight, "Value :", xOffset, yOffset);
+  drawTextCell(xPos, yPos + cellHeight * 2, textCellWidth, cellHeight, "Scoreboard :", xOffset, yOffset);
 
   //draw the register numbers
   for(int i = 0; i < noOfHorizontalCells; i++) {
@@ -207,6 +208,12 @@ void View::drawRegisterFile(const int* const registerValues) {
   for(int i = 0; i < noOfHorizontalCells; i++) {
   	std::string text = intToString(registerValues[i]);
   	renderText(xPos + textCellWidth + i * cellWidth + xOffset, yPos + cellHeight + yOffset, text);
+  }
+
+  //draw the scoreboard values
+  for(int i = 0; i < noOfHorizontalCells; i++) {
+    std::string text = intToString(scoreBoard[i]);
+    renderText(xPos + textCellWidth + i * cellWidth + xOffset, yPos + 2 * cellHeight + yOffset, text);
   }
 
   //reset the draw color to white
@@ -266,7 +273,7 @@ void View::drawProcessorStats(const int numOfInstructionsExecuted, const int num
 
 void View::drawFetchUnit(const Instruction instruction) {
   int xPos = 0;
-  int yPos = 80;
+  int yPos = 70;
 
   std::string text = "Fetch Unit : " + instructionToString(instruction);
   renderText(xPos, yPos, text);
@@ -274,7 +281,7 @@ void View::drawFetchUnit(const Instruction instruction) {
 
 void View::drawDecodeIssueUnit(const Instruction instruction) {
   int xPos = 0;
-  int yPos = 100;
+  int yPos = 90;
 
   std::string text = "Decode Issue Unit : " + instructionToString(instruction);
   renderText(xPos, yPos, text);
@@ -282,7 +289,7 @@ void View::drawDecodeIssueUnit(const Instruction instruction) {
 
 void View::drawAluReservationStation(const Instruction* const instructions) {
   int xPos = 0;
-  int yPos = 120;
+  int yPos = 110;
   int xOffset = 200;
   int ySpace = 20;
 
@@ -296,7 +303,7 @@ void View::drawAluReservationStation(const Instruction* const instructions) {
 
 void View::drawBranchUnitReservationStation(const Instruction* const instructions) {
   int xPos = 0;
-  int yPos = 200;
+  int yPos = 190;
   int xOffset = 260;
   int ySpace = 20;
 
@@ -310,7 +317,7 @@ void View::drawBranchUnitReservationStation(const Instruction* const instruction
 
 void View::drawLoadStoreUnitReservationStation(const Instruction* const instructions) {
   int xPos = 0;
-  int yPos = 280;
+  int yPos = 270;
   int xOffset = 290;
   int ySpace = 20;
 

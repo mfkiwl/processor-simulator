@@ -124,12 +124,14 @@ void Controller::updateView() {
   view.drawLoadStoreUnitReservationStation(loadStoreUnitReservationStationInstructions);
 
   //draw the register file
-  int registerValues[model.getNumOfRegisters()];
+  int registerValues[numOfRegisters];
+  int scoreBoard[numOfRegisters];
   model.getAllRegisterValues(registerValues);
-  view.drawRegisterFile(registerValues);
+  model.getScoreBoard(scoreBoard);
+  view.drawRegisterFile(registerValues, scoreBoard);
 
   //draw the memory
-  int memoryValues[model.getMemorySize()];
+  int memoryValues[memorySize];
   model.getAllMemoryValues(memoryValues);
   view.drawMemory(memoryValues);
 

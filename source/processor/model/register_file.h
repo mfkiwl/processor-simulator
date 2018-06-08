@@ -20,6 +20,8 @@ class RegisterFile {
 
     void getAllRegisterValues(int* const copy) const;
 
+    void getScoreBoard(int* const copy) const;
+
     int getRegisterValue(const int i) const;
 
     void setRegisterValue(const int i, const int val);
