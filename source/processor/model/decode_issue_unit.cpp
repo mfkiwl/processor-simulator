@@ -29,7 +29,6 @@ DecodeIssueUnit::DecodeIssueUnit(RegisterFile* const registerFile, ReorderBuffer
 {}
 
 void DecodeIssueUnit::execute() {
-  currentInstruction = nextInstruction;
   issue();
 }
 
@@ -133,6 +132,7 @@ void DecodeIssueUnit::issue() {
 }
 
 void DecodeIssueUnit::pipe() {
+  //send the current instruction to the necessary component
   switch(currentInstruction.opcode) {
 
     //NOOP instruction
@@ -146,7 +146,9 @@ void DecodeIssueUnit::pipe() {
     case MULT:
     case OR:
     case SUB:
-      aluReservationStation->addInstruction(currentInstruction, reorderBufferIndex);
+      //aluReservationStation->addInstruction(currentInstruction, reorderBufferIndex);
+      aluReservationStation->setNextInstruction(currentInstruction);
+      aluReservationStation->setNextReorderBufferIndex(reorderBufferIndex);
       break;
 
     //Load Store unit instructions
@@ -169,9 +171,15 @@ void DecodeIssueUnit::pipe() {
 
     //Instruction to finish the program
     case HALT:
-      branchUnitReservationStation->addInstruction(currentInstruction, reorderBufferIndex);
+      //branchUnitReservationStation->addInstruction(currentInstruction, reorderBufferIndex);
+      branchUnitReservationStation->setNextInstruction(currentInstruction);
+      branchUnitReservationStation->setNextReorderBufferIndex(reorderBufferIndex);
       break;
   }
+  //set the current instruction equal to the next instruction
+  currentInstruction = nextInstruction;
+  //clear the nextInstruction
+  nextInstruction = (Instruction) {0,0,0,0};
 }
 
 void DecodeIssueUnit::print() const {

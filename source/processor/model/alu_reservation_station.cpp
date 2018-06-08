@@ -19,6 +19,8 @@ using namespace std;
 ALUReservationStation::ALUReservationStation(RegisterFile* const registerFile, ALU* const alu, const int size) : 
   registerFile(registerFile),
   alu(alu),
+  nextInstruction((Instruction) {0,0,0,0}),
+  nextReorderBufferIndex(-1),
   size(size),
   instructions(new Instruction[size]),
   reorderBufferIndexes(new int[size]),
@@ -58,28 +60,12 @@ void ALUReservationStation::execute() {
   }
 }
 
-void ALUReservationStation::addInstruction(const Instruction instruction, const int rbi) {
-  //printf("ADDED INSTRUCTION: ");
-  //printInstruction(instruction);
-  int index = findFreePosition();
-  instructions[index] = instruction;
-  reorderBufferIndexes[index] = rbi;
-}
-
-int ALUReservationStation::findFreePosition() const {
-  for(int i = 0; i < size; i++) {
-    if(instructions[i].opcode == NOOP) {
-      return i;
-    }
-  }
-  return -1;
-}
-
 bool ALUReservationStation::spaceInBuffer() const {
   return findFreePosition() != -1;
 }
 
 void ALUReservationStation::pipe() {
+  //send current instruction to the alu
   if(reorderBufferIndex != -1) {
     //send the decoded instruction to the execution unit
     alu->setOpcode(opcode);
@@ -94,6 +80,11 @@ void ALUReservationStation::pipe() {
     }
     reorderBufferIndex = -1;
   }
+  //add the next instruction to the buffer
+  addInstruction(nextInstruction, nextReorderBufferIndex);
+  //clear the nextInstruction and nextReorderBufferIndex
+  nextInstruction = (Instruction) {0,0,0,0};
+  nextReorderBufferIndex = -1;
 }
 
 void ALUReservationStation::flush() {
@@ -121,6 +112,29 @@ void ALUReservationStation::getCurrentInstructions(Instruction* const copy) cons
   for(int i = 0; i < size; i++) {
     copy[i] = instructions[i];
   }
+}
+
+void ALUReservationStation::setNextInstruction(const Instruction instruction) {
+  nextInstruction = instruction;
+}
+
+void ALUReservationStation::setNextReorderBufferIndex(const int index) {
+  nextReorderBufferIndex = index;
+}
+
+void ALUReservationStation::addInstruction(const Instruction instruction, const int rbi) {
+  int index = findFreePosition();
+  instructions[index] = instruction;
+  reorderBufferIndexes[index] = rbi;
+}
+
+int ALUReservationStation::findFreePosition() const {
+  for(int i = 0; i < size; i++) {
+    if(instructions[i].opcode == NOOP) {
+      return i;
+    }
+  }
+  return -1;
 }
 
 int ALUReservationStation::readyToDispatch(const Instruction instruction) const {

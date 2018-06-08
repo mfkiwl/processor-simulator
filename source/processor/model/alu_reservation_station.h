@@ -7,7 +7,10 @@
 //forward declared dependencies
 class RegisterFile;
 class ALU;
-class Instruction;
+
+//=================================
+// included dependencies
+#include "instructions.h"
 
 //===========================
 //class declaration
@@ -17,6 +20,9 @@ class ALUReservationStation {
     
     RegisterFile* const registerFile;
     ALU* const alu;
+
+    Instruction nextInstruction;
+    int nextReorderBufferIndex;
 
     const int size;
     Instruction* const instructions;
@@ -31,10 +37,6 @@ class ALUReservationStation {
 
     void execute();
 
-    void addInstruction(const Instruction instruction, const int rbi);
-
-    int findFreePosition() const;
-
     bool spaceInBuffer() const;
 
     void pipe();
@@ -45,7 +47,15 @@ class ALUReservationStation {
 
     void getCurrentInstructions(Instruction* const copy) const;
 
+    void setNextInstruction(const Instruction instruction);
+
+    void setNextReorderBufferIndex(const int index);
+
   private:
+
+    void addInstruction(const Instruction instruction, const int rbi);
+
+    int findFreePosition() const;
 
     int readyToDispatch(const Instruction instruction) const;
 
