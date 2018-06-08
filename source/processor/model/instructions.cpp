@@ -173,6 +173,13 @@ std::string intToString(const int i) {
   return output;
 }
 
+std::string floatToString(const float i) {
+  std::ostringstream ss;
+  ss << i;
+  std::string output = ss.str();
+  return output;
+}
+
 std::string instructionToString(const Instruction instruction) {
   std::stringstream ss;
   switch(instruction.opcode) {

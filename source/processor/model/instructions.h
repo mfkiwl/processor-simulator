@@ -45,6 +45,8 @@ void printInstruction(const Instruction instruction);
 
 std::string intToString(const int i);
 
+std::string floatToString(const float i);
+
 std::string instructionToString(const Instruction instruction);
 
 #endif

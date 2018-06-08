@@ -267,9 +267,9 @@ void View::drawProcessorStats(const int numOfInstructionsExecuted, const int num
   //render the number of clock cycles performed
   text = "Number of clock cycles performed: " + intToString(numOfClockCycles);
   renderText(xPos, yPos + ySpace, text);
-
+  
   //render the number of the instructions executed per clock cycle
-  text = "Number of instructions executed per cycle: " + intToString(numOfInstructionsExecutedPerCycle);
+  text = "Number of instructions executed per cycle: " + floatToString(numOfInstructionsExecutedPerCycle);
   renderText(xPos, yPos + 2 * ySpace, text);
 }
 
