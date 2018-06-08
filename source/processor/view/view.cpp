@@ -288,44 +288,56 @@ void View::drawDecodeIssueUnit(const Instruction instruction) {
 }
 
 void View::drawAluReservationStation(const Instruction* const instructions) {
-  int xPos = 0;
-  int yPos = 110;
-  int xOffset = 200;
-  int ySpace = 20;
+  int xPos = 50;
+  int yPos = 150;
+  int numOfHorizontalCells = 1;
+  int numOfVerticalCells = 4;
+  int cellWidth = 150;
+  int cellHeight = 20;
 
-  std::string text = "ALU Reservation Station : ";
-  renderText(xPos, yPos, text);
+  renderText(xPos, yPos, "ALU");
+  renderText(xPos, yPos + cellHeight, "Reservation Station : ");
+
+  drawTable(xPos, yPos + cellHeight * 2, numOfHorizontalCells, numOfVerticalCells, cellWidth, cellHeight);
 
   for(int i = 0; i < aluReservationStationSize; i++) {
-    renderText(xPos + xOffset, yPos + i * ySpace, instructionToString(instructions[i]));
+    renderText(xPos, yPos + (2 + i) * cellHeight, instructionToString(instructions[i]));
   }
 }
 
 void View::drawBranchUnitReservationStation(const Instruction* const instructions) {
-  int xPos = 0;
-  int yPos = 190;
-  int xOffset = 260;
-  int ySpace = 20;
+  int xPos = 250;
+  int yPos = 150;
+  int numOfHorizontalCells = 1;
+  int numOfVerticalCells = 4;
+  int cellWidth = 150;
+  int cellHeight = 20;
 
-  std::string text = "Branch Unit Reservation Station : ";
-  renderText(xPos, yPos, text);
+  renderText(xPos, yPos, "Branch Unit");
+  renderText(xPos, yPos + cellHeight, "Reservation Station : ");
 
-  for(int i = 0; i < branchUnitReservationStationSize; i++) {
-    renderText(xPos + xOffset, yPos + i * ySpace, instructionToString(instructions[i]));
+  drawTable(xPos, yPos + cellHeight * 2, numOfHorizontalCells, numOfVerticalCells, cellWidth, cellHeight);
+
+  for(int i = 0; i < aluReservationStationSize; i++) {
+    renderText(xPos, yPos + (2 + i) * cellHeight, instructionToString(instructions[i]));
   }
 }
 
 void View::drawLoadStoreUnitReservationStation(const Instruction* const instructions) {
-  int xPos = 0;
-  int yPos = 270;
-  int xOffset = 290;
-  int ySpace = 20;
+  int xPos = 450;
+  int yPos = 150;
+  int numOfHorizontalCells = 1;
+  int numOfVerticalCells = 4;
+  int cellWidth = 150;
+  int cellHeight = 20;
 
-  std::string text = "Load Store Unit Reservation Station : ";
-  renderText(xPos, yPos, text);
+  renderText(xPos, yPos, "Decode Issue Unit");
+  renderText(xPos, yPos + cellHeight, "Reservation Station : ");
 
-  for(int i = 0; i < loadStoreUnitReservationStationSize; i++) {
-    renderText(xPos + xOffset, yPos + i * ySpace, instructionToString(instructions[i]));
+  drawTable(xPos, yPos + cellHeight * 2, numOfHorizontalCells, numOfVerticalCells, cellWidth, cellHeight);
+
+  for(int i = 0; i < aluReservationStationSize; i++) {
+    renderText(xPos, yPos + (2 + i) * cellHeight, instructionToString(instructions[i]));
   }
 }
 
