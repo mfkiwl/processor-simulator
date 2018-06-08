@@ -20,8 +20,9 @@ and may not be redistributed without written permission.*/
 // implementation
 
 View::View(const int numOfRegisters, const int memorySize, const int aluReservationStationSize, 
-  const int branchUnitReservationStationSize, const int loadStoreUnitReservationStationSize) :
-  SCREEN_WIDTH(640),
+  const int branchUnitReservationStationSize, const int loadStoreUnitReservationStationSize,
+  const int reorderBufferSize) :
+  SCREEN_WIDTH(1000),
   SCREEN_HEIGHT(480),
   gWindow(NULL),
   gRenderer(NULL),
@@ -31,7 +32,8 @@ View::View(const int numOfRegisters, const int memorySize, const int aluReservat
   memorySize(memorySize),
   aluReservationStationSize(aluReservationStationSize),
   branchUnitReservationStationSize(branchUnitReservationStationSize),
-  loadStoreUnitReservationStationSize(loadStoreUnitReservationStationSize)
+  loadStoreUnitReservationStationSize(loadStoreUnitReservationStationSize),
+  reorderBufferSize(reorderBufferSize)
 {}
 
 bool View::init()
@@ -183,7 +185,7 @@ void View::drawRegisterFile(const int* const registerValues, const int* const sc
   int noOfHorizontalCells = numOfRegisters;
   int noOfVerticalCells = 3;
   int xPos = 40;
-  int yPos = 360;
+  int yPos = 80;
   int cellWidth = 30;
   int cellHeight = 20;
   int textCellWidth = 100;
@@ -225,7 +227,7 @@ void View::drawMemory(const int* const memoryValues) {
   int noOfHorizontalCells = memorySize;
   int noOfVerticalCells = 2;
   int xPos = 40;
-  int yPos = 430;
+  int yPos = 160;
   int cellWidth = 20;
   int cellHeight = 20;
   int textCellWidth = 80;
@@ -273,7 +275,7 @@ void View::drawProcessorStats(const int numOfInstructionsExecuted, const int num
 
 void View::drawFetchUnit(const Instruction instruction) {
   int xPos = 0;
-  int yPos = 70;
+  int yPos = 200;
 
   std::string text = "Fetch Unit : " + instructionToString(instruction);
   renderText(xPos, yPos, text);
@@ -281,7 +283,7 @@ void View::drawFetchUnit(const Instruction instruction) {
 
 void View::drawDecodeIssueUnit(const Instruction instruction) {
   int xPos = 0;
-  int yPos = 90;
+  int yPos = 220;
 
   std::string text = "Decode Issue Unit : " + instructionToString(instruction);
   renderText(xPos, yPos, text);
@@ -289,7 +291,7 @@ void View::drawDecodeIssueUnit(const Instruction instruction) {
 
 void View::drawAluReservationStation(const Instruction* const instructions) {
   int xPos = 50;
-  int yPos = 150;
+  int yPos = 250;
   int numOfHorizontalCells = 1;
   int numOfVerticalCells = 4;
   int cellWidth = 150;
@@ -307,7 +309,7 @@ void View::drawAluReservationStation(const Instruction* const instructions) {
 
 void View::drawBranchUnitReservationStation(const Instruction* const instructions) {
   int xPos = 250;
-  int yPos = 150;
+  int yPos = 250;
   int numOfHorizontalCells = 1;
   int numOfVerticalCells = 4;
   int cellWidth = 150;
@@ -325,7 +327,7 @@ void View::drawBranchUnitReservationStation(const Instruction* const instruction
 
 void View::drawLoadStoreUnitReservationStation(const Instruction* const instructions) {
   int xPos = 450;
-  int yPos = 150;
+  int yPos = 250;
   int numOfHorizontalCells = 1;
   int numOfVerticalCells = 4;
   int cellWidth = 150;
@@ -338,6 +340,29 @@ void View::drawLoadStoreUnitReservationStation(const Instruction* const instruct
 
   for(int i = 0; i < aluReservationStationSize; i++) {
     renderText(xPos, yPos + (2 + i) * cellHeight, instructionToString(instructions[i]));
+  }
+}
+
+void View::drawReorderBuffer(const Instruction* instructions, int** const fields) {
+  int xPos = 700;
+  int yPos = 20;
+  int numOfHorizontalCells = 4;
+  int numOfVerticalCells = reorderBufferSize;
+  int cellWidth = 20;
+  int cellHeight = 20;
+  int textCellWidth = 150;
+  int xOffset = 0;
+  int yOffset = 0;
+
+  renderText(xPos, yPos, "Reorder Buffer : ");
+
+  drawTable(xPos + textCellWidth, yPos + cellHeight, numOfHorizontalCells, numOfVerticalCells, cellWidth, cellHeight);
+
+  for(int i = 0; i < reorderBufferSize; i++) {
+    drawTextCell(xPos, yPos + (i+1) * cellHeight, textCellWidth, cellHeight, instructionToString(instructions[i]), xOffset, yOffset);
+    for(int j = 0; j < 4; j++) {
+      renderText(xPos + textCellWidth + j * cellWidth, yPos + (i+1) * cellHeight, intToString(fields[i][j]));
+    }
   }
 }
 

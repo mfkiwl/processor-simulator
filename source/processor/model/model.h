@@ -30,6 +30,7 @@ class Model {
     const int aluReservationStationSize;
     const int branchUnitReservationStationSize;
     const int loadStoreUnitReservationStationSize;
+    const int reorderBufferSize;
 
     //general stats
     int noOfInstructionsExecuted;
@@ -63,7 +64,7 @@ class Model {
   public:
     Model(const Instructions instructions, const int numOfRegisters, const int memorySize, 
   const int aluReservationStationSize, const int branchUnitReservationStationSize, 
-  const int loadStoreUnitReservationStationSize);
+  const int loadStoreUnitReservationStationSize, const int reorderBufferSize);
 
     void updateStats();
 
@@ -123,6 +124,10 @@ class Model {
     void getBranchUnitReservationStationInstructions(Instruction* const copy) const;
 
     void getLoadStoreUnitReservationStationInstructions(Instruction* const copy) const;
+
+    void getReorderBufferInstructions(Instruction* const copy) const;
+
+    void getReorderBufferFields(int** const copy) const;
 };
 
 #endif

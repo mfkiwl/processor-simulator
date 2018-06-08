@@ -45,6 +45,7 @@ enum Index {
 
 //status in the reorder buffer
 enum Status {
+  EMPTY,
   ISSUED,
   EXECUTING,
   FINISHED

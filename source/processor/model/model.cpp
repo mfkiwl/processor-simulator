@@ -12,7 +12,7 @@
 
 Model::Model(const Instructions instructions, const int numOfRegisters, const int memorySize, 
   const int aluReservationStationSize, const int branchUnitReservationStationSize, 
-  const int loadStoreUnitReservationStationSize) : 
+  const int loadStoreUnitReservationStationSize, const int reorderBufferSize) : 
 
   //processor configuration
   numOfRegisters(numOfRegisters),
@@ -20,6 +20,7 @@ Model::Model(const Instructions instructions, const int numOfRegisters, const in
   aluReservationStationSize(aluReservationStationSize),
   branchUnitReservationStationSize(branchUnitReservationStationSize),
   loadStoreUnitReservationStationSize(loadStoreUnitReservationStationSize),
+  reorderBufferSize(reorderBufferSize),
 
   //general stats
   noOfInstructionsExecuted(0),
@@ -40,7 +41,7 @@ Model::Model(const Instructions instructions, const int numOfRegisters, const in
   //components
   registerFile(numOfRegisters), 
   memory(memorySize),
-  reorderBuffer(&registerFile, &memory, &pc, &flushFlag, &runningFlag, &noOfInstructionsExecuted),
+  reorderBuffer(&registerFile, &memory, &pc, &flushFlag, &runningFlag, &noOfInstructionsExecuted, reorderBufferSize),
   fetchUnit(instructions, &pc, &decodeIssueUnit),
   decodeIssueUnit(&registerFile, &reorderBuffer, &aluReservationStation, &branchUnitReservationStation, &loadStoreUnitReservationStation, &decodeUnitBlockingFlag),
   alu(&reorderBuffer),
@@ -265,4 +266,12 @@ void Model::getBranchUnitReservationStationInstructions(Instruction* const copy)
 
 void Model::getLoadStoreUnitReservationStationInstructions(Instruction* const copy) const {
   loadStoreUnitReservationStation.getCurrentInstructions(copy);
+}
+
+void Model::getReorderBufferInstructions(Instruction* const copy) const {
+  reorderBuffer.getReorderBufferInstructions(copy);
+}
+
+void Model::getReorderBufferFields(int** const copy) const {
+  reorderBuffer.getReorderBufferFields(copy);
 }

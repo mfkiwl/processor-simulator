@@ -16,32 +16,32 @@
 
 using namespace std;
 
-ReorderBuffer::ReorderBuffer(RegisterFile* const registerFile, Memory* const memory, int* const pc, int* const flushFlag, int* const runningFlag, int* const noOfInstructionsExecuted) : 
+ReorderBuffer::ReorderBuffer(RegisterFile* const registerFile, Memory* const memory, int* const pc, int* const flushFlag, int* const runningFlag, int* const noOfInstructionsExecuted, const int bufferSize) : 
   registerFile(registerFile),
   memory(memory),
   pc(pc),
   flushFlag(flushFlag),
   runningFlag(runningFlag),
-  size(100),
-  buffer(new int*[size]),
+  bufferSize(bufferSize),
+  buffer(new int*[bufferSize]),
   head(0),
   tail(0),
   bufferEntryFields(4),
-  instructions(new Instruction[size]),
+  instructions(new Instruction[bufferSize]),
   noOfInstructionsExecuted(noOfInstructionsExecuted)
 {
   //dynamically allocated a 2d array to the read and write buffer
-  for(int i = 0; i < size; i++) {
+  for(int i = 0; i < bufferSize; i++) {
     buffer[i] = new int[bufferEntryFields];
   }
   //initialise all elements of the read and write buffer to zero
-  for(int i = 0; i < size; i++) {
+  for(int i = 0; i < bufferSize; i++) {
     for(int j = 0; j < bufferEntryFields; j++) {
       buffer[i][j] = -1;
     }
   }
   //initialise all of the instructions
-  for(int i = 0; i < size; i++) {
+  for(int i = 0; i < bufferSize; i++) {
     instructions[i] = (Instruction) {0,0,0,0};
   }
 }
@@ -53,7 +53,7 @@ int ReorderBuffer::addEntry(const Type type, const int destination, const Instru
   buffer[head][STATUS] = ISSUED;
   instructions[head] = instruction;
   int index = head;
-  head = (head + 1) % size;
+  head = (head + 1) % bufferSize;
   return index;
 }
 
@@ -63,7 +63,7 @@ int ReorderBuffer::getTailIndex() const {
 
 void ReorderBuffer::retire() {
   while(buffer[tail][STATUS] == FINISHED) {
-    buffer[tail][STATUS] = -1;
+    //buffer[tail][STATUS] = -1;
     if(buffer[tail][TYPE] == STORE_TO_REGISTER) {
       //write the result to the reorder buffer
       registerFile->setRegisterValue(buffer[tail][DESTINATION], buffer[tail][RESULT]);
@@ -88,7 +88,7 @@ void ReorderBuffer::retire() {
     //increment the number of instructions that we have executed
     (*noOfInstructionsExecuted)++;
     //increment the tail position
-    tail = (tail + 1) % size;
+    tail = (tail + 1) % bufferSize;
   }
 }
 
@@ -118,11 +118,14 @@ void ReorderBuffer::writeResult(const int i, const int r) {
 
 
 void ReorderBuffer::flush() {
-  for(int i = 0; i < size; i++) {
-    buffer[i][TYPE] = 0;
-    buffer[i][DESTINATION] = 0;
-    buffer[i][RESULT] = 0;
-    buffer[i][STATUS] = 0;
+  for(int i = 0; i < bufferSize; i++) {
+    buffer[i][TYPE] = -1;
+    buffer[i][DESTINATION] = -1;
+    buffer[i][RESULT] = -1;
+    buffer[i][STATUS] = -1;
+  }
+  for(int i = 0; i < bufferSize; i++) {
+    instructions[i] = (Instruction) {0,0,0,0};
   }
   head = 0;
   tail = 0;
@@ -140,5 +143,19 @@ void ReorderBuffer::print() const {
       printf("FINISHED : ");
     }
     printInstruction(instructions[i]);
+  }
+}
+
+void ReorderBuffer::getReorderBufferInstructions(Instruction* const copy) const {
+  for(int i = 0; i < bufferSize; i++) {
+    copy[i] = instructions[i];
+  }
+}
+
+void ReorderBuffer::getReorderBufferFields(int** const copy) const {
+  for(int i = 0; i < bufferSize; i++) {
+    for(int j = 0; j < bufferEntryFields; j++) {
+      copy[i][j] = buffer[i][j];
+    }
   }
 }

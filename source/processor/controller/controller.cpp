@@ -14,16 +14,17 @@
 
 Controller::Controller(const Instructions instructions, const int numOfRegisters, const int memorySize, 
   const int aluReservationStationSize, const int branchUnitReservationStationSize, 
-  const int loadStoreUnitReservationStationSize) :
+  const int loadStoreUnitReservationStationSize, const int reorderBufferSize) :
   numOfRegisters(numOfRegisters),
   memorySize(memorySize),
   aluReservationStationSize(aluReservationStationSize),
   branchUnitReservationStationSize(branchUnitReservationStationSize),
   loadStoreUnitReservationStationSize(loadStoreUnitReservationStationSize),
+  reorderBufferSize(reorderBufferSize),
   model(instructions, numOfRegisters, memorySize, aluReservationStationSize, 
-    branchUnitReservationStationSize, loadStoreUnitReservationStationSize),
+    branchUnitReservationStationSize, loadStoreUnitReservationStationSize, reorderBufferSize),
   view(numOfRegisters, memorySize, aluReservationStationSize, branchUnitReservationStationSize,
-    loadStoreUnitReservationStationSize)
+    loadStoreUnitReservationStationSize, reorderBufferSize)
 {}
 
 //the original main function for the processor model
@@ -122,6 +123,16 @@ void Controller::updateView() {
   Instruction loadStoreUnitReservationStationInstructions[loadStoreUnitReservationStationSize];
   model.getLoadStoreUnitReservationStationInstructions(loadStoreUnitReservationStationInstructions);
   view.drawLoadStoreUnitReservationStation(loadStoreUnitReservationStationInstructions);
+
+  //draw the reorder buffer
+  Instruction reorderBufferInstructions[reorderBufferSize];
+  model.getReorderBufferInstructions(reorderBufferInstructions);
+  int** reorderBufferFields = new int*[reorderBufferSize];
+  for(int i = 0; i < reorderBufferSize; i++) {
+    reorderBufferFields[i] = new int[4];
+  }
+  model.getReorderBufferFields(reorderBufferFields);
+  view.drawReorderBuffer(reorderBufferInstructions, reorderBufferFields);
 
   //draw the register file
   int registerValues[numOfRegisters];
