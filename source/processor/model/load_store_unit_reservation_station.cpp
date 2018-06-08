@@ -18,6 +18,8 @@ LoadStoreUnitReservationStation::LoadStoreUnitReservationStation(RegisterFile* c
   registerFile(registerFile),
   reorderBuffer(reorderBuffer),
   loadStoreUnit(loadStoreUnit),
+  nextInstruction((Instruction) {0,0,0,0}),
+  nextReorderBufferIndex(-1),
   tail(0),
   head(0),
   size(size),
@@ -46,9 +48,6 @@ void LoadStoreUnitReservationStation::execute() {
     if(readyToDispatch(tail)) {
       dispatch(tail);
       reorderBufferIndex = reorderBufferIndexes[tail];
-                    
-      //printf("DISPATCHING INSTRUCTION: ");
-      //printInstruction(instructions[tail]);
 
       //clear the dispatched instruction from the reservation station
       instructions[tail] = (Instruction) {0,0,0,0};
@@ -58,11 +57,11 @@ void LoadStoreUnitReservationStation::execute() {
 }
 
 void LoadStoreUnitReservationStation::addInstruction(const Instruction instruction, const int rbi) {
-  //printf("ADDED INSTRUCTION: ");
-  //printInstruction(instruction);
-  instructions[head] = instruction;
-  reorderBufferIndexes[head] = rbi;
-  head = (head + 1) % size;
+  if(instruction.opcode != NOOP) {
+    instructions[head] = instruction;
+    reorderBufferIndexes[head] = rbi;
+    head = (head + 1) % size;
+  }
 }
 
 int LoadStoreUnitReservationStation::spaceInQueue() const {
@@ -75,6 +74,7 @@ int LoadStoreUnitReservationStation::spaceInQueue() const {
 }
 
 void LoadStoreUnitReservationStation::pipe() {
+  //send current instruction to the load store unit
   if(reorderBufferIndex != -1) {
 
     //send the decoded instruction to the execution unit
@@ -91,6 +91,11 @@ void LoadStoreUnitReservationStation::pipe() {
     }
     reorderBufferIndex = -1;
   }
+  //add the next instruction to the buffer
+  addInstruction(nextInstruction, nextReorderBufferIndex);
+  //clear the nextInstruction and nextReorderBufferIndex
+  nextInstruction = (Instruction) {0,0,0,0};
+  nextReorderBufferIndex = -1;
 }
 
 void LoadStoreUnitReservationStation::flush() {
@@ -118,6 +123,14 @@ void LoadStoreUnitReservationStation::getCurrentInstructions(Instruction* const 
   for(int i = 0; i < size; i++) {
     copy[i] = instructions[i];
   }
+}
+
+void LoadStoreUnitReservationStation::setNextInstruction(const Instruction instruction) {
+  nextInstruction = instruction;
+}
+
+void LoadStoreUnitReservationStation::setNextReorderBufferIndex(const int index) {
+  nextReorderBufferIndex = index;
 }
 
 int LoadStoreUnitReservationStation::readyToDispatch(const int index) const {

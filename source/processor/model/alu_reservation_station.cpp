@@ -49,9 +49,6 @@ void ALUReservationStation::execute() {
       dispatch(instructions[i]);
       reorderBufferIndex = reorderBufferIndexes[i];
 
-      //printf("DISPATCHING INSTRUCTION: ");
-      //printInstruction(instructions[i]);
-
       //clear the dispatched instruction from the reservation station
       instructions[i] = (Instruction) {0,0,0,0};
       reorderBufferIndexes[i] = -1;
@@ -123,9 +120,11 @@ void ALUReservationStation::setNextReorderBufferIndex(const int index) {
 }
 
 void ALUReservationStation::addInstruction(const Instruction instruction, const int rbi) {
-  int index = findFreePosition();
-  instructions[index] = instruction;
-  reorderBufferIndexes[index] = rbi;
+  if(instruction.opcode != NOOP) {
+    int index = findFreePosition();
+    instructions[index] = instruction;
+    reorderBufferIndexes[index] = rbi;
+  }
 }
 
 int ALUReservationStation::findFreePosition() const {

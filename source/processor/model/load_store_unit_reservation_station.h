@@ -10,6 +10,10 @@ class ReorderBuffer;
 class LoadStoreUnit;
 class Instruction;
 
+//=================================
+// included dependencies
+#include "instructions.h"
+
 //===========================
 //class declaration
 class LoadStoreUnitReservationStation {
@@ -17,6 +21,9 @@ class LoadStoreUnitReservationStation {
     RegisterFile* const registerFile;
     ReorderBuffer* const reorderBuffer;
     LoadStoreUnit* const loadStoreUnit;
+
+    Instruction nextInstruction;
+    int nextReorderBufferIndex;
 
     int tail;
     int head;
@@ -44,6 +51,10 @@ class LoadStoreUnitReservationStation {
     void print() const;
 
     void getCurrentInstructions(Instruction* const copy) const;
+
+    void setNextInstruction(const Instruction instruction);
+
+    void setNextReorderBufferIndex(const int index);
 
   private:
 

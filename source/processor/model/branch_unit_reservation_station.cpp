@@ -123,9 +123,11 @@ void BranchUnitReservationStation::setNextReorderBufferIndex(const int index) {
 }
 
 void BranchUnitReservationStation::addInstruction(const Instruction instruction, const int rbi) {
-  int index = findFreePosition();
-  instructions[index] = instruction;
-  reorderBufferIndexes[index] = rbi;
+  if(instruction.opcode != NOOP) {
+    int index = findFreePosition();
+    instructions[index] = instruction;
+    reorderBufferIndexes[index] = rbi;
+  }
 }
 
 int BranchUnitReservationStation::findFreePosition() const {
