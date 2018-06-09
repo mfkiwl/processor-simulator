@@ -84,6 +84,7 @@ void ALUReservationStation::pipe() {
   nextReorderBufferIndex = -1;
 }
 
+//reset all member variables
 void ALUReservationStation::flush() {
   for(int i = 0; i < size; i++) {
     instructions[i] = (Instruction) {0,0,0,0};
@@ -96,6 +97,7 @@ void ALUReservationStation::flush() {
   reorderBufferIndex = -1;
 }
 
+//print information about the current
 void ALUReservationStation::print() const {
   printf("ALU reservation station:\n");
   for(int i = 0; i < size; i++) {
@@ -108,6 +110,12 @@ void ALUReservationStation::print() const {
 void ALUReservationStation::getCurrentInstructions(Instruction* const copy) const {
   for(int i = 0; i < size; i++) {
     copy[i] = instructions[i];
+  }
+}
+
+void ALUReservationStation::getCurrentReorderBufferIndexes(int* const copy) const {
+  for(int i = 0; i < size; i++) {
+    copy[i] = reorderBufferIndexes[i];
   }
 }
 
@@ -169,26 +177,21 @@ void ALUReservationStation::dispatch(const Instruction instruction) {
   for(int i = 0; i < 3; i++) {
     operands[i] = instruction.operands[i];
   }
-  //temp variables
-  int registerNum;
-  int val;
   //fetching the operands for the instruction
   switch(opcode) {
+    case NOOP:
+      break;
     case ADD:
     case AND:
     case MULT:
     case OR:
     case SUB:
       for(int i = 1; i < 3; i++) {
-        registerNum = operands[i];
-        val = registerFile->getRegisterValue(registerNum);
-        operands[i] = val;
+        operands[i] = registerFile->getRegisterValue(operands[i]);
       }
       break;
     case ADDI:
-      registerNum = operands[1];
-      val = registerFile->getRegisterValue(registerNum);
-      operands[1] = val;
+      operands[1] = registerFile->getRegisterValue(operands[1]);
       break;
   }
 }

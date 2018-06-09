@@ -204,18 +204,6 @@ int Model::getMemorySize() const {
   return memorySize;
 }
 
-int Model::getAluReservationStationSize() const {
-  return aluReservationStationSize;
-}
-
-int Model::getBranchUnitReservationStationSize() const {
-  return branchUnitReservationStationSize;
-}
-
-int Model::getLoadStoreUnitReservationStationSize() const {
-  return loadStoreUnitReservationStationSize;
-}
-
 int Model::getRunningFlag() const {
   return runningFlag;
 }
@@ -258,6 +246,10 @@ Instruction Model::getDecodeIssueUnitInstruction() const {
 
 void Model::getAluReservationStationInstructions(Instruction* const copy) const {
   aluReservationStation.getCurrentInstructions(copy);
+}
+
+void Model::getAluReservationStationReorderBufferIndexes(int* const copy) const {
+  aluReservationStation.getCurrentReorderBufferIndexes(copy);
 }
 
 void Model::getBranchUnitReservationStationInstructions(Instruction* const copy) const {

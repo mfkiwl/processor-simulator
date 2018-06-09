@@ -86,7 +86,7 @@ class View {
 
     void drawDecodeIssueUnit(const Instruction instruction);
 
-    void drawAluReservationStation(const Instruction* const instructions);
+    void drawAluReservationStation(const Instruction* const instructions, const int* const reorderBufferIndexes);
 
     void drawBranchUnitReservationStation(const Instruction* const instructions);
 

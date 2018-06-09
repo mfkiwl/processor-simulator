@@ -46,10 +46,6 @@ void BranchUnitReservationStation::execute() {
       if(readyToDispatch(instructions[i])) {
         dispatch(instructions[i]);
         reorderBufferIndex = reorderBufferIndexes[i];
-        //printf("ORIGINAL REORDER BUFFER INDEX: %d\n", reorderBufferIndex);
-                    
-        //printf("DISPATCHING INSTRUCTION: ");
-        //printInstruction(instructions[i]);
 
         //clear the dispatched instruction from the reservation station
         instructions[i] = (Instruction) {0,0,0,0};
@@ -142,6 +138,8 @@ int BranchUnitReservationStation::findFreePosition() const {
 int BranchUnitReservationStation::readyToDispatch(const Instruction instruction) const {
   //check that the source register are ready to use
   switch(instruction.opcode) {
+    case NOOP:
+      return 0;
     case BEQ:
     case BNE:
       if(registerFile->getScoreBoardValue(operands[0]) && registerFile->getScoreBoardValue(operands[1])) {
@@ -176,6 +174,8 @@ void BranchUnitReservationStation::dispatch(const Instruction instruction) {
   int val;
   //fetching the operands for the instruction
   switch(opcode) {
+    case NOOP:
+      break;
     case BEQ:
     case BNE:
       registerNum = operands[0];

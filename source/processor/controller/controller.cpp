@@ -112,7 +112,9 @@ void Controller::updateView() {
   //draw the instructions in the alu reservation station
   Instruction aluReservationStationInstructions[aluReservationStationSize];
   model.getAluReservationStationInstructions(aluReservationStationInstructions);
-  view.drawAluReservationStation(aluReservationStationInstructions);
+  int aluReservationStationReorderBufferIndexes[4];
+  model.getAluReservationStationReorderBufferIndexes(aluReservationStationReorderBufferIndexes);
+  view.drawAluReservationStation(aluReservationStationInstructions, aluReservationStationReorderBufferIndexes);
 
   //draw the instructions in the branch unit reservation station
   Instruction branchUnitReservationStationInstructions[branchUnitReservationStationSize];

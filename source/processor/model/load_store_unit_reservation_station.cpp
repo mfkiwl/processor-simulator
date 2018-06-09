@@ -137,6 +137,8 @@ int LoadStoreUnitReservationStation::readyToDispatch(const int index) const {
   Instruction instruction = instructions[index];
   //check that the source register are ready to use
   switch(instruction.opcode) {
+    case NOOP:
+      return 0;
     case LW:
       if(!loadStoreUnit->waitingForStore()) {
         return 1;
@@ -176,6 +178,8 @@ void LoadStoreUnitReservationStation::dispatch(const int index) {
   int val; 
   //fetching the operands for the instruction
   switch(opcode) {
+    case NOOP:
+      break;
     case LW:
       break;
     case SW:

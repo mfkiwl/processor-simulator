@@ -93,12 +93,6 @@ class Model {
 
     int getNumOfRegisters() const;
 
-    int getAluReservationStationSize() const;
-
-    int getBranchUnitReservationStationSize() const;
-
-    int getLoadStoreUnitReservationStationSize() const;
-
     int getMemorySize() const;
 
     int getNoOfInstructionsExecuted() const;
@@ -120,6 +114,8 @@ class Model {
     Instruction getDecodeIssueUnitInstruction() const;
 
     void getAluReservationStationInstructions(Instruction* const copy) const;
+
+    void getAluReservationStationReorderBufferIndexes(int* const copy) const;
 
     void getBranchUnitReservationStationInstructions(Instruction* const copy) const;
 

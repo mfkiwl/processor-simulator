@@ -289,7 +289,7 @@ void View::drawDecodeIssueUnit(const Instruction instruction) {
   renderText(xPos, yPos, text);
 }
 
-void View::drawAluReservationStation(const Instruction* const instructions) {
+void View::drawAluReservationStation(const Instruction* const instructions, const int* const reorderBufferIndexes) {
   int xPos = 50;
   int yPos = 250;
   int numOfHorizontalCells = 1;
@@ -300,10 +300,12 @@ void View::drawAluReservationStation(const Instruction* const instructions) {
   renderText(xPos, yPos, "ALU");
   renderText(xPos, yPos + cellHeight, "Reservation Station : ");
 
-  drawTable(xPos, yPos + cellHeight * 2, numOfHorizontalCells, numOfVerticalCells, cellWidth, cellHeight);
+  drawTable(xPos, yPos + cellHeight * 2, 1, numOfVerticalCells, 20, cellHeight);
+  drawTable(xPos + 20, yPos + cellHeight * 2, numOfHorizontalCells, numOfVerticalCells, cellWidth, cellHeight);
 
   for(int i = 0; i < aluReservationStationSize; i++) {
-    renderText(xPos, yPos + (2 + i) * cellHeight, instructionToString(instructions[i]));
+    renderText(xPos, yPos + (2 + i) * cellHeight, intToString(reorderBufferIndexes[i]));
+    renderText(xPos + 20, yPos + (2 + i) * cellHeight, instructionToString(instructions[i]));
   }
 }
 
@@ -356,12 +358,15 @@ void View::drawReorderBuffer(const Instruction* instructions, int** const fields
 
   renderText(xPos, yPos, "Reorder Buffer : ");
 
-  drawTable(xPos + textCellWidth, yPos + cellHeight, numOfHorizontalCells, numOfVerticalCells, cellWidth, cellHeight);
+  drawTable(xPos, yPos + cellHeight, 1, numOfVerticalCells, cellWidth, cellHeight);
+
+  drawTable(xPos + cellWidth + textCellWidth, yPos + cellHeight, numOfHorizontalCells, numOfVerticalCells, cellWidth, cellHeight);
 
   for(int i = 0; i < reorderBufferSize; i++) {
-    drawTextCell(xPos, yPos + (i+1) * cellHeight, textCellWidth, cellHeight, instructionToString(instructions[i]), xOffset, yOffset);
+    renderText(xPos, yPos + (i+1) * cellHeight, intToString(i));
+    drawTextCell(xPos + cellWidth, yPos + (i+1) * cellHeight, textCellWidth, cellHeight, instructionToString(instructions[i]), xOffset, yOffset);
     for(int j = 0; j < 4; j++) {
-      renderText(xPos + textCellWidth + j * cellWidth, yPos + (i+1) * cellHeight, intToString(fields[i][j]));
+      renderText(xPos + textCellWidth + (j+1) * cellWidth, yPos + (i+1) * cellHeight, intToString(fields[i][j]));
     }
   }
 }
