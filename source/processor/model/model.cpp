@@ -256,8 +256,16 @@ void Model::getBranchUnitReservationStationInstructions(Instruction* const copy)
   branchUnitReservationStation.getCurrentInstructions(copy);
 }
 
+void Model::getBranchUnitReservationStationReorderBufferIndexes(int* const copy) const {
+  branchUnitReservationStation.getCurrentReorderBufferIndexes(copy);
+}
+
 void Model::getLoadStoreUnitReservationStationInstructions(Instruction* const copy) const {
   loadStoreUnitReservationStation.getCurrentInstructions(copy);
+}
+
+void Model::getLoadStoreUnitReservationStationReorderBufferIndexes(int* const copy) const {
+  loadStoreUnitReservationStation.getCurrentReorderBufferIndexes(copy);
 }
 
 void Model::getReorderBufferInstructions(Instruction* const copy) const {

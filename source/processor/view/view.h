@@ -88,9 +88,9 @@ class View {
 
     void drawAluReservationStation(const Instruction* const instructions, const int* const reorderBufferIndexes);
 
-    void drawBranchUnitReservationStation(const Instruction* const instructions);
+    void drawBranchUnitReservationStation(const Instruction* const instructions, const int* const reorderBufferIndexes);
 
-    void drawLoadStoreUnitReservationStation(const Instruction* const instructions);
+    void drawLoadStoreUnitReservationStation(const Instruction* const instructions, const int* const reorderBufferIndexes);
 
     void drawReorderBuffer(const Instruction* const instructions, int** const fields);
 

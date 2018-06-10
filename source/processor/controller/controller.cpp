@@ -119,12 +119,16 @@ void Controller::updateView() {
   //draw the instructions in the branch unit reservation station
   Instruction branchUnitReservationStationInstructions[branchUnitReservationStationSize];
   model.getBranchUnitReservationStationInstructions(branchUnitReservationStationInstructions);
-  view.drawBranchUnitReservationStation(branchUnitReservationStationInstructions);
+  int branchUnitReservationStationReorderBufferIndexes[4];
+  model.getBranchUnitReservationStationReorderBufferIndexes(branchUnitReservationStationReorderBufferIndexes);
+  view.drawBranchUnitReservationStation(branchUnitReservationStationInstructions, branchUnitReservationStationReorderBufferIndexes);
 
   //draw the instructions in the load store unit reservation station
   Instruction loadStoreUnitReservationStationInstructions[loadStoreUnitReservationStationSize];
   model.getLoadStoreUnitReservationStationInstructions(loadStoreUnitReservationStationInstructions);
-  view.drawLoadStoreUnitReservationStation(loadStoreUnitReservationStationInstructions);
+  int loadStoreUnitReservationStationReorderBufferIndexes[4];
+  model.getLoadStoreUnitReservationStationReorderBufferIndexes(loadStoreUnitReservationStationReorderBufferIndexes);
+  view.drawLoadStoreUnitReservationStation(loadStoreUnitReservationStationInstructions, loadStoreUnitReservationStationReorderBufferIndexes);
 
   //draw the reorder buffer
   Instruction reorderBufferInstructions[reorderBufferSize];

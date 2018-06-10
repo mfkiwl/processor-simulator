@@ -110,6 +110,12 @@ void BranchUnitReservationStation::getCurrentInstructions(Instruction* const cop
   }
 }
 
+void BranchUnitReservationStation::getCurrentReorderBufferIndexes(int* const copy) const {
+  for(int i = 0; i < size; i++) {
+    copy[i] = reorderBufferIndexes[i];
+  }
+}
+
 void BranchUnitReservationStation::setNextInstruction(const Instruction instruction) {
   nextInstruction = instruction;
 }

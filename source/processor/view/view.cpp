@@ -309,7 +309,7 @@ void View::drawAluReservationStation(const Instruction* const instructions, cons
   }
 }
 
-void View::drawBranchUnitReservationStation(const Instruction* const instructions) {
+void View::drawBranchUnitReservationStation(const Instruction* const instructions, const int* const reorderBufferIndexes) {
   int xPos = 250;
   int yPos = 250;
   int numOfHorizontalCells = 1;
@@ -320,14 +320,16 @@ void View::drawBranchUnitReservationStation(const Instruction* const instruction
   renderText(xPos, yPos, "Branch Unit");
   renderText(xPos, yPos + cellHeight, "Reservation Station : ");
 
-  drawTable(xPos, yPos + cellHeight * 2, numOfHorizontalCells, numOfVerticalCells, cellWidth, cellHeight);
+  drawTable(xPos, yPos + cellHeight * 2, 1, numOfVerticalCells, 20, cellHeight);
+  drawTable(xPos + 20, yPos + cellHeight * 2, numOfHorizontalCells, numOfVerticalCells, cellWidth, cellHeight);
 
   for(int i = 0; i < aluReservationStationSize; i++) {
-    renderText(xPos, yPos + (2 + i) * cellHeight, instructionToString(instructions[i]));
+    renderText(xPos, yPos + (2 + i) * cellHeight, intToString(reorderBufferIndexes[i]));
+    renderText(xPos + 20, yPos + (2 + i) * cellHeight, instructionToString(instructions[i]));
   }
 }
 
-void View::drawLoadStoreUnitReservationStation(const Instruction* const instructions) {
+void View::drawLoadStoreUnitReservationStation(const Instruction* const instructions, const int* const reorderBufferIndexes) {
   int xPos = 450;
   int yPos = 250;
   int numOfHorizontalCells = 1;
@@ -338,10 +340,12 @@ void View::drawLoadStoreUnitReservationStation(const Instruction* const instruct
   renderText(xPos, yPos, "Decode Issue Unit");
   renderText(xPos, yPos + cellHeight, "Reservation Station : ");
 
-  drawTable(xPos, yPos + cellHeight * 2, numOfHorizontalCells, numOfVerticalCells, cellWidth, cellHeight);
+  drawTable(xPos, yPos + cellHeight * 2, 1, numOfVerticalCells, 20, cellHeight);
+  drawTable(xPos + 20, yPos + cellHeight * 2, numOfHorizontalCells, numOfVerticalCells, cellWidth, cellHeight);
 
   for(int i = 0; i < aluReservationStationSize; i++) {
-    renderText(xPos, yPos + (2 + i) * cellHeight, instructionToString(instructions[i]));
+    renderText(xPos, yPos + (2 + i) * cellHeight, intToString(reorderBufferIndexes[i]));
+    renderText(xPos + 20, yPos + (2 + i) * cellHeight, instructionToString(instructions[i]));
   }
 }
 

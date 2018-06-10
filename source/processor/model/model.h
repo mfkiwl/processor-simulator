@@ -119,7 +119,11 @@ class Model {
 
     void getBranchUnitReservationStationInstructions(Instruction* const copy) const;
 
+    void getBranchUnitReservationStationReorderBufferIndexes(int* const copy) const;
+
     void getLoadStoreUnitReservationStationInstructions(Instruction* const copy) const;
+
+    void getLoadStoreUnitReservationStationReorderBufferIndexes(int* const copy) const;
 
     void getReorderBufferInstructions(Instruction* const copy) const;
 
