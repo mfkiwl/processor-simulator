@@ -8,86 +8,96 @@
 #include "reorder_buffer.h"
 #include "constants.h"
 
+#include <stdio.h>
+
 //===========================================
 // class implementation
 
 ALU::ALU(ReorderBuffer* const reorderBuffer) : 
   reorderBuffer(reorderBuffer),
-  opcode(0),
-  destinationRegister(-1),
-  result(0),
+  nextOpcode(0),
+  currentOpcode(0),
   nextReorderBufferIndex(-1),
-  currentReorderBufferIndex(-1)
+  currentReorderBufferIndex(-1),
+  result(0)
 {
   for(int i = 0; i < 3; i++) {
-    operands[i] = 0;
+    nextOperands[i] = 0;
+    currentOperands[i] = 0;
   }
 }
 
 void ALU::execute() {
-  if(nextReorderBufferIndex != -1) {
+  if(currentOpcode != NOOP) {
     //tell reorder buffer that we are executing the instruction
-    reorderBuffer->executingEntry(nextReorderBufferIndex);
+    reorderBuffer->executingEntry(currentReorderBufferIndex);
     //execute the instruction
-    destinationRegister = operands[0];
-    switch(opcode) {
+    switch(currentOpcode) {
       case ADD: case ADDI:
-        result = operands[1] + operands[2];
+        result = currentOperands[1] + currentOperands[2];
         break;
       case AND:
-        result = operands[1] && operands[2];
+        result = currentOperands[1] && currentOperands[2];
         break;
       case MULT:
-        result = operands[1] * operands[2];
+        result = currentOperands[1] * currentOperands[2];
         break;
       case OR:
-        result = operands[1] || operands[2];
+        result = currentOperands[1] || currentOperands[2];
         break;
      case SUB:
-       result = operands[1] - operands[2];
+       result = currentOperands[1] - currentOperands[2];
         break;
-    }
-
-    currentReorderBufferIndex = nextReorderBufferIndex;
-
-    //reset inputs
-    opcode = 0;
-    for(int i = 0; i < 3; i++) {
-      operands[i] = 0;
     }
   }
 }
 
 void ALU::pipe() {
-  if(destinationRegister != -1) {
+  //use the current values
+  if(currentOpcode != NOOP) {
     //tell the reorder buffer that we are finished executing the instruction
     reorderBuffer->finishedEntry(currentReorderBufferIndex, result);
-    //reset variables
-    destinationRegister = -1;
+    //reset the result
+    result = 0;
   }
-}
 
-void ALU::setOpcode(const int x) {
-  opcode = x;
-}
-
-void ALU::setOperands(const int x[3]) {
+  //set the current values equal to the next values
+  currentOpcode = nextOpcode;
   for(int i = 0; i < 3; i++) {
-    operands[i] = x[i];
+    currentOperands[i] = nextOperands[i]; 
   }
+  currentReorderBufferIndex = nextReorderBufferIndex;
+
+  //reset the next values
+  nextOpcode = 0;
+  for(int i = 0; i < 3; i++) {
+    nextOperands[i] = 0;
+  }
+  nextReorderBufferIndex = -1;
+}
+
+void ALU::setNextOpcode(const int x) {
+  nextOpcode = x;
+}
+
+void ALU::setNextOperands(const int x[3]) {
+  for(int i = 0; i < 3; i++) {
+    nextOperands[i] = x[i];
+  }
+}
+
+void ALU::setNextReorderBufferIndex(const int i) {
+  nextReorderBufferIndex = i;
 }
 
 void ALU::flush() {
-  opcode = 0;
+  nextOpcode = 0;
+  currentOpcode = 0;
   for(int i = 0; i < 3; i++) {
-    operands[i] = 0;
+    nextOperands[i] = 0;
+    currentOperands[i] = 0;
   }
   nextReorderBufferIndex = -1;
   currentReorderBufferIndex = -1;
-  destinationRegister = -1;
   result = 0;
-}
-
-void ALU::setReorderBufferIndex(const int i) {
-  nextReorderBufferIndex = i;
 }

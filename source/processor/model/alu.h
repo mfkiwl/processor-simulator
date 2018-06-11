@@ -18,16 +18,18 @@ class ALU {
     ReorderBuffer* const reorderBuffer;
 
     //decoded instruction
-    int opcode;
-    int operands[3];
-
-    //instruction result
-    int destinationRegister;
-    int result;
-
+    int nextOpcode;
+    int currentOpcode;
+    int nextOperands[3];
+    int currentOperands[3];
+    
     //position in the reorder buffer
     int nextReorderBufferIndex;
     int currentReorderBufferIndex;
+
+    //instruction result
+    int result;
+
 
   public:
     ALU(ReorderBuffer* const reorderBuffer);
@@ -36,13 +38,13 @@ class ALU {
 
     void pipe();
 
-    void setOpcode(const int x);
+    void setNextOpcode(const int x);
 
-    void setOperands(const int x[3]);
+    void setNextOperands(const int x[3]);
+
+    void setNextReorderBufferIndex(const int i);
 
     void flush();
-
-    void setReorderBufferIndex(const int i);
 };
 
 #endif

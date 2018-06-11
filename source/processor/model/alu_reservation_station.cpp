@@ -65,10 +65,10 @@ void ALUReservationStation::pipe() {
   //send current instruction to the alu
   if(reorderBufferIndex != -1) {
     //send the decoded instruction to the execution unit
-    alu->setOpcode(opcode);
-    alu->setOperands(operands);
+    alu->setNextOpcode(opcode);
+    alu->setNextOperands(operands);
     //Send the reorder buffer index to the alu
-    alu->setReorderBufferIndex(reorderBufferIndex);
+    alu->setNextReorderBufferIndex(reorderBufferIndex);
         
     //reset the outputs
     opcode = 0;
