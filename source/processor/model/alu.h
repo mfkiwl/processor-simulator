@@ -28,7 +28,7 @@ class ALU {
     int currentReorderBufferIndex;
 
     //instruction result
-    int result;
+    int currentResult;
 
 
   public:
@@ -45,6 +45,10 @@ class ALU {
     void setNextReorderBufferIndex(const int i);
 
     void flush();
+
+    int getResult() const;
+
+    int getReorderBufferIndex() const;
 };
 
 #endif

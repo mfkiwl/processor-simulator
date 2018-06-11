@@ -268,6 +268,14 @@ void Model::getLoadStoreUnitReservationStationReorderBufferIndexes(int* const co
   loadStoreUnitReservationStation.getCurrentReorderBufferIndexes(copy);
 }
 
+int Model::getAluResult() const {
+  return alu.getResult();
+}
+
+int Model::getAluReorderBufferIndex() const {
+  return alu.getReorderBufferIndex();
+}
+
 void Model::getReorderBufferInstructions(Instruction* const copy) const {
   reorderBuffer.getReorderBufferInstructions(copy);
 }

@@ -125,6 +125,10 @@ class Model {
 
     void getLoadStoreUnitReservationStationReorderBufferIndexes(int* const copy) const;
 
+    int getAluResult() const;
+
+    int getAluReorderBufferIndex() const;
+
     void getReorderBufferInstructions(Instruction* const copy) const;
 
     void getReorderBufferFields(int** const copy) const;

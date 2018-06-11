@@ -130,6 +130,11 @@ void Controller::updateView() {
   model.getLoadStoreUnitReservationStationReorderBufferIndexes(loadStoreUnitReservationStationReorderBufferIndexes);
   view.drawLoadStoreUnitReservationStation(loadStoreUnitReservationStationInstructions, loadStoreUnitReservationStationReorderBufferIndexes);
 
+  //draw the alu
+  int aluResult = model.getAluResult();
+  int aluReorderBufferIndex = model.getAluReorderBufferIndex();
+  view.drawAlu(aluResult, aluReorderBufferIndex);
+
   //draw the reorder buffer
   Instruction reorderBufferInstructions[reorderBufferSize];
   model.getReorderBufferInstructions(reorderBufferInstructions);

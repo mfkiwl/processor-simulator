@@ -92,6 +92,8 @@ class View {
 
     void drawLoadStoreUnitReservationStation(const Instruction* const instructions, const int* const reorderBufferIndexes);
 
+    void drawAlu(const int result, const int reorderBufferIndex);
+
     void drawReorderBuffer(const Instruction* const instructions, int** const fields);
 
     void clearScreen();
