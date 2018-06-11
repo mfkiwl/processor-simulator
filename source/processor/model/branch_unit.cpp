@@ -95,9 +95,13 @@ void BranchUnit::setNextReorderBufferIndex(const int i) {
 }
 
 void BranchUnit::flush() {
+  nextOpcode = 0;
   currentOpcode = 0;
   for(int i = 0; i < 3; i++) {
+    nextOperands[i] = 0;
     currentOperands[i] = 0;
   }
+  nextReorderBufferIndex = -1;
   currentReorderBufferIndex = -1;
+  successful = 0;
 }

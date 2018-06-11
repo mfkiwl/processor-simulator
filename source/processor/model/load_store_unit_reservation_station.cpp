@@ -78,11 +78,11 @@ void LoadStoreUnitReservationStation::pipe() {
   if(reorderBufferIndex != -1) {
 
     //send the decoded instruction to the execution unit
-    loadStoreUnit->setOpcode(opcode);
-    loadStoreUnit->setOperands(operands);
+    loadStoreUnit->setNextOpcode(opcode);
+    loadStoreUnit->setNextOperands(operands);
 
     //Send the reorder buffer index to the execution unit
-    loadStoreUnit->setReorderBufferIndex(reorderBufferIndex);
+    loadStoreUnit->setNextReorderBufferIndex(reorderBufferIndex);
         
     //reset the outputs
     opcode = 0;

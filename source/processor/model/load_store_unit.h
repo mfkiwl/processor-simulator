@@ -24,8 +24,10 @@ class LoadStoreUnit {
     ReorderBuffer* const reorderBuffer;
 
     //decoded instruction
-    int opcode;
-    int operands[3];
+    int nextOpcode;
+    int currentOpcode;
+    int nextOperands[3];
+    int currentOperands[3];
 
     const int bufferSize;
     const int writeCycles;
@@ -36,7 +38,8 @@ class LoadStoreUnit {
     LoadBuffer loadBuffer;
 
     //position in the reorder buffer
-    int reorderBufferIndex;
+    int nextReorderBufferIndex;
+    int currentReorderBufferIndex;
 
   public:
     LoadStoreUnit(Memory* const memory, ReorderBuffer* const reorderBuffer);
@@ -45,13 +48,13 @@ class LoadStoreUnit {
 
     void pipe();
 
-    void setOpcode(const int x);
+    void setNextOpcode(const int x);
 
-    void setOperands(const int x[3]);
+    void setNextOperands(const int x[3]);
+
+    void setNextReorderBufferIndex(const int i);
 
     void flush();
-
-    void setReorderBufferIndex(const int i);
 
     int waitingForStore() const ;
 };
