@@ -64,10 +64,10 @@ void BranchUnitReservationStation::pipe() {
   //send current instruction to the branch unit
   if(reorderBufferIndex != -1) {
     //send the decoded instruction to the execution unit
-    branchUnit->setOpcode(opcode);
-    branchUnit->setOperands(operands);
+    branchUnit->setNextOpcode(opcode);
+    branchUnit->setNextOperands(operands);
     //Send the reorder buffer index to the execution unit
-    branchUnit->setReorderBufferIndex(reorderBufferIndex);
+    branchUnit->setNextReorderBufferIndex(reorderBufferIndex);
         
     //reset the outputs
     opcode = 0;

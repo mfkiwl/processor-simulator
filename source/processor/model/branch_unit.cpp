@@ -14,94 +14,90 @@
 
 BranchUnit::BranchUnit(ReorderBuffer* const reorderBuffer) : 
   reorderBuffer(reorderBuffer),
-  opcode(0),
-  reorderBufferIndex(-1),
+  nextOpcode(0),
+  currentOpcode(0),
+  nextReorderBufferIndex(-1),
+  currentReorderBufferIndex(-1),
   successful(0)
 {
+  //set all operands to zero
   for(int i = 0; i < 3; i++) {
-    operands[i] = 0;
+    nextOperands[i] = 0;
+    currentOperands[i] = 0;
   }
 }
 
 void BranchUnit::execute() {
-      if(reorderBufferIndex != -1) {
-        //tell reorder buffer that we are executing the instruction
-        /*
-        printf("\n\n");
-        printf("REORDER BUFFER INDEX: %d\n", reorderBufferIndex);
-        printf("opcode: %d\n", opcode);
-        printf("operands: %d %d %d\n", operands[0], operands[1], operands[2]);
-        printf("\n\n");
-        */
-        reorderBuffer->executingEntry(reorderBufferIndex);
-        //execute the instruction
-        switch(opcode) {
-          case BEQ:
-            if(operands[0] == operands[1]) {
-              successful = 1;
-              //*pc = operands[2];
-              //*flushFlag = 1;
-            }
-            break;
-          case BNE:
-            if(operands[0] != operands[1]) {
-              successful = 1;
-              //*pc = operands[2];
-              //*flushFlag = 1;
-            }
-            break;
-          case J:
-            successful = 1;
-            //*pc = operands[0];
-            //*flushFlag = 1;
-            break;
-          case HALT:
-            successful = 1;
-            //tell the processor that the program had finished
-            //*runningFlag = 0;
-            break;
-        } 
-
-        //reset variables
-        opcode = 0;
-        for(int i = 0; i < 3; i++) {
-          operands[i] = 0;
+  if(currentOpcode != NOOP) {
+    //tell reorder buffer that we are executing the instruction
+    reorderBuffer->executingEntry(currentReorderBufferIndex);
+    //execute the instruction
+    switch(currentOpcode) {
+      case BEQ:
+        if(currentOperands[0] == currentOperands[1]) {
+          successful = 1;
         }
-        printf("\n\nEXECUTED BRANCH UNIT\n\n\n");
-      }
+        break;
+      case BNE:
+        if(currentOperands[0] != currentOperands[1]) {
+          successful = 1;
+        }
+        break;
+      case J:
+        successful = 1;
+        break;
+      case HALT:
+        successful = 1;
+        break;
+      default:
+        successful = 0;
+        break;
     }
+  }
+}
 
 void BranchUnit::pipe() {
-      if(reorderBufferIndex != -1) {
-        //tell the reorder buffer that we are finished executing the instruction
-        reorderBuffer->finishedEntry(reorderBufferIndex, successful);
-        opcode = 0;
-        for(int i = 0; i < 3; i++) {
-          operands[i] = 0;
-        }
-        reorderBufferIndex = -1;
-        successful = 0;
-      }
-    }
+  //send the current values
+  if(currentOpcode != NOOP) {
+    //tell the reorder buffer that we are finished executing the instruction
+    reorderBuffer->finishedEntry(currentReorderBufferIndex, successful);
+    //reset the successful flag
+    successful = 0;
+  }
 
-void BranchUnit::setOpcode(const int x) {
-      opcode = x;
-    }
+  //set the current values equal to the next values
+  currentOpcode = nextOpcode;
+  for(int i = 0; i < 3; i++) {
+    currentOperands[i] = nextOperands[i];
+  }
+  currentReorderBufferIndex = nextReorderBufferIndex;
 
-void BranchUnit::setOperands(const int x[3]) {
-      for(int i = 0; i < 3; i++) {
-        operands[i] = x[i];
-      }
-    }
+  //clear the next values
+  nextOpcode = 0;
+  for(int i = 0; i < 3; i++) {
+    nextOperands[i] = 0;
+  }
+  nextReorderBufferIndex = -1;
+}
+
+void BranchUnit::setNextOpcode(const int x) {
+  nextOpcode = x;
+}
+
+void BranchUnit::setNextOperands(const int x[3]) {
+  for(int i = 0; i < 3; i++) {
+    nextOperands[i] = x[i];
+  }
+}
+
+void BranchUnit::setNextReorderBufferIndex(const int i) {
+  nextReorderBufferIndex = i;
+}
 
 void BranchUnit::flush() {
-      opcode = 0;
-      for(int i = 0; i < 3; i++) {
-        operands[i] = 0;
-      }
-      reorderBufferIndex = -1;
-    }
-
-void BranchUnit::setReorderBufferIndex(const int i) {
-      reorderBufferIndex = i;
-    }
+  currentOpcode = 0;
+  for(int i = 0; i < 3; i++) {
+    currentOperands[i] = 0;
+  }
+  currentReorderBufferIndex = -1;
+}
