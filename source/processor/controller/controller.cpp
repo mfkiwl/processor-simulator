@@ -100,6 +100,10 @@ void Controller::updateView() {
   int numOfClockCycles = model.getNoOfClockCycles();
   float numOfInstructionsExecutedPerCycle = model.getNoOfInstructionsExecutedPerCycle();
   view.drawProcessorStats(numOfInstructionsExecuted, numOfClockCycles, numOfInstructionsExecutedPerCycle);
+
+  //draw the program counter
+  int programCounter = model.getPC();
+  view.drawPC(programCounter);
   
   //draw the instruction in the fetch unit
   Instruction fetchUnitInstruction = model.getFetchUnitInstruction();

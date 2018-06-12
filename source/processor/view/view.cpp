@@ -280,6 +280,13 @@ void View::drawProcessorStats(const int numOfInstructionsExecuted, const int num
   renderText(xPos, yPos + 2 * ySpace, text);
 }
 
+void View::drawPC(const int programCounter) {
+  int xPos = 150;
+  int yPos = 60;
+
+  renderText(xPos, yPos, "PC : " + intToString(programCounter));
+}
+
 void View::drawFetchUnit(const Instruction instruction) {
   int xPos = 250;
   int yPos = 60;

@@ -82,6 +82,8 @@ class View {
 
     void drawProcessorStats(const int numOfInstructionsExecuted, const int numOfClockCycles, const float numOfInstructionsExecutedPerCycle);
 
+    void drawPC(const int programCounter);
+
     void drawFetchUnit(const Instruction currentInstruction);
 
     void drawDecodeIssueUnit(const Instruction instruction);
