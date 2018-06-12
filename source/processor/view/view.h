@@ -94,6 +94,8 @@ class View {
 
     void drawAlu(const int result, const int reorderBufferIndex);
 
+    void drawBranchUnit(const bool successful, const int reorderBufferIndex);
+
     void drawReorderBuffer(const Instruction* const instructions, int** const fields);
 
     void clearScreen();

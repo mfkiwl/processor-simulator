@@ -63,6 +63,10 @@ void Model::updateStats() {
 }
 
 void Model::cycle() {
+
+  //pipeline the instructions
+  pipe();
+
   //writeback the results
   commit();
 
@@ -82,9 +86,6 @@ void Model::cycle() {
 
   //fetch the next instruction
   fetch(decodeIssueUnit.getBlockingFlag());
-
-  //pipeline the instructions
-  pipe();
 
   //update the processor stats
   updateStats();
@@ -273,6 +274,14 @@ int Model::getAluResult() const {
 
 int Model::getAluReorderBufferIndex() const {
   return alu.getReorderBufferIndex();
+}
+
+bool Model::getBranchUnitSuccessful() const {
+  return branchUnit.getSuccessful();
+}
+
+int Model::getBranchUnitReorderBufferIndex() const {
+  return branchUnit.getReorderBufferIndex();
 }
 
 void Model::getReorderBufferInstructions(Instruction* const copy) const {

@@ -26,7 +26,7 @@ class BranchUnit {
     int currentReorderBufferIndex;
 
     //if the branch condition is met or not
-    int successful;
+    bool successful;
 
   public:
     BranchUnit(ReorderBuffer* const reorderBuffer);
@@ -42,6 +42,10 @@ class BranchUnit {
     void flush();
 
     void setNextReorderBufferIndex(const int i);
+
+    bool getSuccessful() const;
+
+    int getReorderBufferIndex() const;
 };
 
 #endif

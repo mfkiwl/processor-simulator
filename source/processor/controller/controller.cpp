@@ -135,6 +135,11 @@ void Controller::updateView() {
   int aluReorderBufferIndex = model.getAluReorderBufferIndex();
   view.drawAlu(aluResult, aluReorderBufferIndex);
 
+  //draw the branch unit
+  bool branchUnitSuccessful = model.getBranchUnitSuccessful();
+  int branchUnitReorderBufferIndex = model.getBranchUnitReorderBufferIndex();
+  view.drawBranchUnit(branchUnitSuccessful, branchUnitReorderBufferIndex);
+
   //draw the reorder buffer
   Instruction reorderBufferInstructions[reorderBufferSize];
   model.getReorderBufferInstructions(reorderBufferInstructions);

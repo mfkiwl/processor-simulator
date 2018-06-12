@@ -130,6 +130,10 @@ class Model {
 
     int getAluReorderBufferIndex() const;
 
+    bool getBranchUnitSuccessful() const;
+
+    int getBranchUnitReorderBufferIndex() const;
+
     void getReorderBufferInstructions(Instruction* const copy) const;
 
     void getReorderBufferFields(int** const copy) const;

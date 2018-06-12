@@ -363,6 +363,20 @@ void View::drawAlu(const int result, const int reorderBufferIndex) {
   renderText(xPos + cellWidth, yPos, intToString(result));
 }
 
+void View::drawBranchUnit(const bool successful, const int reorderBufferIndex) {
+  int xPos = 250;
+  int yPos = 400;
+  int numOfHorizontalCells = 2;
+  int numOfVerticalCells = 1;
+  int cellWidth = 20;
+  int cellHeight = 20;
+
+  renderText(xPos, yPos - cellHeight, "Branch Unit : ");
+  drawTable(xPos, yPos, numOfHorizontalCells, numOfVerticalCells, cellWidth, cellHeight);
+  renderText(xPos, yPos, intToString(reorderBufferIndex));
+  renderText(xPos + cellWidth, yPos, intToString(successful));
+}
+
 void View::drawReorderBuffer(const Instruction* instructions, int** const fields) {
   int xPos = 700;
   int yPos = 20;

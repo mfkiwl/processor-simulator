@@ -59,6 +59,9 @@ void ALU::pipe() {
     reorderBuffer->finishedEntry(currentReorderBufferIndex, currentResult);
   }
 
+  //reset the current result to zero
+  currentResult = 0;
+
   //set the current values equal to the next values
   currentOpcode = nextOpcode;
   for(int i = 0; i < 3; i++) {
