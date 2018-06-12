@@ -283,7 +283,10 @@ void View::drawFetchUnit(const Instruction instruction) {
 
   renderText(xPos, yPos, "Fetch Unit : ");
   drawTable(xPos, yPos + cellHeight, numOfHorizontalCells, numOfVerticalCells, cellWidth, cellHeight);
-  renderText(xPos, yPos + cellHeight, instructionToString(instruction));
+  std::string instructionString = instructionToString(instruction);
+  if(instructionString != "NOOP") {
+    renderText(xPos, yPos + cellHeight, instructionString);
+  }
 }
 
 void View::drawDecodeIssueUnit(const Instruction instruction) {
@@ -296,7 +299,10 @@ void View::drawDecodeIssueUnit(const Instruction instruction) {
 
   renderText(xPos, yPos, "Decode/Issue unit");
   drawTable(xPos, yPos + cellHeight, numOfHorizontalCells, numOfVerticalCells, cellWidth, cellHeight);
-  renderText(xPos, yPos + cellHeight, instructionToString(instruction));
+  std::string instructionString = instructionToString(instruction);
+  if(instructionString != "NOOP") {
+    renderText(xPos, yPos + cellHeight, instructionString);
+  }
 }
 
 void View::drawAluReservationStation(const Instruction* const instructions, const int* const reorderBufferIndexes) {
@@ -314,8 +320,10 @@ void View::drawAluReservationStation(const Instruction* const instructions, cons
   drawTable(xPos + 20, yPos + cellHeight * 2, numOfHorizontalCells, numOfVerticalCells, cellWidth, cellHeight);
 
   for(int i = 0; i < aluReservationStationSize; i++) {
-    renderText(xPos, yPos + (2 + i) * cellHeight, intToString(reorderBufferIndexes[i]));
-    renderText(xPos + 20, yPos + (2 + i) * cellHeight, instructionToString(instructions[i]));
+    if(reorderBufferIndexes[i] != -1) {
+      renderText(xPos, yPos + (2 + i) * cellHeight, intToString(reorderBufferIndexes[i]));
+      renderText(xPos + 20, yPos + (2 + i) * cellHeight, instructionToString(instructions[i]));
+    }
   }
 }
 
@@ -334,8 +342,10 @@ void View::drawBranchUnitReservationStation(const Instruction* const instruction
   drawTable(xPos + 20, yPos + cellHeight * 2, numOfHorizontalCells, numOfVerticalCells, cellWidth, cellHeight);
 
   for(int i = 0; i < aluReservationStationSize; i++) {
-    renderText(xPos, yPos + (2 + i) * cellHeight, intToString(reorderBufferIndexes[i]));
-    renderText(xPos + 20, yPos + (2 + i) * cellHeight, instructionToString(instructions[i]));
+    if(reorderBufferIndexes[i] != -1) {
+      renderText(xPos, yPos + (2 + i) * cellHeight, intToString(reorderBufferIndexes[i]));
+      renderText(xPos + 20, yPos + (2 + i) * cellHeight, instructionToString(instructions[i]));
+    }
   }
 }
 
@@ -354,8 +364,10 @@ void View::drawLoadStoreUnitReservationStation(const Instruction* const instruct
   drawTable(xPos + 20, yPos + cellHeight * 2, numOfHorizontalCells, numOfVerticalCells, cellWidth, cellHeight);
 
   for(int i = 0; i < aluReservationStationSize; i++) {
-    renderText(xPos, yPos + (2 + i) * cellHeight, intToString(reorderBufferIndexes[i]));
-    renderText(xPos + 20, yPos + (2 + i) * cellHeight, instructionToString(instructions[i]));
+    if(reorderBufferIndexes[i] != -1) {
+      renderText(xPos, yPos + (2 + i) * cellHeight, intToString(reorderBufferIndexes[i]));
+      renderText(xPos + 20, yPos + (2 + i) * cellHeight, instructionToString(instructions[i]));
+    }
   }
 }
 
@@ -369,8 +381,10 @@ void View::drawAlu(const int result, const int reorderBufferIndex) {
 
   renderText(xPos, yPos - cellHeight, "ALU : ");
   drawTable(xPos, yPos, numOfHorizontalCells, numOfVerticalCells, cellWidth, cellHeight);
-  renderText(xPos, yPos, intToString(reorderBufferIndex));
-  renderText(xPos + cellWidth, yPos, intToString(result));
+  if(reorderBufferIndex != -1) {
+    renderText(xPos, yPos, intToString(reorderBufferIndex));
+    renderText(xPos + cellWidth, yPos, intToString(result));
+  }
 }
 
 void View::drawBranchUnit(const bool successful, const int reorderBufferIndex) {
@@ -383,8 +397,10 @@ void View::drawBranchUnit(const bool successful, const int reorderBufferIndex) {
 
   renderText(xPos, yPos - cellHeight, "Branch Unit : ");
   drawTable(xPos, yPos, numOfHorizontalCells, numOfVerticalCells, cellWidth, cellHeight);
-  renderText(xPos, yPos, intToString(reorderBufferIndex));
-  renderText(xPos + cellWidth, yPos, intToString(successful));
+  if(reorderBufferIndex != -1) {
+    renderText(xPos, yPos, intToString(reorderBufferIndex));
+    renderText(xPos + cellWidth, yPos, intToString(successful));
+  }
 }
 
 void View::drawReorderBuffer(const Instruction* instructions, int** const fields) {
@@ -395,20 +411,20 @@ void View::drawReorderBuffer(const Instruction* instructions, int** const fields
   int cellWidth = 20;
   int cellHeight = 20;
   int textCellWidth = 150;
-  int xOffset = 0;
-  int yOffset = 0;
 
   renderText(xPos, yPos, "Reorder Buffer : ");
 
   drawTable(xPos, yPos + cellHeight, 1, numOfVerticalCells, cellWidth, cellHeight);
-
+  drawTable(xPos + cellWidth, yPos + cellHeight, 1, numOfVerticalCells, textCellWidth, cellHeight);
   drawTable(xPos + cellWidth + textCellWidth, yPos + cellHeight, numOfHorizontalCells, numOfVerticalCells, cellWidth, cellHeight);
 
   for(int i = 0; i < reorderBufferSize; i++) {
     renderText(xPos, yPos + (i+1) * cellHeight, intToString(i));
-    drawTextCell(xPos + cellWidth, yPos + (i+1) * cellHeight, textCellWidth, cellHeight, instructionToString(instructions[i]), xOffset, yOffset);
-    for(int j = 0; j < 4; j++) {
-      renderText(xPos + textCellWidth + (j+1) * cellWidth, yPos + (i+1) * cellHeight, intToString(fields[i][j]));
+    if(fields[i][3] != -1) {
+      renderText(xPos + cellWidth, yPos + (i+1) * cellHeight, instructionToString(instructions[i]));
+      for(int j = 0; j < 4; j++) {
+        renderText(xPos + textCellWidth + (j+1) * cellWidth, yPos + (i+1) * cellHeight, intToString(fields[i][j]));
+      }
     }
   }
 }

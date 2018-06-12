@@ -51,6 +51,7 @@ void LoadStoreUnitReservationStation::execute() {
 
       //clear the dispatched instruction from the reservation station
       instructions[tail] = (Instruction) {0,0,0,0};
+      reorderBufferIndexes[tail] = -1;
       tail = (tail + 1) % size;
     }
   }
