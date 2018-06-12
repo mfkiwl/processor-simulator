@@ -185,7 +185,7 @@ void View::drawRegisterFile(const int* const registerValues, const int* const sc
   int noOfHorizontalCells = numOfRegisters;
   int noOfVerticalCells = 3;
   int xPos = 40;
-  int yPos = 80;
+  int yPos = 340;
   int cellWidth = 30;
   int cellHeight = 20;
   int textCellWidth = 100;
@@ -227,7 +227,7 @@ void View::drawMemory(const int* const memoryValues) {
   int noOfHorizontalCells = memorySize;
   int noOfVerticalCells = 2;
   int xPos = 40;
-  int yPos = 160;
+  int yPos = 420;
   int cellWidth = 20;
   int cellHeight = 20;
   int textCellWidth = 80;
@@ -274,24 +274,34 @@ void View::drawProcessorStats(const int numOfInstructionsExecuted, const int num
 }
 
 void View::drawFetchUnit(const Instruction instruction) {
-  int xPos = 0;
-  int yPos = 200;
+  int xPos = 250;
+  int yPos = 60;
+  int numOfHorizontalCells = 1;
+  int numOfVerticalCells = 1;
+  int cellWidth = 150;
+  int cellHeight = 20;
 
-  std::string text = "Fetch Unit : " + instructionToString(instruction);
-  renderText(xPos, yPos, text);
+  renderText(xPos, yPos, "Fetch Unit : ");
+  drawTable(xPos, yPos + cellHeight, numOfHorizontalCells, numOfVerticalCells, cellWidth, cellHeight);
+  renderText(xPos, yPos + cellHeight, instructionToString(instruction));
 }
 
 void View::drawDecodeIssueUnit(const Instruction instruction) {
-  int xPos = 0;
-  int yPos = 220;
+  int xPos = 250;
+  int yPos = 105;
+  int numOfHorizontalCells = 1;
+  int numOfVerticalCells = 1;
+  int cellWidth = 150;
+  int cellHeight = 20;
 
-  std::string text = "Decode Issue Unit : " + instructionToString(instruction);
-  renderText(xPos, yPos, text);
+  renderText(xPos, yPos, "Decode/Issue unit");
+  drawTable(xPos, yPos + cellHeight, numOfHorizontalCells, numOfVerticalCells, cellWidth, cellHeight);
+  renderText(xPos, yPos + cellHeight, instructionToString(instruction));
 }
 
 void View::drawAluReservationStation(const Instruction* const instructions, const int* const reorderBufferIndexes) {
   int xPos = 50;
-  int yPos = 250;
+  int yPos = 150;
   int numOfHorizontalCells = 1;
   int numOfVerticalCells = 4;
   int cellWidth = 150;
@@ -311,7 +321,7 @@ void View::drawAluReservationStation(const Instruction* const instructions, cons
 
 void View::drawBranchUnitReservationStation(const Instruction* const instructions, const int* const reorderBufferIndexes) {
   int xPos = 250;
-  int yPos = 250;
+  int yPos = 150;
   int numOfHorizontalCells = 1;
   int numOfVerticalCells = 4;
   int cellWidth = 150;
@@ -331,13 +341,13 @@ void View::drawBranchUnitReservationStation(const Instruction* const instruction
 
 void View::drawLoadStoreUnitReservationStation(const Instruction* const instructions, const int* const reorderBufferIndexes) {
   int xPos = 450;
-  int yPos = 250;
+  int yPos = 150;
   int numOfHorizontalCells = 1;
   int numOfVerticalCells = 4;
   int cellWidth = 150;
   int cellHeight = 20;
 
-  renderText(xPos, yPos, "Decode Issue Unit");
+  renderText(xPos, yPos, "Load/Store Unit");
   renderText(xPos, yPos + cellHeight, "Reservation Station : ");
 
   drawTable(xPos, yPos + cellHeight * 2, 1, numOfVerticalCells, 20, cellHeight);
@@ -351,7 +361,7 @@ void View::drawLoadStoreUnitReservationStation(const Instruction* const instruct
 
 void View::drawAlu(const int result, const int reorderBufferIndex) {
   int xPos = 50;
-  int yPos = 400;
+  int yPos = 300;
   int numOfHorizontalCells = 2;
   int numOfVerticalCells = 1;
   int cellWidth = 20;
@@ -365,7 +375,7 @@ void View::drawAlu(const int result, const int reorderBufferIndex) {
 
 void View::drawBranchUnit(const bool successful, const int reorderBufferIndex) {
   int xPos = 250;
-  int yPos = 400;
+  int yPos = 300;
   int numOfHorizontalCells = 2;
   int numOfVerticalCells = 1;
   int cellWidth = 20;
