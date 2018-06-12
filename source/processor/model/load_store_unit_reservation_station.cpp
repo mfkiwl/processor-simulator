@@ -26,7 +26,8 @@ LoadStoreUnitReservationStation::LoadStoreUnitReservationStation(RegisterFile* c
   instructions(new Instruction[size]),
   reorderBufferIndexes(new int[size]),
   opcode(0),
-  reorderBufferIndex(-1)
+  reorderBufferIndex(-1),
+  dispatchedIndex(-1)
 {
   //set all instructions to NOOPs
   for(int i = 0; i < size; i++) {
@@ -48,10 +49,7 @@ void LoadStoreUnitReservationStation::execute() {
     if(readyToDispatch(tail)) {
       dispatch(tail);
       reorderBufferIndex = reorderBufferIndexes[tail];
-
-      //clear the dispatched instruction from the reservation station
-      instructions[tail] = (Instruction) {0,0,0,0};
-      reorderBufferIndexes[tail] = -1;
+      dispatchedIndex = tail;
       tail = (tail + 1) % size;
     }
   }
@@ -77,6 +75,11 @@ int LoadStoreUnitReservationStation::spaceInQueue() const {
 void LoadStoreUnitReservationStation::pipe() {
   //send current instruction to the load store unit
   if(reorderBufferIndex != -1) {
+
+    //clear the dispatched instruction from the reservation station
+    instructions[dispatchedIndex] = (Instruction) {0,0,0,0};
+    reorderBufferIndexes[dispatchedIndex] = -1;
+    dispatchedIndex = -1;
 
     //send the decoded instruction to the execution unit
     loadStoreUnit->setNextOpcode(opcode);

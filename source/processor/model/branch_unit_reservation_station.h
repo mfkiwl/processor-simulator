@@ -32,6 +32,8 @@ class BranchUnitReservationStation {
     int operands[3];
     int reorderBufferIndex;
 
+    int dispatchedIndex;
+
   public:
     BranchUnitReservationStation(RegisterFile* const registerFile, BranchUnit* const branchUnit, const int size);
 

@@ -32,6 +32,8 @@ class ALUReservationStation {
     int* const operands;
     int reorderBufferIndex;
 
+    int dispatchedIndex;
+
   public:
     ALUReservationStation(RegisterFile* const registerFile, ALU* const alu, const int size);
 

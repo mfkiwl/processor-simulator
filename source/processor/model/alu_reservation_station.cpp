@@ -26,7 +26,8 @@ ALUReservationStation::ALUReservationStation(RegisterFile* const registerFile, A
   reorderBufferIndexes(new int[size]),
   opcode(0),
   operands(new int[3]),
-  reorderBufferIndex(-1)
+  reorderBufferIndex(-1),
+  dispatchedIndex(-1)
 {
   //inialise all instructions to NOOPs
   for(int i = 0; i < size; i++) {
@@ -48,10 +49,7 @@ void ALUReservationStation::execute() {
     if(readyToDispatch(instructions[i])) {
       dispatch(instructions[i]);
       reorderBufferIndex = reorderBufferIndexes[i];
-
-      //clear the dispatched instruction from the reservation station
-      instructions[i] = (Instruction) {0,0,0,0};
-      reorderBufferIndexes[i] = -1;
+      dispatchedIndex = i;
       break;
     }
   }
@@ -64,6 +62,12 @@ bool ALUReservationStation::spaceInBuffer() const {
 void ALUReservationStation::pipe() {
   //send current instruction to the alu
   if(reorderBufferIndex != -1) {
+
+    //clear the dispatched instruction from the reservation station
+    instructions[dispatchedIndex] = (Instruction) {0,0,0,0};
+    reorderBufferIndexes[dispatchedIndex] = -1;
+    dispatchedIndex = -1;
+
     //send the decoded instruction to the execution unit
     alu->setNextOpcode(opcode);
     alu->setNextOperands(operands);

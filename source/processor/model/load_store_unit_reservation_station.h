@@ -35,6 +35,8 @@ class LoadStoreUnitReservationStation {
     int operands[3];
     int reorderBufferIndex;
 
+    int dispatchedIndex;
+
   public:
     LoadStoreUnitReservationStation(RegisterFile* const registerFile, ReorderBuffer* const reorderBuffer, LoadStoreUnit* const loadStoreUnit, const int size);
 

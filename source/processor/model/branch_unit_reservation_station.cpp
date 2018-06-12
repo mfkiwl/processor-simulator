@@ -23,7 +23,8 @@ BranchUnitReservationStation::BranchUnitReservationStation(RegisterFile* const r
   instructions(new Instruction[size]),
   reorderBufferIndexes(new int[size]),
   opcode(0),
-  reorderBufferIndex(-1)
+  reorderBufferIndex(-1),
+  dispatchedIndex(-1)
 {
   //set all instructions to NOOPs
   for(int i = 0; i < size; i++) {
@@ -46,10 +47,7 @@ void BranchUnitReservationStation::execute() {
       if(readyToDispatch(instructions[i])) {
         dispatch(instructions[i]);
         reorderBufferIndex = reorderBufferIndexes[i];
-
-        //clear the dispatched instruction from the reservation station
-        instructions[i] = (Instruction) {0,0,0,0};
-        reorderBufferIndexes[i] = -1;
+        dispatchedIndex = i;
         break;
       }
     }
@@ -63,6 +61,12 @@ bool BranchUnitReservationStation::spaceInBuffer() const {
 void BranchUnitReservationStation::pipe() {
   //send current instruction to the branch unit
   if(reorderBufferIndex != -1) {
+  
+    //clear the dispatched instruction from the reservation station
+    instructions[dispatchedIndex] = (Instruction) {0,0,0,0};
+    reorderBufferIndexes[dispatchedIndex] = -1;
+    dispatchedIndex = -1;
+
     //send the decoded instruction to the execution unit
     branchUnit->setNextOpcode(opcode);
     branchUnit->setNextOperands(operands);
