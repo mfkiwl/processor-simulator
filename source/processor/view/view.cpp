@@ -185,7 +185,7 @@ void View::drawRegisterFile(const int* const registerValues, const int* const sc
   int noOfHorizontalCells = numOfRegisters;
   int noOfVerticalCells = 3;
   int xPos = 40;
-  int yPos = 340;
+  int yPos = 330;
   int cellWidth = 30;
   int cellHeight = 20;
   int textCellWidth = 100;
@@ -194,28 +194,31 @@ void View::drawRegisterFile(const int* const registerValues, const int* const sc
   int xOffset = 1;
   int yOffset = -2;
 
+  //render the text specifying that the component is the register file
+  renderText(xPos, yPos, "Register File : ");
+
   //draw the table to hold the register values
-  drawTable(xPos + textCellWidth, yPos, noOfHorizontalCells, noOfVerticalCells, cellWidth, cellHeight);
-  drawTextCell(xPos, yPos, textCellWidth, cellHeight, "Register :", xOffset, yOffset);
-  drawTextCell(xPos, yPos + cellHeight, textCellWidth, cellHeight, "Value :", xOffset, yOffset);
-  drawTextCell(xPos, yPos + cellHeight * 2, textCellWidth, cellHeight, "Scoreboard :", xOffset, yOffset);
+  drawTable(xPos + textCellWidth, yPos + cellHeight, noOfHorizontalCells, noOfVerticalCells, cellWidth, cellHeight);
+  drawTextCell(xPos, yPos + cellHeight, textCellWidth, cellHeight, "Register :", xOffset, yOffset);
+  drawTextCell(xPos, yPos + 2 * cellHeight, textCellWidth, cellHeight, "Value :", xOffset, yOffset);
+  drawTextCell(xPos, yPos + 3 * cellHeight, textCellWidth, cellHeight, "Scoreboard :", xOffset, yOffset);
 
   //draw the register numbers
   for(int i = 0; i < noOfHorizontalCells; i++) {
   	std::string text = "R" + intToString(i);
-  	renderText(xPos + textCellWidth + i * cellWidth + xOffset, yPos + yOffset, text);
+  	renderText(xPos + textCellWidth + i * cellWidth + xOffset, yPos + cellHeight + yOffset, text);
   }
 
   //draw the register values
   for(int i = 0; i < noOfHorizontalCells; i++) {
   	std::string text = intToString(registerValues[i]);
-  	renderText(xPos + textCellWidth + i * cellWidth + xOffset, yPos + cellHeight + yOffset, text);
+  	renderText(xPos + textCellWidth + i * cellWidth + xOffset, yPos + 2 * cellHeight + yOffset, text);
   }
 
   //draw the scoreboard values
   for(int i = 0; i < noOfHorizontalCells; i++) {
     std::string text = intToString(scoreBoard[i]);
-    renderText(xPos + textCellWidth + i * cellWidth + xOffset, yPos + 2 * cellHeight + yOffset, text);
+    renderText(xPos + textCellWidth + i * cellWidth + xOffset, yPos + 3 * cellHeight + yOffset, text);
   }
 
   //reset the draw color to white
@@ -227,29 +230,33 @@ void View::drawMemory(const int* const memoryValues) {
   int noOfHorizontalCells = memorySize;
   int noOfVerticalCells = 2;
   int xPos = 40;
-  int yPos = 420;
+  int yPos = 410;
   int cellWidth = 20;
   int cellHeight = 20;
   int textCellWidth = 80;
 
+  //the offset the text should be drawn at
   int xOffset = 1;
   int yOffset = -2;
 
+  //render the text specifying that the component is the memory
+  renderText(xPos, yPos, "Memory : ");
+
   //draw the table to hold the register values
-  drawTable(xPos + textCellWidth, yPos, noOfHorizontalCells, noOfVerticalCells, cellWidth, cellHeight);
-  drawTextCell(xPos, yPos, textCellWidth, cellHeight, "Address :", xOffset, yOffset);
-  drawTextCell(xPos, yPos + cellHeight, textCellWidth, cellHeight, "Value :", xOffset, yOffset);
+  drawTable(xPos + textCellWidth, yPos + cellHeight, noOfHorizontalCells, noOfVerticalCells, cellWidth, cellHeight);
+  drawTextCell(xPos, yPos + cellHeight, textCellWidth, cellHeight, "Address :", xOffset, yOffset);
+  drawTextCell(xPos, yPos + 2 * cellHeight, textCellWidth, cellHeight, "Value :", xOffset, yOffset);
 
   //draw the register numbers
   for(int i = 0; i < noOfHorizontalCells; i++) {
   	std::string text = intToString(i);
-  	renderText(xPos + textCellWidth + i * cellWidth + xOffset, yPos + yOffset, text);
+  	renderText(xPos + textCellWidth + i * cellWidth + xOffset, yPos + cellHeight + yOffset, text);
   }
 
   //draw the register values
   for(int i = 0; i < noOfHorizontalCells; i++) {
   	std::string text = intToString(memoryValues[i]);
-  	renderText(xPos + textCellWidth + i * cellWidth + xOffset, yPos + cellHeight + yOffset, text);
+  	renderText(xPos + textCellWidth + i * cellWidth + xOffset, yPos + 2 * cellHeight + yOffset, text);
   }
 
 }
