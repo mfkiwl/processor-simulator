@@ -46,7 +46,6 @@ class Model {
     //status flags
     int flushFlag;
     int runningFlag;
-    int decodeUnitBlockingFlag;
 
     //components
     RegisterFile registerFile;
@@ -72,7 +71,7 @@ class Model {
 
     void run();
 
-    void fetch();
+    void fetch(bool blocking);
 
     void decodeIssue();
 
@@ -81,6 +80,8 @@ class Model {
     void execute();
 
     void commit();
+
+    void pipe();
 
     void flushPipeline();
 

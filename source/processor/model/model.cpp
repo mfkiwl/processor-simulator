@@ -34,16 +34,14 @@ Model::Model(const Instructions instructions, const int numOfRegisters, const in
   pc(1),
 
   //status flags
-  flushFlag(0),
   runningFlag(1),
-  decodeUnitBlockingFlag(0),
 
   //components
   registerFile(numOfRegisters), 
   memory(memorySize),
-  reorderBuffer(&registerFile, &memory, &pc, &flushFlag, &runningFlag, &noOfInstructionsExecuted, reorderBufferSize),
+  reorderBuffer(&registerFile, &memory, &pc, &runningFlag, &noOfInstructionsExecuted, reorderBufferSize),
   fetchUnit(instructions, &pc, &decodeIssueUnit),
-  decodeIssueUnit(&registerFile, &reorderBuffer, &aluReservationStation, &branchUnitReservationStation, &loadStoreUnitReservationStation, &decodeUnitBlockingFlag),
+  decodeIssueUnit(&registerFile, &reorderBuffer, &aluReservationStation, &branchUnitReservationStation, &loadStoreUnitReservationStation),
   alu(&reorderBuffer),
   aluReservationStation(&registerFile, &alu, aluReservationStationSize),
   branchUnit(&reorderBuffer),
@@ -69,7 +67,7 @@ void Model::cycle() {
   commit();
 
   //check if we should flush the pipeline
-  if(flushFlag == 1) {
+  if(reorderBuffer.getFlushFlag() == 1) {
     flushPipeline();
   }
 
@@ -82,28 +80,16 @@ void Model::cycle() {
   //decode the instruction
   decodeIssue();
 
-  //if the pipeline is not being blocked
-  if(!decodeUnitBlockingFlag) {
-    //fetch the next instruction
-    fetch();
-    //propogate outputs of the decode/issue unit and the fetch unit through pipeline
-    fetchUnit.pipe();
-    decodeIssueUnit.pipe();
-  }
+  //fetch the next instruction
+  fetch(decodeIssueUnit.getBlockingFlag());
 
-  //propogate the outputs of the reservation stations through the pipeline
-  alu.pipe();
-  branchUnit.pipe();
-  loadStoreUnit.pipe();
+  //pipeline the instructions
+  pipe();
 
-  //propogate the outputs of the reservation stations through the pipeline
-  aluReservationStation.pipe();
-  branchUnitReservationStation.pipe();
-  loadStoreUnitReservationStation.pipe();
-
+  //update the processor stats
   updateStats();
 
-  //print register info
+  //print processor current information
   printInfo();
 }
 
@@ -129,8 +115,8 @@ void Model::run() {
   printf("PROGRAM FINISHED\n");
 }
 
-void Model::fetch() {
-  fetchUnit.execute();
+void Model::fetch(bool blocking) {
+  fetchUnit.execute(blocking);
 }
 
 void Model::decodeIssue() {
@@ -153,6 +139,22 @@ void Model::commit() {
   reorderBuffer.retire();
 }
 
+void Model::pipe() {
+  //propogate outputs of the decode/issue unit and the fetch unit through pipeline
+  fetchUnit.pipe(decodeIssueUnit.getBlockingFlag());
+  decodeIssueUnit.pipe();
+
+  //propogate the outputs of the reservation stations through the pipeline
+  alu.pipe();
+  branchUnit.pipe();
+  loadStoreUnit.pipe();
+
+  //propogate the outputs of the reservation stations through the pipeline
+  aluReservationStation.pipe();
+  branchUnitReservationStation.pipe();
+  loadStoreUnitReservationStation.pipe();
+}
+
 void Model::flushPipeline() {
   //flush decode unit
   decodeIssueUnit.flush();
@@ -168,9 +170,6 @@ void Model::flushPipeline() {
   reorderBuffer.flush();
   //reset the register file scoreboard
   registerFile.resetScoreBoard();
-  //reset the flush flag
-  flushFlag = 0;
-  decodeUnitBlockingFlag = 0;
 
   printf("FLUSHING PIPELINE!\n");
 }

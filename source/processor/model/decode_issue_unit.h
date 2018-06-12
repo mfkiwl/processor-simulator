@@ -38,10 +38,10 @@ class DecodeIssueUnit {
     int reorderBufferIndex;
 
     //tells the processor whether or not to block the pipeline
-    int* const blockingFlag;
+    bool blockingFlag;
 
   public:
-    DecodeIssueUnit(RegisterFile* const registerFile, ReorderBuffer* const reorderBuffer, ALUReservationStation* const aluReservationStation, BranchUnitReservationStation* const branchUnitReservationStation, LoadStoreUnitReservationStation* const loadStoreUnitReservationStation, int* const blockingFlag);
+    DecodeIssueUnit(RegisterFile* const registerFile, ReorderBuffer* const reorderBuffer, ALUReservationStation* const aluReservationStation, BranchUnitReservationStation* const branchUnitReservationStation, LoadStoreUnitReservationStation* const loadStoreUnitReservationStation);
 
     void execute();
 
@@ -57,6 +57,7 @@ class DecodeIssueUnit {
 
     Instruction getCurrentInstruction() const;
 
+    bool getBlockingFlag() const;
 };
 
 #endif

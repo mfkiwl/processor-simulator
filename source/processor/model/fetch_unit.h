@@ -25,11 +25,11 @@ class FetchUnit {
   public:
     FetchUnit(const Instructions instructions, int* const pc, DecodeIssueUnit* const decodeIssueUnit);
 
-    void execute();
+    void execute(bool blocking);
 
     void print() const;
 
-    void pipe();
+    void pipe(bool blocking);
 
     void flush();
 

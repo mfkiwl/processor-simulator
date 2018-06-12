@@ -23,7 +23,7 @@ class ReorderBuffer {
     Memory* const memory;
 
     int* const pc;
-    int* const flushFlag;
+    bool flushFlag;
     int* const runningFlag;
 
     const int bufferSize;
@@ -40,7 +40,7 @@ class ReorderBuffer {
     int* const noOfInstructionsExecuted;
 
   public:
-    ReorderBuffer(RegisterFile* const registerFile, Memory* const memory, int* const pc, int* const flushFlag, int* const runningFlag, int* const noOfInstructionsExecuted, const int bufferSize);
+    ReorderBuffer(RegisterFile* const registerFile, Memory* const memory, int* const pc, int* const runningFlag, int* const noOfInstructionsExecuted, const int bufferSize);
 
     int addEntry(const Type type, const int destination, const Instruction instruction);
 
@@ -67,6 +67,8 @@ class ReorderBuffer {
     void getReorderBufferInstructions(Instruction* const copy) const;
 
     void getReorderBufferFields(int** const copy) const;
+
+    bool getFlushFlag() const;
 };
 
 #endif

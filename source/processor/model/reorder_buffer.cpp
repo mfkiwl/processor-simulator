@@ -16,11 +16,11 @@
 
 using namespace std;
 
-ReorderBuffer::ReorderBuffer(RegisterFile* const registerFile, Memory* const memory, int* const pc, int* const flushFlag, int* const runningFlag, int* const noOfInstructionsExecuted, const int bufferSize) : 
+ReorderBuffer::ReorderBuffer(RegisterFile* const registerFile, Memory* const memory, int* const pc, int* const runningFlag, int* const noOfInstructionsExecuted, const int bufferSize) : 
   registerFile(registerFile),
   memory(memory),
   pc(pc),
-  flushFlag(flushFlag),
+  flushFlag(false),
   runningFlag(runningFlag),
   bufferSize(bufferSize),
   buffer(new int*[bufferSize]),
@@ -75,7 +75,7 @@ void ReorderBuffer::retire() {
     }
     if(buffer[tail][TYPE] == JUMP && buffer[tail][RESULT]) {
     *pc = buffer[tail][DESTINATION];
-      *flushFlag = 1;
+      flushFlag = true;
     }
     if(buffer[tail][TYPE] == SYSCALL) {
       *runningFlag = 0;
@@ -129,6 +129,7 @@ void ReorderBuffer::flush() {
   }
   head = 0;
   tail = 0;
+  flushFlag = false;
 }
 
 void ReorderBuffer::printTail() const {
@@ -158,4 +159,8 @@ void ReorderBuffer::getReorderBufferFields(int** const copy) const {
       copy[i][j] = buffer[i][j];
     }
   }
+}
+
+bool ReorderBuffer::getFlushFlag() const {
+  return flushFlag;
 }

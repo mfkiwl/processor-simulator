@@ -16,7 +16,7 @@
 //===========================================
 //class implementation
 
-DecodeIssueUnit::DecodeIssueUnit(RegisterFile* const registerFile, ReorderBuffer* const reorderBuffer, ALUReservationStation* const aluReservationStation, BranchUnitReservationStation* const branchUnitReservationStation, LoadStoreUnitReservationStation* const loadStoreUnitReservationStation, int* const blockingFlag) :
+DecodeIssueUnit::DecodeIssueUnit(RegisterFile* const registerFile, ReorderBuffer* const reorderBuffer, ALUReservationStation* const aluReservationStation, BranchUnitReservationStation* const branchUnitReservationStation, LoadStoreUnitReservationStation* const loadStoreUnitReservationStation) :
   registerFile(registerFile),
   reorderBuffer(reorderBuffer),
   aluReservationStation(aluReservationStation),
@@ -25,7 +25,7 @@ DecodeIssueUnit::DecodeIssueUnit(RegisterFile* const registerFile, ReorderBuffer
   nextInstruction((Instruction) {0,0,0,0}),
   currentInstruction((Instruction) {0,0,0,0}),
   reorderBufferIndex(-1),
-  blockingFlag(blockingFlag)
+  blockingFlag(false)
 {}
 
 void DecodeIssueUnit::execute() {
@@ -53,11 +53,11 @@ void DecodeIssueUnit::issue() {
         //Set the scoreboard value of the destination register to zero
         registerFile->setScoreBoardValue(currentInstruction.operands[0],0);
         //unblock the pipeline
-        *blockingFlag = 0;
+        blockingFlag = false;
       }
       //otherwise block the pipeline
       else {
-        *blockingFlag = 1;
+        blockingFlag = true;
       }
       break;
 
@@ -70,10 +70,10 @@ void DecodeIssueUnit::issue() {
         //Set the scoreboard value of the destination register to zero
         registerFile->setScoreBoardValue(currentInstruction.operands[0],0);
         //unblock the pipeline
-        *blockingFlag = 0;
+        blockingFlag = false;
       }
       else {
-        *blockingFlag = 1;
+        blockingFlag = true;
       }
       break;
     case SW:
@@ -81,10 +81,10 @@ void DecodeIssueUnit::issue() {
       if(loadStoreUnitReservationStation->spaceInQueue()) {
         //Instruction has been issued so add entry to the reorder buffer
         reorderBufferIndex = reorderBuffer->addEntry(STORE_TO_MEMORY, currentInstruction.operands[1], currentInstruction);
-        *blockingFlag = 0;
+        blockingFlag = false;
       }
       else {
-        *blockingFlag = 1;
+        blockingFlag = true;
       }
       break;
 
@@ -94,10 +94,10 @@ void DecodeIssueUnit::issue() {
       if(branchUnitReservationStation->spaceInBuffer()) {
         //Instruction has been issued so add entry to the reorder buffer
         reorderBufferIndex = reorderBuffer->addEntry(JUMP, currentInstruction.operands[2], currentInstruction);
-        *blockingFlag = 0;
+        blockingFlag = false;
       }
       else {
-        *blockingFlag = 1;
+        blockingFlag = true;
       }
       break;
     case BGEZ:
@@ -110,10 +110,10 @@ void DecodeIssueUnit::issue() {
       if(branchUnitReservationStation->spaceInBuffer()) {
         //Instruction has been issued so add entry to the reorder buffer
         reorderBufferIndex = reorderBuffer->addEntry(JUMP, currentInstruction.operands[0], currentInstruction);
-        *blockingFlag = 0;
+        blockingFlag = false;
       }
       else {
-        *blockingFlag = 1;
+        blockingFlag = true;
       }
       break;
                     
@@ -122,16 +122,17 @@ void DecodeIssueUnit::issue() {
       if(branchUnitReservationStation->spaceInBuffer()) {
         //Instruction has been issued so add entry to the reorder buffer
         reorderBufferIndex = reorderBuffer->addEntry(SYSCALL, currentInstruction.operands[0], currentInstruction);
-        *blockingFlag = 0;
+        blockingFlag = false;
       }
       else {
-        *blockingFlag = 1;
+        blockingFlag = true;
       }
       break;
   }
 }
 
 void DecodeIssueUnit::pipe() {
+  if(!blockingFlag) {
   //send the current instruction to the necessary component
   switch(currentInstruction.opcode) {
 
@@ -183,6 +184,7 @@ void DecodeIssueUnit::pipe() {
   //clear the nextInstruction
   nextInstruction = (Instruction) {0,0,0,0};
 }
+}
 
 void DecodeIssueUnit::print() const {
   printf("DECODE ISSUE UNIT:");
@@ -197,8 +199,13 @@ void DecodeIssueUnit::flush() {
   nextInstruction = (Instruction) {0,0,0,0};
   currentInstruction = (Instruction) {0,0,0,0};
   reorderBufferIndex = -1;
+  blockingFlag = false;
 }
 
 Instruction DecodeIssueUnit::getCurrentInstruction() const {
   return currentInstruction;
+}
+
+bool DecodeIssueUnit::getBlockingFlag() const {
+  return blockingFlag;
 }
