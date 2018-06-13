@@ -27,7 +27,7 @@ LoadStoreUnitReservationStation::LoadStoreUnitReservationStation(RegisterFile* c
   reorderBufferIndexes(new int[size]),
   opcode(0),
   reorderBufferIndex(-1),
-  dispatchedIndex(-1)
+  dispatchIndex(-1)
 {
   //set all instructions to NOOPs
   for(int i = 0; i < size; i++) {
@@ -43,13 +43,85 @@ LoadStoreUnitReservationStation::LoadStoreUnitReservationStation(RegisterFile* c
   }
 }
 
+int LoadStoreUnitReservationStation::readyToDispatch(const int index) const {
+  Instruction instruction = instructions[index];
+  //check that the source register are ready to use
+  switch(instruction.opcode) {
+    case NOOP:
+      return 0;
+    case LW:
+      if(!loadStoreUnit->waitingForStore()) {
+        return 1;
+      }
+    break;
+    case SW:
+      if(registerFile->getScoreBoardValue(operands[0]) && reorderBufferIndexes[index] == reorderBuffer->getTailIndex()) {
+        return 1;
+      }
+      break;
+    case LWR:
+      //If the source registers are ready then continue
+      if(!loadStoreUnit->waitingForStore() && registerFile->getScoreBoardValue(operands[1])) {
+        return 1;
+      }
+      break;
+    case SWR:
+      //If the source registers are ready then continue
+      if(registerFile->getScoreBoardValue(operands[0]) && registerFile->getScoreBoardValue(operands[1]) && reorderBufferIndexes[index] == reorderBuffer->getTailIndex()) {
+        return 1;
+      }
+      break;
+  }
+  return 0;
+}
+
+//dispatch bound fetch
+void LoadStoreUnitReservationStation::getOperands(const int index) {
+  Instruction instruction = instructions[index];
+  //getting the opcode and incomplete operands from the instruction
+  opcode = instruction.opcode;
+  for(int i = 0; i < 3; i++) {
+    operands[i] = instruction.operands[i];
+  }
+  //temp variables
+  int registerNum;
+  int val; 
+  //fetching the operands for the instruction
+  switch(opcode) {
+    case NOOP:
+      break;
+    case LW:
+      break;
+    case SW:
+      registerNum = operands[0];
+      val = registerFile->getRegisterValue(registerNum);
+      operands[0] = val;
+      break;
+    case LWR:
+      //If the source registers are ready then continue
+      registerNum = operands[1];
+      val = registerFile->getRegisterValue(registerNum);
+      operands[1] = val;
+      break;
+    case SWR:
+      //If the source registers are ready then continue
+      registerNum = operands[0];
+      val = registerFile->getRegisterValue(registerNum);
+      operands[0] = val;
+      registerNum = operands[1];
+      val = registerFile->getRegisterValue(registerNum);
+      operands[1] = val;
+      break;
+  }
+}
+
 void LoadStoreUnitReservationStation::execute() {
   //try and find an instruction that can be dispatched
   if(instructions[tail].opcode != NOOP) {
     if(readyToDispatch(tail)) {
-      dispatch(tail);
+      getOperands(tail);
       reorderBufferIndex = reorderBufferIndexes[tail];
-      dispatchedIndex = tail;
+      dispatchIndex = tail;
       tail = (tail + 1) % size;
     }
   }
@@ -77,9 +149,9 @@ void LoadStoreUnitReservationStation::pipe() {
   if(reorderBufferIndex != -1) {
 
     //clear the dispatched instruction from the reservation station
-    instructions[dispatchedIndex] = (Instruction) {0,0,0,0};
-    reorderBufferIndexes[dispatchedIndex] = -1;
-    dispatchedIndex = -1;
+    instructions[dispatchIndex] = (Instruction) {0,0,0,0};
+    reorderBufferIndexes[dispatchIndex] = -1;
+    dispatchIndex = -1;
 
     //send the decoded instruction to the execution unit
     loadStoreUnit->setNextOpcode(opcode);
@@ -141,76 +213,4 @@ void LoadStoreUnitReservationStation::setNextInstruction(const Instruction instr
 
 void LoadStoreUnitReservationStation::setNextReorderBufferIndex(const int index) {
   nextReorderBufferIndex = index;
-}
-
-int LoadStoreUnitReservationStation::readyToDispatch(const int index) const {
-  Instruction instruction = instructions[index];
-  //check that the source register are ready to use
-  switch(instruction.opcode) {
-    case NOOP:
-      return 0;
-    case LW:
-      if(!loadStoreUnit->waitingForStore()) {
-        return 1;
-      }
-    break;
-    case SW:
-      if(registerFile->getScoreBoardValue(operands[0]) && reorderBufferIndexes[index] == reorderBuffer->getTailIndex()) {
-        return 1;
-      }
-      break;
-    case LWR:
-      //If the source registers are ready then continue
-      if(!loadStoreUnit->waitingForStore() && registerFile->getScoreBoardValue(operands[1])) {
-        return 1;
-      }
-      break;
-    case SWR:
-      //If the source registers are ready then continue
-      if(registerFile->getScoreBoardValue(operands[0]) && registerFile->getScoreBoardValue(operands[1]) && reorderBufferIndexes[index] == reorderBuffer->getTailIndex()) {
-        return 1;
-      }
-      break;
-  }
-  return 0;
-}
-
-//dispatch bound fetch
-void LoadStoreUnitReservationStation::dispatch(const int index) {
-  Instruction instruction = instructions[index];
-  //getting the opcode and incomplete operands from the instruction
-  opcode = instruction.opcode;
-  for(int i = 0; i < 3; i++) {
-    operands[i] = instruction.operands[i];
-  }
-  //temp variables
-  int registerNum;
-  int val; 
-  //fetching the operands for the instruction
-  switch(opcode) {
-    case NOOP:
-      break;
-    case LW:
-      break;
-    case SW:
-      registerNum = operands[0];
-      val = registerFile->getRegisterValue(registerNum);
-      operands[0] = val;
-      break;
-    case LWR:
-      //If the source registers are ready then continue
-      registerNum = operands[1];
-      val = registerFile->getRegisterValue(registerNum);
-      operands[1] = val;
-      break;
-    case SWR:
-      //If the source registers are ready then continue
-      registerNum = operands[0];
-      val = registerFile->getRegisterValue(registerNum);
-      operands[0] = val;
-      registerNum = operands[1];
-      val = registerFile->getRegisterValue(registerNum);
-      operands[1] = val;
-      break;
-  }
 }

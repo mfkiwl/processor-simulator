@@ -32,7 +32,18 @@ class BranchUnitReservationStation {
     int operands[3];
     int reorderBufferIndex;
 
-    int dispatchedIndex;
+    int dispatchIndex;
+
+  private:
+
+    int findFreePosition() const;
+
+    void addInstruction(const Instruction instruction, const int rbi);
+
+    int readyToDispatch(const Instruction instruction) const;
+
+    //dispatch bound fetch
+    void getOperands(const Instruction instruction);
 
   public:
     BranchUnitReservationStation(RegisterFile* const registerFile, BranchUnit* const branchUnit, const int size);
@@ -54,17 +65,6 @@ class BranchUnitReservationStation {
     void setNextInstruction(const Instruction instruction);
 
     void setNextReorderBufferIndex(const int index);
-
-  private:
-
-    void addInstruction(const Instruction instruction, const int rbi);
-
-    int findFreePosition() const;
-
-    int readyToDispatch(const Instruction instruction) const;
-
-    //dispatch bound fetch
-    void dispatch(const Instruction instruction);
 
 };
 

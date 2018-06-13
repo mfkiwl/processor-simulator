@@ -35,7 +35,14 @@ class LoadStoreUnitReservationStation {
     int operands[3];
     int reorderBufferIndex;
 
-    int dispatchedIndex;
+    int dispatchIndex;
+
+  private:
+
+    int readyToDispatch(const int index) const;
+
+    //dispatch bound fetch
+    void getOperands(const int index);
 
   public:
     LoadStoreUnitReservationStation(RegisterFile* const registerFile, ReorderBuffer* const reorderBuffer, LoadStoreUnit* const loadStoreUnit, const int size);
@@ -59,13 +66,6 @@ class LoadStoreUnitReservationStation {
     void setNextInstruction(const Instruction instruction);
 
     void setNextReorderBufferIndex(const int index);
-
-  private:
-
-    int readyToDispatch(const int index) const;
-
-    //dispatch bound fetch
-    void dispatch(const int index);
 
 };
 

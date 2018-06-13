@@ -24,7 +24,7 @@ BranchUnitReservationStation::BranchUnitReservationStation(RegisterFile* const r
   reorderBufferIndexes(new int[size]),
   opcode(0),
   reorderBufferIndex(-1),
-  dispatchedIndex(-1)
+  dispatchIndex(-1)
 {
   //set all instructions to NOOPs
   for(int i = 0; i < size; i++) {
@@ -40,14 +40,96 @@ BranchUnitReservationStation::BranchUnitReservationStation(RegisterFile* const r
   }
 }
 
+int BranchUnitReservationStation::findFreePosition() const {
+  for(int i = 0; i < size; i++) {
+    if(instructions[i].opcode == NOOP) {
+      return i;
+    }
+  }
+  return -1;
+}
+
+void BranchUnitReservationStation::addInstruction(const Instruction instruction, const int rbi) {
+  if(instruction.opcode != NOOP) {
+    int index = findFreePosition();
+    instructions[index] = instruction;
+    reorderBufferIndexes[index] = rbi;
+  }
+}
+
+int BranchUnitReservationStation::readyToDispatch(const Instruction instruction) const {
+  //check that the source register are ready to use
+  switch(instruction.opcode) {
+    case NOOP:
+      return 0;
+    case BEQ:
+    case BNE:
+      if(registerFile->getScoreBoardValue(operands[0]) && registerFile->getScoreBoardValue(operands[1])) {
+        return 1;
+      }
+      break;
+    case BGEZ:
+    case BGTZ:
+    case BLEZ:
+    case BLTZ:
+      if(registerFile->getScoreBoardValue(operands[0])) {
+        return 1;
+      }
+      break;
+    case HALT:
+    case J:
+    case JR:
+      return 1;
+      break;
+  }
+  return 0;
+}
+
+void BranchUnitReservationStation::getOperands(const Instruction instruction) {
+  //getting the opcode and incomplete operands from the instruction
+  opcode = instruction.opcode;
+  for(int i = 0; i < 3; i++) {
+    operands[i] = instruction.operands[i];
+  }
+  //temp variables
+  int registerNum;
+  int val;
+  //fetching the operands for the instruction
+  switch(opcode) {
+    case NOOP:
+      break;
+    case BEQ:
+    case BNE:
+      registerNum = operands[0];
+      val = registerFile->getRegisterValue(registerNum);
+      operands[0] = val;
+      registerNum = operands[1];
+      val = registerFile->getRegisterValue(registerNum);
+      operands[1] = val;
+      break;
+    case BGEZ:
+    case BGTZ:
+    case BLEZ:
+    case BLTZ:
+      registerNum = operands[0];
+      val = registerFile->getRegisterValue(registerNum);
+      operands[0] = val;
+      break;
+    case J:
+    case JR:
+    case HALT:
+      break;
+  }
+}
+
 void BranchUnitReservationStation::execute() {
   //try and find an instruction that can be dispatched
   for(int i = 0; i < size; i++) {
     if(instructions[i].opcode != NOOP) {
       if(readyToDispatch(instructions[i])) {
-        dispatch(instructions[i]);
+        getOperands(instructions[i]);
         reorderBufferIndex = reorderBufferIndexes[i];
-        dispatchedIndex = i;
+        dispatchIndex = i;
         break;
       }
     }
@@ -63,9 +145,9 @@ void BranchUnitReservationStation::pipe() {
   if(reorderBufferIndex != -1) {
   
     //clear the dispatched instruction from the reservation station
-    instructions[dispatchedIndex] = (Instruction) {0,0,0,0};
-    reorderBufferIndexes[dispatchedIndex] = -1;
-    dispatchedIndex = -1;
+    instructions[dispatchIndex] = (Instruction) {0,0,0,0};
+    reorderBufferIndexes[dispatchIndex] = -1;
+    dispatchIndex = -1;
 
     //send the decoded instruction to the execution unit
     branchUnit->setNextOpcode(opcode);
@@ -126,86 +208,4 @@ void BranchUnitReservationStation::setNextInstruction(const Instruction instruct
 
 void BranchUnitReservationStation::setNextReorderBufferIndex(const int index) {
   nextReorderBufferIndex = index;
-}
-
-void BranchUnitReservationStation::addInstruction(const Instruction instruction, const int rbi) {
-  if(instruction.opcode != NOOP) {
-    int index = findFreePosition();
-    instructions[index] = instruction;
-    reorderBufferIndexes[index] = rbi;
-  }
-}
-
-int BranchUnitReservationStation::findFreePosition() const {
-  for(int i = 0; i < size; i++) {
-    if(instructions[i].opcode == NOOP) {
-      return i;
-    }
-  }
-  return -1;
-}
-
-int BranchUnitReservationStation::readyToDispatch(const Instruction instruction) const {
-  //check that the source register are ready to use
-  switch(instruction.opcode) {
-    case NOOP:
-      return 0;
-    case BEQ:
-    case BNE:
-      if(registerFile->getScoreBoardValue(operands[0]) && registerFile->getScoreBoardValue(operands[1])) {
-        return 1;
-      }
-      break;
-    case BGEZ:
-    case BGTZ:
-    case BLEZ:
-    case BLTZ:
-      if(registerFile->getScoreBoardValue(operands[0])) {
-        return 1;
-      }
-      break;
-    case HALT:
-    case J:
-    case JR:
-      return 1;
-      break;
-  }
-  return 0;
-}
-
-void BranchUnitReservationStation::dispatch(const Instruction instruction) {
-  //getting the opcode and incomplete operands from the instruction
-  opcode = instruction.opcode;
-  for(int i = 0; i < 3; i++) {
-    operands[i] = instruction.operands[i];
-  }
-  //temp variables
-  int registerNum;
-  int val;
-  //fetching the operands for the instruction
-  switch(opcode) {
-    case NOOP:
-      break;
-    case BEQ:
-    case BNE:
-      registerNum = operands[0];
-      val = registerFile->getRegisterValue(registerNum);
-      operands[0] = val;
-      registerNum = operands[1];
-      val = registerFile->getRegisterValue(registerNum);
-      operands[1] = val;
-      break;
-    case BGEZ:
-    case BGTZ:
-    case BLEZ:
-    case BLTZ:
-      registerNum = operands[0];
-      val = registerFile->getRegisterValue(registerNum);
-      operands[0] = val;
-      break;
-    case J:
-    case JR:
-    case HALT:
-      break;
-  }
 }

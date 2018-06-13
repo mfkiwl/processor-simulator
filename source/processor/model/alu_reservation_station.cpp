@@ -27,7 +27,7 @@ ALUReservationStation::ALUReservationStation(RegisterFile* const registerFile, A
   opcode(0),
   operands(new int[3]),
   reorderBufferIndex(-1),
-  dispatchedIndex(-1)
+  dispatchIndex(-1)
 {
   //inialise all instructions to NOOPs
   for(int i = 0; i < size; i++) {
@@ -43,13 +43,82 @@ ALUReservationStation::ALUReservationStation(RegisterFile* const registerFile, A
   }
 }
 
+int ALUReservationStation::findFreePosition() const {
+  for(int i = 0; i < size; i++) {
+    if(instructions[i].opcode == NOOP) {
+      return i;
+    }
+  }
+  return -1;
+}
+
+void ALUReservationStation::addInstruction(const Instruction instruction, const int rbi) {
+  if(instruction.opcode != NOOP) {
+    int index = findFreePosition();
+    instructions[index] = instruction;
+    reorderBufferIndexes[index] = rbi;
+  }
+}
+
+int ALUReservationStation::readyToDispatch(const Instruction instruction) const {
+  //check that the source registers are ready to use
+  switch(instruction.opcode) {
+    case NOOP:
+      return 0;
+      break;
+    case ADD:
+    case AND:
+    case MULT:
+    case OR:
+    case SUB:
+      if(registerFile->getScoreBoardValue(instruction.operands[1]) && registerFile->getScoreBoardValue(instruction.operands[2])) {
+        return 1;
+      }
+      break;
+    case ADDI:
+      if(registerFile->getScoreBoardValue(instruction.operands[1])) {
+        return 1;
+      }
+      break;
+    default:
+      return 0;
+      break;
+    }
+  return 0;
+}
+
+void ALUReservationStation::getOperands(const Instruction instruction) {
+  //getting the opcode and incomplete operands from the instruction
+  opcode = instruction.opcode;
+  for(int i = 0; i < 3; i++) {
+    operands[i] = instruction.operands[i];
+  }
+  //fetching the operands for the instruction
+  switch(opcode) {
+    case NOOP:
+      break;
+    case ADD:
+    case AND:
+    case MULT:
+    case OR:
+    case SUB:
+      for(int i = 1; i < 3; i++) {
+        operands[i] = registerFile->getRegisterValue(operands[i]);
+      }
+      break;
+    case ADDI:
+      operands[1] = registerFile->getRegisterValue(operands[1]);
+      break;
+  }
+}
+
 void ALUReservationStation::execute() {
   //try and find an instruction that can be dispatched
   for(int i = 0; i < size; i++) {
     if(readyToDispatch(instructions[i])) {
-      dispatch(instructions[i]);
+      getOperands(instructions[i]);
       reorderBufferIndex = reorderBufferIndexes[i];
-      dispatchedIndex = i;
+      dispatchIndex = i;
       break;
     }
   }
@@ -64,9 +133,9 @@ void ALUReservationStation::pipe() {
   if(reorderBufferIndex != -1) {
 
     //clear the dispatched instruction from the reservation station
-    instructions[dispatchedIndex] = (Instruction) {0,0,0,0};
-    reorderBufferIndexes[dispatchedIndex] = -1;
-    dispatchedIndex = -1;
+    instructions[dispatchIndex] = (Instruction) {0,0,0,0};
+    reorderBufferIndexes[dispatchIndex] = -1;
+    dispatchIndex = -1;
 
     //send the decoded instruction to the execution unit
     alu->setNextOpcode(opcode);
@@ -129,73 +198,4 @@ void ALUReservationStation::setNextInstruction(const Instruction instruction) {
 
 void ALUReservationStation::setNextReorderBufferIndex(const int index) {
   nextReorderBufferIndex = index;
-}
-
-void ALUReservationStation::addInstruction(const Instruction instruction, const int rbi) {
-  if(instruction.opcode != NOOP) {
-    int index = findFreePosition();
-    instructions[index] = instruction;
-    reorderBufferIndexes[index] = rbi;
-  }
-}
-
-int ALUReservationStation::findFreePosition() const {
-  for(int i = 0; i < size; i++) {
-    if(instructions[i].opcode == NOOP) {
-      return i;
-    }
-  }
-  return -1;
-}
-
-int ALUReservationStation::readyToDispatch(const Instruction instruction) const {
-  //check that the source registers are ready to use
-  switch(instruction.opcode) {
-    case NOOP:
-      return 0;
-      break;
-    case ADD:
-    case AND:
-    case MULT:
-    case OR:
-    case SUB:
-      if(registerFile->getScoreBoardValue(instruction.operands[1]) && registerFile->getScoreBoardValue(instruction.operands[2])) {
-        return 1;
-      }
-      break;
-    case ADDI:
-      if(registerFile->getScoreBoardValue(instruction.operands[1])) {
-        return 1;
-      }
-      break;
-    default:
-      return 0;
-      break;
-    }
-  return 0;
-}
-
-void ALUReservationStation::dispatch(const Instruction instruction) {
-  //getting the opcode and incomplete operands from the instruction
-  opcode = instruction.opcode;
-  for(int i = 0; i < 3; i++) {
-    operands[i] = instruction.operands[i];
-  }
-  //fetching the operands for the instruction
-  switch(opcode) {
-    case NOOP:
-      break;
-    case ADD:
-    case AND:
-    case MULT:
-    case OR:
-    case SUB:
-      for(int i = 1; i < 3; i++) {
-        operands[i] = registerFile->getRegisterValue(operands[i]);
-      }
-      break;
-    case ADDI:
-      operands[1] = registerFile->getRegisterValue(operands[1]);
-      break;
-  }
 }

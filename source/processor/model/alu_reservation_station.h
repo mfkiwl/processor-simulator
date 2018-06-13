@@ -32,9 +32,21 @@ class ALUReservationStation {
     int* const operands;
     int reorderBufferIndex;
 
-    int dispatchedIndex;
+    int dispatchIndex;
+
+  private:
+
+    int findFreePosition() const;
+
+    void addInstruction(const Instruction instruction, const int rbi);
+
+    int readyToDispatch(const Instruction instruction) const;
+
+    //dispatch bound fetch
+    void getOperands(const Instruction instruction);
 
   public:
+
     ALUReservationStation(RegisterFile* const registerFile, ALU* const alu, const int size);
 
     void execute();
@@ -54,17 +66,6 @@ class ALUReservationStation {
     void setNextInstruction(const Instruction instruction);
 
     void setNextReorderBufferIndex(const int index);
-
-  private:
-
-    void addInstruction(const Instruction instruction, const int rbi);
-
-    int findFreePosition() const;
-
-    int readyToDispatch(const Instruction instruction) const;
-
-    //dispatch bound fetch
-    void dispatch(const Instruction instruction);
 };
 
 #endif
