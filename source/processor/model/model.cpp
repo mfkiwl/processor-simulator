@@ -146,14 +146,14 @@ void Model::pipe() {
   decodeIssueUnit.pipe();
 
   //propogate the outputs of the reservation stations through the pipeline
-  alu.pipe();
-  branchUnit.pipe();
-  loadStoreUnit.pipe();
-
-  //propogate the outputs of the reservation stations through the pipeline
   aluReservationStation.pipe();
   branchUnitReservationStation.pipe();
   loadStoreUnitReservationStation.pipe();
+
+  //propogate the outputs of the reservation stations through the pipeline
+  alu.pipe();
+  branchUnit.pipe();
+  loadStoreUnit.pipe();
 }
 
 void Model::flushPipeline() {
