@@ -61,8 +61,9 @@ int ReorderBuffer::getTailIndex() const {
   return tail;
 }
 
-void ReorderBuffer::retire() {
-  while(buffer[tail][STATUS] == FINISHED) {
+//commiting an entry when it can each cycle
+void ReorderBuffer::execute() {
+  if(buffer[tail][STATUS] == FINISHED) {
     //buffer[tail][STATUS] = -1;
     if(buffer[tail][TYPE] == STORE_TO_REGISTER) {
       //write the result to the reorder buffer

@@ -137,7 +137,7 @@ void Model::execute() {
 }
 
 void Model::commit() {
-  reorderBuffer.retire();
+  reorderBuffer.execute();
 }
 
 void Model::pipe() {

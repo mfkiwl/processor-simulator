@@ -46,7 +46,7 @@ class ReorderBuffer {
 
     int getTailIndex() const;
 
-    void retire();
+    void execute();
 
     void resetEntry(const int index);
 
