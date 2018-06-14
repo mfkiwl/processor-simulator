@@ -39,7 +39,7 @@ class LoadStoreUnitReservationStation {
 
   private:
 
-    int readyToDispatch(const int index) const;
+    bool readyToDispatch(const int index) const;
 
     //dispatch bound fetch
     void getOperands(const int index);
@@ -51,7 +51,7 @@ class LoadStoreUnitReservationStation {
 
     void addInstruction(const Instruction instruction, const int rbi);
 
-    int spaceInQueue() const;
+    bool spaceInQueue() const;
 
     void pipe();
 

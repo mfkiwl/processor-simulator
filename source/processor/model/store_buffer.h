@@ -41,7 +41,7 @@ class StoreBuffer {
     void stepInstructions();
 
     //return 1 if we are waiting for a write operation to complete
-    int waitingForStore() const;
+    bool waitingForStore() const;
 
     void writeIfReady();
 };

@@ -55,6 +55,7 @@ void LoadStoreUnit::execute() {
         address = 0 + currentOperands[1];
         //and to the write buffer to be written to memory when ready
         storeBuffer.addToBuffer(address, value, currentReorderBufferIndex);
+        reorderBuffer->executingEntry(currentReorderBufferIndex);
         break;
     }
   }
@@ -111,6 +112,6 @@ void LoadStoreUnit::flush() {
   loadBuffer.flush();
 }
 
-int LoadStoreUnit::waitingForStore() const {
+bool LoadStoreUnit::waitingForStore() const {
   return storeBuffer.waitingForStore();
 }

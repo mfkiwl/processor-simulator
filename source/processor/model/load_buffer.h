@@ -39,7 +39,7 @@ class LoadBuffer {
     void stepInstructions();
 
     //return 1 if we are waiting for a write operation to complete
-    int waitingForReadOperation() const;
+    bool waitingForReadOperation() const;
 
     void addToBuffer(const int destinationRegister, const int address, const int reorderBufferIndex);
 

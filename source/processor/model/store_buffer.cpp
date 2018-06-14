@@ -68,12 +68,12 @@ void StoreBuffer::stepInstructions() {
   }
 }
 
-int StoreBuffer::waitingForStore() const {
+bool StoreBuffer::waitingForStore() const {
   if(tail != head) {
-    return 1;
+    return true;
   }
   else {
-    return 0;
+    return false;
   }
 }
 

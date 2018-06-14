@@ -56,7 +56,7 @@ class LoadStoreUnit {
 
     void flush();
 
-    int waitingForStore() const ;
+    bool waitingForStore() const ;
 };
 
 #endif

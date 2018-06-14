@@ -43,36 +43,36 @@ LoadStoreUnitReservationStation::LoadStoreUnitReservationStation(RegisterFile* c
   }
 }
 
-int LoadStoreUnitReservationStation::readyToDispatch(const int index) const {
+bool LoadStoreUnitReservationStation::readyToDispatch(const int index) const {
   Instruction instruction = instructions[index];
   //check that the source register are ready to use
   switch(instruction.opcode) {
     case NOOP:
-      return 0;
+      return false;
     case LW:
-      if(!loadStoreUnit->waitingForStore()) {
-        return 1;
-      }
+      //ready
+      return true;
     break;
     case SW:
+      //ready if the source registers are ready and the instruction is at the ROB tail
       if(registerFile->getScoreBoardValue(operands[0]) && reorderBufferIndexes[index] == reorderBuffer->getTailIndex()) {
-        return 1;
+        return true;
       }
       break;
     case LWR:
-      //If the source registers are ready then continue
-      if(!loadStoreUnit->waitingForStore() && registerFile->getScoreBoardValue(operands[1])) {
-        return 1;
+      //ready is the source registers are ready
+      if(registerFile->getScoreBoardValue(operands[1])) {
+        return true;
       }
       break;
     case SWR:
-      //If the source registers are ready then continue
+      //ready if the source registers are ready and the instruction is at the ROB tail
       if(registerFile->getScoreBoardValue(operands[0]) && registerFile->getScoreBoardValue(operands[1]) && reorderBufferIndexes[index] == reorderBuffer->getTailIndex()) {
-        return 1;
+        return true;
       }
       break;
   }
-  return 0;
+  return false;
 }
 
 //dispatch bound fetch
@@ -135,12 +135,12 @@ void LoadStoreUnitReservationStation::addInstruction(const Instruction instructi
   }
 }
 
-int LoadStoreUnitReservationStation::spaceInQueue() const {
+bool LoadStoreUnitReservationStation::spaceInQueue() const {
   if(tail == head && instructions[head].opcode != NOOP) {
-    return 0;
+    return false;
   }
   else {
-    return 1;
+    return true;
   }
 }
 

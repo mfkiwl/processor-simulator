@@ -49,12 +49,12 @@ void LoadBuffer::stepInstructions() {
   }
 }
 
-int LoadBuffer::waitingForReadOperation() const {
+bool LoadBuffer::waitingForReadOperation() const {
   if(head != tail) {
-    return 1;
+    return true;
   }
   else {
-    return 0;
+    return false;
   }
 }
 
