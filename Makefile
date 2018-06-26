@@ -68,8 +68,8 @@ OBJECTS += $(addprefix $(BUILD_DIR)/objects/controller/, $(addsuffix .o, $(CONTR
 # Add the main object to the OBJECTS macro
 OBJECTS += $(BUILD_DIR)/objects/main.o
 
-# PROGRAM_FILE species the program that our processor will run
-PROGRAM_FILE = programs/kernels/vector_addition.mac
+# PROGRAM species the program that our processor will run
+PROGRAM = programs/kernels/vector_addition
 
 
 # ======================================================
@@ -94,12 +94,15 @@ $(BUILD_DIR)/objects/%.o : $(SOURCE_DIR)/processor/%.cpp $(SOURCE_DIR)/processor
 	$(CC) $(CFLAGS) -c $< $(LINKER_FLAGS) -o $@
 
 # rule for running the processor with the given assembly program
-run: $(BUILD_DIR)/$(EXECUTABLE) $(PROGRAM_FILE)
-	$(BUILD_DIR)/$(EXECUTABLE) $(PROGRAM_FILE)
+run: $(BUILD_DIR)/$(EXECUTABLE) $(PROGRAM).mac
+	$(BUILD_DIR)/$(EXECUTABLE) $(PROGRAM).mac
 
 # rule for compiling the assembler
 assembler : $(SOURCE_DIR)/assembler/assembler.cpp
 	$(CC) $(CFLAGS) $(SOURCE_DIR)/assembler/assembler.cpp -o $(BUILD_DIR)/assembler
+
+assemble: $(BUILD_DIR)/assembler $(PROGRAM).asm 
+	$(BUILD_DIR)/assembler $(PROGRAM).asm
 
 # rule for deleting all of the object files and the executables in the build directory
 # (trying to be specific on the files that are deleted for safety)

@@ -116,7 +116,8 @@ void LoadStoreUnitReservationStation::getOperands(const int index) {
 }
 
 void LoadStoreUnitReservationStation::execute() {
-  //try and find an instruction that can be dispatched
+  //dispatch the instruction at the tail if is is ready, this results in all of the load and store
+  //instruction being exeucted in order
   if(instructions[tail].opcode != NOOP) {
     if(readyToDispatch(tail)) {
       getOperands(tail);
