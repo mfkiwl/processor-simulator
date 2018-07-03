@@ -22,14 +22,25 @@ class LoadStoreUnitReservationStation {
     ReorderBuffer* const reorderBuffer;
     LoadStoreUnit* const loadStoreUnit;
 
-    Instruction nextInstruction;
-    int nextReorderBufferIndex;
+    Instruction loadQueueNextInstruction;
+    int loadQueueNextReorderBufferIndex;
 
-    int tail;
-    int head;
-    const int size;
-    Instruction* const instructions;
-    int* const reorderBufferIndexes;
+    int loadQueueTail;
+    int loadQueueHead;
+    const int loadQueueSize;
+    Instruction* const loadQueueInstructions;
+    int* loadQueueAges;
+    int* const loadQueueReorderBufferIndexes;
+
+    Instruction storeQueueNextInstruction;
+    int storeQueueNextReorderBufferIndex;
+
+    int storeQueueTail;
+    int storeQueueHead;
+    const int storeQueueSize;
+    Instruction* const storeQueueInstructions;
+    int* storeQueueAges;
+    int* const storeQueueReorderBufferIndexes;
 
     int opcode;
     int operands[3];
@@ -42,7 +53,9 @@ class LoadStoreUnitReservationStation {
     bool readyToDispatch(const int index) const;
 
     //dispatch bound fetch
-    void getOperands(const int index);
+    void fetchOperands(const int index);
+
+    void incrementAges();
 
   public:
     LoadStoreUnitReservationStation(RegisterFile* const registerFile, ReorderBuffer* const reorderBuffer, LoadStoreUnit* const loadStoreUnit, const int size);
@@ -59,13 +72,25 @@ class LoadStoreUnitReservationStation {
 
     void print() const;
 
-    void getCurrentInstructions(Instruction* const copy) const;
+    void getLoadQueueInstructions(Instruction* const copy) const;
 
-    void getCurrentReorderBufferIndexes(int* const copy) const;
+    void getLoadQueueReorderBufferIndexes(int* const copy) const;
 
-    void setNextInstruction(const Instruction instruction);
+    void getLoadQueueAges(int* const copy) const;
 
-    void setNextReorderBufferIndex(const int index);
+    void getStoreQueueInstruction(Instruction* const copy) const;
+
+    void getStoreQueueReorderBufferIndexes(int* const copy) const;
+
+    void getStoreQueueAges(int* const copy) const;
+
+    void setLoadQueueNextInstruction(const Instruction instruction);
+
+    void setLoadQueueNextReorderBufferIndex(const int index);
+
+    void setStoreQueueNextInstruction(const Instruction instruction);
+
+    void setStoreQueueNextReorderBufferIndex(const int index);
 
 };
 

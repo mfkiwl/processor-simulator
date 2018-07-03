@@ -71,10 +71,7 @@ void ReorderBuffer::execute() {
       //Set the scoreBoard of the destination register to 1
       registerFile->setScoreBoardValue(buffer[tail][DESTINATION], 1);
     }
-    if(buffer[tail][TYPE] == STORE_TO_MEMORY) {
-
-    }
-    if(buffer[tail][TYPE] == JUMP && buffer[tail][RESULT]) {
+    if(buffer[tail][TYPE] == JUMP && buffer[tail][RESULT] == true) {
     *pc = buffer[tail][DESTINATION];
       flushFlag = true;
     }

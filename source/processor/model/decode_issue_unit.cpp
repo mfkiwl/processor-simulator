@@ -158,8 +158,8 @@ void DecodeIssueUnit::pipe() {
     case SW:
     case SWR:
       //loadStoreUnitReservationStation->addInstruction(currentInstruction, reorderBufferIndex);
-      loadStoreUnitReservationStation->setNextInstruction(currentInstruction);
-      loadStoreUnitReservationStation->setNextReorderBufferIndex(reorderBufferIndex);
+      loadStoreUnitReservationStation->setLoadQueueNextInstruction(currentInstruction);
+      loadStoreUnitReservationStation->setLoadQueueNextReorderBufferIndex(reorderBufferIndex);
       break;
 
     //Branch unit instructions

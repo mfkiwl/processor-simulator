@@ -363,9 +363,9 @@ void View::drawBranchUnitReservationStation(const Instruction* const instruction
   }
 }
 
-void View::drawLoadStoreUnitReservationStation(const Instruction* const instructions, const int* const reorderBufferIndexes) {
+void View::drawLoadStoreUnitReservationStation(const Instruction* const loadQueueInstructions, const int* const loadQueueReorderBufferIndexes, const int* const loadQueueAges, const Instruction* const storeQueueInstructions, const int* const storeQueueReorderBufferIndexes, const int* const storeQueueAges) {
   int xPos = 450;
-  int yPos = 150;
+  int yPos = 130;
   int numOfHorizontalCells = 1;
   int numOfVerticalCells = 4;
   int cellWidth = 150;
@@ -376,11 +376,25 @@ void View::drawLoadStoreUnitReservationStation(const Instruction* const instruct
 
   drawTable(xPos, yPos + cellHeight * 2, 1, numOfVerticalCells, 20, cellHeight);
   drawTable(xPos + 20, yPos + cellHeight * 2, numOfHorizontalCells, numOfVerticalCells, cellWidth, cellHeight);
+  drawTable(xPos + 20 + cellWidth, yPos + cellHeight * 2, 1, numOfVerticalCells, 20, cellHeight);
+
+  drawTable(xPos, yPos + cellHeight * (numOfVerticalCells + 2) + 10, 1, numOfVerticalCells, 20, cellHeight);
+  drawTable(xPos + 20, yPos + cellHeight * (numOfVerticalCells + 2) + 10, numOfHorizontalCells, numOfVerticalCells, cellWidth, cellHeight);
+  drawTable(xPos + 20 + cellWidth, yPos + cellHeight * (numOfVerticalCells + 2) + 10, 1, numOfVerticalCells, 20, cellHeight);
 
   for(int i = 0; i < aluReservationStationSize; i++) {
-    if(reorderBufferIndexes[i] != -1) {
-      renderText(xPos, yPos + (2 + i) * cellHeight, intToString(reorderBufferIndexes[i]));
-      renderText(xPos + 20, yPos + (2 + i) * cellHeight, instructionToString(instructions[i]));
+    if(loadQueueReorderBufferIndexes[i] != -1) {
+      renderText(xPos, yPos + (2 + i) * cellHeight, intToString(loadQueueReorderBufferIndexes[i]));
+      renderText(xPos + 20, yPos + (2 + i) * cellHeight, instructionToString(loadQueueInstructions[i]));
+      renderText(xPos + 20 + cellWidth, yPos + (2 + i) * cellHeight, intToString(loadQueueAges[i]));
+    }
+  }
+
+  for(int i = 0; i < aluReservationStationSize; i++) {
+    if(storeQueueReorderBufferIndexes[i] != -1) {
+      renderText(xPos, yPos + (numOfVerticalCells + 2 + i) * cellHeight + 10, intToString(storeQueueReorderBufferIndexes[i]));
+      renderText(xPos + 20, yPos + (numOfVerticalCells + 2 + i) * cellHeight, instructionToString(storeQueueInstructions[i]));
+      renderText(xPos + 20 + cellWidth, yPos + (2 + i) * cellHeight, intToString(storeQueueAges[i]));
     }
   }
 }

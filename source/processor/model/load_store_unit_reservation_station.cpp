@@ -18,24 +18,36 @@ LoadStoreUnitReservationStation::LoadStoreUnitReservationStation(RegisterFile* c
   registerFile(registerFile),
   reorderBuffer(reorderBuffer),
   loadStoreUnit(loadStoreUnit),
-  nextInstruction((Instruction) {0,0,0,0}),
-  nextReorderBufferIndex(-1),
-  tail(0),
-  head(0),
-  size(size),
-  instructions(new Instruction[size]),
-  reorderBufferIndexes(new int[size]),
+  loadQueueNextInstruction((Instruction) {0,0,0,0}),
+  loadQueueNextReorderBufferIndex(-1),
+  loadQueueTail(0),
+  loadQueueHead(0),
+  loadQueueSize(size),
+  loadQueueInstructions(new Instruction[loadQueueSize]),
+  loadQueueAges(new int[loadQueueSize]),
+  loadQueueReorderBufferIndexes(new int[loadQueueSize]),
+  storeQueueNextInstruction((Instruction) {0,0,0,0}),
+  storeQueueNextReorderBufferIndex(-1),
+  storeQueueTail(0),
+  storeQueueHead(0),
+  storeQueueSize(size),
+  storeQueueInstructions(new Instruction[storeQueueSize]),
+  storeQueueAges(new int[loadQueueSize]),
+  storeQueueReorderBufferIndexes(new int[storeQueueSize]),
   opcode(0),
   reorderBufferIndex(-1),
   dispatchIndex(-1)
 {
-  //set all instructions to NOOPs
-  for(int i = 0; i < size; i++) {
-    instructions[i] = (Instruction) {0,0,0,0};
+  //set all instructions to NOOPs and all reorder buffer indexes to -1
+  for(int i = 0; i < loadQueueSize; i++) {
+    loadQueueInstructions[i] = (Instruction) {0,0,0,0};
+    loadQueueReorderBufferIndexes[i] = -1;
+    loadQueueAges[i] = 0;
   }
-  //set all reorder buffer indexes to -1
-  for(int i = 0; i < size; i++) {
-    reorderBufferIndexes[i] = -1;
+  for(int i = 0; i < storeQueueSize; i++) {
+    storeQueueInstructions[i] = (Instruction) {0,0,0,0};
+    storeQueueReorderBufferIndexes[i] = -1;
+    storeQueueAges[i] = 0;
   }
   //zero out all operands
   for(int i = 0; i < 3; i++) {
@@ -44,30 +56,32 @@ LoadStoreUnitReservationStation::LoadStoreUnitReservationStation(RegisterFile* c
 }
 
 bool LoadStoreUnitReservationStation::readyToDispatch(const int index) const {
-  Instruction instruction = instructions[index];
+  Instruction instruction = loadQueueInstructions[index];
   //check that the source register are ready to use
   switch(instruction.opcode) {
     case NOOP:
       return false;
     case LW:
-      //ready
-      return true;
+      if(!loadStoreUnit->waitingForStore()) {
+        //ready
+        return true;
+      }
     break;
     case SW:
       //ready if the source registers are ready and the instruction is at the ROB tail
-      if(registerFile->getScoreBoardValue(operands[0]) && reorderBufferIndexes[index] == reorderBuffer->getTailIndex()) {
+      if(registerFile->getScoreBoardValue(operands[0]) && loadQueueReorderBufferIndexes[index] == reorderBuffer->getTailIndex()) {
         return true;
       }
       break;
     case LWR:
       //ready is the source registers are ready
-      if(registerFile->getScoreBoardValue(operands[1])) {
+      if(!loadStoreUnit->waitingForStore() && registerFile->getScoreBoardValue(operands[1])) {
         return true;
       }
       break;
     case SWR:
       //ready if the source registers are ready and the instruction is at the ROB tail
-      if(registerFile->getScoreBoardValue(operands[0]) && registerFile->getScoreBoardValue(operands[1]) && reorderBufferIndexes[index] == reorderBuffer->getTailIndex()) {
+      if(registerFile->getScoreBoardValue(operands[0]) && registerFile->getScoreBoardValue(operands[1]) && loadQueueReorderBufferIndexes[index] == reorderBuffer->getTailIndex()) {
         return true;
       }
       break;
@@ -76,8 +90,8 @@ bool LoadStoreUnitReservationStation::readyToDispatch(const int index) const {
 }
 
 //dispatch bound fetch
-void LoadStoreUnitReservationStation::getOperands(const int index) {
-  Instruction instruction = instructions[index];
+void LoadStoreUnitReservationStation::fetchOperands(const int index) {
+  Instruction instruction = loadQueueInstructions[index];
   //getting the opcode and incomplete operands from the instruction
   opcode = instruction.opcode;
   for(int i = 0; i < 3; i++) {
@@ -115,29 +129,44 @@ void LoadStoreUnitReservationStation::getOperands(const int index) {
   }
 }
 
-void LoadStoreUnitReservationStation::execute() {
-  //dispatch the instruction at the tail if is is ready, this results in all of the load and store
-  //instruction being exeucted in order
-  if(instructions[tail].opcode != NOOP) {
-    if(readyToDispatch(tail)) {
-      getOperands(tail);
-      reorderBufferIndex = reorderBufferIndexes[tail];
-      dispatchIndex = tail;
-      tail = (tail + 1) % size;
+void LoadStoreUnitReservationStation::incrementAges() {
+  for(int i = 0; i < loadQueueSize; i++) {
+    if(loadQueueInstructions[i].opcode != NOOP) {
+      loadQueueAges[i]++;
+    }
+  }
+  for(int i = 0; i < storeQueueSize; i++) {
+    if(storeQueueInstructions[i].opcode != NOOP) {
+      storeQueueAges[i]++;
     }
   }
 }
 
+void LoadStoreUnitReservationStation::execute() {
+  //dispatch the instruction at the tail if is is ready, this results in all of the load and store
+  //instruction being exeucted in order
+  if(loadQueueInstructions[loadQueueTail].opcode != NOOP) {
+    if(readyToDispatch(loadQueueTail)) {
+      fetchOperands(loadQueueTail);
+      reorderBufferIndex = loadQueueReorderBufferIndexes[loadQueueTail];
+      dispatchIndex = loadQueueTail;
+      loadQueueTail = (loadQueueTail + 1) % loadQueueSize;
+    }
+  }
+  incrementAges();
+}
+
 void LoadStoreUnitReservationStation::addInstruction(const Instruction instruction, const int rbi) {
   if(instruction.opcode != NOOP) {
-    instructions[head] = instruction;
-    reorderBufferIndexes[head] = rbi;
-    head = (head + 1) % size;
+    loadQueueInstructions[loadQueueHead] = instruction;
+    loadQueueReorderBufferIndexes[loadQueueHead] = rbi;
+    loadQueueAges[loadQueueHead] = 0;
+    loadQueueHead = (loadQueueHead + 1) % loadQueueSize;
   }
 }
 
 bool LoadStoreUnitReservationStation::spaceInQueue() const {
-  if(tail == head && instructions[head].opcode != NOOP) {
+  if(loadQueueTail == loadQueueHead && loadQueueInstructions[loadQueueHead].opcode != NOOP) {
     return false;
   }
   else {
@@ -150,8 +179,9 @@ void LoadStoreUnitReservationStation::pipe() {
   if(reorderBufferIndex != -1) {
 
     //clear the dispatched instruction from the reservation station
-    instructions[dispatchIndex] = (Instruction) {0,0,0,0};
-    reorderBufferIndexes[dispatchIndex] = -1;
+    loadQueueInstructions[dispatchIndex] = (Instruction) {0,0,0,0};
+    loadQueueReorderBufferIndexes[dispatchIndex] = -1;
+    loadQueueAges[dispatchIndex] = 0;
     dispatchIndex = -1;
 
     //send the decoded instruction to the execution unit
@@ -169,17 +199,34 @@ void LoadStoreUnitReservationStation::pipe() {
     reorderBufferIndex = -1;
   }
   //add the next instruction to the buffer
-  addInstruction(nextInstruction, nextReorderBufferIndex);
+  addInstruction(loadQueueNextInstruction, loadQueueNextReorderBufferIndex);
   //clear the nextInstruction and nextReorderBufferIndex
-  nextInstruction = (Instruction) {0,0,0,0};
-  nextReorderBufferIndex = -1;
+  loadQueueNextInstruction = (Instruction) {0,0,0,0};
+  loadQueueNextReorderBufferIndex = -1;
 }
 
 void LoadStoreUnitReservationStation::flush() {
-  for(int i = 0; i < size; i++) {
-    instructions[i] = (Instruction) {0,0,0,0};
-    reorderBufferIndexes[i] = -1;
+  //reset the load queue
+  loadQueueTail = 0;
+  loadQueueHead = 0;
+  for(int i = 0; i < loadQueueSize; i++) {
+    loadQueueInstructions[i] = (Instruction) {0,0,0,0};
+    loadQueueReorderBufferIndexes[i] = -1;
+    loadQueueAges[i] = 0;
   }
+  loadQueueNextInstruction = (Instruction) {0,0,0,0};
+  loadQueueNextReorderBufferIndex = -1;
+  //reset the store queue
+  storeQueueTail = 0;
+  storeQueueHead = 0;
+  for(int i = 0; i < storeQueueSize; i++) {
+    storeQueueInstructions[i] = (Instruction) {0,0,0,0};
+    storeQueueReorderBufferIndexes[i] = -1;
+    storeQueueAges[i] = 0;
+  }
+  storeQueueNextInstruction = (Instruction) {0,0,0,0};
+  storeQueueNextReorderBufferIndex = -1;
+  //reset info to be piped
   opcode = 0;
   for(int i = 0; i < 3; i++) {
     operands[i] = 0;
@@ -189,29 +236,61 @@ void LoadStoreUnitReservationStation::flush() {
 
 void LoadStoreUnitReservationStation::print() const {
   printf("Load/Store Unit reservation station:\n");
-  for(int i = 0; i < size; i++) {
-    if(instructions[i].opcode != NOOP) {
-      printInstruction(instructions[i]);
+  for(int i = 0; i < loadQueueSize; i++) {
+    if(loadQueueInstructions[i].opcode != NOOP) {
+      printInstruction(loadQueueInstructions[i]);
     }
   }
 }
 
-void LoadStoreUnitReservationStation::getCurrentInstructions(Instruction* const copy) const {
-  for(int i = 0; i < size; i++) {
-    copy[i] = instructions[i];
+void LoadStoreUnitReservationStation::getLoadQueueInstructions(Instruction* const copy) const {
+  for(int i = 0; i < loadQueueSize; i++) {
+    copy[i] = loadQueueInstructions[i];
   }
 }
 
-void LoadStoreUnitReservationStation::getCurrentReorderBufferIndexes(int* const copy) const {
-  for(int i = 0; i < size; i++) {
-    copy[i] = reorderBufferIndexes[i];
+void LoadStoreUnitReservationStation::getLoadQueueReorderBufferIndexes(int* const copy) const {
+  for(int i = 0; i < loadQueueSize; i++) {
+    copy[i] = loadQueueReorderBufferIndexes[i];
   }
 }
 
-void LoadStoreUnitReservationStation::setNextInstruction(const Instruction instruction) {
-  nextInstruction = instruction;
+void LoadStoreUnitReservationStation::getLoadQueueAges(int* const copy) const {
+  for(int i = 0; i < loadQueueSize; i++) {
+    copy[i] = loadQueueAges[i];
+  }
 }
 
-void LoadStoreUnitReservationStation::setNextReorderBufferIndex(const int index) {
-  nextReorderBufferIndex = index;
+void LoadStoreUnitReservationStation::getStoreQueueInstruction(Instruction* const copy) const {
+  for(int i = 0; i < storeQueueSize; i++) {
+    copy[i] = storeQueueInstructions[i];
+  }
+}
+
+void LoadStoreUnitReservationStation::getStoreQueueReorderBufferIndexes(int* const copy) const {
+  for(int i = 0; i < storeQueueSize; i++) {
+    copy[i] = storeQueueReorderBufferIndexes[i];
+  }
+}
+
+void LoadStoreUnitReservationStation::getStoreQueueAges(int* const copy) const {
+  for(int i = 0; i < storeQueueSize; i++) {
+    copy[i] = storeQueueAges[i];
+  }
+}
+
+void LoadStoreUnitReservationStation::setLoadQueueNextInstruction(const Instruction instruction) {
+  loadQueueNextInstruction = instruction;
+}
+
+void LoadStoreUnitReservationStation::setLoadQueueNextReorderBufferIndex(const int index) {
+  loadQueueNextReorderBufferIndex = index;
+}
+
+void LoadStoreUnitReservationStation::setStoreQueueNextInstruction(const Instruction instruction) {
+  storeQueueNextInstruction = instruction;
+}
+
+void LoadStoreUnitReservationStation::setStoreQueueNextReorderBufferIndex(const int index) {
+  storeQueueNextReorderBufferIndex = index;
 }

@@ -260,12 +260,28 @@ void Model::getBranchUnitReservationStationReorderBufferIndexes(int* const copy)
   branchUnitReservationStation.getCurrentReorderBufferIndexes(copy);
 }
 
-void Model::getLoadStoreUnitReservationStationInstructions(Instruction* const copy) const {
-  loadStoreUnitReservationStation.getCurrentInstructions(copy);
+void Model::getLoadStoreUnitReservationStationLoadQueueInstructions(Instruction* const copy) const {
+  loadStoreUnitReservationStation.getLoadQueueInstructions(copy);
 }
 
-void Model::getLoadStoreUnitReservationStationReorderBufferIndexes(int* const copy) const {
-  loadStoreUnitReservationStation.getCurrentReorderBufferIndexes(copy);
+void Model::getLoadStoreUnitReservationStationLoadQueueReorderBufferIndexes(int* const copy) const {
+  loadStoreUnitReservationStation.getLoadQueueReorderBufferIndexes(copy);
+}
+
+void Model::getLoadStoreUnitReservationStationLoadQueueAges(int* const copy) const {
+  loadStoreUnitReservationStation.getLoadQueueAges(copy);
+}
+
+void Model::getLoadStoreUnitReservationStationStoreQueueInstructions(Instruction* const copy) const {
+  loadStoreUnitReservationStation.getLoadQueueInstructions(copy);
+}
+
+void Model::getLoadStoreUnitReservationStationStoreQueueReorderBufferIndexes(int* const copy) const {
+  loadStoreUnitReservationStation.getStoreQueueReorderBufferIndexes(copy);
+}
+
+void Model::getLoadStoreUnitReservationStationStoreQueueAges(int* const copy) const {
+  loadStoreUnitReservationStation.getStoreQueueAges(copy);
 }
 
 int Model::getAluResult() const {

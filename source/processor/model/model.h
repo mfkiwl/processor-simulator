@@ -122,9 +122,17 @@ class Model {
 
     void getBranchUnitReservationStationReorderBufferIndexes(int* const copy) const;
 
-    void getLoadStoreUnitReservationStationInstructions(Instruction* const copy) const;
+    void getLoadStoreUnitReservationStationLoadQueueInstructions(Instruction* const copy) const;
 
-    void getLoadStoreUnitReservationStationReorderBufferIndexes(int* const copy) const;
+    void getLoadStoreUnitReservationStationLoadQueueReorderBufferIndexes(int* const copy) const;
+
+    void getLoadStoreUnitReservationStationLoadQueueAges(int* const copy) const;
+
+    void getLoadStoreUnitReservationStationStoreQueueInstructions(Instruction* const copy) const;
+
+    void getLoadStoreUnitReservationStationStoreQueueReorderBufferIndexes(int* const copy) const;
+
+    void getLoadStoreUnitReservationStationStoreQueueAges(int* const copy) const;
 
     int getAluResult() const;
 
