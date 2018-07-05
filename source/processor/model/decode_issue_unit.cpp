@@ -133,58 +133,58 @@ void DecodeIssueUnit::issue() {
 
 void DecodeIssueUnit::pipe() {
   if(!blockingFlag) {
-  //send the current instruction to the necessary component
-  switch(currentInstruction.opcode) {
+    //send the current instruction to the necessary component
+    switch(currentInstruction.opcode) {
 
-    //NOOP instruction
-    case NOOP:
-      break;
+      //NOOP instruction
+      case NOOP:
+        break;
 
-    //ALU instructions
-    case ADD:
-    case ADDI:
-    case AND:
-    case MULT:
-    case OR:
-    case SUB:
-      aluReservationStation->setNextInstruction(currentInstruction);
-      aluReservationStation->setNextReorderBufferIndex(reorderBufferIndex);
-      break;
+      //ALU instructions
+      case ADD:
+      case ADDI:
+      case AND:
+      case MULT:
+      case OR:
+      case SUB:
+        aluReservationStation->setNextInstruction(currentInstruction);
+        aluReservationStation->setNextReorderBufferIndex(reorderBufferIndex);
+        break;
 
-    //Load Store unit instructions
-    case LW:
-    case LWR:
-      loadStoreUnitReservationStation->setLoadQueueNextInstruction(currentInstruction);
-      loadStoreUnitReservationStation->setLoadQueueNextReorderBufferIndex(reorderBufferIndex);
-      break;
-    case SW:
-    case SWR:
-      loadStoreUnitReservationStation->setStoreQueueNextInstruction(currentInstruction);
-      loadStoreUnitReservationStation->setStoreQueueNextReorderBufferIndex(reorderBufferIndex);
-      break;
+      //Load Store unit instructions
+      case LW:
+      case LWR:
+        loadStoreUnitReservationStation->setLoadQueueNextInstruction(currentInstruction);
+        loadStoreUnitReservationStation->setLoadQueueNextReorderBufferIndex(reorderBufferIndex);
+        break;
+      case SW:
+      case SWR:
+        loadStoreUnitReservationStation->setStoreQueueNextInstruction(currentInstruction);
+        loadStoreUnitReservationStation->setStoreQueueNextReorderBufferIndex(reorderBufferIndex);
+        break;
 
-    //Branch unit instructions
-    case BEQ:
-    case BNE:
-    case BGEZ:
-    case BGTZ:
-    case BLEZ:
-    case BLTZ:
-    case J:
-    case JR:
+      //Branch unit instructions
+      case BEQ:
+      case BNE:
+      case BGEZ:
+      case BGTZ:
+      case BLEZ:
+      case BLTZ:
+      case J:
+      case JR:
 
-    //Instruction to finish the program
-    case HALT:
-      //branchUnitReservationStation->addInstruction(currentInstruction, reorderBufferIndex);
-      branchUnitReservationStation->setNextInstruction(currentInstruction);
-      branchUnitReservationStation->setNextReorderBufferIndex(reorderBufferIndex);
-      break;
+      //Instruction to finish the program
+      case HALT:
+        //branchUnitReservationStation->addInstruction(currentInstruction, reorderBufferIndex);
+        branchUnitReservationStation->setNextInstruction(currentInstruction);
+        branchUnitReservationStation->setNextReorderBufferIndex(reorderBufferIndex);
+        break;
+    }
+    //set the current instruction equal to the next instruction
+    currentInstruction = nextInstruction;
+    //clear the nextInstruction
+    nextInstruction = (Instruction) {0,0,0,0};
   }
-  //set the current instruction equal to the next instruction
-  currentInstruction = nextInstruction;
-  //clear the nextInstruction
-  nextInstruction = (Instruction) {0,0,0,0};
-}
 }
 
 void DecodeIssueUnit::print() const {

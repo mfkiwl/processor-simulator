@@ -76,6 +76,12 @@ class LoadStoreUnitReservationStation {
 
     bool spaceInStoreQueue() const;
 
+    bool loadQueueEmpty() const;
+
+    bool storeQueueEmpty() const;
+
+    void chooseNextQueueToDispatch();
+
     void pipe();
 
     void flush();

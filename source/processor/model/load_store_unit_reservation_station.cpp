@@ -68,21 +68,9 @@ bool LoadStoreUnitReservationStation::loadQueueReadyToDispatch(const int index) 
         return true;
       }
     break;
-    case SW:
-      //ready if the source registers are ready and the instruction is at the ROB tail
-      if(registerFile->getScoreBoardValue(operands[0]) && loadQueueReorderBufferIndexes[index] == reorderBuffer->getTailIndex()) {
-        return true;
-      }
-      break;
     case LWR:
       //ready is the source registers are ready
       if(!loadStoreUnit->waitingForStore() && registerFile->getScoreBoardValue(operands[1])) {
-        return true;
-      }
-      break;
-    case SWR:
-      //ready if the source registers are ready and the instruction is at the ROB tail
-      if(registerFile->getScoreBoardValue(operands[0]) && registerFile->getScoreBoardValue(operands[1]) && loadQueueReorderBufferIndexes[index] == reorderBuffer->getTailIndex()) {
         return true;
       }
       break;
@@ -96,21 +84,9 @@ bool LoadStoreUnitReservationStation::storeQueueReadyToDispatch(const int index)
   switch(instruction.opcode) {
     case NOOP:
       return false;
-    case LW:
-      if(!loadStoreUnit->waitingForStore()) {
-        //ready
-        return true;
-      }
-    break;
     case SW:
       //ready if the source registers are ready and the instruction is at the ROB tail
       if(registerFile->getScoreBoardValue(operands[0]) && storeQueueReorderBufferIndexes[index] == reorderBuffer->getTailIndex()) {
-        return true;
-      }
-      break;
-    case LWR:
-      //ready is the source registers are ready
-      if(!loadStoreUnit->waitingForStore() && registerFile->getScoreBoardValue(operands[1])) {
         return true;
       }
       break;
@@ -279,6 +255,41 @@ bool LoadStoreUnitReservationStation::spaceInStoreQueue() const {
   }
 }
 
+bool LoadStoreUnitReservationStation::loadQueueEmpty() const {
+  if(loadQueueTail == loadQueueHead && loadQueueInstructions[loadQueueHead].opcode == NOOP) {
+    return true;
+  }
+  else {
+    return false;
+  }
+}
+
+bool LoadStoreUnitReservationStation::storeQueueEmpty() const {
+  if(storeQueueTail == storeQueueHead && storeQueueInstructions[storeQueueHead].opcode == NOOP) {
+    return true;
+  }
+  else {
+    return false;
+  }
+}
+
+void LoadStoreUnitReservationStation::chooseNextQueueToDispatch() {
+  if(!loadQueueEmpty() && !storeQueueEmpty()) {
+    if(loadQueueAges[loadQueueTail] > storeQueueAges[storeQueueHead]) {
+      usingLoadQueue = true;
+    }
+    else {
+      usingLoadQueue = false;
+    }
+  }
+  else if(loadQueueEmpty() && !storeQueueEmpty()) {
+    usingLoadQueue = false;
+  }
+  else {
+    usingLoadQueue = true;
+  }
+}
+
 void LoadStoreUnitReservationStation::pipe() {
   //send current instruction to the load store unit
   if(reorderBufferIndex != -1) {
@@ -322,8 +333,8 @@ void LoadStoreUnitReservationStation::pipe() {
   storeQueueNextInstruction = (Instruction) {0,0,0,0};
   storeQueueNextReorderBufferIndex = -1;
 
-  //switch the queue
-  usingLoadQueue = !usingLoadQueue;
+  //choose next queue to use
+  chooseNextQueueToDispatch();
 }
 
 void LoadStoreUnitReservationStation::flush() {
