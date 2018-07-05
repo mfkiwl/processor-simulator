@@ -48,12 +48,18 @@ class LoadStoreUnitReservationStation {
 
     int dispatchIndex;
 
+    bool usingLoadQueue;
+
   private:
 
-    bool readyToDispatch(const int index) const;
+    bool loadQueueReadyToDispatch(const int index) const;
+
+    bool storeQueueReadyToDispatch(const int index) const;
 
     //dispatch bound fetch
-    void fetchOperands(const int index);
+    void loadQueueFetchOperands(const int index);
+
+    void storeQueueFetchOperands(const int index);
 
     void incrementAges();
 
@@ -62,9 +68,13 @@ class LoadStoreUnitReservationStation {
 
     void execute();
 
-    void addInstruction(const Instruction instruction, const int rbi);
+    void loadQueueAddInstruction(const Instruction instruction, const int rbi);
 
-    bool spaceInQueue() const;
+    void storeQueueAddInstruction(const Instruction instruction, const int rbi);
+
+    bool spaceInLoadQueue() const;
+
+    bool spaceInStoreQueue() const;
 
     void pipe();
 
@@ -78,7 +88,7 @@ class LoadStoreUnitReservationStation {
 
     void getLoadQueueAges(int* const copy) const;
 
-    void getStoreQueueInstruction(Instruction* const copy) const;
+    void getStoreQueueInstructions(Instruction* const copy) const;
 
     void getStoreQueueReorderBufferIndexes(int* const copy) const;
 

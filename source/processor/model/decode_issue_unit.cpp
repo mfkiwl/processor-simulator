@@ -64,7 +64,7 @@ void DecodeIssueUnit::issue() {
     //Load Store unit instructions
     case LW:
     case LWR:
-      if(loadStoreUnitReservationStation->spaceInQueue() && registerFile->getScoreBoardValue(currentInstruction.operands[0])) {
+      if(loadStoreUnitReservationStation->spaceInLoadQueue() && registerFile->getScoreBoardValue(currentInstruction.operands[0])) {
         //Instruction has been issued so add entry to the reorder buffer
         reorderBufferIndex = reorderBuffer->addEntry(STORE_TO_REGISTER, currentInstruction.operands[0], currentInstruction);
         //Set the scoreboard value of the destination register to zero
@@ -78,7 +78,7 @@ void DecodeIssueUnit::issue() {
       break;
     case SW:
     case SWR:
-      if(loadStoreUnitReservationStation->spaceInQueue()) {
+      if(loadStoreUnitReservationStation->spaceInStoreQueue()) {
         //Instruction has been issued so add entry to the reorder buffer
         reorderBufferIndex = reorderBuffer->addEntry(STORE_TO_MEMORY, currentInstruction.operands[1], currentInstruction);
         blockingFlag = false;
@@ -147,7 +147,6 @@ void DecodeIssueUnit::pipe() {
     case MULT:
     case OR:
     case SUB:
-      //aluReservationStation->addInstruction(currentInstruction, reorderBufferIndex);
       aluReservationStation->setNextInstruction(currentInstruction);
       aluReservationStation->setNextReorderBufferIndex(reorderBufferIndex);
       break;
@@ -155,11 +154,13 @@ void DecodeIssueUnit::pipe() {
     //Load Store unit instructions
     case LW:
     case LWR:
-    case SW:
-    case SWR:
-      //loadStoreUnitReservationStation->addInstruction(currentInstruction, reorderBufferIndex);
       loadStoreUnitReservationStation->setLoadQueueNextInstruction(currentInstruction);
       loadStoreUnitReservationStation->setLoadQueueNextReorderBufferIndex(reorderBufferIndex);
+      break;
+    case SW:
+    case SWR:
+      loadStoreUnitReservationStation->setStoreQueueNextInstruction(currentInstruction);
+      loadStoreUnitReservationStation->setStoreQueueNextReorderBufferIndex(reorderBufferIndex);
       break;
 
     //Branch unit instructions

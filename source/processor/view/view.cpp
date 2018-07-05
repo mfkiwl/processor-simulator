@@ -393,8 +393,8 @@ void View::drawLoadStoreUnitReservationStation(const Instruction* const loadQueu
   for(int i = 0; i < aluReservationStationSize; i++) {
     if(storeQueueReorderBufferIndexes[i] != -1) {
       renderText(xPos, yPos + (numOfVerticalCells + 2 + i) * cellHeight + 10, intToString(storeQueueReorderBufferIndexes[i]));
-      renderText(xPos + 20, yPos + (numOfVerticalCells + 2 + i) * cellHeight, instructionToString(storeQueueInstructions[i]));
-      renderText(xPos + 20 + cellWidth, yPos + (2 + i) * cellHeight, intToString(storeQueueAges[i]));
+      renderText(xPos + 20, yPos + (numOfVerticalCells + 2 + i) * cellHeight + 10, instructionToString(storeQueueInstructions[i]));
+      renderText(xPos + 20 + cellWidth, yPos + (numOfVerticalCells + 2 + i) * cellHeight + 10, intToString(storeQueueAges[i]));
     }
   }
 }

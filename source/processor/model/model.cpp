@@ -273,7 +273,7 @@ void Model::getLoadStoreUnitReservationStationLoadQueueAges(int* const copy) con
 }
 
 void Model::getLoadStoreUnitReservationStationStoreQueueInstructions(Instruction* const copy) const {
-  loadStoreUnitReservationStation.getLoadQueueInstructions(copy);
+  loadStoreUnitReservationStation.getStoreQueueInstructions(copy);
 }
 
 void Model::getLoadStoreUnitReservationStationStoreQueueReorderBufferIndexes(int* const copy) const {
