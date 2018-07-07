@@ -14,6 +14,9 @@
 //===========================================
 //class implementation
 
+//======================================================================================================
+//public functions
+
 LoadStoreUnitReservationStation::LoadStoreUnitReservationStation(RegisterFile* const registerFile, ReorderBuffer* const reorderBuffer, LoadStoreUnit* const loadStoreUnit, const int size) : 
   registerFile(registerFile),
   reorderBuffer(reorderBuffer),
@@ -43,88 +46,14 @@ LoadStoreUnitReservationStation::LoadStoreUnitReservationStation(RegisterFile* c
   }
 }
 
-bool LoadStoreUnitReservationStation::readyToDispatch(const int index) const {
-  Instruction instruction = instructions[index];
-  //check that the source register are ready to use
-  switch(instruction.opcode) {
-    case NOOP:
-      return false;
-    case LW:
-      //ready
-      return true;
-    break;
-    case SW:
-      //ready if the source registers are ready and the instruction is at the ROB tail
-      if(registerFile->getScoreBoardValue(operands[0]) && reorderBufferIndexes[index] == reorderBuffer->getTailIndex()) {
-        return true;
-      }
-      break;
-    case LWR:
-      //ready is the source registers are ready
-      if(registerFile->getScoreBoardValue(operands[1])) {
-        return true;
-      }
-      break;
-    case SWR:
-      //ready if the source registers are ready and the instruction is at the ROB tail
-      if(registerFile->getScoreBoardValue(operands[0]) && registerFile->getScoreBoardValue(operands[1]) && reorderBufferIndexes[index] == reorderBuffer->getTailIndex()) {
-        return true;
-      }
-      break;
-  }
-  return false;
-}
-
-//dispatch bound fetch
-void LoadStoreUnitReservationStation::getOperands(const int index) {
-  Instruction instruction = instructions[index];
-  //getting the opcode and incomplete operands from the instruction
-  opcode = instruction.opcode;
-  for(int i = 0; i < 3; i++) {
-    operands[i] = instruction.operands[i];
-  }
-  //temp variables
-  int registerNum;
-  int val; 
-  //fetching the operands for the instruction
-  switch(opcode) {
-    case NOOP:
-      break;
-    case LW:
-      break;
-    case SW:
-      registerNum = operands[0];
-      val = registerFile->getRegisterValue(registerNum);
-      operands[0] = val;
-      break;
-    case LWR:
-      //If the source registers are ready then continue
-      registerNum = operands[1];
-      val = registerFile->getRegisterValue(registerNum);
-      operands[1] = val;
-      break;
-    case SWR:
-      //If the source registers are ready then continue
-      registerNum = operands[0];
-      val = registerFile->getRegisterValue(registerNum);
-      operands[0] = val;
-      registerNum = operands[1];
-      val = registerFile->getRegisterValue(registerNum);
-      operands[1] = val;
-      break;
-  }
-}
-
 void LoadStoreUnitReservationStation::execute() {
   //dispatch the instruction at the tail if is is ready, this results in all of the load and store
   //instruction being exeucted in order
-  if(instructions[tail].opcode != NOOP) {
-    if(readyToDispatch(tail)) {
-      getOperands(tail);
-      reorderBufferIndex = reorderBufferIndexes[tail];
-      dispatchIndex = tail;
-      tail = (tail + 1) % size;
-    }
+  if(readyToDispatch(tail)) {
+    fetchOperands(tail);
+    reorderBufferIndex = reorderBufferIndexes[tail];
+    dispatchIndex = tail;
+    tail = (tail + 1) % size;
   }
 }
 
@@ -136,7 +65,7 @@ void LoadStoreUnitReservationStation::addInstruction(const Instruction instructi
   }
 }
 
-bool LoadStoreUnitReservationStation::spaceInQueue() const {
+bool LoadStoreUnitReservationStation::freeSpace() const {
   if(tail == head && instructions[head].opcode != NOOP) {
     return false;
   }
@@ -195,6 +124,71 @@ void LoadStoreUnitReservationStation::print() const {
     }
   }
 }
+
+//============================================================================================
+//private functions
+
+bool LoadStoreUnitReservationStation::readyToDispatch(const int index) const {
+  Instruction instruction = instructions[index];
+  //check that the source register are ready to use
+  switch(instruction.opcode) {
+    case NOOP:
+      return false;
+    case LW:
+      //ready
+      return true;
+    break;
+    case SW:
+      //ready if the source registers are ready and the instruction is at the ROB tail
+      if(registerFile->getScoreBoardValue(instruction.operands[0]) && reorderBufferIndexes[index] == reorderBuffer->getTailIndex()) {
+        return true;
+      }
+      break;
+    case LWR:
+      //ready is the source registers are ready
+      if(registerFile->getScoreBoardValue(instruction.operands[1])) {
+        return true;
+      }
+      break;
+    case SWR:
+      //ready if the source registers are ready and the instruction is at the ROB tail
+      if(registerFile->getScoreBoardValue(instruction.operands[0]) && registerFile->getScoreBoardValue(instruction.operands[1]) && reorderBufferIndexes[index] == reorderBuffer->getTailIndex()) {
+        return true;
+      }
+      break;
+  }
+  return false;
+}
+
+//dispatch bound fetch
+void LoadStoreUnitReservationStation::fetchOperands(const int index) {
+  Instruction instruction = instructions[index];
+  //getting the opcode and incomplete operands from the instruction
+  opcode = instruction.opcode;
+  for(int i = 0; i < 3; i++) {
+    operands[i] = instruction.operands[i];
+  }
+  //fetching the operands for the instruction
+  switch(opcode) {
+    case NOOP:
+      break;
+    case LW:
+      break;
+    case SW:
+      operands[0] = registerFile->getRegisterValue(operands[0]);
+      break;
+    case LWR:
+      operands[1] = registerFile->getRegisterValue(operands[1]);
+      break;
+    case SWR:
+      operands[0] = registerFile->getRegisterValue(operands[0]);
+      operands[1] = registerFile->getRegisterValue(operands[1]);
+      break;
+  }
+}
+
+//=============================================================================================
+//getters and setters
 
 void LoadStoreUnitReservationStation::getCurrentInstructions(Instruction* const copy) const {
   for(int i = 0; i < size; i++) {

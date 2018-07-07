@@ -91,7 +91,7 @@ void Model::cycle() {
   updateStats();
 
   //print processor current information
-  printInfo();
+  //printInfo();
 }
 
 void Model::run() {
@@ -171,8 +171,6 @@ void Model::flushPipeline() {
   reorderBuffer.flush();
   //reset the register file scoreboard
   registerFile.resetScoreBoard();
-
-  printf("FLUSHING PIPELINE!\n");
 }
 
 void Model::printInfo() const {
@@ -183,14 +181,6 @@ void Model::printInfo() const {
   printf("\n");
   printf("PC: %d\n", pc);
   registerFile.printRegisters();
-  printf("\n");
-  aluReservationStation.print();
-  printf("\n");
-  branchUnitReservationStation.print();
-  printf("\n");
-  loadStoreUnitReservationStation.print();
-  printf("\n");
-  reorderBuffer.print();
 }
 
 //=============================================

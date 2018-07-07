@@ -75,15 +75,12 @@ void ReorderBuffer::execute() {
 
     }
     if(buffer[tail][TYPE] == JUMP && buffer[tail][RESULT]) {
-    *pc = buffer[tail][DESTINATION];
+      *pc = buffer[tail][DESTINATION];
       flushFlag = true;
     }
     if(buffer[tail][TYPE] == SYSCALL) {
       *runningFlag = 0;
     }
-    //print the instruction that we are retiring
-    printf("Retiring Instruction: ");
-    printInstruction(instructions[tail]);
     //reset the reorder buffer entry
     resetEntry(tail);
     //increment the number of instructions that we have executed

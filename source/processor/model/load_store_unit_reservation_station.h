@@ -18,6 +18,9 @@ class Instruction;
 //class declaration
 class LoadStoreUnitReservationStation {
 
+  //private member variables
+  private:
+
     RegisterFile* const registerFile;
     ReorderBuffer* const reorderBuffer;
     LoadStoreUnit* const loadStoreUnit;
@@ -37,27 +40,32 @@ class LoadStoreUnitReservationStation {
 
     int dispatchIndex;
 
-  private:
-
-    bool readyToDispatch(const int index) const;
-
-    //dispatch bound fetch
-    void getOperands(const int index);
-
+  //public functions
   public:
+
     LoadStoreUnitReservationStation(RegisterFile* const registerFile, ReorderBuffer* const reorderBuffer, LoadStoreUnit* const loadStoreUnit, const int size);
 
     void execute();
 
     void addInstruction(const Instruction instruction, const int rbi);
 
-    bool spaceInQueue() const;
+    bool freeSpace() const;
 
     void pipe();
 
     void flush();
 
     void print() const;
+
+  //private functions
+  private:
+
+    bool readyToDispatch(const int index) const;
+
+    void fetchOperands(const int index);
+
+  //getters and setters
+  public:
 
     void getCurrentInstructions(Instruction* const copy) const;
 

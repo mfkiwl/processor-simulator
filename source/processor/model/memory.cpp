@@ -27,14 +27,14 @@ void Memory::getAllMemoryValues(int* const copy) const {
 
 int Memory::loadFromMemory(const int address) const {
   if(address < 0 || address > size - 1) {
-    printf("Register index %d is out of bounds.\n", address);
+    printf("Memory address %d is out of bounds.\n", address);
   }
   return memory[address];
 }
 
 void Memory::storeInMemory(const int address, const int value) {
   if(address < 0 || address > size - 1) {
-    printf("Register index %d is out of bounds.\n", address);
+    printf("Memory address %d is out of bounds.\n", address);
   }
   memory[address] = value;
 }

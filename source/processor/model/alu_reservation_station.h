@@ -16,6 +16,7 @@ class ALU;
 //class declaration
 class ALUReservationStation {
 
+  //private member variables
   private:
     
     RegisterFile* const registerFile;
@@ -34,30 +35,35 @@ class ALUReservationStation {
 
     int dispatchIndex;
 
-  private:
-
-    int findFreePosition() const;
-
-    void addInstruction(const Instruction instruction, const int rbi);
-
-    int readyToDispatch(const Instruction instruction) const;
-
-    //dispatch bound fetch
-    void getOperands(const Instruction instruction);
-
+  //public functions
   public:
 
     ALUReservationStation(RegisterFile* const registerFile, ALU* const alu, const int size);
 
     void execute();
 
-    bool spaceInBuffer() const;
-
     void pipe();
+
+    bool freeSpace() const;
 
     void flush();
 
     void print() const;
+
+  //private functions
+  private:
+
+    int findFreePosition() const;
+
+    void addInstruction(const Instruction instruction, const int rbi);
+
+    bool readyToDispatch(const int index) const;
+
+    //dispatch bound fetch
+    void fetchOperands(const int index);
+
+  //getters and setters
+  public:
 
     void getCurrentInstructions(Instruction* const copy) const;
 

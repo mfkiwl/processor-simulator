@@ -47,11 +47,9 @@ void DecodeIssueUnit::issue() {
     case OR:
     case SUB:
       //if there is space in the reservation then issue the instruction
-      if(aluReservationStation->spaceInBuffer() && registerFile->getScoreBoardValue(currentInstruction.operands[0])) {
+      if(aluReservationStation->freeSpace() && registerFile->getScoreBoardValue(currentInstruction.operands[0])) {
         //Instruction has been issued so add entry to the reorder buffer
         reorderBufferIndex = reorderBuffer->addEntry(STORE_TO_REGISTER, currentInstruction.operands[0], currentInstruction);
-        //Set the scoreboard value of the destination register to zero
-        registerFile->setScoreBoardValue(currentInstruction.operands[0],0);
         //unblock the pipeline
         blockingFlag = false;
       }
@@ -64,11 +62,9 @@ void DecodeIssueUnit::issue() {
     //Load Store unit instructions
     case LW:
     case LWR:
-      if(loadStoreUnitReservationStation->spaceInQueue() && registerFile->getScoreBoardValue(currentInstruction.operands[0])) {
+      if(loadStoreUnitReservationStation->freeSpace() && registerFile->getScoreBoardValue(currentInstruction.operands[0])) {
         //Instruction has been issued so add entry to the reorder buffer
         reorderBufferIndex = reorderBuffer->addEntry(STORE_TO_REGISTER, currentInstruction.operands[0], currentInstruction);
-        //Set the scoreboard value of the destination register to zero
-        registerFile->setScoreBoardValue(currentInstruction.operands[0],0);
         //unblock the pipeline
         blockingFlag = false;
       }
@@ -78,7 +74,7 @@ void DecodeIssueUnit::issue() {
       break;
     case SW:
     case SWR:
-      if(loadStoreUnitReservationStation->spaceInQueue()) {
+      if(loadStoreUnitReservationStation->freeSpace()) {
         //Instruction has been issued so add entry to the reorder buffer
         reorderBufferIndex = reorderBuffer->addEntry(STORE_TO_MEMORY, currentInstruction.operands[1], currentInstruction);
         blockingFlag = false;
@@ -91,7 +87,7 @@ void DecodeIssueUnit::issue() {
     //Branch unit instructions
     case BEQ:
     case BNE:
-      if(branchUnitReservationStation->spaceInBuffer()) {
+      if(branchUnitReservationStation->freeSpace()) {
         //Instruction has been issued so add entry to the reorder buffer
         reorderBufferIndex = reorderBuffer->addEntry(JUMP, currentInstruction.operands[2], currentInstruction);
         blockingFlag = false;
@@ -107,7 +103,7 @@ void DecodeIssueUnit::issue() {
       break;
     case J:
     case JR:
-      if(branchUnitReservationStation->spaceInBuffer()) {
+      if(branchUnitReservationStation->freeSpace()) {
         //Instruction has been issued so add entry to the reorder buffer
         reorderBufferIndex = reorderBuffer->addEntry(JUMP, currentInstruction.operands[0], currentInstruction);
         blockingFlag = false;
@@ -119,7 +115,7 @@ void DecodeIssueUnit::issue() {
                     
     //Instruction to finish the program
     case HALT:
-      if(branchUnitReservationStation->spaceInBuffer()) {
+      if(branchUnitReservationStation->freeSpace()) {
         //Instruction has been issued so add entry to the reorder buffer
         reorderBufferIndex = reorderBuffer->addEntry(SYSCALL, currentInstruction.operands[0], currentInstruction);
         blockingFlag = false;
@@ -147,7 +143,8 @@ void DecodeIssueUnit::pipe() {
     case MULT:
     case OR:
     case SUB:
-      //aluReservationStation->addInstruction(currentInstruction, reorderBufferIndex);
+      //Set the scoreboard value of the destination register to zero
+      registerFile->setScoreBoardValue(currentInstruction.operands[0],0);
       aluReservationStation->setNextInstruction(currentInstruction);
       aluReservationStation->setNextReorderBufferIndex(reorderBufferIndex);
       break;
@@ -155,9 +152,10 @@ void DecodeIssueUnit::pipe() {
     //Load Store unit instructions
     case LW:
     case LWR:
+      //Set the scoreboard value of the destination register to zero
+      registerFile->setScoreBoardValue(currentInstruction.operands[0],0);
     case SW:
     case SWR:
-      //loadStoreUnitReservationStation->addInstruction(currentInstruction, reorderBufferIndex);
       loadStoreUnitReservationStation->setNextInstruction(currentInstruction);
       loadStoreUnitReservationStation->setNextReorderBufferIndex(reorderBufferIndex);
       break;

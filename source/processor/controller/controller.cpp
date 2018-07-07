@@ -198,7 +198,7 @@ int Controller::start(const Instructions instructions) {
   printf("Keep pressing ENTER to step through the program\n");
 
   //display initial information
-  model.printInfo();
+  //model.printInfo();
   updateView();
 
   //While application is running
@@ -217,10 +217,13 @@ int Controller::start(const Instructions instructions) {
     updateView();
   }
 
+  printf("PROGRAM FINISHED\n");
+
+  //print the final state of the processor
+  model.printInfo();
+
   //Free resources and close SDL
   view.close();
-
-  printf("PROGRAM FINISHED\n");
 
   return 0;
 }

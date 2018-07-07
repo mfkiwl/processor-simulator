@@ -16,6 +16,7 @@ class BranchUnit;
 //class declaration
 class BranchUnitReservationStation {
 
+  //private member variables
   private:
     
     RegisterFile* const registerFile;
@@ -34,29 +35,35 @@ class BranchUnitReservationStation {
 
     int dispatchIndex;
 
-  private:
-
-    int findFreePosition() const;
-
-    void addInstruction(const Instruction instruction, const int rbi);
-
-    int readyToDispatch(const Instruction instruction) const;
-
-    //dispatch bound fetch
-    void getOperands(const Instruction instruction);
-
+  //public functions
   public:
+    
     BranchUnitReservationStation(RegisterFile* const registerFile, BranchUnit* const branchUnit, const int size);
 
     void execute();
 
-    bool spaceInBuffer() const;
+    bool freeSpace() const;
 
     void pipe();
 
     void flush();
 
     void print() const;
+
+  //private functions
+  private:
+
+    int findFreePosition() const;
+
+    void addInstruction(const Instruction instruction, const int rbi);
+
+    bool readyToDispatch(const int index) const;
+
+    //dispatch bound fetch
+    void fetchOperands(const int index);
+
+  //getters and setters
+  public:
 
     void getCurrentInstructions(Instruction* const copy) const;
 
