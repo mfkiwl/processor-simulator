@@ -179,16 +179,16 @@ void View::drawTextCell(const int xPos, const int yPos, const int width, const i
   SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
 }
 
-void View::drawRegisterFile(const int* const registerValues) {
+void View::drawRegisterFile(const int* const registerValues, const int* const renameTable) {
 
   //table info
   int noOfHorizontalCells = numOfRegisters;
-  int noOfVerticalCells = 2;
+  int noOfVerticalCells = 3;
   int xPos = 40;
   int yPos = 330;
   int cellWidth = 30;
   int cellHeight = 20;
-  int textCellWidth = 100;
+  int textCellWidth = 120;
 
   //the offset the text should be drawn at
   int xOffset = 1;
@@ -199,19 +199,26 @@ void View::drawRegisterFile(const int* const registerValues) {
 
   //draw the table to hold the register values
   drawTable(xPos + textCellWidth, yPos + cellHeight, noOfHorizontalCells, noOfVerticalCells, cellWidth, cellHeight);
-  drawTextCell(xPos, yPos + cellHeight, textCellWidth, cellHeight, "Register :", xOffset, yOffset);
-  drawTextCell(xPos, yPos + 2 * cellHeight, textCellWidth, cellHeight, "Value :", xOffset, yOffset);
+  drawTextCell(xPos, yPos + cellHeight, textCellWidth, cellHeight, "Architectural :", xOffset, yOffset);
+  drawTextCell(xPos, yPos + 2 * cellHeight, textCellWidth, cellHeight, "Physical :", xOffset, yOffset);
+  drawTextCell(xPos, yPos + 3 * cellHeight, textCellWidth, cellHeight, "Value :", xOffset, yOffset);
 
   //draw the register numbers
   for(int i = 0; i < noOfHorizontalCells; i++) {
-  	std::string text = "R" + intToString(i);
+  	std::string text = intToString(i);
   	renderText(xPos + textCellWidth + i * cellWidth + xOffset, yPos + cellHeight + yOffset, text);
   }
 
   //draw the register values
   for(int i = 0; i < noOfHorizontalCells; i++) {
-  	std::string text = intToString(registerValues[i]);
-  	renderText(xPos + textCellWidth + i * cellWidth + xOffset, yPos + 2 * cellHeight + yOffset, text);
+    std::string text = intToString(renameTable[i]);
+    renderText(xPos + textCellWidth + i * cellWidth + xOffset, yPos + 2 * cellHeight + yOffset, text);
+  }
+
+  //draw the register values
+  for(int i = 0; i < noOfHorizontalCells; i++) {
+    std::string text = intToString(registerValues[i]);
+    renderText(xPos + textCellWidth + i * cellWidth + xOffset, yPos + 3 * cellHeight + yOffset, text);
   }
 
   //reset the draw color to white

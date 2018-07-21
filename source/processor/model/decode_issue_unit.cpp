@@ -32,6 +32,10 @@ void DecodeIssueUnit::execute() {
   issue();
 }
 
+void DecodeIssueUnit::registerRename() {
+  
+}
+
 void DecodeIssueUnit::issue() {
   switch(currentInstruction.opcode) {
 

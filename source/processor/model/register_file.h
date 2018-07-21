@@ -34,10 +34,16 @@ class RegisterFile {
 
     int findFreePhysicalRegister() const;
 
+    void freeRegister(const int i);
+
+    void useRegister(const int i);
+
   //getters and setters
   public:
 
     int getNumOfArchitecturalRegisters() const;
+
+    void getRenameTable(int* const copy) const;
 
     void getAllRegisterValues(int* const copy) const;
 

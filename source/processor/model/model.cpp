@@ -214,6 +214,10 @@ int Model::getPC() const {
   return pc;
 }
 
+void Model::getRenameTable(int* const copy) const {
+  registerFile.getRenameTable(copy);
+}
+
 void Model::getAllRegisterValues(int* const copy) const {
   registerFile.getAllRegisterValues(copy);
 }

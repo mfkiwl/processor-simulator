@@ -45,6 +45,8 @@ class DecodeIssueUnit {
 
     void execute();
 
+    void registerRename();
+
     void issue();
 
     void pipe();

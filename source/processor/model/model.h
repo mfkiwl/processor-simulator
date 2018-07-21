@@ -104,6 +104,8 @@ class Model {
 
     int getPC() const;
 
+    void getRenameTable(int* const copy) const;
+
     void getAllRegisterValues(int* const copy) const;
 
     void getAllMemoryValues(int* const copy) const;

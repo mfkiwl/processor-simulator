@@ -157,7 +157,9 @@ void Controller::updateView() {
   //draw the register file
   int registerValues[numOfRegisters];
   model.getAllRegisterValues(registerValues);
-  view.drawRegisterFile(registerValues);
+  int renameTable[numOfRegisters];
+  model.getRenameTable(renameTable);
+  view.drawRegisterFile(registerValues, renameTable);
 
   //draw the memory
   int memoryValues[memorySize];

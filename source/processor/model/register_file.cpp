@@ -100,7 +100,20 @@ void RegisterFile::printScoreBoard() const {
 }
 
 int RegisterFile::findFreePhysicalRegister() const {
-  return 0;
+  for(int i = 0; i < numOfArchitecturalRegisters; i++) {
+    if(freeList[i] == 1) {
+      return i;
+    }
+  }
+  return -1;
+}
+
+void RegisterFile::freeRegister(const int i) {
+  freeList[i] = 1;
+}
+
+void RegisterFile::useRegister(const int i) {
+  freeList[i] = 0;
 }
 
 //================================================================================
@@ -108,6 +121,12 @@ int RegisterFile::findFreePhysicalRegister() const {
 
 int RegisterFile::getNumOfArchitecturalRegisters() const {
   return numOfArchitecturalRegisters;
+}
+
+void RegisterFile::getRenameTable(int* const copy) const {
+  for(int i = 0; i < numOfArchitecturalRegisters; i++) {
+    copy[i] = renameTable[i];
+  }
 }
 
 void RegisterFile::getAllRegisterValues(int* const copy) const {
