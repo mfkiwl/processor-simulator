@@ -116,7 +116,7 @@ void Controller::updateView() {
   //draw the instructions in the alu reservation station
   Instruction aluReservationStationInstructions[aluReservationStationSize];
   model.getAluReservationStationInstructions(aluReservationStationInstructions);
-  int aluReservationStationReorderBufferIndexes[4];
+  int aluReservationStationReorderBufferIndexes[6];
   model.getAluReservationStationReorderBufferIndexes(aluReservationStationReorderBufferIndexes);
   view.drawAluReservationStation(aluReservationStationInstructions, aluReservationStationReorderBufferIndexes);
 
@@ -156,10 +156,8 @@ void Controller::updateView() {
 
   //draw the register file
   int registerValues[numOfRegisters];
-  int scoreBoard[numOfRegisters];
   model.getAllRegisterValues(registerValues);
-  model.getScoreBoard(scoreBoard);
-  view.drawRegisterFile(registerValues, scoreBoard);
+  view.drawRegisterFile(registerValues);
 
   //draw the memory
   int memoryValues[memorySize];

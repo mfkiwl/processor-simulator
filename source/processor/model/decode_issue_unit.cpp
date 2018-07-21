@@ -49,7 +49,7 @@ void DecodeIssueUnit::issue() {
       //if there is space in the reservation then issue the instruction
       if(aluReservationStation->freeSpace() && registerFile->getScoreBoardValue(currentInstruction.operands[0])) {
         //Instruction has been issued so add entry to the reorder buffer
-        reorderBufferIndex = reorderBuffer->addEntry(STORE_TO_REGISTER, currentInstruction.operands[0], currentInstruction);
+        reorderBufferIndex = reorderBuffer->addEntry(STORE_TO_REGISTER, 0, currentInstruction.operands[0], 0, currentInstruction);
         //unblock the pipeline
         blockingFlag = false;
       }
@@ -64,7 +64,7 @@ void DecodeIssueUnit::issue() {
     case LWR:
       if(loadStoreUnitReservationStation->freeSpace() && registerFile->getScoreBoardValue(currentInstruction.operands[0])) {
         //Instruction has been issued so add entry to the reorder buffer
-        reorderBufferIndex = reorderBuffer->addEntry(STORE_TO_REGISTER, currentInstruction.operands[0], currentInstruction);
+        reorderBufferIndex = reorderBuffer->addEntry(STORE_TO_REGISTER, 0, currentInstruction.operands[0], 0, currentInstruction);
         //unblock the pipeline
         blockingFlag = false;
       }
@@ -76,7 +76,7 @@ void DecodeIssueUnit::issue() {
     case SWR:
       if(loadStoreUnitReservationStation->freeSpace()) {
         //Instruction has been issued so add entry to the reorder buffer
-        reorderBufferIndex = reorderBuffer->addEntry(STORE_TO_MEMORY, currentInstruction.operands[1], currentInstruction);
+        reorderBufferIndex = reorderBuffer->addEntry(STORE_TO_MEMORY, 0, currentInstruction.operands[1], 0, currentInstruction);
         blockingFlag = false;
       }
       else {
@@ -89,7 +89,7 @@ void DecodeIssueUnit::issue() {
     case BNE:
       if(branchUnitReservationStation->freeSpace()) {
         //Instruction has been issued so add entry to the reorder buffer
-        reorderBufferIndex = reorderBuffer->addEntry(JUMP, currentInstruction.operands[2], currentInstruction);
+        reorderBufferIndex = reorderBuffer->addEntry(JUMP, currentInstruction.operands[2], 0, 0, currentInstruction);
         blockingFlag = false;
       }
       else {
@@ -105,7 +105,7 @@ void DecodeIssueUnit::issue() {
     case JR:
       if(branchUnitReservationStation->freeSpace()) {
         //Instruction has been issued so add entry to the reorder buffer
-        reorderBufferIndex = reorderBuffer->addEntry(JUMP, currentInstruction.operands[0], currentInstruction);
+        reorderBufferIndex = reorderBuffer->addEntry(JUMP, currentInstruction.operands[0], 0, 0, currentInstruction);
         blockingFlag = false;
       }
       else {
@@ -117,7 +117,7 @@ void DecodeIssueUnit::issue() {
     case HALT:
       if(branchUnitReservationStation->freeSpace()) {
         //Instruction has been issued so add entry to the reorder buffer
-        reorderBufferIndex = reorderBuffer->addEntry(SYSCALL, currentInstruction.operands[0], currentInstruction);
+        reorderBufferIndex = reorderBuffer->addEntry(SYSCALL, 0, 0, 0, currentInstruction);
         blockingFlag = false;
       }
       else {

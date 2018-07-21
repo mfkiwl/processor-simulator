@@ -179,11 +179,11 @@ void View::drawTextCell(const int xPos, const int yPos, const int width, const i
   SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
 }
 
-void View::drawRegisterFile(const int* const registerValues, const int* const scoreBoard) {
+void View::drawRegisterFile(const int* const registerValues) {
 
   //table info
   int noOfHorizontalCells = numOfRegisters;
-  int noOfVerticalCells = 3;
+  int noOfVerticalCells = 2;
   int xPos = 40;
   int yPos = 330;
   int cellWidth = 30;
@@ -201,7 +201,6 @@ void View::drawRegisterFile(const int* const registerValues, const int* const sc
   drawTable(xPos + textCellWidth, yPos + cellHeight, noOfHorizontalCells, noOfVerticalCells, cellWidth, cellHeight);
   drawTextCell(xPos, yPos + cellHeight, textCellWidth, cellHeight, "Register :", xOffset, yOffset);
   drawTextCell(xPos, yPos + 2 * cellHeight, textCellWidth, cellHeight, "Value :", xOffset, yOffset);
-  drawTextCell(xPos, yPos + 3 * cellHeight, textCellWidth, cellHeight, "Scoreboard :", xOffset, yOffset);
 
   //draw the register numbers
   for(int i = 0; i < noOfHorizontalCells; i++) {
@@ -213,12 +212,6 @@ void View::drawRegisterFile(const int* const registerValues, const int* const sc
   for(int i = 0; i < noOfHorizontalCells; i++) {
   	std::string text = intToString(registerValues[i]);
   	renderText(xPos + textCellWidth + i * cellWidth + xOffset, yPos + 2 * cellHeight + yOffset, text);
-  }
-
-  //draw the scoreboard values
-  for(int i = 0; i < noOfHorizontalCells; i++) {
-    std::string text = intToString(scoreBoard[i]);
-    renderText(xPos + textCellWidth + i * cellWidth + xOffset, yPos + 3 * cellHeight + yOffset, text);
   }
 
   //reset the draw color to white
@@ -420,7 +413,7 @@ void View::drawBranchUnit(const bool successful, const int reorderBufferIndex) {
 void View::drawReorderBuffer(const Instruction* instructions, int** const fields) {
   int xPos = 700;
   int yPos = 20;
-  int numOfHorizontalCells = 4;
+  int numOfHorizontalCells = 6;
   int numOfVerticalCells = reorderBufferSize;
   int cellWidth = 20;
   int cellHeight = 20;
@@ -436,7 +429,7 @@ void View::drawReorderBuffer(const Instruction* instructions, int** const fields
     renderText(xPos, yPos + (i+1) * cellHeight, intToString(i));
     if(fields[i][3] != -1) {
       renderText(xPos + cellWidth, yPos + (i+1) * cellHeight, instructionToString(instructions[i]));
-      for(int j = 0; j < 4; j++) {
+      for(int j = 0; j < 6; j++) {
         renderText(xPos + textCellWidth + (j+1) * cellWidth, yPos + (i+1) * cellHeight, intToString(fields[i][j]));
       }
     }

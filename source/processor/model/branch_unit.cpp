@@ -53,14 +53,14 @@ void BranchUnit::execute() {
         successful = false;
         break;
     }
+    //tell the reorder buffer that we are finished executing the instruction
+    reorderBuffer->finishedEntry(currentReorderBufferIndex, successful);
   }
 }
 
 void BranchUnit::pipe() {
   //send the current values
   if(currentOpcode != NOOP) {
-    //tell the reorder buffer that we are finished executing the instruction
-    reorderBuffer->finishedEntry(currentReorderBufferIndex, successful);
     //reset the successful flag
     successful = false;
   }

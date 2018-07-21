@@ -42,7 +42,8 @@ class ReorderBuffer {
   public:
     ReorderBuffer(RegisterFile* const registerFile, Memory* const memory, int* const pc, int* const runningFlag, int* const noOfInstructionsExecuted, const int bufferSize);
 
-    int addEntry(const Type type, const int destination, const Instruction instruction);
+    int addEntry(const Type type, const int branchTargetAddress, const int physicalRegister, 
+      const int previousPhysicalRegister, const Instruction instruction);
 
     int getTailIndex() const;
 
@@ -53,8 +54,6 @@ class ReorderBuffer {
     void executingEntry(const int i);
 
     void finishedEntry(const int i, const int result);
-
-    void setEntryResult(const int i, const int r);
 
     void writeResult(const int i, const int r);
 

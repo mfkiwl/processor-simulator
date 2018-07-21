@@ -87,7 +87,7 @@ void StoreBuffer::writeIfReady() {
       memory->storeInMemory(address, value);
       //printf("STORED %d at ADDRESS %d\n", value, address);
       //tell the reorder buffer that we are finished executing the instruction
-      reorderBuffer->finishedEntry(buffer[i][REORDER_BUFFER_INDEX], 0);
+      reorderBuffer->finishedEntry(buffer[i][REORDER_BUFFER_INDEX], value);
       //reset write buffer entry
       buffer[i][ADDRESS] = 0;
       buffer[i][VALUE] = 0;

@@ -14,67 +14,33 @@
 
 using namespace std;
 
+//====================================================================================
+//public functions
+
 RegisterFile::RegisterFile(const int numOfRegisters) :   
   numOfArchitecturalRegisters(numOfRegisters),
-  registers(new int[numOfArchitecturalRegisters]),
-  scoreBoard(new int[numOfArchitecturalRegisters])
+  numOfPhysicalRegisters(100),
+  renameTable(new int[numOfArchitecturalRegisters]),
+  physicalRegisters(new int[numOfPhysicalRegisters]),
+  freeList(new int[numOfPhysicalRegisters]),
+  scoreBoard(new int[numOfPhysicalRegisters])
 {
-  //zero out the register valeus
+  //set all renameTable values to unique numbers
   for(int i = 0; i < numOfArchitecturalRegisters; i++) {
-    registers[i] = 0;
+    renameTable[i] = i;
   }
+  //set all the physical register values to 0
+  //set all physical registers to be free
   //set all scoreboard values to 1
-  for(int i = 0; i < numOfArchitecturalRegisters; i++) {
+  for(int i = 0; i < numOfPhysicalRegisters; i++) {
+    physicalRegisters[i] = 0;
+    freeList[i] = 1;
     scoreBoard[i] = 1;
   }
 }
 
-int RegisterFile::getNumOfArchitecturalRegisters() const {
-  return numOfArchitecturalRegisters;
-}
-
-void RegisterFile::getAllRegisterValues(int* const copy) const {
-  for(int i = 0; i < numOfArchitecturalRegisters; i++) {
-    copy[i] = registers[i];
-  }
-}
-
-void RegisterFile::getScoreBoard(int* const copy) const {
-  for(int i = 0; i < numOfArchitecturalRegisters; i++) {
-    copy[i] = scoreBoard[i];
-  }
-}
-
-int RegisterFile::getRegisterValue(const int i) const {
-  if(i < 0 || i >= numOfArchitecturalRegisters) {
-    printf("Register index %d is out of range.\n", i);
-  }
-  return registers[i];
-}
-
-void RegisterFile::setRegisterValue(const int i, const int val) {
-  if(i < 0 || i >= numOfArchitecturalRegisters) {
-    printf("Register index %d is out of range.\n", i);
-  }
-  registers[i] = val;
-}
-
-int RegisterFile::getScoreBoardValue(const int i) const {
-  if(i < 0 || i >= numOfArchitecturalRegisters) {
-    printf("ScoreBoard index %d is out of range.\n", i);
-  }
-  return scoreBoard[i];
-}
-
-void RegisterFile::setScoreBoardValue(const int i, const int val) {
-  if(i < 0 || i >= numOfArchitecturalRegisters) {
-    printf("ScoreBoard index %d is our of range.\n", i);
-  }
-  scoreBoard[i] = val;
-}
-
 void RegisterFile::resetScoreBoard() {
-  for(int i = 0; i < numOfArchitecturalRegisters; i++) {
+  for(int i = 0; i < numOfPhysicalRegisters; i++) {
     scoreBoard[i] = 1;
   }
 }
@@ -97,7 +63,7 @@ void RegisterFile::printRegisters() const {
   printf("Registers: ");
   int lengths[numOfArchitecturalRegisters];
   for(int i = 0; i < numOfArchitecturalRegisters; i++) {
-    lengths[i] = intLength(registers[i]);
+    lengths[i] = intLength(physicalRegisters[renameTable[i]]);
   }
   for(int i = 0; i < numOfArchitecturalRegisters; i++) {
     printf("R%d ", i);
@@ -113,10 +79,10 @@ void RegisterFile::printRegisters() const {
   printf("Values:    ");
   for(int i = 0; i < numOfArchitecturalRegisters; i++) {
     if(lengths[i] == 1) {
-      printf("%d  ", registers[i]);
+      printf("%d  ", physicalRegisters[renameTable[i]]);
     }
     else {
-      printf("%d ", registers[i]);
+      printf("%d ", physicalRegisters[renameTable[i]]);
     }
     if(i >= 10) {
       printf(" ");
@@ -127,8 +93,53 @@ void RegisterFile::printRegisters() const {
 
 void RegisterFile::printScoreBoard() const {
   printf("ScoreBoard:\n");
-  for(int i = 0; i < numOfArchitecturalRegisters; i++) {
+  for(int i = 0; i < numOfPhysicalRegisters; i++) {
     printf("%d ", scoreBoard[i]);
   }
   printf("\n");
+}
+
+int RegisterFile::findFreePhysicalRegister() const {
+  return 0;
+}
+
+//================================================================================
+//getters and setters
+
+int RegisterFile::getNumOfArchitecturalRegisters() const {
+  return numOfArchitecturalRegisters;
+}
+
+void RegisterFile::getAllRegisterValues(int* const copy) const {
+  for(int i = 0; i < numOfArchitecturalRegisters; i++) {
+    copy[i] = physicalRegisters[renameTable[i]];
+  }
+}
+
+int RegisterFile::getRegisterValue(const int i) const {
+  if(i < 0 || i >= numOfArchitecturalRegisters) {
+    printf("Register index %d is out of range.\n", i);
+  }
+  return physicalRegisters[renameTable[i]];
+}
+
+void RegisterFile::setRegisterValue(const int i, const int val) {
+  if(i < 0 || i >= numOfArchitecturalRegisters) {
+    printf("Register index %d is out of range.\n", i);
+  }
+  physicalRegisters[renameTable[i]] = val;
+}
+
+int RegisterFile::getScoreBoardValue(const int i) const {
+  if(i < 0 || i >= numOfPhysicalRegisters) {
+    printf("ScoreBoard index %d is out of range.\n", i);
+  }
+  return scoreBoard[i];
+}
+
+void RegisterFile::setScoreBoardValue(const int i, const int val) {
+  if(i < 0 || i >= numOfPhysicalRegisters) {
+    printf("ScoreBoard index %d is our of range.\n", i);
+  }
+  scoreBoard[i] = val;
 }

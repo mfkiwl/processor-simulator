@@ -218,10 +218,6 @@ void Model::getAllRegisterValues(int* const copy) const {
   registerFile.getAllRegisterValues(copy);
 }
 
-void Model::getScoreBoard(int* const copy) const {
-  registerFile.getScoreBoard(copy);
-}
-
 void Model::getAllMemoryValues(int* const copy) const {
   memory.getAllMemoryValues(copy);
 }

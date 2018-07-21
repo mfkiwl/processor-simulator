@@ -76,7 +76,7 @@ class View {
 
     void drawTextCell(const int xPos, const int yPos, const int width, const int height, const std::string text, const int xOffset, const int yOffset);
 
-    void drawRegisterFile(const int* const registerValues, const int* const scoreBoard);
+    void drawRegisterFile(const int* const registerValues);
 
     void drawMemory(const int* const memoryValues);
 

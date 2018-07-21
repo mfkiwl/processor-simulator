@@ -26,7 +26,7 @@ ReorderBuffer::ReorderBuffer(RegisterFile* const registerFile, Memory* const mem
   buffer(new int*[bufferSize]),
   head(0),
   tail(0),
-  bufferEntryFields(4),
+  bufferEntryFields(6),
   instructions(new Instruction[bufferSize]),
   noOfInstructionsExecuted(noOfInstructionsExecuted)
 {
@@ -46,11 +46,14 @@ ReorderBuffer::ReorderBuffer(RegisterFile* const registerFile, Memory* const mem
   }
 }
 
-int ReorderBuffer::addEntry(const Type type, const int destination, const Instruction instruction) {
+int ReorderBuffer::addEntry(const Type type, const int branchTargetAddress, const int physicalRegister, 
+  const int previousPhysicalRegister, const Instruction instruction) {
   buffer[head][TYPE] = type;
-  buffer[head][DESTINATION] = destination;
-  buffer[head][RESULT] = 0;
   buffer[head][STATUS] = ISSUED;
+  buffer[head][RESULT] = 0;
+  buffer[head][BRANCH_TARGET_ADDRESS] = branchTargetAddress;
+  buffer[head][PHYSICAL_REGISTER] = physicalRegister;
+  buffer[head][PREVIOUS_PHYSICAL_REGISTER] = previousPhysicalRegister;
   instructions[head] = instruction;
   int index = head;
   head = (head + 1) % bufferSize;
@@ -67,15 +70,15 @@ void ReorderBuffer::execute() {
     //buffer[tail][STATUS] = -1;
     if(buffer[tail][TYPE] == STORE_TO_REGISTER) {
       //write the result to the reorder buffer
-      registerFile->setRegisterValue(buffer[tail][DESTINATION], buffer[tail][RESULT]);
+      registerFile->setRegisterValue(buffer[tail][PHYSICAL_REGISTER], buffer[tail][RESULT]);
       //Set the scoreBoard of the destination register to 1
-      registerFile->setScoreBoardValue(buffer[tail][DESTINATION], 1);
+      registerFile->setScoreBoardValue(buffer[tail][PHYSICAL_REGISTER], 1);
     }
     if(buffer[tail][TYPE] == STORE_TO_MEMORY) {
 
     }
     if(buffer[tail][TYPE] == JUMP && buffer[tail][RESULT]) {
-      *pc = buffer[tail][DESTINATION];
+      *pc = buffer[tail][BRANCH_TARGET_ADDRESS];
       flushFlag = true;
     }
     if(buffer[tail][TYPE] == SYSCALL) {
@@ -106,10 +109,6 @@ void ReorderBuffer::finishedEntry(const int i, const int result) {
   buffer[i][RESULT] = result;
 }
 
-void ReorderBuffer::setEntryResult(const int i, const int r) {
-  buffer[i][RESULT] = r;
-}
-
 void ReorderBuffer::writeResult(const int i, const int r) {
   buffer[i][RESULT] = r;
 }
@@ -118,9 +117,11 @@ void ReorderBuffer::writeResult(const int i, const int r) {
 void ReorderBuffer::flush() {
   for(int i = 0; i < bufferSize; i++) {
     buffer[i][TYPE] = -1;
-    buffer[i][DESTINATION] = -1;
-    buffer[i][RESULT] = -1;
     buffer[i][STATUS] = -1;
+    buffer[i][RESULT] = -1;
+    buffer[i][BRANCH_TARGET_ADDRESS] = -1;
+    buffer[i][PHYSICAL_REGISTER] = -1;
+    buffer[i][PREVIOUS_PHYSICAL_REGISTER] = -1;
   }
   for(int i = 0; i < bufferSize; i++) {
     instructions[i] = (Instruction) {0,0,0,0};

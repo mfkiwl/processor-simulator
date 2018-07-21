@@ -49,16 +49,13 @@ void ALU::execute() {
         currentResult = currentOperands[1] - currentOperands[2];
         break;
     }
+    //tell the reorder buffer the result
+    reorderBuffer->finishedEntry(currentReorderBufferIndex, currentResult);
   }
 }
 
 void ALU::pipe() {
-  //use the current values
-  if(currentOpcode != NOOP) {
-    //tell the reorder buffer that we are finished executing the instruction
-    reorderBuffer->finishedEntry(currentReorderBufferIndex, currentResult);
-  }
-
+  
   //reset the current result to zero
   currentResult = 0;
 
