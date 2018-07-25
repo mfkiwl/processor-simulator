@@ -61,8 +61,8 @@ void LoadStoreUnit::execute() {
   }
 
   //increment the step numbers for each inflight read and write instruction
-  storeBuffer.stepInstructions();
-  loadBuffer.stepInstructions();
+  storeBuffer.incrementSteps();
+  loadBuffer.incrementSteps();
 }
 
 void LoadStoreUnit::pipe() {

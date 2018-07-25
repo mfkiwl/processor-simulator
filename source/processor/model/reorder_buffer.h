@@ -17,6 +17,7 @@ class Instruction;
 //class declaration
 class ReorderBuffer {
 
+  //private member variables
   private:
 
     RegisterFile* const registerFile;
@@ -39,13 +40,17 @@ class ReorderBuffer {
     //no of instruction executed by the processor
     int* const noOfInstructionsExecuted;
 
+  //public functions
   public:
+
     ReorderBuffer(RegisterFile* const registerFile, Memory* const memory, int* const pc, int* const runningFlag, int* const noOfInstructionsExecuted, const int bufferSize);
 
-    int addEntry(const Type type, const int branchTargetAddress, const int physicalRegister, 
-      const int previousPhysicalRegister, const Instruction instruction);
+    bool freeSpace() const;
 
-    int getTailIndex() const;
+    bool empty() const;
+
+    int addEntry(const Type type, const int branchTargetAddress, const int architecturalRegister,
+      const int physicalRegister, const int previousPhysicalRegister, const Instruction instruction);
 
     void execute();
 
@@ -62,6 +67,13 @@ class ReorderBuffer {
     void printTail() const;
 
     void print() const;
+
+  //getters and setters
+  public:
+
+    int getTailIndex() const;
+
+    int getHeadIndex() const;
 
     void getReorderBufferInstructions(Instruction* const copy) const;
 

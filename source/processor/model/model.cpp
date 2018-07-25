@@ -157,6 +157,8 @@ void Model::pipe() {
 }
 
 void Model::flushPipeline() {
+  //flush register file
+  registerFile.flush();
   //flush decode unit
   decodeIssueUnit.flush();
   //flush reservation stations
@@ -218,8 +220,12 @@ void Model::getRenameTable(int* const copy) const {
   registerFile.getRenameTable(copy);
 }
 
-void Model::getAllRegisterValues(int* const copy) const {
-  registerFile.getAllRegisterValues(copy);
+void Model::getArchitecturalRegisterValues(int* const copy) const {
+  registerFile.getArchitecturalRegisterValues(copy);
+}
+
+void Model::getLatestArchitecturalRegisterValues(int* const copy) const {
+  registerFile.getLatestArchitecturalRegisterValues(copy);
 }
 
 void Model::getAllMemoryValues(int* const copy) const {
@@ -280,4 +286,12 @@ void Model::getReorderBufferInstructions(Instruction* const copy) const {
 
 void Model::getReorderBufferFields(int** const copy) const {
   reorderBuffer.getReorderBufferFields(copy);
+}
+
+int Model::getReorderBufferTailIndex() const {
+  return reorderBuffer.getTailIndex();
+}
+
+int Model::getReorderBufferHeadIndex() const {
+  return reorderBuffer.getHeadIndex();
 }

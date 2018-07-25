@@ -201,7 +201,7 @@ void View::drawRegisterFile(const int* const registerValues, const int* const re
   drawTable(xPos + textCellWidth, yPos + cellHeight, noOfHorizontalCells, noOfVerticalCells, cellWidth, cellHeight);
   drawTextCell(xPos, yPos + cellHeight, textCellWidth, cellHeight, "Architectural :", xOffset, yOffset);
   drawTextCell(xPos, yPos + 2 * cellHeight, textCellWidth, cellHeight, "Physical :", xOffset, yOffset);
-  drawTextCell(xPos, yPos + 3 * cellHeight, textCellWidth, cellHeight, "Value :", xOffset, yOffset);
+  drawTextCell(xPos, yPos + 3 * cellHeight, textCellWidth, cellHeight, "Latest Value :", xOffset, yOffset);
 
   //draw the register numbers
   for(int i = 0; i < noOfHorizontalCells; i++) {
@@ -417,7 +417,7 @@ void View::drawBranchUnit(const bool successful, const int reorderBufferIndex) {
   }
 }
 
-void View::drawReorderBuffer(const Instruction* instructions, int** const fields) {
+void View::drawReorderBuffer(const int tailIndex, const int headIndex, const Instruction* instructions, int** const fields) {
   int xPos = 700;
   int yPos = 20;
   int numOfHorizontalCells = 6;
@@ -441,6 +441,9 @@ void View::drawReorderBuffer(const Instruction* instructions, int** const fields
       }
     }
   }
+
+  renderText(xPos - 10, yPos + (tailIndex + 1) * cellHeight, "T");
+  renderText(xPos - 20, yPos + (headIndex + 1) * cellHeight, "H");
 }
 
 void View::clearScreen() {

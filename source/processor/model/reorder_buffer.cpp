@@ -26,7 +26,7 @@ ReorderBuffer::ReorderBuffer(RegisterFile* const registerFile, Memory* const mem
   buffer(new int*[bufferSize]),
   head(0),
   tail(0),
-  bufferEntryFields(6),
+  bufferEntryFields(7),
   instructions(new Instruction[bufferSize]),
   noOfInstructionsExecuted(noOfInstructionsExecuted)
 {
@@ -46,22 +46,38 @@ ReorderBuffer::ReorderBuffer(RegisterFile* const registerFile, Memory* const mem
   }
 }
 
-int ReorderBuffer::addEntry(const Type type, const int branchTargetAddress, const int physicalRegister, 
-  const int previousPhysicalRegister, const Instruction instruction) {
+bool ReorderBuffer::freeSpace() const {
+  if(((head + 1) % bufferSize) != tail) {
+    return true;
+  }
+  else {
+    return false;
+  }
+}
+
+bool ReorderBuffer::empty() const {
+  if(tail == head && instructions[head].opcode == NOOP) {
+    return true;
+  }
+  else {
+    return false;
+  }
+}
+
+int ReorderBuffer::addEntry(const Type type, const int branchTargetAddress, const int architecturalRegister,
+const int physicalRegister, const int previousPhysicalRegister, const Instruction instruction) {
+  if(!empty()) {
+    head = (head + 1) % bufferSize;
+  }
   buffer[head][TYPE] = type;
   buffer[head][STATUS] = ISSUED;
   buffer[head][RESULT] = 0;
   buffer[head][BRANCH_TARGET_ADDRESS] = branchTargetAddress;
+  buffer[head][ARCHITECTURAL_REGISTER] = architecturalRegister;
   buffer[head][PHYSICAL_REGISTER] = physicalRegister;
   buffer[head][PREVIOUS_PHYSICAL_REGISTER] = previousPhysicalRegister;
   instructions[head] = instruction;
-  int index = head;
-  head = (head + 1) % bufferSize;
-  return index;
-}
-
-int ReorderBuffer::getTailIndex() const {
-  return tail;
+  return head;
 }
 
 //commiting an entry when it can each cycle
@@ -69,10 +85,14 @@ void ReorderBuffer::execute() {
   if(buffer[tail][STATUS] == FINISHED) {
     //buffer[tail][STATUS] = -1;
     if(buffer[tail][TYPE] == STORE_TO_REGISTER) {
-      //write the result to the reorder buffer
-      registerFile->setRegisterValue(buffer[tail][PHYSICAL_REGISTER], buffer[tail][RESULT]);
+      //write the result to the register
+      registerFile->setPhysicalRegisterValue(buffer[tail][PHYSICAL_REGISTER], buffer[tail][RESULT]);
+      //update the rollback rename table
+      registerFile->setRollbackRenameTableMapping(buffer[tail][ARCHITECTURAL_REGISTER], buffer[tail][PHYSICAL_REGISTER]);
       //Set the scoreBoard of the destination register to 1
       registerFile->setScoreBoardValue(buffer[tail][PHYSICAL_REGISTER], 1);
+      //free the previous physical register
+      registerFile->freePhysicalRegister(buffer[tail][PREVIOUS_PHYSICAL_REGISTER]);
     }
     if(buffer[tail][TYPE] == STORE_TO_MEMORY) {
 
@@ -144,6 +164,14 @@ void ReorderBuffer::print() const {
     }
     printInstruction(instructions[i]);
   }
+}
+
+int ReorderBuffer::getTailIndex() const {
+  return tail;
+}
+
+int ReorderBuffer::getHeadIndex() const {
+  return head;
 }
 
 void ReorderBuffer::getReorderBufferInstructions(Instruction* const copy) const {

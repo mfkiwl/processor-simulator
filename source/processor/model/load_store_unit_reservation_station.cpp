@@ -175,14 +175,14 @@ void LoadStoreUnitReservationStation::fetchOperands(const int index) {
     case LW:
       break;
     case SW:
-      operands[0] = registerFile->getRegisterValue(operands[0]);
+      operands[0] = registerFile->getPhysicalRegisterValue(operands[0]);
       break;
     case LWR:
-      operands[1] = registerFile->getRegisterValue(operands[1]);
+      operands[1] = registerFile->getPhysicalRegisterValue(operands[1]);
       break;
     case SWR:
-      operands[0] = registerFile->getRegisterValue(operands[0]);
-      operands[1] = registerFile->getRegisterValue(operands[1]);
+      operands[0] = registerFile->getPhysicalRegisterValue(operands[0]);
+      operands[1] = registerFile->getPhysicalRegisterValue(operands[1]);
       break;
   }
 }

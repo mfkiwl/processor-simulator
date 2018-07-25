@@ -98,7 +98,7 @@ class View {
 
     void drawBranchUnit(const bool successful, const int reorderBufferIndex);
 
-    void drawReorderBuffer(const Instruction* const instructions, int** const fields);
+    void drawReorderBuffer(const int tailIndex, const int headIndex, const Instruction* const instructions, int** const fields);
 
     void clearScreen();
 

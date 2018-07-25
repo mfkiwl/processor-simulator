@@ -21,6 +21,8 @@ class RegisterFile {
     //tells us whether each physical register is in the process of being written to
     int* const scoreBoard;
 
+    int* const rollbackRenameTable;
+
   //public functions
   public:
 
@@ -34,9 +36,11 @@ class RegisterFile {
 
     int findFreePhysicalRegister() const;
 
-    void freeRegister(const int i);
+    void freePhysicalRegister(const int i);
 
-    void useRegister(const int i);
+    void flush();
+
+    void usePhysicalRegister(const int i);
 
   //getters and setters
   public:
@@ -45,15 +49,24 @@ class RegisterFile {
 
     void getRenameTable(int* const copy) const;
 
-    void getAllRegisterValues(int* const copy) const;
+    void getLatestArchitecturalRegisterValues(int* const copy) const;
 
-    int getRegisterValue(const int i) const;
+    void getArchitecturalRegisterValues(int* const copy) const;
 
-    void setRegisterValue(const int i, const int val);
+    int getPhysicalRegisterValue(const int i) const;
+
+    void setPhysicalRegisterValue(const int i, const int val);
 
     int getScoreBoardValue(const int i) const;
 
     void setScoreBoardValue(const int i, const int val);
+
+    void setArchitecturalRegisterMapping(const int i, const int val) const;
+
+    int getArchitecturalRegisterMapping(const int i) const;
+
+    void setRollbackRenameTableMapping(const int i, const int val) const;
+
 };
 
 #endif

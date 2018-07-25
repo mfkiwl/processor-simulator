@@ -38,7 +38,7 @@ class StoreBuffer {
 
     void addToBuffer(const int address, const int value, const int reorderBufferIndex);
 
-    void stepInstructions();
+    void incrementSteps();
 
     //return 1 if we are waiting for a write operation to complete
     bool waitingForStore() const;

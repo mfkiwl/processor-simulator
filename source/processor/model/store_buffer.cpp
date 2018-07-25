@@ -61,7 +61,7 @@ void StoreBuffer::addToBuffer(const int address, const int value, const int reor
   }
 }
 
-void StoreBuffer::stepInstructions() {
+void StoreBuffer::incrementSteps() {
   //increment the current step for all inflight instructions in the write buffer
   for(int i = head; i < tail; i++) {
     buffer[i][STEP] += 1;

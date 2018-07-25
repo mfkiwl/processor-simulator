@@ -178,11 +178,11 @@ void ALUReservationStation::fetchOperands(const int index) {
     case MULT:
     case OR:
     case SUB:
-      operands[1] = registerFile->getRegisterValue(operands[1]);
-      operands[2] = registerFile->getRegisterValue(operands[2]);
+      operands[1] = registerFile->getPhysicalRegisterValue(operands[1]);
+      operands[2] = registerFile->getPhysicalRegisterValue(operands[2]);
       break;
     case ADDI:
-      operands[1] = registerFile->getRegisterValue(operands[1]);
+      operands[1] = registerFile->getPhysicalRegisterValue(operands[1]);
       break;
   }
 }

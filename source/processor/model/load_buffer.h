@@ -18,11 +18,10 @@ class LoadBuffer {
     ReorderBuffer* const reorderBuffer;
 
     //index constants
-    static const int entryFields = 4;
-    static const int DESTINATION = 0;
-    static const int ADDRESS = 1;
-    static const int REORDER_BUFFER_INDEX = 2;
-    static const int STEP = 3;
+    static const int entryFields = 3;
+    static const int ADDRESS = 0;
+    static const int REORDER_BUFFER_INDEX = 1;
+    static const int STEP = 2;
 
     //write buffer to hold inflight write operation info
     const int size;
@@ -32,18 +31,17 @@ class LoadBuffer {
     const int steps;
 
   public:
-	  LoadBuffer(Memory* const memory, ReorderBuffer* const reorderBuffer, const int size, const int steps);
-
-    void flush();
-
-    void stepInstructions();
-
-    //return 1 if we are waiting for a write operation to complete
-    bool waitingForReadOperation() const;
+	LoadBuffer(Memory* const memory, ReorderBuffer* const reorderBuffer, const int size, const int steps);
 
     void addToBuffer(const int destinationRegister, const int address, const int reorderBufferIndex);
 
+    void incrementSteps();
+
+    bool readInProgress() const;
+
     void readIfReady();
+
+    void flush();
 };
 
 #endif

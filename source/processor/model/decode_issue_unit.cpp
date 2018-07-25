@@ -29,11 +29,12 @@ DecodeIssueUnit::DecodeIssueUnit(RegisterFile* const registerFile, ReorderBuffer
 {}
 
 void DecodeIssueUnit::execute() {
-  issue();
-}
-
-void DecodeIssueUnit::registerRename() {
-  
+  if(reorderBuffer->freeSpace()) {
+    issue();
+  }
+  else {
+    blockingFlag = true;
+  }
 }
 
 void DecodeIssueUnit::issue() {
@@ -44,16 +45,73 @@ void DecodeIssueUnit::issue() {
       break;
 
     //ALU instructions
-    case ADD:
     case ADDI:
+      //if there is space in the reservation then issue the instruction
+      if(aluReservationStation->freeSpace()) {
+        //get the destination architectural register
+        int architecturalRegister = currentInstruction.operands[0];
+
+        //get the current mapping of the destination architectural register
+        int oldPhysicalRegister = registerFile->getArchitecturalRegisterMapping(currentInstruction.operands[0]);
+
+        //find a free register to use as the destination
+        int newPhysicalRegister = registerFile->findFreePhysicalRegister();
+        registerFile->usePhysicalRegister(newPhysicalRegister);
+
+        //Add instruction to the reorder buffer
+        reorderBufferIndex = reorderBuffer->addEntry(STORE_TO_REGISTER, 0, architecturalRegister, newPhysicalRegister, 
+          oldPhysicalRegister, currentInstruction);
+
+        //rename the source operands
+        currentInstruction.operands[1] = registerFile->getArchitecturalRegisterMapping(currentInstruction.operands[1]);
+
+         //update the rename table
+        registerFile->setArchitecturalRegisterMapping(currentInstruction.operands[0], newPhysicalRegister);
+
+        //rename destination operand
+        currentInstruction.operands[0] = newPhysicalRegister;
+
+        //unblock the pipeline
+        blockingFlag = false;
+      }
+      //otherwise block the pipeline
+      else {
+        blockingFlag = true;
+      }
+      break;
+
+    case ADD:
     case AND:
     case MULT:
     case OR:
     case SUB:
+
       //if there is space in the reservation then issue the instruction
-      if(aluReservationStation->freeSpace() && registerFile->getScoreBoardValue(currentInstruction.operands[0])) {
-        //Instruction has been issued so add entry to the reorder buffer
-        reorderBufferIndex = reorderBuffer->addEntry(STORE_TO_REGISTER, 0, currentInstruction.operands[0], 0, currentInstruction);
+      if(aluReservationStation->freeSpace()) {
+        //get the destination architectural register
+        int architecturalRegister = currentInstruction.operands[0];
+
+        //get the current mapping of the destination architectural register
+        int oldPhysicalRegister = registerFile->getArchitecturalRegisterMapping(currentInstruction.operands[0]);
+
+        //find a free register to use as the destination
+        int newPhysicalRegister = registerFile->findFreePhysicalRegister();
+        registerFile->usePhysicalRegister(newPhysicalRegister);
+
+        //Add instruction to the reorder buffer
+        reorderBufferIndex = reorderBuffer->addEntry(STORE_TO_REGISTER, 0, architecturalRegister, newPhysicalRegister, 
+          oldPhysicalRegister, currentInstruction);
+
+        //rename the source operands
+        currentInstruction.operands[1] = registerFile->getArchitecturalRegisterMapping(currentInstruction.operands[1]);
+        currentInstruction.operands[2] = registerFile->getArchitecturalRegisterMapping(currentInstruction.operands[2]);
+
+        //update the rename table
+        registerFile->setArchitecturalRegisterMapping(currentInstruction.operands[0], newPhysicalRegister);
+
+        //rename the destination operand
+        currentInstruction.operands[0] = newPhysicalRegister;
+
         //unblock the pipeline
         blockingFlag = false;
       }
@@ -65,25 +123,100 @@ void DecodeIssueUnit::issue() {
 
     //Load Store unit instructions
     case LW:
-    case LWR:
-      if(loadStoreUnitReservationStation->freeSpace() && registerFile->getScoreBoardValue(currentInstruction.operands[0])) {
+      if(loadStoreUnitReservationStation->freeSpace()) {
+        //get the destination architectural register
+        int architecturalRegister = currentInstruction.operands[0];
+
+        //get the current mapping of the destination architectural register
+        int oldPhysicalRegister = registerFile->getArchitecturalRegisterMapping(currentInstruction.operands[0]);
+
+        //find a free register to use as the destination
+        int newPhysicalRegister = registerFile->findFreePhysicalRegister();
+        registerFile->usePhysicalRegister(newPhysicalRegister);
+
         //Instruction has been issued so add entry to the reorder buffer
-        reorderBufferIndex = reorderBuffer->addEntry(STORE_TO_REGISTER, 0, currentInstruction.operands[0], 0, currentInstruction);
+        reorderBufferIndex = reorderBuffer->addEntry(STORE_TO_REGISTER, 0, architecturalRegister, newPhysicalRegister, oldPhysicalRegister, currentInstruction);
+        
+        //update the rename table
+        registerFile->setArchitecturalRegisterMapping(currentInstruction.operands[0], newPhysicalRegister);
+
+        //rename the destination operand
+        currentInstruction.operands[0] = newPhysicalRegister;
+
         //unblock the pipeline
         blockingFlag = false;
       }
       else {
+        //block the pipeline
         blockingFlag = true;
       }
       break;
-    case SW:
-    case SWR:
+
+    case LWR:
       if(loadStoreUnitReservationStation->freeSpace()) {
+        //get the destination architectural register
+        int architecturalRegister = currentInstruction.operands[0];
+
+        //get the current mapping of the destination architectural register
+        int oldPhysicalRegister = registerFile->getArchitecturalRegisterMapping(currentInstruction.operands[0]);
+
+        //find a free register to use as the destination
+        int newPhysicalRegister = registerFile->findFreePhysicalRegister();
+        registerFile->usePhysicalRegister(newPhysicalRegister);
+
         //Instruction has been issued so add entry to the reorder buffer
-        reorderBufferIndex = reorderBuffer->addEntry(STORE_TO_MEMORY, 0, currentInstruction.operands[1], 0, currentInstruction);
+        reorderBufferIndex = reorderBuffer->addEntry(STORE_TO_REGISTER, 0, architecturalRegister, newPhysicalRegister, 
+          oldPhysicalRegister, currentInstruction);
+
+        //rename the source operands
+        currentInstruction.operands[1] = registerFile->getArchitecturalRegisterMapping(currentInstruction.operands[1]);
+
+        //update the rename table
+        registerFile->setArchitecturalRegisterMapping(currentInstruction.operands[0], newPhysicalRegister);
+
+        //rename destination operand
+        currentInstruction.operands[0] = newPhysicalRegister;
+
+        //unblock the pipeline
         blockingFlag = false;
       }
       else {
+        //block the pipeline
+        blockingFlag = true;
+      }
+      break;
+
+    case SW:
+      if(loadStoreUnitReservationStation->freeSpace()) {
+        //Instruction has been issued so add entry to the reorder buffer
+        reorderBufferIndex = reorderBuffer->addEntry(STORE_TO_MEMORY, 0, 0, 0, 0, currentInstruction);
+
+        //rename the registers
+        currentInstruction.operands[0] = registerFile->getArchitecturalRegisterMapping(currentInstruction.operands[0]);
+
+        //unblock the pipeline
+        blockingFlag = false;
+      }
+      else {
+        //block the pipeline
+        blockingFlag = true;
+      }
+      break;
+
+    case SWR:
+      if(loadStoreUnitReservationStation->freeSpace()) {
+        //Instruction has been issued so add entry to the reorder buffer
+        reorderBufferIndex = reorderBuffer->addEntry(STORE_TO_MEMORY, 0, 0, 0, 0, currentInstruction);
+
+        //rename the registers
+        currentInstruction.operands[0] = registerFile->getArchitecturalRegisterMapping(currentInstruction.operands[0]);
+        currentInstruction.operands[1] = registerFile->getArchitecturalRegisterMapping(currentInstruction.operands[1]);
+
+        //unblock the pipeline
+        blockingFlag = false;
+      }
+      else {
+        //block the pipeline
         blockingFlag = true;
       }
       break;
@@ -93,10 +226,17 @@ void DecodeIssueUnit::issue() {
     case BNE:
       if(branchUnitReservationStation->freeSpace()) {
         //Instruction has been issued so add entry to the reorder buffer
-        reorderBufferIndex = reorderBuffer->addEntry(JUMP, currentInstruction.operands[2], 0, 0, currentInstruction);
+        reorderBufferIndex = reorderBuffer->addEntry(JUMP, currentInstruction.operands[2], 0, 0, 0, currentInstruction);
+
+        //rename the registers
+        currentInstruction.operands[0] = registerFile->getArchitecturalRegisterMapping(currentInstruction.operands[0]);
+        currentInstruction.operands[1] = registerFile->getArchitecturalRegisterMapping(currentInstruction.operands[1]);
+
+        //unblock the pipeline
         blockingFlag = false;
       }
       else {
+        //block the pipeline
         blockingFlag = true;
       }
       break;
@@ -109,10 +249,13 @@ void DecodeIssueUnit::issue() {
     case JR:
       if(branchUnitReservationStation->freeSpace()) {
         //Instruction has been issued so add entry to the reorder buffer
-        reorderBufferIndex = reorderBuffer->addEntry(JUMP, currentInstruction.operands[0], 0, 0, currentInstruction);
+        reorderBufferIndex = reorderBuffer->addEntry(JUMP, currentInstruction.operands[0], 0, 0, 0, currentInstruction);
+
+        //unblock the pipeline
         blockingFlag = false;
       }
       else {
+        //block the pipeline
         blockingFlag = true;
       }
       break;
@@ -121,10 +264,13 @@ void DecodeIssueUnit::issue() {
     case HALT:
       if(branchUnitReservationStation->freeSpace()) {
         //Instruction has been issued so add entry to the reorder buffer
-        reorderBufferIndex = reorderBuffer->addEntry(SYSCALL, 0, 0, 0, currentInstruction);
+        reorderBufferIndex = reorderBuffer->addEntry(SYSCALL, 0, 0, 0, 0, currentInstruction);
+
+        //unblock the pipeline
         blockingFlag = false;
       }
       else {
+        //block the pipeline
         blockingFlag = true;
       }
       break;

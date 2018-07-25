@@ -171,14 +171,14 @@ void BranchUnitReservationStation::fetchOperands(const int index) {
       break;
     case BEQ:
     case BNE:
-      operands[0] = registerFile->getRegisterValue(operands[0]);
-      operands[1] = registerFile->getRegisterValue(operands[1]);
+      operands[0] = registerFile->getPhysicalRegisterValue(operands[0]);
+      operands[1] = registerFile->getPhysicalRegisterValue(operands[1]);
       break;
     case BGEZ:
     case BGTZ:
     case BLEZ:
     case BLTZ:
-      operands[0] = registerFile->getRegisterValue(operands[0]);
+      operands[0] = registerFile->getPhysicalRegisterValue(operands[0]);
       break;
     case J:
     case JR:

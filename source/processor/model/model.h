@@ -106,7 +106,9 @@ class Model {
 
     void getRenameTable(int* const copy) const;
 
-    void getAllRegisterValues(int* const copy) const;
+    void getArchitecturalRegisterValues(int* const copy) const;
+
+    void getLatestArchitecturalRegisterValues(int* const copy) const;
 
     void getAllMemoryValues(int* const copy) const;
 
@@ -137,6 +139,10 @@ class Model {
     void getReorderBufferInstructions(Instruction* const copy) const;
 
     void getReorderBufferFields(int** const copy) const;
+
+    int getReorderBufferTailIndex() const;
+
+    int getReorderBufferHeadIndex() const;
 };
 
 #endif
