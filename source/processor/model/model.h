@@ -63,9 +63,7 @@ class Model {
     LoadStoreUnitReservationStation loadStoreUnitReservationStation;
 
   public:
-    Model(const Instructions instructions, const int numRegisters, const int memorySize, 
-  const int aluReservationStationSize, const int branchUnitReservationStationSize, 
-  const int loadStoreUnitReservationStationSize, const int reorderBufferSize, const int numReorderBufferFields);
+    Model(const Instructions instructions);
 
     void updateStats();
 
@@ -92,9 +90,11 @@ class Model {
     //===============================
     // getter functions
 
-    int getRunningFlag() const;
+    int getNumRegisters() const;
 
     int getMemorySize() const;
+
+    int getRunningFlag() const;
 
     int getNoOfInstructionsExecuted() const;
 
@@ -116,19 +116,29 @@ class Model {
 
     Instruction getDecodeIssueUnitInstruction() const;
 
+    int getAluReservationStationSize() const;
+
     void getAluReservationStationInstructions(Instruction* const copy) const;
 
     void getAluReservationStationReorderBufferIndexes(int* const copy) const;
 
+    int getBranchUnitReservationStationSize() const;
+
     void getBranchUnitReservationStationInstructions(Instruction* const copy) const;
 
     void getBranchUnitReservationStationReorderBufferIndexes(int* const copy) const;
+
+    int getLoadStoreUnitReservationStationSize() const;
 
     void getLoadStoreUnitReservationStationInstructions(Instruction* const copy) const;
 
     void getLoadStoreUnitReservationStationReorderBufferIndexes(int* const copy) const;
 
     int getAluResult() const;
+
+    int getReorderBufferSize() const;
+
+    int getNumReorderBufferFields() const;
 
     int getAluReorderBufferIndex() const;
 

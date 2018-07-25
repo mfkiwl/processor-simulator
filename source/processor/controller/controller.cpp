@@ -12,79 +12,10 @@
 //===========================================
 // class implementation
 
-Controller::Controller(const Instructions instructions, const int numOfRegisters, const int memorySize, 
-  const int aluReservationStationSize, const int branchUnitReservationStationSize, 
-  const int loadStoreUnitReservationStationSize, const int reorderBufferSize, const int numReorderBufferFields) :
-  numOfRegisters(numOfRegisters),
-  memorySize(memorySize),
-  aluReservationStationSize(aluReservationStationSize),
-  branchUnitReservationStationSize(branchUnitReservationStationSize),
-  loadStoreUnitReservationStationSize(loadStoreUnitReservationStationSize),
-  reorderBufferSize(reorderBufferSize),
-  numReorderBufferFields(numReorderBufferFields),
-  model(instructions, numOfRegisters, memorySize, aluReservationStationSize, branchUnitReservationStationSize, 
-    loadStoreUnitReservationStationSize, reorderBufferSize, numReorderBufferFields),
+Controller::Controller(const Instructions instructions) :
+  model(instructions),
   view()
 {}
-
-//the original main function for the processor model
-int Controller::modelMain(const Instructions instructions) {
-  
-  //running the processor
-  char str[3];
-  printf("Keep pressing ENTER to step through the program\n");
-
-  model.printInfo();
-
-  //step through the program
-  while(model.getRunningFlag()) {
-
-    //hold up the program at each clock cycle
-    if(str[0] != 'e') {
-      fgets(str, 2, stdin);
-    }
-    
-    //perform one clock cycle
-    model.cycle();
-  }
-
-  printf("PROGRAM FINISHED\n");
-  return 0;
-}
-
-//the original main function for the view
-int Controller::viewmain(const int argc, const char *argv[])
-{
-
-	//Start up SDL and create window
-	if( !view.init() )
-	{
-		printf( "Failed to initialize!\n" );
-		//Free resources and close SDL
-		view.close();
-		return 1;
-	}
-	
-	//Load media
-	if( !view.loadMedia() )
-	{
-    printf( "Failed to load media!\n" );
-    //Free resources and close SDL
-		view.close();
-		return 1;
-	}
-
-	//While application is running
-	while( !view.hasQuit() )
-	{
-        //view.frame();
-	}
-
-	//Free resources and close SDL
-	view.close();
-
-	return 0;
-}
 
 //Render the current frame with the appropriate information from the processor
 void Controller::updateView() {
@@ -114,6 +45,7 @@ void Controller::updateView() {
   view.drawDecodeIssueUnit(decodeIssueUnitInstruction);
 
   //draw the instructions in the alu reservation station
+  int aluReservationStationSize = model.getAluReservationStationSize();
   Instruction aluReservationStationInstructions[aluReservationStationSize];
   model.getAluReservationStationInstructions(aluReservationStationInstructions);
   int aluReservationStationReorderBufferIndexes[aluReservationStationSize];
@@ -122,6 +54,7 @@ void Controller::updateView() {
     aluReservationStationReorderBufferIndexes);
 
   //draw the instructions in the branch unit reservation station
+  int branchUnitReservationStationSize = model.getBranchUnitReservationStationSize();
   Instruction branchUnitReservationStationInstructions[branchUnitReservationStationSize];
   model.getBranchUnitReservationStationInstructions(branchUnitReservationStationInstructions);
   int branchUnitReservationStationReorderBufferIndexes[branchUnitReservationStationSize];
@@ -130,6 +63,7 @@ void Controller::updateView() {
     branchUnitReservationStationReorderBufferIndexes);
 
   //draw the instructions in the load store unit reservation station
+  int loadStoreUnitReservationStationSize = model.getLoadStoreUnitReservationStationSize();
   Instruction loadStoreUnitReservationStationInstructions[loadStoreUnitReservationStationSize];
   model.getLoadStoreUnitReservationStationInstructions(loadStoreUnitReservationStationInstructions);
   int loadStoreUnitReservationStationReorderBufferIndexes[loadStoreUnitReservationStationSize];
@@ -148,6 +82,8 @@ void Controller::updateView() {
   view.drawBranchUnit(branchUnitSuccessful, branchUnitReorderBufferIndex);
 
   //draw the reorder buffer
+  int reorderBufferSize = model.getReorderBufferSize();
+  int numReorderBufferFields = model.getNumReorderBufferFields();
   int reorderBufferTailIndex = model.getReorderBufferTailIndex();
   int reorderBufferHeadIndex = model.getReorderBufferHeadIndex();
   Instruction reorderBufferInstructions[reorderBufferSize];
@@ -160,13 +96,15 @@ void Controller::updateView() {
   view.drawReorderBuffer(reorderBufferSize, numReorderBufferFields, reorderBufferTailIndex, reorderBufferHeadIndex, reorderBufferInstructions, reorderBufferFields);
 
   //draw the register file
-  int registerValues[numOfRegisters];
+  int numRegisters = model.getNumRegisters();
+  int registerValues[numRegisters];
   model.getLatestArchitecturalRegisterValues(registerValues);
-  int renameTable[numOfRegisters];
+  int renameTable[numRegisters];
   model.getRenameTable(renameTable);
-  view.drawRegisterFile(numOfRegisters, registerValues, renameTable);
+  view.drawRegisterFile(numRegisters, registerValues, renameTable);
 
   //draw the memory
+  int memorySize = model.getMemorySize();
   int memoryValues[memorySize];
   model.getAllMemoryValues(memoryValues);
   view.drawMemory(memorySize, memoryValues);

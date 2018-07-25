@@ -10,19 +10,17 @@
 //===========================================
 //class implementation
 
-Model::Model(const Instructions instructions, const int numRegisters, const int memorySize, 
-  const int aluReservationStationSize, const int branchUnitReservationStationSize, 
-  const int loadStoreUnitReservationStationSize, const int reorderBufferSize, const int numReorderBufferFields) : 
+Model::Model(const Instructions instructions) : 
 
   //processor configuration
-  numArchitecturalRegisters(numRegisters),
+  numArchitecturalRegisters(16),
   numPhysicalRegisters(128),
-  memorySize(memorySize),
-  aluReservationStationSize(aluReservationStationSize),
-  branchUnitReservationStationSize(branchUnitReservationStationSize),
-  loadStoreUnitReservationStationSize(loadStoreUnitReservationStationSize),
-  reorderBufferSize(reorderBufferSize),
-  numReorderBufferFields(numReorderBufferFields),
+  memorySize(24),
+  aluReservationStationSize(4),
+  branchUnitReservationStationSize(4),
+  loadStoreUnitReservationStationSize(4),
+  reorderBufferSize(20),
+  numReorderBufferFields(7),
 
   //general stats
   noOfInstructionsExecuted(0),
@@ -190,8 +188,16 @@ void Model::printInfo() const {
 //=============================================
 // getter functions
 
+int Model::getNumRegisters() const {
+  return numArchitecturalRegisters;
+}
+
 int Model::getRunningFlag() const {
   return runningFlag;
+}
+
+int Model::getMemorySize() const {
+  return memorySize;
 }
 
 int Model::getNoOfInstructionsExecuted() const {
@@ -234,6 +240,10 @@ Instruction Model::getDecodeIssueUnitInstruction() const {
   return decodeIssueUnit.getCurrentInstruction();
 }
 
+int Model::getAluReservationStationSize() const {
+  return aluReservationStationSize;
+}
+
 void Model::getAluReservationStationInstructions(Instruction* const copy) const {
   aluReservationStation.getCurrentInstructions(copy);
 }
@@ -242,12 +252,20 @@ void Model::getAluReservationStationReorderBufferIndexes(int* const copy) const 
   aluReservationStation.getCurrentReorderBufferIndexes(copy);
 }
 
+int Model::getBranchUnitReservationStationSize() const {
+  return branchUnitReservationStationSize;
+}
+
 void Model::getBranchUnitReservationStationInstructions(Instruction* const copy) const {
   branchUnitReservationStation.getCurrentInstructions(copy);
 }
 
 void Model::getBranchUnitReservationStationReorderBufferIndexes(int* const copy) const {
   branchUnitReservationStation.getCurrentReorderBufferIndexes(copy);
+}
+
+int Model::getLoadStoreUnitReservationStationSize() const {
+  return loadStoreUnitReservationStationSize;
 }
 
 void Model::getLoadStoreUnitReservationStationInstructions(Instruction* const copy) const {
@@ -260,6 +278,14 @@ void Model::getLoadStoreUnitReservationStationReorderBufferIndexes(int* const co
 
 int Model::getAluResult() const {
   return alu.getResult();
+}
+
+int Model::getReorderBufferSize() const {
+  return reorderBufferSize;
+}
+
+int Model::getNumReorderBufferFields() const {
+  return numReorderBufferFields;
 }
 
 int Model::getAluReorderBufferIndex() const {

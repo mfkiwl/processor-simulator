@@ -13,22 +13,16 @@
 // interface
 class Controller {
 
+  //private member variables
   public:
-
-  	const int numOfRegisters;
-  	const int memorySize;
-    const int aluReservationStationSize;
-    const int branchUnitReservationStationSize;
-    const int loadStoreUnitReservationStationSize;
-    const int reorderBufferSize;
-    const int numReorderBufferFields;
 
     Model model;
     View view;
 
-    Controller(const Instructions instructions, const int numOfRegisters, const int memorySize, 
-      const int aluReservationStationSize, const int branchUnitReservationStationSize, 
-      const int loadStoreUnitReservationStationSize, const int reorderBufferSize, const int numReorderBufferFields);
+  //public functions
+  public:
+
+    Controller(const Instructions instructions);
 
     int modelMain(const Instructions instructions);
 
