@@ -21,7 +21,7 @@ and may not be redistributed without written permission.*/
 
 View::View(const int numOfRegisters, const int memorySize, const int aluReservationStationSize, 
   const int branchUnitReservationStationSize, const int loadStoreUnitReservationStationSize,
-  const int reorderBufferSize) :
+  const int reorderBufferSize, const int numReorderBufferFields) :
   SCREEN_WIDTH(1000),
   SCREEN_HEIGHT(480),
   gWindow(NULL),
@@ -33,7 +33,8 @@ View::View(const int numOfRegisters, const int memorySize, const int aluReservat
   aluReservationStationSize(aluReservationStationSize),
   branchUnitReservationStationSize(branchUnitReservationStationSize),
   loadStoreUnitReservationStationSize(loadStoreUnitReservationStationSize),
-  reorderBufferSize(reorderBufferSize)
+  reorderBufferSize(reorderBufferSize),
+  numReorderBufferFields(numReorderBufferFields)
 {}
 
 bool View::init()
@@ -323,7 +324,7 @@ void View::drawAluReservationStation(const Instruction* const instructions, cons
   int xPos = 50;
   int yPos = 150;
   int numOfHorizontalCells = 1;
-  int numOfVerticalCells = 4;
+  int numOfVerticalCells = aluReservationStationSize;
   int cellWidth = 150;
   int cellHeight = 20;
 
@@ -345,7 +346,7 @@ void View::drawBranchUnitReservationStation(const Instruction* const instruction
   int xPos = 250;
   int yPos = 150;
   int numOfHorizontalCells = 1;
-  int numOfVerticalCells = 4;
+  int numOfVerticalCells = branchUnitReservationStationSize;
   int cellWidth = 150;
   int cellHeight = 20;
 
@@ -355,7 +356,7 @@ void View::drawBranchUnitReservationStation(const Instruction* const instruction
   drawTable(xPos, yPos + cellHeight * 2, 1, numOfVerticalCells, 20, cellHeight);
   drawTable(xPos + 20, yPos + cellHeight * 2, numOfHorizontalCells, numOfVerticalCells, cellWidth, cellHeight);
 
-  for(int i = 0; i < aluReservationStationSize; i++) {
+  for(int i = 0; i < branchUnitReservationStationSize; i++) {
     if(reorderBufferIndexes[i] != -1) {
       renderText(xPos, yPos + (2 + i) * cellHeight, intToString(reorderBufferIndexes[i]));
       renderText(xPos + 20, yPos + (2 + i) * cellHeight, instructionToString(instructions[i]));
@@ -367,7 +368,7 @@ void View::drawLoadStoreUnitReservationStation(const Instruction* const instruct
   int xPos = 450;
   int yPos = 150;
   int numOfHorizontalCells = 1;
-  int numOfVerticalCells = 4;
+  int numOfVerticalCells = loadStoreUnitReservationStationSize;
   int cellWidth = 150;
   int cellHeight = 20;
 
@@ -377,7 +378,7 @@ void View::drawLoadStoreUnitReservationStation(const Instruction* const instruct
   drawTable(xPos, yPos + cellHeight * 2, 1, numOfVerticalCells, 20, cellHeight);
   drawTable(xPos + 20, yPos + cellHeight * 2, numOfHorizontalCells, numOfVerticalCells, cellWidth, cellHeight);
 
-  for(int i = 0; i < aluReservationStationSize; i++) {
+  for(int i = 0; i < loadStoreUnitReservationStationSize; i++) {
     if(reorderBufferIndexes[i] != -1) {
       renderText(xPos, yPos + (2 + i) * cellHeight, intToString(reorderBufferIndexes[i]));
       renderText(xPos + 20, yPos + (2 + i) * cellHeight, instructionToString(instructions[i]));
@@ -436,7 +437,7 @@ void View::drawReorderBuffer(const int tailIndex, const int headIndex, const Ins
     renderText(xPos, yPos + (i+1) * cellHeight, intToString(i));
     if(fields[i][3] != -1) {
       renderText(xPos + cellWidth, yPos + (i+1) * cellHeight, instructionToString(instructions[i]));
-      for(int j = 0; j < 6; j++) {
+      for(int j = 0; j < numReorderBufferFields; j++) {
         renderText(xPos + textCellWidth + (j+1) * cellWidth, yPos + (i+1) * cellHeight, intToString(fields[i][j]));
       }
     }

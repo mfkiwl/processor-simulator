@@ -21,13 +21,14 @@ class Controller {
     const int branchUnitReservationStationSize;
     const int loadStoreUnitReservationStationSize;
     const int reorderBufferSize;
+    const int numReorderBufferFields;
 
     Model model;
     View view;
 
     Controller(const Instructions instructions, const int numOfRegisters, const int memorySize, 
   const int aluReservationStationSize, const int branchUnitReservationStationSize, 
-  const int loadStoreUnitReservationStationSize, const int reorderBufferSize);
+  const int loadStoreUnitReservationStationSize, const int reorderBufferSize, const int numReorderBufferFields);
 
     int modelMain(const Instructions instructions);
 

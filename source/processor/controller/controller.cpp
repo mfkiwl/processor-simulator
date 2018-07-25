@@ -14,17 +14,18 @@
 
 Controller::Controller(const Instructions instructions, const int numOfRegisters, const int memorySize, 
   const int aluReservationStationSize, const int branchUnitReservationStationSize, 
-  const int loadStoreUnitReservationStationSize, const int reorderBufferSize) :
+  const int loadStoreUnitReservationStationSize, const int reorderBufferSize, const int numReorderBufferFields) :
   numOfRegisters(numOfRegisters),
   memorySize(memorySize),
   aluReservationStationSize(aluReservationStationSize),
   branchUnitReservationStationSize(branchUnitReservationStationSize),
   loadStoreUnitReservationStationSize(loadStoreUnitReservationStationSize),
   reorderBufferSize(reorderBufferSize),
+  numReorderBufferFields(numReorderBufferFields),
   model(instructions, numOfRegisters, memorySize, aluReservationStationSize, 
-    branchUnitReservationStationSize, loadStoreUnitReservationStationSize, reorderBufferSize),
+    branchUnitReservationStationSize, loadStoreUnitReservationStationSize, reorderBufferSize, numReorderBufferFields),
   view(numOfRegisters, memorySize, aluReservationStationSize, branchUnitReservationStationSize,
-    loadStoreUnitReservationStationSize, reorderBufferSize)
+    loadStoreUnitReservationStationSize, reorderBufferSize, numReorderBufferFields)
 {}
 
 //the original main function for the processor model
@@ -116,21 +117,21 @@ void Controller::updateView() {
   //draw the instructions in the alu reservation station
   Instruction aluReservationStationInstructions[aluReservationStationSize];
   model.getAluReservationStationInstructions(aluReservationStationInstructions);
-  int aluReservationStationReorderBufferIndexes[6];
+  int aluReservationStationReorderBufferIndexes[aluReservationStationSize];
   model.getAluReservationStationReorderBufferIndexes(aluReservationStationReorderBufferIndexes);
   view.drawAluReservationStation(aluReservationStationInstructions, aluReservationStationReorderBufferIndexes);
 
   //draw the instructions in the branch unit reservation station
   Instruction branchUnitReservationStationInstructions[branchUnitReservationStationSize];
   model.getBranchUnitReservationStationInstructions(branchUnitReservationStationInstructions);
-  int branchUnitReservationStationReorderBufferIndexes[4];
+  int branchUnitReservationStationReorderBufferIndexes[branchUnitReservationStationSize];
   model.getBranchUnitReservationStationReorderBufferIndexes(branchUnitReservationStationReorderBufferIndexes);
   view.drawBranchUnitReservationStation(branchUnitReservationStationInstructions, branchUnitReservationStationReorderBufferIndexes);
 
   //draw the instructions in the load store unit reservation station
   Instruction loadStoreUnitReservationStationInstructions[loadStoreUnitReservationStationSize];
   model.getLoadStoreUnitReservationStationInstructions(loadStoreUnitReservationStationInstructions);
-  int loadStoreUnitReservationStationReorderBufferIndexes[4];
+  int loadStoreUnitReservationStationReorderBufferIndexes[loadStoreUnitReservationStationSize];
   model.getLoadStoreUnitReservationStationReorderBufferIndexes(loadStoreUnitReservationStationReorderBufferIndexes);
   view.drawLoadStoreUnitReservationStation(loadStoreUnitReservationStationInstructions, loadStoreUnitReservationStationReorderBufferIndexes);
 
@@ -151,7 +152,7 @@ void Controller::updateView() {
   model.getReorderBufferInstructions(reorderBufferInstructions);
   int** reorderBufferFields = new int*[reorderBufferSize];
   for(int i = 0; i < reorderBufferSize; i++) {
-    reorderBufferFields[i] = new int[7];
+    reorderBufferFields[i] = new int[numReorderBufferFields];
   }
   model.getReorderBufferFields(reorderBufferFields);
   view.drawReorderBuffer(reorderBufferTailIndex, reorderBufferHeadIndex, reorderBufferInstructions, reorderBufferFields);

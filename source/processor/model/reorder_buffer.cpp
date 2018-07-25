@@ -16,7 +16,8 @@
 
 using namespace std;
 
-ReorderBuffer::ReorderBuffer(RegisterFile* const registerFile, Memory* const memory, int* const pc, int* const runningFlag, int* const noOfInstructionsExecuted, const int bufferSize) : 
+ReorderBuffer::ReorderBuffer(RegisterFile* const registerFile, Memory* const memory, int* const pc, 
+int* const runningFlag, int* const noOfInstructionsExecuted, const int bufferSize, const int numFields) : 
   registerFile(registerFile),
   memory(memory),
   pc(pc),
@@ -26,17 +27,17 @@ ReorderBuffer::ReorderBuffer(RegisterFile* const registerFile, Memory* const mem
   buffer(new int*[bufferSize]),
   head(0),
   tail(0),
-  bufferEntryFields(7),
+  numFields(numFields),
   instructions(new Instruction[bufferSize]),
   noOfInstructionsExecuted(noOfInstructionsExecuted)
 {
   //dynamically allocated a 2d array to the read and write buffer
   for(int i = 0; i < bufferSize; i++) {
-    buffer[i] = new int[bufferEntryFields];
+    buffer[i] = new int[numFields];
   }
   //initialise all elements of the read and write buffer to zero
   for(int i = 0; i < bufferSize; i++) {
-    for(int j = 0; j < bufferEntryFields; j++) {
+    for(int j = 0; j < numFields; j++) {
       buffer[i][j] = -1;
     }
   }
@@ -115,7 +116,7 @@ void ReorderBuffer::execute() {
 
 void ReorderBuffer::resetEntry(const int index) {
   instructions[index] = (Instruction) {0,0,0,0};
-  for(int i = 0; i < bufferEntryFields; i++) {
+  for(int i = 0; i < numFields; i++) {
     buffer[index][i] = -1;
   }
 }
@@ -182,7 +183,7 @@ void ReorderBuffer::getReorderBufferInstructions(Instruction* const copy) const 
 
 void ReorderBuffer::getReorderBufferFields(int** const copy) const {
   for(int i = 0; i < bufferSize; i++) {
-    for(int j = 0; j < bufferEntryFields; j++) {
+    for(int j = 0; j < numFields; j++) {
       copy[i][j] = buffer[i][j];
     }
   }

@@ -18,11 +18,13 @@ int main(int argc, char *argv[]) {
   const int branchUnitReservationStationSize = 4;
   const int loadStoreUnitReservationStationSize = 4;
   const int reorderBufferSize = 20;
+  const int numReorderBufferFields = 7;
 
   //if we successfully loaded instructions then start the program
   if(instructions.getNumOfInstructions() != -1 && instructions.getInstructions() != NULL) {
     Controller controller(instructions, numOfRegisters, memorySize, aluReservationStationSize, 
-      branchUnitReservationStationSize, loadStoreUnitReservationStationSize, reorderBufferSize);
+      branchUnitReservationStationSize, loadStoreUnitReservationStationSize, reorderBufferSize, 
+      numReorderBufferFields);
 
     //start the controller component
     controller.start(instructions);

@@ -26,7 +26,7 @@ class RegisterFile {
   //public functions
   public:
 
-    RegisterFile(const int numOfRegisters);
+    RegisterFile(const int numOfArchitecturalRegisters, const int numOfPhysicalRegisters);
 
     void resetScoreBoard();
 

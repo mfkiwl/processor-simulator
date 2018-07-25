@@ -10,17 +10,19 @@
 //===========================================
 //class implementation
 
-Model::Model(const Instructions instructions, const int numOfRegisters, const int memorySize, 
+Model::Model(const Instructions instructions, const int numRegisters, const int memorySize, 
   const int aluReservationStationSize, const int branchUnitReservationStationSize, 
-  const int loadStoreUnitReservationStationSize, const int reorderBufferSize) : 
+  const int loadStoreUnitReservationStationSize, const int reorderBufferSize, const int numReorderBufferFields) : 
 
   //processor configuration
-  numOfRegisters(numOfRegisters),
+  numArchitecturalRegisters(numRegisters),
+  numPhysicalRegisters(128),
   memorySize(memorySize),
   aluReservationStationSize(aluReservationStationSize),
   branchUnitReservationStationSize(branchUnitReservationStationSize),
   loadStoreUnitReservationStationSize(loadStoreUnitReservationStationSize),
   reorderBufferSize(reorderBufferSize),
+  numReorderBufferFields(numReorderBufferFields),
 
   //general stats
   noOfInstructionsExecuted(0),
@@ -30,18 +32,20 @@ Model::Model(const Instructions instructions, const int numOfRegisters, const in
   //instruction info
   instructions(instructions),
 
-  //registers
+  //special purpose registers
   pc(1),
 
   //status flags
   runningFlag(1),
 
   //components
-  registerFile(numOfRegisters), 
+  registerFile(numArchitecturalRegisters, numPhysicalRegisters), 
   memory(memorySize),
-  reorderBuffer(&registerFile, &memory, &pc, &runningFlag, &noOfInstructionsExecuted, reorderBufferSize),
+  reorderBuffer(&registerFile, &memory, &pc, &runningFlag, &noOfInstructionsExecuted, reorderBufferSize, 
+    numReorderBufferFields),
   fetchUnit(instructions, &pc, &decodeIssueUnit),
-  decodeIssueUnit(&registerFile, &reorderBuffer, &aluReservationStation, &branchUnitReservationStation, &loadStoreUnitReservationStation),
+  decodeIssueUnit(&registerFile, &reorderBuffer, &aluReservationStation, &branchUnitReservationStation, 
+    &loadStoreUnitReservationStation),
   alu(&reorderBuffer),
   aluReservationStation(&registerFile, &alu, aluReservationStationSize),
   branchUnit(&reorderBuffer),
@@ -90,8 +94,6 @@ void Model::cycle() {
   //update the processor stats
   updateStats();
 
-  //print processor current information
-  //printInfo();
 }
 
 void Model::run() {
@@ -187,14 +189,6 @@ void Model::printInfo() const {
 
 //=============================================
 // getter functions
-
-int Model::getNumOfRegisters() const {
-  return numOfRegisters;
-}
-
-int Model::getMemorySize() const {
-  return memorySize;
-}
 
 int Model::getRunningFlag() const {
   return runningFlag;

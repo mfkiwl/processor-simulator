@@ -32,7 +32,7 @@ class ReorderBuffer {
     int head;
     int tail;
 
-    const int bufferEntryFields;
+    const int numFields;
 
     //stores the original instruction issued
     Instruction* const instructions;
@@ -43,14 +43,15 @@ class ReorderBuffer {
   //public functions
   public:
 
-    ReorderBuffer(RegisterFile* const registerFile, Memory* const memory, int* const pc, int* const runningFlag, int* const noOfInstructionsExecuted, const int bufferSize);
+    ReorderBuffer(RegisterFile* const registerFile, Memory* const memory, int* const pc, int* const runningFlag, 
+    int* const noOfInstructionsExecuted, const int bufferSize, const int numFields);
 
     bool freeSpace() const;
 
     bool empty() const;
 
     int addEntry(const Type type, const int branchTargetAddress, const int architecturalRegister,
-      const int physicalRegister, const int previousPhysicalRegister, const Instruction instruction);
+    const int physicalRegister, const int previousPhysicalRegister, const Instruction instruction);
 
     void execute();
 

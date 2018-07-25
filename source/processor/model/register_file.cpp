@@ -17,9 +17,9 @@ using namespace std;
 //====================================================================================
 //public functions
 
-RegisterFile::RegisterFile(const int numOfRegisters) :   
-  numOfArchitecturalRegisters(numOfRegisters),
-  numOfPhysicalRegisters(100),
+RegisterFile::RegisterFile(const int numOfArchitecturalRegisters, const int numOfPhysicalRegisters) :   
+  numOfArchitecturalRegisters(numOfArchitecturalRegisters),
+  numOfPhysicalRegisters(numOfPhysicalRegisters),
   renameTable(new int[numOfArchitecturalRegisters]),
   physicalRegisters(new int[numOfPhysicalRegisters]),
   freeList(new int[numOfPhysicalRegisters]),
@@ -193,7 +193,10 @@ int RegisterFile::getScoreBoardValue(const int i) const {
 
 void RegisterFile::setScoreBoardValue(const int i, const int val) {
   if(i < 0 || i >= numOfPhysicalRegisters) {
-    printf("ScoreBoard index %d is our of range when trying to set scoreBoard value.\n", i);
+    printf("ScoreBoard index %d is out of range when trying to set scoreBoard value.\n", i);
+  }
+  if(val != 0 && val != 1) {
+    printf("Scoreboard index %d will not be set to a valid value.\n", i);
   }
   scoreBoard[i] = val;
 }

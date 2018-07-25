@@ -50,13 +50,14 @@ class View {
     const int branchUnitReservationStationSize;
     const int loadStoreUnitReservationStationSize;
     const int reorderBufferSize;
+    const int numReorderBufferFields;
 
   public:
 
     //Constructor
     View(const int numOfRegisters, const int memorySize, const int aluReservationStationSize, 
         const int branchUnitReservationStationSize, const int loadStoreUnitReservationStationSize, 
-        const int reorderBufferSize);
+        const int reorderBufferSize, const int numReorderBufferFields);
 
     //Starts up SDL and creates window
     bool init();

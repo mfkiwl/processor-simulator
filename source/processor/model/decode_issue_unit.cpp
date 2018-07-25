@@ -135,7 +135,8 @@ void DecodeIssueUnit::issue() {
         registerFile->usePhysicalRegister(newPhysicalRegister);
 
         //Instruction has been issued so add entry to the reorder buffer
-        reorderBufferIndex = reorderBuffer->addEntry(STORE_TO_REGISTER, 0, architecturalRegister, newPhysicalRegister, oldPhysicalRegister, currentInstruction);
+        reorderBufferIndex = reorderBuffer->addEntry(STORE_TO_REGISTER, 0, architecturalRegister, newPhysicalRegister, 
+          oldPhysicalRegister, currentInstruction);
         
         //update the rename table
         registerFile->setArchitecturalRegisterMapping(currentInstruction.operands[0], newPhysicalRegister);

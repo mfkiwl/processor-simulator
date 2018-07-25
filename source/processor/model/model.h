@@ -25,12 +25,14 @@ class Model {
   private:
 
     //processor configuration
-    const int numOfRegisters;
+    const int numArchitecturalRegisters;
+    const int numPhysicalRegisters;
     const int memorySize;
     const int aluReservationStationSize;
     const int branchUnitReservationStationSize;
     const int loadStoreUnitReservationStationSize;
     const int reorderBufferSize;
+    const int numReorderBufferFields;
 
     //general stats
     int noOfInstructionsExecuted;
@@ -61,9 +63,9 @@ class Model {
     LoadStoreUnitReservationStation loadStoreUnitReservationStation;
 
   public:
-    Model(const Instructions instructions, const int numOfRegisters, const int memorySize, 
+    Model(const Instructions instructions, const int numRegisters, const int memorySize, 
   const int aluReservationStationSize, const int branchUnitReservationStationSize, 
-  const int loadStoreUnitReservationStationSize, const int reorderBufferSize);
+  const int loadStoreUnitReservationStationSize, const int reorderBufferSize, const int numReorderBufferFields);
 
     void updateStats();
 
@@ -91,8 +93,6 @@ class Model {
     // getter functions
 
     int getRunningFlag() const;
-
-    int getNumOfRegisters() const;
 
     int getMemorySize() const;
 
