@@ -23,6 +23,9 @@ class Instruction;
 // interface
 
 class View {
+
+  //private member variables
+  private:
  
 	//Screen dimension constants
     const int SCREEN_WIDTH;
@@ -43,21 +46,11 @@ class View {
     //Main loop flag
 	bool quit;
 
-    //processor information
-    const int numOfRegisters;
-    const int memorySize;
-    const int aluReservationStationSize;
-    const int branchUnitReservationStationSize;
-    const int loadStoreUnitReservationStationSize;
-    const int reorderBufferSize;
-    const int numReorderBufferFields;
-
+  //public functions
   public:
 
     //Constructor
-    View(const int numOfRegisters, const int memorySize, const int aluReservationStationSize, 
-        const int branchUnitReservationStationSize, const int loadStoreUnitReservationStationSize, 
-        const int reorderBufferSize, const int numReorderBufferFields);
+    View();
 
     //Starts up SDL and creates window
     bool init();
@@ -77,9 +70,9 @@ class View {
 
     void drawTextCell(const int xPos, const int yPos, const int width, const int height, const std::string text, const int xOffset, const int yOffset);
 
-    void drawRegisterFile(const int* const registerValues, const int* const renameTable);
+    void drawRegisterFile(const int numRegisters, const int* const registerValues, const int* const renameTable);
 
-    void drawMemory(const int* const memoryValues);
+    void drawMemory(const int memorySize, const int* const memoryValues);
 
     void drawProcessorStats(const int numOfInstructionsExecuted, const int numOfClockCycles, const float numOfInstructionsExecutedPerCycle);
 
@@ -89,24 +82,28 @@ class View {
 
     void drawDecodeIssueUnit(const Instruction instruction);
 
-    void drawAluReservationStation(const Instruction* const instructions, const int* const reorderBufferIndexes);
+    void drawAluReservationStation(const int reservationStationSize, const Instruction* const instructions, 
+      const int* const reorderBufferIndexes);
 
-    void drawBranchUnitReservationStation(const Instruction* const instructions, const int* const reorderBufferIndexes);
+    void drawBranchUnitReservationStation(const int reservationStationSize, const Instruction* const instructions, 
+      const int* const reorderBufferIndexes);
 
-    void drawLoadStoreUnitReservationStation(const Instruction* const instructions, const int* const reorderBufferIndexes);
+    void drawLoadStoreUnitReservationStation(const int reservationStationSize, const Instruction* const instructions, 
+      const int* const reorderBufferIndexes);
 
     void drawAlu(const int result, const int reorderBufferIndex);
 
     void drawBranchUnit(const bool successful, const int reorderBufferIndex);
 
-    void drawReorderBuffer(const int tailIndex, const int headIndex, const Instruction* const instructions, int** const fields);
+    void drawReorderBuffer(const int size, const int numFields, const int tailIndex, const int headIndex, 
+      const Instruction* const instructions, int** const fields);
 
     void clearScreen();
 
     void updateScreen();
 
-    //============================================
-    // getter functions
+  //getters and setters
+  public:
 
     int hasQuit() const;
 };

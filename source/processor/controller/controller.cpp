@@ -22,10 +22,9 @@ Controller::Controller(const Instructions instructions, const int numOfRegisters
   loadStoreUnitReservationStationSize(loadStoreUnitReservationStationSize),
   reorderBufferSize(reorderBufferSize),
   numReorderBufferFields(numReorderBufferFields),
-  model(instructions, numOfRegisters, memorySize, aluReservationStationSize, 
-    branchUnitReservationStationSize, loadStoreUnitReservationStationSize, reorderBufferSize, numReorderBufferFields),
-  view(numOfRegisters, memorySize, aluReservationStationSize, branchUnitReservationStationSize,
-    loadStoreUnitReservationStationSize, reorderBufferSize, numReorderBufferFields)
+  model(instructions, numOfRegisters, memorySize, aluReservationStationSize, branchUnitReservationStationSize, 
+    loadStoreUnitReservationStationSize, reorderBufferSize, numReorderBufferFields),
+  view()
 {}
 
 //the original main function for the processor model
@@ -119,21 +118,24 @@ void Controller::updateView() {
   model.getAluReservationStationInstructions(aluReservationStationInstructions);
   int aluReservationStationReorderBufferIndexes[aluReservationStationSize];
   model.getAluReservationStationReorderBufferIndexes(aluReservationStationReorderBufferIndexes);
-  view.drawAluReservationStation(aluReservationStationInstructions, aluReservationStationReorderBufferIndexes);
+  view.drawAluReservationStation(aluReservationStationSize, aluReservationStationInstructions, 
+    aluReservationStationReorderBufferIndexes);
 
   //draw the instructions in the branch unit reservation station
   Instruction branchUnitReservationStationInstructions[branchUnitReservationStationSize];
   model.getBranchUnitReservationStationInstructions(branchUnitReservationStationInstructions);
   int branchUnitReservationStationReorderBufferIndexes[branchUnitReservationStationSize];
   model.getBranchUnitReservationStationReorderBufferIndexes(branchUnitReservationStationReorderBufferIndexes);
-  view.drawBranchUnitReservationStation(branchUnitReservationStationInstructions, branchUnitReservationStationReorderBufferIndexes);
+  view.drawBranchUnitReservationStation(branchUnitReservationStationSize, branchUnitReservationStationInstructions, 
+    branchUnitReservationStationReorderBufferIndexes);
 
   //draw the instructions in the load store unit reservation station
   Instruction loadStoreUnitReservationStationInstructions[loadStoreUnitReservationStationSize];
   model.getLoadStoreUnitReservationStationInstructions(loadStoreUnitReservationStationInstructions);
   int loadStoreUnitReservationStationReorderBufferIndexes[loadStoreUnitReservationStationSize];
   model.getLoadStoreUnitReservationStationReorderBufferIndexes(loadStoreUnitReservationStationReorderBufferIndexes);
-  view.drawLoadStoreUnitReservationStation(loadStoreUnitReservationStationInstructions, loadStoreUnitReservationStationReorderBufferIndexes);
+  view.drawLoadStoreUnitReservationStation(loadStoreUnitReservationStationSize, loadStoreUnitReservationStationInstructions, 
+    loadStoreUnitReservationStationReorderBufferIndexes);
 
   //draw the alu
   int aluResult = model.getAluResult();
@@ -155,19 +157,19 @@ void Controller::updateView() {
     reorderBufferFields[i] = new int[numReorderBufferFields];
   }
   model.getReorderBufferFields(reorderBufferFields);
-  view.drawReorderBuffer(reorderBufferTailIndex, reorderBufferHeadIndex, reorderBufferInstructions, reorderBufferFields);
+  view.drawReorderBuffer(reorderBufferSize, numReorderBufferFields, reorderBufferTailIndex, reorderBufferHeadIndex, reorderBufferInstructions, reorderBufferFields);
 
   //draw the register file
   int registerValues[numOfRegisters];
   model.getLatestArchitecturalRegisterValues(registerValues);
   int renameTable[numOfRegisters];
   model.getRenameTable(renameTable);
-  view.drawRegisterFile(registerValues, renameTable);
+  view.drawRegisterFile(numOfRegisters, registerValues, renameTable);
 
   //draw the memory
   int memoryValues[memorySize];
   model.getAllMemoryValues(memoryValues);
-  view.drawMemory(memoryValues);
+  view.drawMemory(memorySize, memoryValues);
 
   //Update  the screen
   view.updateScreen();
