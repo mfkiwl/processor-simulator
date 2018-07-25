@@ -12,6 +12,7 @@ class ReorderBuffer;
 //class declaration
 class LoadBuffer {
 
+  //private member variables
   private:
 
     Memory* const memory;
@@ -30,14 +31,14 @@ class LoadBuffer {
     int tail;
     const int steps;
 
+  //public functions
   public:
+
 	LoadBuffer(Memory* const memory, ReorderBuffer* const reorderBuffer, const int size, const int steps);
 
     void addToBuffer(const int destinationRegister, const int address, const int reorderBufferIndex);
 
     void incrementSteps();
-
-    bool readInProgress() const;
 
     void readIfReady();
 

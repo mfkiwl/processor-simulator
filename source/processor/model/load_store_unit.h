@@ -55,8 +55,6 @@ class LoadStoreUnit {
     void setNextReorderBufferIndex(const int i);
 
     void flush();
-
-    bool waitingForStore() const ;
 };
 
 #endif

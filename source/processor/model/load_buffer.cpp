@@ -7,8 +7,6 @@
 #include "memory.h"
 #include "reorder_buffer.h"
 
-#include <stdio.h>
-
 //===========================================
 //class implementation
 
@@ -27,9 +25,9 @@ LoadBuffer::LoadBuffer(Memory* const memory, ReorderBuffer* const reorderBuffer,
   }
   //initialise all elements of the read and write buffer to zero
   for(int i = 0; i < size; i++) {
-    for(int j = 0; j < entryFields; j++) {
-      buffer[i][j] = 0;
-    }
+    buffer[i][ADDRESS] = -1;
+    buffer[i][REORDER_BUFFER_INDEX] = -1;
+    buffer[i][STEP] = -1;
   }
 }
 
@@ -47,15 +45,6 @@ void LoadBuffer::incrementSteps() {
   }
 }
 
-bool LoadBuffer::readInProgress() const {
-  if(head != tail) {
-    return true;
-  }
-  else {
-    return false;
-  }
-}
-
 void LoadBuffer::readIfReady() {
   if(buffer[tail][STEP] > steps) {
     //get the values from the buffer entry
@@ -68,7 +57,7 @@ void LoadBuffer::readIfReady() {
     //reset buffer entry
     buffer[tail][ADDRESS] = -1;
     buffer[tail][REORDER_BUFFER_INDEX] = -1;
-    buffer[tail][STEP] = 0;
+    buffer[tail][STEP] = -1;
     //increment the tail index
     tail += 1;
   }
@@ -78,7 +67,7 @@ void LoadBuffer::flush() {
   for(int i = 0; i < size; i++) {
     buffer[i][ADDRESS] = -1;
     buffer[i][REORDER_BUFFER_INDEX] = -1;
-    buffer[i][STEP] = 0;
+    buffer[i][STEP] = -1;
   }
   head = 0;
   tail = 0;

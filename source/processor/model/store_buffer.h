@@ -12,6 +12,7 @@ class ReorderBuffer;
 //class declaration
 class StoreBuffer {
 
+  //private member variables
   private:
 
     Memory* const memory;
@@ -31,19 +32,18 @@ class StoreBuffer {
     static const int REORDER_BUFFER_INDEX = 2;
     static const int STEP = 3;
 
+  //public functions
   public:
-    StoreBuffer(Memory* const memory, ReorderBuffer* const reorderBuffer, const int size, const int steps);
 
-    void flush();
+    StoreBuffer(Memory* const memory, ReorderBuffer* const reorderBuffer, const int size, const int steps);
 
     void addToBuffer(const int address, const int value, const int reorderBufferIndex);
 
     void incrementSteps();
 
-    //return 1 if we are waiting for a write operation to complete
-    bool waitingForStore() const;
-
     void writeIfReady();
+
+    void flush();
 };
 
 #endif
