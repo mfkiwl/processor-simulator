@@ -30,6 +30,9 @@ Instruction* Instructions::getInstructions() const {
 }
 
 Instruction Instructions::at(const int i) const {
+  if(i < 0 || i >= numOfInstructions) {
+    printf("Instructions index %d is out of range.\n", i);
+  }
   return instructions[i];
 }
 

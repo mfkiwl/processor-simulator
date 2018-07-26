@@ -20,10 +20,13 @@ class FetchUnit {
     const Instructions instructions;
     int* const pc;
     DecodeIssueUnit* const decodeIssueUnit;
-    Instruction currentInstruction;
+    const int numInstructions;
+    Instruction* const currentInstructions;
 
   public:
     FetchUnit(const Instructions instructions, int* const pc, DecodeIssueUnit* const decodeIssueUnit);
+
+    void fetchInstructions();
 
     void execute(bool blocking);
 

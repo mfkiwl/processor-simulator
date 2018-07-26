@@ -31,7 +31,7 @@ Model::Model(const Instructions instructions) :
   instructions(instructions),
 
   //special purpose registers
-  pc(1),
+  pc(0),
 
   //status flags
   runningFlag(1),

@@ -15,41 +15,55 @@ FetchUnit::FetchUnit(const Instructions instructions, int* const pc, DecodeIssue
   instructions(instructions),
   pc(pc),
   decodeIssueUnit(decodeIssueUnit),
-  currentInstruction((Instruction) {0,0,0,0})
-{}
+  numInstructions(4),
+  currentInstructions(new Instruction[numInstructions])
+{
+  //initialise all instructions to NOOPs
+  for(int i = 0; i < numInstructions; i++) {
+    currentInstructions[i] = (Instruction) {0,0,0,0};
+  }
+}
+
+void FetchUnit::fetchInstructions() {
+  for(int i = 0; i < numInstructions; i++) {
+    if(*pc + i < instructions.getNumOfInstructions()) {
+      currentInstructions[i] = instructions.at(*pc + i);
+    }
+  }
+}
 
 void FetchUnit::execute(bool blocking) {
-  if(!blocking && *pc <= instructions.getNumOfInstructions()) {
-    //fetch the next instruction (-1 so that pc of 1 refers to the first instruction on line 1)
-    currentInstruction = instructions.at(*pc - 1);
+  if(!blocking && *pc < instructions.getNumOfInstructions()) {
+    //fetch instructions
+    fetchInstructions();
     //increment the program counter
     (*pc)++;
   }
   else {
     //next instruction is noop if pc exceeds number of instructions
-    currentInstruction = (Instruction) {0,0,0,0};
+    currentInstructions[0] = (Instruction) {0,0,0,0};
   }
 }
 
 void FetchUnit::print() const {
   printf("FETCHED INSTRUCTION: ");
-  printInstruction(currentInstruction);
+  printInstruction(currentInstructions[0]);
 }
 
 void FetchUnit::pipe(bool blocking) {
   if(!blocking) {
     //put the fetched instruction into the instruction register
-    decodeIssueUnit->setNextInstruction(currentInstruction);
+    decodeIssueUnit->setNextInstruction(currentInstructions[0]);
   }
 }
 
 void FetchUnit::flush() {
-  currentInstruction = (Instruction) {0,0,0,0};
+  currentInstructions[0] = (Instruction) {0,0,0,0};
 }
 
 //======================================
 // getter functions
 
 Instruction FetchUnit::getCurrentInstruction() const {
-  return currentInstruction;
+  return currentInstructions[0];
 }

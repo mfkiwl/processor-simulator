@@ -178,7 +178,7 @@ int main(int argc, char *argv[]) {
 
   //begin writing machine to the output file
   string line;
-  int lineNumber = 1;
+  int lineNumber = 0;
   if(inputFile.is_open() && outputFile.is_open()) {
     while (getline(inputFile,line)) {
             
