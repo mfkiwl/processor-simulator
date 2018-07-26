@@ -417,7 +417,7 @@ void View::drawBranchUnit(const bool successful, const int reorderBufferIndex) {
 
 void View::drawReorderBuffer(const int size, const int numFields, const int tailIndex, const int headIndex, const Instruction* instructions, int** const fields) {
   int xPos = 700;
-  int yPos = 20;
+  int yPos = 10;
   int numOfHorizontalCells = 6;
   int numOfVerticalCells = size;
   int cellWidth = 20;

@@ -10,25 +10,25 @@
 //===========================================
 //class implementation
 
-Model::Model(const Instructions instructions) : 
+Model::Model(const Instructions instructions) :
 
-  //processor configuration
-  numArchitecturalRegisters(16),
-  numPhysicalRegisters(128),
-  memorySize(24),
-  aluReservationStationSize(4),
-  branchUnitReservationStationSize(4),
-  loadStoreUnitReservationStationSize(4),
-  reorderBufferSize(20),
-  numReorderBufferFields(7),
+  //instructions to execute
+  instructions(instructions),
 
-  //general stats
+   //general stats
   noOfInstructionsExecuted(0),
   noOfClockCycles(0),
   noOfInstructionsPerCycle(0),
 
-  //instruction info
-  instructions(instructions),
+  //processor configuration
+  numArchitecturalRegisters(16),
+  numPhysicalRegisters(128),
+  memorySize(28),
+  aluReservationStationSize(4),
+  branchUnitReservationStationSize(4),
+  loadStoreUnitReservationStationSize(4),
+  reorderBufferSize(22),
+  numReorderBufferFields(7),
 
   //special purpose registers
   pc(0),

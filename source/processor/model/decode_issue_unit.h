@@ -20,6 +20,7 @@ class LoadStoreUnit;
 //class declaration
 class DecodeIssueUnit {
 
+  //private member variables
   private:
     
     //forward components
@@ -29,31 +30,45 @@ class DecodeIssueUnit {
     BranchUnitReservationStation* const branchUnitReservationStation;
     LoadStoreUnitReservationStation* const loadStoreUnitReservationStation;
 
+    //The number of instructions
+    const int numInstructions;
+
     //Instruction given from the fetch unit
-    Instruction nextInstruction;
+    Instruction* const nextInstructions;
 
     //the current instruction
-    Instruction currentInstruction;
+    Instruction* const currentInstructions;
+
+    bool* const currentInstructionsIssued;
 
     int reorderBufferIndex;
 
     //tells the processor whether or not to block the pipeline
     bool blockingFlag;
 
+  //public functions
   public:
-    DecodeIssueUnit(RegisterFile* const registerFile, ReorderBuffer* const reorderBuffer, ALUReservationStation* const aluReservationStation, BranchUnitReservationStation* const branchUnitReservationStation, LoadStoreUnitReservationStation* const loadStoreUnitReservationStation);
+    DecodeIssueUnit(RegisterFile* const registerFile, ReorderBuffer* const reorderBuffer, 
+      ALUReservationStation* const aluReservationStation, 
+      BranchUnitReservationStation* const branchUnitReservationStation, 
+      LoadStoreUnitReservationStation* const loadStoreUnitReservationStation);
 
     void execute();
 
-    void issue();
+    void issue(int instructionToIssue);
 
     void pipe();
 
+    void flush();
+
     void print() const;
 
-    void setNextInstruction(const Instruction x);
+    bool allInstructionsIssued() const;
 
-    void flush();
+  //getters and setters
+  public:
+
+    void setNextInstructions(const Instruction* const x);
 
     Instruction getCurrentInstruction() const;
 

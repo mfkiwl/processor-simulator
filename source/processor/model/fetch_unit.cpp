@@ -51,9 +51,9 @@ void FetchUnit::print() const {
 }
 
 void FetchUnit::pipe(bool blocking) {
-  if(!blocking) {
+  if(!blocking && decodeIssueUnit->allInstructionsIssued()) {
     //put the fetched instruction into the instruction register
-    decodeIssueUnit->setNextInstruction(currentInstructions[0]);
+    decodeIssueUnit->setNextInstructions(currentInstructions);
   }
 }
 

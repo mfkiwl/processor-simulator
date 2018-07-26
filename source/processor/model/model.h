@@ -23,6 +23,14 @@
 class Model {
 
   private:
+    
+    //Instructions to execute
+    const Instructions instructions;
+
+    //general stats
+    int noOfInstructionsExecuted;
+    int noOfClockCycles;
+    float noOfInstructionsPerCycle;
 
     //processor configuration
     const int numArchitecturalRegisters;
@@ -33,14 +41,6 @@ class Model {
     const int loadStoreUnitReservationStationSize;
     const int reorderBufferSize;
     const int numReorderBufferFields;
-
-    //general stats
-    int noOfInstructionsExecuted;
-    int noOfClockCycles;
-    float noOfInstructionsPerCycle;
-
-    //Instructions to execute
-    const Instructions instructions;
 
     //registers
     int pc;
