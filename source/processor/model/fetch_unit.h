@@ -29,11 +29,11 @@ class FetchUnit {
 
     void fetchInstructions();
 
-    void execute(bool blocking);
+    void execute();
 
     void print() const;
 
-    void pipe(bool blocking);
+    void pipe();
 
     void flush();
 

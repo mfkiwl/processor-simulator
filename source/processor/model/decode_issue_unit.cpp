@@ -25,26 +25,21 @@ DecodeIssueUnit::DecodeIssueUnit(RegisterFile* const registerFile, ReorderBuffer
   branchUnitReservationStation(branchUnitReservationStation),
   loadStoreUnitReservationStation(loadStoreUnitReservationStation),
   issueWindowSize(issueWindowSize),
-  numInstructions(issueWindowSize),
-  nextInstructions(new Instruction[numInstructions]),
-  currentInstructions(new Instruction[numInstructions]),
-  currentInstructionsIssued(new bool[numInstructions]),
-  reorderBufferIndex(-1),
-  blockingFlag(false)
+  nextInstructions(new Instruction[issueWindowSize]),
+  currentInstructions(new Instruction[issueWindowSize]),
+  currentInstructionsIssued(new bool[issueWindowSize]),
+  reorderBufferIndex(-1)
 {
-  for(int i = 0; i < numInstructions; i++) {
+  for(int i = 0; i < issueWindowSize; i++) {
     nextInstructions[i] = (Instruction) {0,0,0,0};
     currentInstructions[i] = (Instruction) {0,0,0,0};
-    currentInstructionsIssued[i] = false;
+    currentInstructionsIssued[i] = true;
   }
 }
 
 void DecodeIssueUnit::execute() {
   if(reorderBuffer->freeSpace()) {
     issue(0);
-  }
-  else {
-    blockingFlag = true;
   }
 }
 
@@ -53,6 +48,8 @@ void DecodeIssueUnit::issue(int instructionToIssue) {
 
     //NOOP instruction
     case NOOP:
+      //take note that the instruction was issued
+      currentInstructionsIssued[instructionToIssue] = true;
       break;
 
     //ALU instructions
@@ -84,14 +81,6 @@ void DecodeIssueUnit::issue(int instructionToIssue) {
 
         //take note that the instruction was issued
         currentInstructionsIssued[instructionToIssue] = true;
-
-        //unblock the pipeline
-        blockingFlag = false;
-
-      }
-      //otherwise block the pipeline
-      else {
-        blockingFlag = true;
       }
       break;
 
@@ -129,13 +118,6 @@ void DecodeIssueUnit::issue(int instructionToIssue) {
 
         //rename the destination operand
         currentInstructions[instructionToIssue].operands[0] = newPhysicalRegister;
-
-        //unblock the pipeline
-        blockingFlag = false;
-      }
-      //otherwise block the pipeline
-      else {
-        blockingFlag = true;
       }
       break;
 
@@ -164,13 +146,6 @@ void DecodeIssueUnit::issue(int instructionToIssue) {
 
         //take note that the instruction was issued
         currentInstructionsIssued[instructionToIssue] = true;
-
-        //unblock the pipeline
-        blockingFlag = false;
-      }
-      else {
-        //block the pipeline
-        blockingFlag = true;
       }
       break;
 
@@ -201,13 +176,6 @@ void DecodeIssueUnit::issue(int instructionToIssue) {
 
         //take note that the instruction was issued
         currentInstructionsIssued[instructionToIssue] = true;
-
-        //unblock the pipeline
-        blockingFlag = false;
-      }
-      else {
-        //block the pipeline
-        blockingFlag = true;
       }
       break;
 
@@ -221,13 +189,6 @@ void DecodeIssueUnit::issue(int instructionToIssue) {
 
         //take note that the instruction was issued
         currentInstructionsIssued[instructionToIssue] = true;
-
-        //unblock the pipeline
-        blockingFlag = false;
-      }
-      else {
-        //block the pipeline
-        blockingFlag = true;
       }
       break;
 
@@ -242,13 +203,6 @@ void DecodeIssueUnit::issue(int instructionToIssue) {
 
         //take note that the instruction was issued
         currentInstructionsIssued[instructionToIssue] = true;
-
-        //unblock the pipeline
-        blockingFlag = false;
-      }
-      else {
-        //block the pipeline
-        blockingFlag = true;
       }
       break;
 
@@ -265,13 +219,6 @@ void DecodeIssueUnit::issue(int instructionToIssue) {
 
         //take note that the instruction was issued
         currentInstructionsIssued[instructionToIssue] = true;
-
-        //unblock the pipeline
-        blockingFlag = false;
-      }
-      else {
-        //block the pipeline
-        blockingFlag = true;
       }
       break;
     case BGEZ:
@@ -287,13 +234,6 @@ void DecodeIssueUnit::issue(int instructionToIssue) {
 
         //take note that the instruction was issued
         currentInstructionsIssued[instructionToIssue] = true;
-
-        //unblock the pipeline
-        blockingFlag = false;
-      }
-      else {
-        //block the pipeline
-        blockingFlag = true;
       }
       break;
                     
@@ -305,20 +245,13 @@ void DecodeIssueUnit::issue(int instructionToIssue) {
 
         //take note that the instruction was issued
         currentInstructionsIssued[instructionToIssue] = true;
-
-        //unblock the pipeline
-        blockingFlag = false;
-      }
-      else {
-        //block the pipeline
-        blockingFlag = true;
       }
       break;
   }
 }
 
 void DecodeIssueUnit::pipe() {
-  if(!blockingFlag) {
+  if(currentInstructionsIssued[0]) {
   //send the current instruction to the necessary component
   switch(currentInstructions[0].opcode) {
 
@@ -369,19 +302,19 @@ void DecodeIssueUnit::pipe() {
   }
   //set the current instruction equal to the next instruction
   currentInstructions[0] = nextInstructions[0];
+  currentInstructionsIssued[0] = false;
   //clear the nextInstruction
   nextInstructions[0] = (Instruction) {0,0,0,0};
-}
+  }
 }
 
 void DecodeIssueUnit::flush() {
-  for(int i = 0; i < numInstructions; i++) {
+  for(int i = 0; i < issueWindowSize; i++) {
     nextInstructions[i] = (Instruction) {0,0,0,0};
     currentInstructions[i] = (Instruction) {0,0,0,0};
-    currentInstructionsIssued[i] = false;
+    currentInstructionsIssued[i] = true;
   }
   reorderBufferIndex = -1;
-  blockingFlag = false;
 }
 
 void DecodeIssueUnit::print() const {
@@ -390,8 +323,8 @@ void DecodeIssueUnit::print() const {
 }
 
 bool DecodeIssueUnit::allInstructionsIssued() const {
-  for(int i = 0; i < numInstructions; i++) {
-    if(currentInstructions[i].opcode != NOOP && !currentInstructionsIssued[i]) {
+  for(int i = 0; i < issueWindowSize; i++) {
+    if(!currentInstructionsIssued[i]) {
       return false;
     }
   }
@@ -402,7 +335,7 @@ bool DecodeIssueUnit::allInstructionsIssued() const {
 //getters and setters
 
 void DecodeIssueUnit::setNextInstructions(const Instruction* const x) {
-  for(int i = 0; i < numInstructions; i++) {
+  for(int i = 0; i < issueWindowSize; i++) {
     nextInstructions[i] = x[i];
   }
 }
@@ -415,8 +348,4 @@ void DecodeIssueUnit::getCurrentInstructions(Instruction* const copy) const {
   for(int i = 0; i < issueWindowSize; i++) {
     copy[i] = currentInstructions[i];
   }
-}
-
-bool DecodeIssueUnit::getBlockingFlag() const {
-  return blockingFlag;
 }

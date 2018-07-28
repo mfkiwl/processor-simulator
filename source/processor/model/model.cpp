@@ -88,7 +88,7 @@ void Model::cycle() {
   decodeIssue();
 
   //fetch the next instruction
-  fetch(decodeIssueUnit.getBlockingFlag());
+  fetch();
 
   //update the processor stats
   updateStats();
@@ -117,8 +117,8 @@ void Model::run() {
   printf("PROGRAM FINISHED\n");
 }
 
-void Model::fetch(bool blocking) {
-  fetchUnit.execute(blocking);
+void Model::fetch() {
+  fetchUnit.execute();
 }
 
 void Model::decodeIssue() {
@@ -143,7 +143,7 @@ void Model::commit() {
 
 void Model::pipe() {
   //propogate outputs of the decode/issue unit and the fetch unit through pipeline
-  fetchUnit.pipe(decodeIssueUnit.getBlockingFlag());
+  fetchUnit.pipe();
   decodeIssueUnit.pipe();
 
   //propogate the outputs of the reservation stations through the pipeline

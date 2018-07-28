@@ -72,7 +72,7 @@ class Model {
 
     void run();
 
-    void fetch(bool blocking);
+    void fetch();
 
     void decodeIssue();
 

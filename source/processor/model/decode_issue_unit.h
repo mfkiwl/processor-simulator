@@ -32,9 +32,6 @@ class DecodeIssueUnit {
 
     const int issueWindowSize;
 
-    //The number of instructions
-    const int numInstructions;
-
     //Instruction given from the fetch unit
     Instruction* const nextInstructions;
 
@@ -44,9 +41,6 @@ class DecodeIssueUnit {
     bool* const currentInstructionsIssued;
 
     int reorderBufferIndex;
-
-    //tells the processor whether or not to block the pipeline
-    bool blockingFlag;
 
   //public functions
   public:
@@ -75,8 +69,6 @@ class DecodeIssueUnit {
     Instruction getCurrentInstruction() const;
 
     void getCurrentInstructions(Instruction* const copy) const;
-
-    bool getBlockingFlag() const;
 };
 
 #endif

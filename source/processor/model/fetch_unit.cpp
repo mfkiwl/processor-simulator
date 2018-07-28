@@ -26,23 +26,28 @@ FetchUnit::FetchUnit(const Instructions instructions, int* const pc, DecodeIssue
 }
 
 void FetchUnit::fetchInstructions() {
+  /*
   for(int i = 0; i < issueWindowSize; i++) {
     if(*pc + i < instructions.getNumOfInstructions()) {
       currentInstructions[i] = instructions.at(*pc + i);
     }
   }
+  */
+  currentInstructions[0] = instructions.at(*pc);
 }
 
-void FetchUnit::execute(bool blocking) {
-  if(!blocking && *pc < instructions.getNumOfInstructions()) {
-    //fetch instructions
-    fetchInstructions();
-    //increment the program counter
-    (*pc)++;
-  }
-  else {
-    //next instruction is noop if pc exceeds number of instructions
-    currentInstructions[0] = (Instruction) {0,0,0,0};
+void FetchUnit::execute() {
+  if(decodeIssueUnit->allInstructionsIssued()) {
+    if(*pc < instructions.getNumOfInstructions()) {
+      //fetch instructions
+      fetchInstructions();
+      //increment the program counter
+      (*pc)++;
+    }
+    else {
+      //next instruction is noop if pc exceeds number of instructions
+      currentInstructions[0] = (Instruction) {0,0,0,0};
+    }
   }
 }
 
@@ -51,8 +56,8 @@ void FetchUnit::print() const {
   printInstruction(currentInstructions[0]);
 }
 
-void FetchUnit::pipe(bool blocking) {
-  if(!blocking && decodeIssueUnit->allInstructionsIssued()) {
+void FetchUnit::pipe() {
+  if(decodeIssueUnit->allInstructionsIssued()) {
     //put the fetched instruction into the instruction register
     decodeIssueUnit->setNextInstructions(currentInstructions);
   }
