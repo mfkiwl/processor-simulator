@@ -20,11 +20,12 @@ class FetchUnit {
     const Instructions instructions;
     int* const pc;
     DecodeIssueUnit* const decodeIssueUnit;
-    const int numInstructions;
+    const int issueWindowSize;
     Instruction* const currentInstructions;
 
   public:
-    FetchUnit(const Instructions instructions, int* const pc, DecodeIssueUnit* const decodeIssueUnit);
+    FetchUnit(const Instructions instructions, int* const pc, DecodeIssueUnit* const decodeIssueUnit, 
+      const int issueWindowSize);
 
     void fetchInstructions();
 
@@ -40,6 +41,8 @@ class FetchUnit {
     // getter functions
     
     Instruction getCurrentInstruction() const;
+
+    void getCurrentInstructions(Instruction* const copy) const;
 };
 
 #endif

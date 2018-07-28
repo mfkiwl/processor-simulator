@@ -15,7 +15,7 @@ Model::Model(const Instructions instructions) :
   //instructions to execute
   instructions(instructions),
 
-   //general stats
+  //general stats
   noOfInstructionsExecuted(0),
   noOfClockCycles(0),
   noOfInstructionsPerCycle(0),
@@ -24,6 +24,7 @@ Model::Model(const Instructions instructions) :
   numArchitecturalRegisters(16),
   numPhysicalRegisters(128),
   memorySize(28),
+  issueWindowSize(4),
   aluReservationStationSize(4),
   branchUnitReservationStationSize(4),
   loadStoreUnitReservationStationSize(4),
@@ -41,9 +42,9 @@ Model::Model(const Instructions instructions) :
   memory(memorySize),
   reorderBuffer(&registerFile, &memory, &pc, &runningFlag, &noOfInstructionsExecuted, reorderBufferSize, 
     numReorderBufferFields),
-  fetchUnit(instructions, &pc, &decodeIssueUnit),
+  fetchUnit(instructions, &pc, &decodeIssueUnit, issueWindowSize),
   decodeIssueUnit(&registerFile, &reorderBuffer, &aluReservationStation, &branchUnitReservationStation, 
-    &loadStoreUnitReservationStation),
+    &loadStoreUnitReservationStation, issueWindowSize),
   alu(&reorderBuffer),
   aluReservationStation(&registerFile, &alu, aluReservationStationSize),
   branchUnit(&reorderBuffer),
@@ -192,12 +193,16 @@ int Model::getNumRegisters() const {
   return numArchitecturalRegisters;
 }
 
-int Model::getRunningFlag() const {
-  return runningFlag;
-}
-
 int Model::getMemorySize() const {
   return memorySize;
+}
+
+int Model::getIssueWindowSize() const {
+  return issueWindowSize;
+}
+
+int Model::getRunningFlag() const {
+  return runningFlag;
 }
 
 int Model::getNoOfInstructionsExecuted() const {
@@ -236,8 +241,16 @@ Instruction Model::getFetchUnitInstruction() const {
   return fetchUnit.getCurrentInstruction();
 }
 
+void Model::getFetchUnitInstructions(Instruction* const copy) const {
+  fetchUnit.getCurrentInstructions(copy);
+}
+
 Instruction Model::getDecodeIssueUnitInstruction() const {
   return decodeIssueUnit.getCurrentInstruction();
+}
+
+void Model::getDecodeIssueUnitInstructions(Instruction* const copy) const {
+  decodeIssueUnit.getCurrentInstructions(copy);
 }
 
 int Model::getAluReservationStationSize() const {

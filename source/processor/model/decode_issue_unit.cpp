@@ -16,13 +16,16 @@
 //===========================================
 //class implementation
 
-DecodeIssueUnit::DecodeIssueUnit(RegisterFile* const registerFile, ReorderBuffer* const reorderBuffer, ALUReservationStation* const aluReservationStation, BranchUnitReservationStation* const branchUnitReservationStation, LoadStoreUnitReservationStation* const loadStoreUnitReservationStation) :
+DecodeIssueUnit::DecodeIssueUnit(RegisterFile* const registerFile, ReorderBuffer* const reorderBuffer, 
+  ALUReservationStation* const aluReservationStation, BranchUnitReservationStation* const branchUnitReservationStation, 
+  LoadStoreUnitReservationStation* const loadStoreUnitReservationStation, const int issueWindowSize) :
   registerFile(registerFile),
   reorderBuffer(reorderBuffer),
   aluReservationStation(aluReservationStation),
   branchUnitReservationStation(branchUnitReservationStation),
   loadStoreUnitReservationStation(loadStoreUnitReservationStation),
-  numInstructions(4),
+  issueWindowSize(issueWindowSize),
+  numInstructions(issueWindowSize),
   nextInstructions(new Instruction[numInstructions]),
   currentInstructions(new Instruction[numInstructions]),
   currentInstructionsIssued(new bool[numInstructions]),
@@ -406,6 +409,12 @@ void DecodeIssueUnit::setNextInstructions(const Instruction* const x) {
 
 Instruction DecodeIssueUnit::getCurrentInstruction() const {
   return currentInstructions[0];
+}
+
+void DecodeIssueUnit::getCurrentInstructions(Instruction* const copy) const {
+  for(int i = 0; i < issueWindowSize; i++) {
+    copy[i] = currentInstructions[i];
+  }
 }
 
 bool DecodeIssueUnit::getBlockingFlag() const {

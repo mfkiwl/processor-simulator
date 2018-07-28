@@ -78,9 +78,9 @@ class View {
 
     void drawPC(const int programCounter);
 
-    void drawFetchUnit(const Instruction currentInstruction);
+    void drawFetchUnit(const int issueWindowSize, const Instruction* const instructions);
 
-    void drawDecodeIssueUnit(const Instruction instruction);
+    void drawDecodeIssueUnit(const int issueWindowSize, const Instruction* const instructions);
 
     void drawAluReservationStation(const int reservationStationSize, const Instruction* const instructions, 
       const int* const reorderBufferIndexes);

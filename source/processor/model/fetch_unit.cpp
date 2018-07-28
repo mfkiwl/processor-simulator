@@ -11,21 +11,22 @@
 //===========================================
 //class implementation
 
-FetchUnit::FetchUnit(const Instructions instructions, int* const pc, DecodeIssueUnit* const decodeIssueUnit) :
+FetchUnit::FetchUnit(const Instructions instructions, int* const pc, DecodeIssueUnit* const decodeIssueUnit, 
+  const int issueWindowSize) :
   instructions(instructions),
   pc(pc),
   decodeIssueUnit(decodeIssueUnit),
-  numInstructions(4),
-  currentInstructions(new Instruction[numInstructions])
+  issueWindowSize(issueWindowSize),
+  currentInstructions(new Instruction[issueWindowSize])
 {
   //initialise all instructions to NOOPs
-  for(int i = 0; i < numInstructions; i++) {
+  for(int i = 0; i < issueWindowSize; i++) {
     currentInstructions[i] = (Instruction) {0,0,0,0};
   }
 }
 
 void FetchUnit::fetchInstructions() {
-  for(int i = 0; i < numInstructions; i++) {
+  for(int i = 0; i < issueWindowSize; i++) {
     if(*pc + i < instructions.getNumOfInstructions()) {
       currentInstructions[i] = instructions.at(*pc + i);
     }
@@ -66,4 +67,10 @@ void FetchUnit::flush() {
 
 Instruction FetchUnit::getCurrentInstruction() const {
   return currentInstructions[0];
+}
+
+void FetchUnit::getCurrentInstructions(Instruction* const copy) const {
+  for(int i = 0; i < issueWindowSize; i++) {
+    copy[i] = currentInstructions[i];
+  }
 }

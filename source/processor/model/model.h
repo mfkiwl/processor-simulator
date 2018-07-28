@@ -23,7 +23,7 @@
 class Model {
 
   private:
-    
+
     //Instructions to execute
     const Instructions instructions;
 
@@ -36,6 +36,7 @@ class Model {
     const int numArchitecturalRegisters;
     const int numPhysicalRegisters;
     const int memorySize;
+    const int issueWindowSize;
     const int aluReservationStationSize;
     const int branchUnitReservationStationSize;
     const int loadStoreUnitReservationStationSize;
@@ -94,6 +95,8 @@ class Model {
 
     int getMemorySize() const;
 
+    int getIssueWindowSize() const;
+
     int getRunningFlag() const;
 
     int getNoOfInstructionsExecuted() const;
@@ -114,7 +117,11 @@ class Model {
 
     Instruction getFetchUnitInstruction() const;
 
+    void getFetchUnitInstructions(Instruction* const copy) const;
+
     Instruction getDecodeIssueUnitInstruction() const;
+
+    void getDecodeIssueUnitInstructions(Instruction* const copy) const;
 
     int getAluReservationStationSize() const;
 

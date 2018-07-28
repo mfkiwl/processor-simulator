@@ -30,6 +30,8 @@ class DecodeIssueUnit {
     BranchUnitReservationStation* const branchUnitReservationStation;
     LoadStoreUnitReservationStation* const loadStoreUnitReservationStation;
 
+    const int issueWindowSize;
+
     //The number of instructions
     const int numInstructions;
 
@@ -51,7 +53,7 @@ class DecodeIssueUnit {
     DecodeIssueUnit(RegisterFile* const registerFile, ReorderBuffer* const reorderBuffer, 
       ALUReservationStation* const aluReservationStation, 
       BranchUnitReservationStation* const branchUnitReservationStation, 
-      LoadStoreUnitReservationStation* const loadStoreUnitReservationStation);
+      LoadStoreUnitReservationStation* const loadStoreUnitReservationStation, const int issueWindowSize);
 
     void execute();
 
@@ -71,6 +73,8 @@ class DecodeIssueUnit {
     void setNextInstructions(const Instruction* const x);
 
     Instruction getCurrentInstruction() const;
+
+    void getCurrentInstructions(Instruction* const copy) const;
 
     bool getBlockingFlag() const;
 };

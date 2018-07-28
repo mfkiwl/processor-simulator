@@ -35,14 +35,18 @@ void Controller::updateView() {
   //draw the program counter
   int programCounter = model.getPC();
   view.drawPC(programCounter);
+
+  int issueWindowSize = model.getIssueWindowSize();
   
   //draw the instruction in the fetch unit
-  Instruction fetchUnitInstruction = model.getFetchUnitInstruction();
-  view.drawFetchUnit(fetchUnitInstruction);
+  Instruction fetchUnitInstructions[issueWindowSize];
+  model.getFetchUnitInstructions(fetchUnitInstructions);
+  view.drawFetchUnit(issueWindowSize, fetchUnitInstructions);
 
   //draw the instruction in the decode issue unit
-  Instruction decodeIssueUnitInstruction = model.getDecodeIssueUnitInstruction();
-  view.drawDecodeIssueUnit(decodeIssueUnitInstruction);
+  Instruction decodeIssueUnitInstructions[issueWindowSize];
+  model.getDecodeIssueUnitInstructions(decodeIssueUnitInstructions);
+  view.drawDecodeIssueUnit(issueWindowSize, decodeIssueUnitInstructions);
 
   //draw the instructions in the alu reservation station
   int aluReservationStationSize = model.getAluReservationStationSize();

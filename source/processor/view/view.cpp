@@ -273,41 +273,45 @@ void View::drawProcessorStats(const int numOfInstructionsExecuted, const int num
 }
 
 void View::drawPC(const int programCounter) {
-  int xPos = 150;
+  int xPos = 0;
   int yPos = 60;
 
   renderText(xPos, yPos, "PC : " + intToString(programCounter));
 }
 
-void View::drawFetchUnit(const Instruction instruction) {
-  int xPos = 250;
+void View::drawFetchUnit(const int issueWindowSize, const Instruction* const instructions) {
+  int xPos = 60;
   int yPos = 60;
   int numOfHorizontalCells = 1;
-  int numOfVerticalCells = 1;
+  int numOfVerticalCells = issueWindowSize;
   int cellWidth = 150;
   int cellHeight = 20;
 
   renderText(xPos, yPos, "Fetch Unit : ");
   drawTable(xPos, yPos + cellHeight, numOfHorizontalCells, numOfVerticalCells, cellWidth, cellHeight);
-  std::string instructionString = instructionToString(instruction);
-  if(instructionString != "NOOP") {
-    renderText(xPos, yPos + cellHeight, instructionString);
+  for(int i = 0; i < issueWindowSize; i++) {
+    std::string instructionString = instructionToString(instructions[i]);
+    if(instructionString != "NOOP") {
+      renderText(xPos, yPos + (i + 1) * cellHeight, instructionString);
+    }
   }
 }
 
-void View::drawDecodeIssueUnit(const Instruction instruction) {
-  int xPos = 250;
-  int yPos = 105;
+void View::drawDecodeIssueUnit(const int issueWindowSize, const Instruction* const instructions) {
+  int xPos = 260;
+  int yPos = 60;
   int numOfHorizontalCells = 1;
-  int numOfVerticalCells = 1;
+  int numOfVerticalCells = issueWindowSize;
   int cellWidth = 150;
   int cellHeight = 20;
 
   renderText(xPos, yPos, "Decode/Issue unit");
   drawTable(xPos, yPos + cellHeight, numOfHorizontalCells, numOfVerticalCells, cellWidth, cellHeight);
-  std::string instructionString = instructionToString(instruction);
-  if(instructionString != "NOOP") {
-    renderText(xPos, yPos + cellHeight, instructionString);
+  for(int i = 0; i < issueWindowSize; i++) {
+    std::string instructionString = instructionToString(instructions[i]);
+    if(instructionString != "NOOP") {
+      renderText(xPos, yPos + (i + 1) * cellHeight, instructionString);
+    }
   }
 }
 
@@ -315,7 +319,7 @@ void View::drawAluReservationStation(const int reservationStationSize, const Ins
   const int* const reorderBufferIndexes) 
 {
   int xPos = 50;
-  int yPos = 150;
+  int yPos = 160;
   int numOfHorizontalCells = 1;
   int numOfVerticalCells = reservationStationSize;
   int cellWidth = 150;
@@ -339,7 +343,7 @@ void View::drawBranchUnitReservationStation(const int reservationStationSize, co
   const int* const reorderBufferIndexes) 
 {
   int xPos = 250;
-  int yPos = 150;
+  int yPos = 160;
   int numOfHorizontalCells = 1;
   int numOfVerticalCells = reservationStationSize;
   int cellWidth = 150;
@@ -363,7 +367,7 @@ void View::drawLoadStoreUnitReservationStation(const int reservationStationSize,
   const int* const reorderBufferIndexes)
 {
   int xPos = 450;
-  int yPos = 150;
+  int yPos = 160;
   int numOfHorizontalCells = 1;
   int numOfVerticalCells = reservationStationSize;
   int cellWidth = 150;
