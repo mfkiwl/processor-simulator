@@ -55,6 +55,8 @@ class DecodeIssueUnit {
 
     void pipe();
 
+    void pipeInstruction(int instructionToIssue);
+
     void flush();
 
     void print() const;

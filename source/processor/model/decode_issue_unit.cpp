@@ -38,8 +38,10 @@ DecodeIssueUnit::DecodeIssueUnit(RegisterFile* const registerFile, ReorderBuffer
 }
 
 void DecodeIssueUnit::execute() {
-  if(reorderBuffer->freeSpace()) {
-    issue(0);
+  for(int i = 0; i < issueWindowSize; i++) {
+    if(reorderBuffer->freeSpace()) {
+      issue(i);
+    }
   }
 }
 
@@ -251,9 +253,27 @@ void DecodeIssueUnit::issue(int instructionToIssue) {
 }
 
 void DecodeIssueUnit::pipe() {
-  if(currentInstructionsIssued[0]) {
+  for(int i = 0; i < issueWindowSize; i++) {
+    if(currentInstructionsIssued[i]) {
+      pipeInstruction(i);
+    }
+  }
+  //set the current instructions equal to the next instructions
+  if(nextInstructions[0].opcode != NOOP) {
+    for(int i = 0; i < issueWindowSize; i++) {
+      //set the current instruction equal to the next instruction
+      currentInstructions[i] = nextInstructions[i];
+      //set the
+      currentInstructionsIssued[i] = false;
+      //clear the nextInstruction
+      nextInstructions[i] = (Instruction) {0,0,0,0};
+    }
+  }
+}
+
+void DecodeIssueUnit::pipeInstruction(int instructionToIssue) {
   //send the current instruction to the necessary component
-  switch(currentInstructions[0].opcode) {
+  switch(currentInstructions[instructionToIssue].opcode) {
 
     //NOOP instruction
     case NOOP:
@@ -267,8 +287,8 @@ void DecodeIssueUnit::pipe() {
     case OR:
     case SUB:
       //Set the scoreboard value of the destination register to zero
-      registerFile->setScoreBoardValue(currentInstructions[0].operands[0],0);
-      aluReservationStation->setNextInstruction(currentInstructions[0]);
+      registerFile->setScoreBoardValue(currentInstructions[instructionToIssue].operands[0],0);
+      aluReservationStation->setNextInstruction(currentInstructions[instructionToIssue]);
       aluReservationStation->setNextReorderBufferIndex(reorderBufferIndex);
       break;
 
@@ -276,10 +296,10 @@ void DecodeIssueUnit::pipe() {
     case LW:
     case LWR:
       //Set the scoreboard value of the destination register to zero
-      registerFile->setScoreBoardValue(currentInstructions[0].operands[0],0);
+      registerFile->setScoreBoardValue(currentInstructions[instructionToIssue].operands[0],0);
     case SW:
     case SWR:
-      loadStoreUnitReservationStation->setNextInstruction(currentInstructions[0]);
+      loadStoreUnitReservationStation->setNextInstruction(currentInstructions[instructionToIssue]);
       loadStoreUnitReservationStation->setNextReorderBufferIndex(reorderBufferIndex);
       break;
 
@@ -296,15 +316,9 @@ void DecodeIssueUnit::pipe() {
     //Instruction to finish the program
     case HALT:
       //branchUnitReservationStation->addInstruction(currentInstruction, reorderBufferIndex);
-      branchUnitReservationStation->setNextInstruction(currentInstructions[0]);
+      branchUnitReservationStation->setNextInstruction(currentInstructions[instructionToIssue]);
       branchUnitReservationStation->setNextReorderBufferIndex(reorderBufferIndex);
       break;
-  }
-  //set the current instruction equal to the next instruction
-  currentInstructions[0] = nextInstructions[0];
-  currentInstructionsIssued[0] = false;
-  //clear the nextInstruction
-  nextInstructions[0] = (Instruction) {0,0,0,0};
   }
 }
 
@@ -319,7 +333,9 @@ void DecodeIssueUnit::flush() {
 
 void DecodeIssueUnit::print() const {
   printf("DECODE ISSUE UNIT:");
-  printInstruction(currentInstructions[0]);
+  for(int i = 0; i < issueWindowSize; i++) {
+    printInstruction(currentInstructions[i]);    
+  }
 }
 
 bool DecodeIssueUnit::allInstructionsIssued() const {

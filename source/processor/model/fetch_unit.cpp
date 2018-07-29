@@ -26,14 +26,14 @@ FetchUnit::FetchUnit(const Instructions instructions, int* const pc, DecodeIssue
 }
 
 void FetchUnit::fetchInstructions() {
-  /*
   for(int i = 0; i < issueWindowSize; i++) {
     if(*pc + i < instructions.getNumOfInstructions()) {
       currentInstructions[i] = instructions.at(*pc + i);
     }
+    else {
+      currentInstructions[i] = (Instruction) {0,0,0,0};
+    }
   }
-  */
-  currentInstructions[0] = instructions.at(*pc);
 }
 
 void FetchUnit::execute() {
