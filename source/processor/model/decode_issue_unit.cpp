@@ -259,8 +259,8 @@ void DecodeIssueUnit::pipe() {
     }
   }
   //set the current instructions equal to the next instructions
-  if(nextInstructions[0].opcode != NOOP) {
-    for(int i = 0; i < issueWindowSize; i++) {
+  for(int i = 0; i < issueWindowSize; i++) {
+    if(currentInstructionsIssued[i]) {
       //set the current instruction equal to the next instruction
       currentInstructions[i] = nextInstructions[i];
       //set the

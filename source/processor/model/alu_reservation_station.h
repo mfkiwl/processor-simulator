@@ -22,7 +22,7 @@ class ALUReservationStation {
     RegisterFile* const registerFile;
     ALU* const alu;
 
-    Instruction nextInstruction;
+    Instruction* const nextInstructions;
     int nextReorderBufferIndex;
 
     const int size;

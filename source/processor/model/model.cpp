@@ -24,7 +24,7 @@ Model::Model(const Instructions instructions) :
   numArchitecturalRegisters(16),
   numPhysicalRegisters(128),
   memorySize(28),
-  issueWindowSize(4),
+  issueWindowSize(1),
   aluReservationStationSize(4),
   branchUnitReservationStationSize(4),
   loadStoreUnitReservationStationSize(4),

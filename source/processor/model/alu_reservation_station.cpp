@@ -22,7 +22,7 @@ using namespace std;
 ALUReservationStation::ALUReservationStation(RegisterFile* const registerFile, ALU* const alu, const int size) : 
   registerFile(registerFile),
   alu(alu),
-  nextInstruction((Instruction) {0,0,0,0}),
+  nextInstructions(new Instruction[4]),
   nextReorderBufferIndex(-1),
   size(size),
   instructions(new Instruction[size]),
@@ -32,13 +32,13 @@ ALUReservationStation::ALUReservationStation(RegisterFile* const registerFile, A
   reorderBufferIndex(-1),
   dispatchIndex(-1)
 {
-  //inialise all instructions to NOOPs
+  //inialise arrays
   for(int i = 0; i < size; i++) {
     instructions[i] = (Instruction) {0,0,0,0};
-  }
-  //initialise all reorder buffer indexes to -1
-  for(int i = 0; i < size; i++) {
     reorderBufferIndexes[i] = -1;
+  }
+  for(int i = 0; i < 4; i++) {
+    nextInstructions[i] = (Instruction) {0,0,0,0};
   }
   //zero out operands
   for(int i = 0; i < 3; i++) {
@@ -81,9 +81,9 @@ void ALUReservationStation::pipe() {
     reorderBufferIndex = -1;
   }
   //add the next instruction to the buffer
-  addInstruction(nextInstruction, nextReorderBufferIndex);
+  addInstruction(nextInstructions[0], nextReorderBufferIndex);
   //clear the nextInstruction and nextReorderBufferIndex
-  nextInstruction = (Instruction) {0,0,0,0};
+  nextInstructions[0] = (Instruction) {0,0,0,0};
   nextReorderBufferIndex = -1;
 }
 
@@ -203,7 +203,7 @@ void ALUReservationStation::getCurrentReorderBufferIndexes(int* const copy) cons
 }
 
 void ALUReservationStation::setNextInstruction(const Instruction instruction) {
-  nextInstruction = instruction;
+  nextInstructions[0] = instruction;
 }
 
 void ALUReservationStation::setNextReorderBufferIndex(const int index) {
