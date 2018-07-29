@@ -22,12 +22,14 @@ class ALUReservationStation {
     RegisterFile* const registerFile;
     ALU* const alu;
 
-    Instruction* const nextInstructions;
-    int nextReorderBufferIndex;
-
     const int size;
     Instruction* const instructions;
     int* const reorderBufferIndexes;
+
+    const int issueWindowSize;
+
+    Instruction* const nextInstructions;
+    int nextReorderBufferIndex;
 
     int opcode;
     int* const operands;
@@ -38,7 +40,7 @@ class ALUReservationStation {
   //public functions
   public:
 
-    ALUReservationStation(RegisterFile* const registerFile, ALU* const alu, const int size);
+    ALUReservationStation(RegisterFile* const registerFile, ALU* const alu, const int size, const int issueWindowSize);
 
     void execute();
 

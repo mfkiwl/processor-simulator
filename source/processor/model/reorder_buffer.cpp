@@ -17,7 +17,8 @@
 using namespace std;
 
 ReorderBuffer::ReorderBuffer(RegisterFile* const registerFile, Memory* const memory, int* const pc, 
-int* const runningFlag, int* const noOfInstructionsExecuted, const int bufferSize, const int numFields) : 
+int* const runningFlag, int* const noOfInstructionsExecuted, const int bufferSize, const int numFields, 
+const int issueWindowSize) : 
   registerFile(registerFile),
   memory(memory),
   pc(pc),
@@ -29,7 +30,8 @@ int* const runningFlag, int* const noOfInstructionsExecuted, const int bufferSiz
   tail(0),
   numFields(numFields),
   instructions(new Instruction[bufferSize]),
-  noOfInstructionsExecuted(noOfInstructionsExecuted)
+  noOfInstructionsExecuted(noOfInstructionsExecuted),
+  issueWindowSize(issueWindowSize)
 {
   //dynamically allocated a 2d array to the read and write buffer
   for(int i = 0; i < bufferSize; i++) {
@@ -83,34 +85,36 @@ const int physicalRegister, const int previousPhysicalRegister, const Instructio
 
 //commiting an entry when it can each cycle
 void ReorderBuffer::execute() {
-  if(buffer[tail][STATUS] == FINISHED) {
-    //buffer[tail][STATUS] = -1;
-    if(buffer[tail][TYPE] == STORE_TO_REGISTER) {
-      //write the result to the register
-      registerFile->setPhysicalRegisterValue(buffer[tail][PHYSICAL_REGISTER], buffer[tail][RESULT]);
-      //update the rollback rename table
-      registerFile->setRollbackRenameTableMapping(buffer[tail][ARCHITECTURAL_REGISTER], buffer[tail][PHYSICAL_REGISTER]);
-      //Set the scoreBoard of the destination register to 1
-      registerFile->setScoreBoardValue(buffer[tail][PHYSICAL_REGISTER], 1);
-      //free the previous physical register
-      registerFile->freePhysicalRegister(buffer[tail][PREVIOUS_PHYSICAL_REGISTER]);
-    }
-    if(buffer[tail][TYPE] == STORE_TO_MEMORY) {
+  for(int i = 0; i < issueWindowSize; i++) {
+    if(buffer[tail][STATUS] == FINISHED) {
+      //buffer[tail][STATUS] = -1;
+      if(buffer[tail][TYPE] == STORE_TO_REGISTER) {
+        //write the result to the register
+        registerFile->setPhysicalRegisterValue(buffer[tail][PHYSICAL_REGISTER], buffer[tail][RESULT]);
+        //update the rollback rename table
+        registerFile->setRollbackRenameTableMapping(buffer[tail][ARCHITECTURAL_REGISTER], buffer[tail][PHYSICAL_REGISTER]);
+        //Set the scoreBoard of the destination register to 1
+        registerFile->setScoreBoardValue(buffer[tail][PHYSICAL_REGISTER], 1);
+        //free the previous physical register
+        registerFile->freePhysicalRegister(buffer[tail][PREVIOUS_PHYSICAL_REGISTER]);
+      }
+      if(buffer[tail][TYPE] == STORE_TO_MEMORY) {
 
+      }
+      if(buffer[tail][TYPE] == JUMP && buffer[tail][RESULT]) {
+        *pc = buffer[tail][BRANCH_TARGET_ADDRESS];
+        flushFlag = true;
+      }
+      if(buffer[tail][TYPE] == SYSCALL) {
+        *runningFlag = 0;
+      }
+      //reset the reorder buffer entry
+      resetEntry(tail);
+      //increment the number of instructions that we have executed
+      (*noOfInstructionsExecuted)++;
+      //increment the tail position
+      tail = (tail + 1) % bufferSize;
     }
-    if(buffer[tail][TYPE] == JUMP && buffer[tail][RESULT]) {
-      *pc = buffer[tail][BRANCH_TARGET_ADDRESS];
-      flushFlag = true;
-    }
-    if(buffer[tail][TYPE] == SYSCALL) {
-      *runningFlag = 0;
-    }
-    //reset the reorder buffer entry
-    resetEntry(tail);
-    //increment the number of instructions that we have executed
-    (*noOfInstructionsExecuted)++;
-    //increment the tail position
-    tail = (tail + 1) % bufferSize;
   }
 }
 

@@ -17,17 +17,19 @@
 //======================================================================================================
 //public functions
 
-LoadStoreUnitReservationStation::LoadStoreUnitReservationStation(RegisterFile* const registerFile, ReorderBuffer* const reorderBuffer, LoadStoreUnit* const loadStoreUnit, const int size) : 
+LoadStoreUnitReservationStation::LoadStoreUnitReservationStation(RegisterFile* const registerFile, 
+  ReorderBuffer* const reorderBuffer, LoadStoreUnit* const loadStoreUnit, const int size, const int issueWindowSize) : 
   registerFile(registerFile),
   reorderBuffer(reorderBuffer),
   loadStoreUnit(loadStoreUnit),
-  nextInstruction((Instruction) {0,0,0,0}),
-  nextReorderBufferIndex(-1),
   tail(0),
   head(0),
   size(size),
   instructions(new Instruction[size]),
   reorderBufferIndexes(new int[size]),
+  issueWindowSize(issueWindowSize),
+  nextInstructions(new Instruction[issueWindowSize]),
+  nextReorderBufferIndex(-1),
   opcode(0),
   reorderBufferIndex(-1),
   dispatchIndex(-1)
@@ -35,10 +37,10 @@ LoadStoreUnitReservationStation::LoadStoreUnitReservationStation(RegisterFile* c
   //set all instructions to NOOPs
   for(int i = 0; i < size; i++) {
     instructions[i] = (Instruction) {0,0,0,0};
-  }
-  //set all reorder buffer indexes to -1
-  for(int i = 0; i < size; i++) {
     reorderBufferIndexes[i] = -1;
+  }
+  for(int i = 0; i < issueWindowSize; i++) {
+    nextInstructions[i] = (Instruction) {0,0,0,0};
   }
   //zero out all operands
   for(int i = 0; i < 3; i++) {
@@ -98,9 +100,9 @@ void LoadStoreUnitReservationStation::pipe() {
     reorderBufferIndex = -1;
   }
   //add the next instruction to the buffer
-  addInstruction(nextInstruction, nextReorderBufferIndex);
+  addInstruction(nextInstructions[0], nextReorderBufferIndex);
   //clear the nextInstruction and nextReorderBufferIndex
-  nextInstruction = (Instruction) {0,0,0,0};
+  nextInstructions[0] = (Instruction) {0,0,0,0};
   nextReorderBufferIndex = -1;
 }
 
@@ -203,7 +205,7 @@ void LoadStoreUnitReservationStation::getCurrentReorderBufferIndexes(int* const 
 }
 
 void LoadStoreUnitReservationStation::setNextInstruction(const Instruction instruction) {
-  nextInstruction = instruction;
+  nextInstructions[0] = instruction;
 }
 
 void LoadStoreUnitReservationStation::setNextReorderBufferIndex(const int index) {

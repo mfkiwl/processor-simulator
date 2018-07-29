@@ -25,14 +25,16 @@ class LoadStoreUnitReservationStation {
     ReorderBuffer* const reorderBuffer;
     LoadStoreUnit* const loadStoreUnit;
 
-    Instruction nextInstruction;
-    int nextReorderBufferIndex;
-
     int tail;
     int head;
     const int size;
     Instruction* const instructions;
     int* const reorderBufferIndexes;
+
+    const int issueWindowSize;
+
+    Instruction* const nextInstructions;
+    int nextReorderBufferIndex;
 
     int opcode;
     int operands[3];
@@ -43,7 +45,8 @@ class LoadStoreUnitReservationStation {
   //public functions
   public:
 
-    LoadStoreUnitReservationStation(RegisterFile* const registerFile, ReorderBuffer* const reorderBuffer, LoadStoreUnit* const loadStoreUnit, const int size);
+    LoadStoreUnitReservationStation(RegisterFile* const registerFile, ReorderBuffer* const reorderBuffer, 
+      LoadStoreUnit* const loadStoreUnit, const int size, const int issueWindowSize);
 
     void execute();
 

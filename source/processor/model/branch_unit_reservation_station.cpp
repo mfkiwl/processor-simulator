@@ -17,14 +17,16 @@
 //=======================================================================================
 //public functions
 
-BranchUnitReservationStation::BranchUnitReservationStation(RegisterFile* const registerFile, BranchUnit* const branchUnit, const int size) : 
+BranchUnitReservationStation::BranchUnitReservationStation(RegisterFile* const registerFile, 
+  BranchUnit* const branchUnit, const int size, const int issueWindowSize) : 
   registerFile(registerFile),
   branchUnit(branchUnit),
-  nextInstruction((Instruction) {0,0,0,0}),
-  nextReorderBufferIndex(-1),
   size(size),
   instructions(new Instruction[size]),
   reorderBufferIndexes(new int[size]),
+  issueWindowSize(issueWindowSize),
+  nextInstructions(new Instruction[issueWindowSize]),
+  nextReorderBufferIndex(-1),
   opcode(0),
   reorderBufferIndex(-1),
   dispatchIndex(-1)
@@ -32,10 +34,10 @@ BranchUnitReservationStation::BranchUnitReservationStation(RegisterFile* const r
   //set all instructions to NOOPs
   for(int i = 0; i < size; i++) {
     instructions[i] = (Instruction) {0,0,0,0};
-  }
-  //set all reorder buffer indexes to -1
-  for(int i = 0; i < size; i++) {
     reorderBufferIndexes[i] = -1;
+  }
+  for(int i = 0; i < issueWindowSize; i++) {
+    nextInstructions[i] = (Instruction) {0,0,0,0};
   }
   //zero out operands
   for(int i = 0; i < 3; i++) {
@@ -82,9 +84,9 @@ void BranchUnitReservationStation::pipe() {
     reorderBufferIndex = -1;
   }
   //add the next instruction to the buffer
-  addInstruction(nextInstruction, nextReorderBufferIndex);
+  addInstruction(nextInstructions[0], nextReorderBufferIndex);
   //clear the nextInstruction and nextReorderBufferIndex
-  nextInstruction = (Instruction) {0,0,0,0};
+  nextInstructions[0] = (Instruction) {0,0,0,0};
   nextReorderBufferIndex = -1;
 }
 
@@ -204,7 +206,7 @@ void BranchUnitReservationStation::getCurrentReorderBufferIndexes(int* const cop
 }
 
 void BranchUnitReservationStation::setNextInstruction(const Instruction instruction) {
-  nextInstruction = instruction;
+  nextInstructions[0] = instruction;
 }
 
 void BranchUnitReservationStation::setNextReorderBufferIndex(const int index) {

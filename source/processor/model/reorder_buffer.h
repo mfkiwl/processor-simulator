@@ -40,11 +40,13 @@ class ReorderBuffer {
     //no of instruction executed by the processor
     int* const noOfInstructionsExecuted;
 
+    const int issueWindowSize;
+
   //public functions
   public:
 
     ReorderBuffer(RegisterFile* const registerFile, Memory* const memory, int* const pc, int* const runningFlag, 
-    int* const noOfInstructionsExecuted, const int bufferSize, const int numFields);
+    int* const noOfInstructionsExecuted, const int bufferSize, const int numFields, const int issueWindowSize);
 
     bool freeSpace() const;
 

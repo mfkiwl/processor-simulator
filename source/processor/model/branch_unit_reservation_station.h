@@ -22,12 +22,14 @@ class BranchUnitReservationStation {
     RegisterFile* const registerFile;
     BranchUnit* const branchUnit;
 
-    Instruction nextInstruction;
-    int nextReorderBufferIndex;
-
     const int size;
     Instruction* const instructions;
     int* const reorderBufferIndexes;
+
+    const int issueWindowSize;
+
+    Instruction* const nextInstructions;
+    int nextReorderBufferIndex;
 
     int opcode;
     int operands[3];
@@ -38,7 +40,8 @@ class BranchUnitReservationStation {
   //public functions
   public:
     
-    BranchUnitReservationStation(RegisterFile* const registerFile, BranchUnit* const branchUnit, const int size);
+    BranchUnitReservationStation(RegisterFile* const registerFile, BranchUnit* const branchUnit, const int size, 
+      const int issueWindowSize);
 
     void execute();
 

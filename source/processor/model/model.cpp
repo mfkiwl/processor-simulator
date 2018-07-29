@@ -41,16 +41,17 @@ Model::Model(const Instructions instructions) :
   registerFile(numArchitecturalRegisters, numPhysicalRegisters), 
   memory(memorySize),
   reorderBuffer(&registerFile, &memory, &pc, &runningFlag, &noOfInstructionsExecuted, reorderBufferSize, 
-    numReorderBufferFields),
+    numReorderBufferFields, issueWindowSize),
   fetchUnit(instructions, &pc, &decodeIssueUnit, issueWindowSize),
   decodeIssueUnit(&registerFile, &reorderBuffer, &aluReservationStation, &branchUnitReservationStation, 
     &loadStoreUnitReservationStation, issueWindowSize),
   alu(&reorderBuffer),
-  aluReservationStation(&registerFile, &alu, aluReservationStationSize),
+  aluReservationStation(&registerFile, &alu, aluReservationStationSize, issueWindowSize),
   branchUnit(&reorderBuffer),
-  branchUnitReservationStation(&registerFile, &branchUnit, branchUnitReservationStationSize),
+  branchUnitReservationStation(&registerFile, &branchUnit, branchUnitReservationStationSize, issueWindowSize),
   loadStoreUnit(&memory, &reorderBuffer),
-  loadStoreUnitReservationStation(&registerFile, &reorderBuffer, &loadStoreUnit, loadStoreUnitReservationStationSize)
+  loadStoreUnitReservationStation(&registerFile, &reorderBuffer, &loadStoreUnit, loadStoreUnitReservationStationSize,
+    issueWindowSize)
 {}
 
 void Model::updateStats() {

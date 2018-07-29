@@ -19,14 +19,15 @@ using namespace std;
 //==========================================================================
 //public functions
 
-ALUReservationStation::ALUReservationStation(RegisterFile* const registerFile, ALU* const alu, const int size) : 
+ALUReservationStation::ALUReservationStation(RegisterFile* const registerFile, ALU* const alu, const int size, const int issueWindowSize) : 
   registerFile(registerFile),
   alu(alu),
-  nextInstructions(new Instruction[4]),
-  nextReorderBufferIndex(-1),
   size(size),
   instructions(new Instruction[size]),
   reorderBufferIndexes(new int[size]),
+  issueWindowSize(issueWindowSize),
+  nextInstructions(new Instruction[issueWindowSize]),
+  nextReorderBufferIndex(-1),
   opcode(0),
   operands(new int[3]),
   reorderBufferIndex(-1),
@@ -37,7 +38,7 @@ ALUReservationStation::ALUReservationStation(RegisterFile* const registerFile, A
     instructions[i] = (Instruction) {0,0,0,0};
     reorderBufferIndexes[i] = -1;
   }
-  for(int i = 0; i < 4; i++) {
+  for(int i = 0; i < issueWindowSize; i++) {
     nextInstructions[i] = (Instruction) {0,0,0,0};
   }
   //zero out operands
