@@ -26,10 +26,10 @@ class BranchUnitReservationStation {
     Instruction* const instructions;
     int* const reorderBufferIndexes;
 
-    const int issueWindowSize;
+    int numReservedSpaces;
 
     Instruction* const nextInstructions;
-    int nextReorderBufferIndex;
+    int* const nextReorderBufferIndexes;
 
     int opcode;
     int operands[3];
@@ -40,12 +40,9 @@ class BranchUnitReservationStation {
   //public functions
   public:
     
-    BranchUnitReservationStation(RegisterFile* const registerFile, BranchUnit* const branchUnit, const int size, 
-      const int issueWindowSize);
+    BranchUnitReservationStation(RegisterFile* const registerFile, BranchUnit* const branchUnit, const int size);
 
     void execute();
-
-    bool freeSpace() const;
 
     void pipe();
 
@@ -53,12 +50,16 @@ class BranchUnitReservationStation {
 
     void print() const;
 
+    bool freeSpace() const;
+
+    void reserveSpace();
+
   //private functions
   private:
 
     int findFreePosition() const;
 
-    void addInstruction(const Instruction instruction, const int rbi);
+    void addNextInstructions();
 
     bool readyToDispatch(const int index) const;
 
@@ -72,9 +73,7 @@ class BranchUnitReservationStation {
 
     void getCurrentReorderBufferIndexes(int* const copy) const;
 
-    void setNextInstruction(const Instruction instruction);
-
-    void setNextReorderBufferIndex(const int index);
+    void setNextInstruction(const Instruction instruction, const int rbi);
 
 };
 

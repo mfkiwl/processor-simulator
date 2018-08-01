@@ -18,15 +18,15 @@
 //public functions
 
 BranchUnitReservationStation::BranchUnitReservationStation(RegisterFile* const registerFile, 
-  BranchUnit* const branchUnit, const int size, const int issueWindowSize) : 
+  BranchUnit* const branchUnit, const int size) : 
   registerFile(registerFile),
   branchUnit(branchUnit),
   size(size),
   instructions(new Instruction[size]),
   reorderBufferIndexes(new int[size]),
-  issueWindowSize(issueWindowSize),
-  nextInstructions(new Instruction[issueWindowSize]),
-  nextReorderBufferIndex(-1),
+  numReservedSpaces(0),
+  nextInstructions(new Instruction[size]),
+  nextReorderBufferIndexes(new int[size]),
   opcode(0),
   reorderBufferIndex(-1),
   dispatchIndex(-1)
@@ -35,9 +35,8 @@ BranchUnitReservationStation::BranchUnitReservationStation(RegisterFile* const r
   for(int i = 0; i < size; i++) {
     instructions[i] = (Instruction) {0,0,0,0};
     reorderBufferIndexes[i] = -1;
-  }
-  for(int i = 0; i < issueWindowSize; i++) {
     nextInstructions[i] = (Instruction) {0,0,0,0};
+    nextReorderBufferIndexes[i] = -1;
   }
   //zero out operands
   for(int i = 0; i < 3; i++) {
@@ -57,10 +56,6 @@ void BranchUnitReservationStation::execute() {
   }
 }
 
-bool BranchUnitReservationStation::freeSpace() const {
-  return findFreePosition() != -1;
-}
-
 void BranchUnitReservationStation::pipe() {
   //send current instruction to the branch unit
   if(reorderBufferIndex != -1) {
@@ -74,7 +69,7 @@ void BranchUnitReservationStation::pipe() {
     branchUnit->setNextOpcode(opcode);
     branchUnit->setNextOperands(operands);
     //Send the reorder buffer index to the execution unit
-    branchUnit->setNextReorderBufferIndex(reorderBufferIndex);
+    branchUnit->setNextReorderBufferIndex(reorderBufferIndexes[0]);
         
     //reset the outputs
     opcode = 0;
@@ -84,17 +79,24 @@ void BranchUnitReservationStation::pipe() {
     reorderBufferIndex = -1;
   }
   //add the next instruction to the buffer
-  addInstruction(nextInstructions[0], nextReorderBufferIndex);
+  addNextInstructions();
   //clear the nextInstruction and nextReorderBufferIndex
-  nextInstructions[0] = (Instruction) {0,0,0,0};
-  nextReorderBufferIndex = -1;
+  for(int i = 0; i < size; i++) {
+    nextInstructions[i] = (Instruction) {0,0,0,0};
+    nextReorderBufferIndexes[i] = -1;
+  }
+  //reset the number of reserved spaces
+  numReservedSpaces = 0;
 }
 
 void BranchUnitReservationStation::flush() {
   for(int i = 0; i < size; i++) {
     instructions[i] = (Instruction) {0,0,0,0};
     reorderBufferIndexes[i] = -1;
+    nextInstructions[i] = (Instruction) {0,0,0,0};
+    nextReorderBufferIndexes[i] = -1;
   }
+  numReservedSpaces = 0;
   opcode = 0;
   for(int i = 0; i < 3; i++) {
     operands[i] = 0;
@@ -111,6 +113,27 @@ void BranchUnitReservationStation::print() const {
   }
 }
 
+
+bool BranchUnitReservationStation::freeSpace() const {
+  int count = 0;
+  for(int i = 0; i < size; i++) {
+    if(instructions[i].opcode != NOOP) {
+      count++;
+    }
+  }
+  count += numReservedSpaces;
+  if(count == size) {
+    return false;
+  }
+  else {
+    return true;
+  }
+}
+
+void BranchUnitReservationStation::reserveSpace() {
+  numReservedSpaces++;
+}
+
 //==========================================================================================
 //private functions
 
@@ -123,11 +146,13 @@ int BranchUnitReservationStation::findFreePosition() const {
   return -1;
 }
 
-void BranchUnitReservationStation::addInstruction(const Instruction instruction, const int rbi) {
-  if(instruction.opcode != NOOP) {
-    int index = findFreePosition();
-    instructions[index] = instruction;
-    reorderBufferIndexes[index] = rbi;
+void BranchUnitReservationStation::addNextInstructions() {
+  for(int i = 0; i < size; i++) {
+    if(nextInstructions[i].opcode != NOOP) {
+      int index = findFreePosition();
+      instructions[index] = nextInstructions[i];
+      reorderBufferIndexes[index] = reorderBufferIndexes[i];
+    }
   }
 }
 
@@ -205,10 +230,12 @@ void BranchUnitReservationStation::getCurrentReorderBufferIndexes(int* const cop
   }
 }
 
-void BranchUnitReservationStation::setNextInstruction(const Instruction instruction) {
-  nextInstructions[0] = instruction;
-}
-
-void BranchUnitReservationStation::setNextReorderBufferIndex(const int index) {
-  nextReorderBufferIndex = index;
+void BranchUnitReservationStation::setNextInstruction(const Instruction instruction, const int rbi) {
+  for(int i = 0; i < size; i++) {
+    if(nextInstructions[i].opcode == NOOP) {
+      nextInstructions[i] = instruction;
+      nextReorderBufferIndexes[i] = rbi;
+      break;
+    }
+  }
 }

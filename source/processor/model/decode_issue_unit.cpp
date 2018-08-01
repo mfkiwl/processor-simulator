@@ -220,7 +220,7 @@ void DecodeIssueUnit::issue(int instructionToIssue) {
 
         //reserve a space in the reservation station
         loadStoreUnitReservationStation->reserveSpace();
-        
+
         //Instruction has been issued so add entry to the reorder buffer
         reorderBufferIndexes[instructionToIssue] = reorderBuffer->addEntry(STORE_TO_MEMORY, 0, 0, 0, 0, currentInstructions[instructionToIssue]);
 
@@ -237,6 +237,10 @@ void DecodeIssueUnit::issue(int instructionToIssue) {
     case BEQ:
     case BNE:
       if(branchUnitReservationStation->freeSpace()) {
+
+        //reserve a space in the reservation station
+        branchUnitReservationStation->reserveSpace();
+
         //Instruction has been issued so add entry to the reorder buffer
         reorderBufferIndexes[instructionToIssue] = reorderBuffer->addEntry(JUMP, currentInstructions[instructionToIssue].operands[2], 0, 0, 0, currentInstructions[instructionToIssue]);
 
@@ -256,6 +260,10 @@ void DecodeIssueUnit::issue(int instructionToIssue) {
     case J:
     case JR:
       if(branchUnitReservationStation->freeSpace()) {
+
+        //reserve a space in the reservation station
+        branchUnitReservationStation->reserveSpace();
+
         //Instruction has been issued so add entry to the reorder buffer
         reorderBufferIndexes[instructionToIssue] = reorderBuffer->addEntry(JUMP, currentInstructions[instructionToIssue].operands[0], 0, 0, 0, currentInstructions[instructionToIssue]);
 
@@ -267,6 +275,10 @@ void DecodeIssueUnit::issue(int instructionToIssue) {
     //Instruction to finish the program
     case HALT:
       if(branchUnitReservationStation->freeSpace()) {
+
+        //reserve a space in the reservation station
+        branchUnitReservationStation->reserveSpace();
+        
         //Instruction has been issued so add entry to the reorder buffer
         reorderBufferIndexes[instructionToIssue] = reorderBuffer->addEntry(SYSCALL, 0, 0, 0, 0, currentInstructions[instructionToIssue]);
 
@@ -341,8 +353,8 @@ void DecodeIssueUnit::pipeInstruction(int instructionToIssue) {
     //Instruction to finish the program
     case HALT:
       //branchUnitReservationStation->addInstruction(currentInstruction, reorderBufferIndex);
-      branchUnitReservationStation->setNextInstruction(currentInstructions[instructionToIssue]);
-      branchUnitReservationStation->setNextReorderBufferIndex(reorderBufferIndexes[instructionToIssue]);
+      branchUnitReservationStation->setNextInstruction(currentInstructions[instructionToIssue], 
+        reorderBufferIndexes[instructionToIssue]);
       break;
   }
 }

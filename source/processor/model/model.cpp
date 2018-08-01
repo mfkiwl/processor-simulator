@@ -48,7 +48,7 @@ Model::Model(const Instructions instructions) :
   alu(&reorderBuffer),
   aluReservationStation(&registerFile, &alu, aluReservationStationSize),
   branchUnit(&reorderBuffer),
-  branchUnitReservationStation(&registerFile, &branchUnit, branchUnitReservationStationSize, issueWindowSize),
+  branchUnitReservationStation(&registerFile, &branchUnit, branchUnitReservationStationSize),
   loadStoreUnit(&memory, &reorderBuffer),
   loadStoreUnitReservationStation(&registerFile, &reorderBuffer, &loadStoreUnit, loadStoreUnitReservationStationSize)
 {}

@@ -215,10 +215,6 @@ void ALUReservationStation::fetchOperands(const int index) {
 //=========================================================================================
 //getters and setters
 
-int ALUReservationStation::getSize() const {
-  return size;
-}
-
 void ALUReservationStation::getCurrentInstructions(Instruction* const copy) const {
   for(int i = 0; i < size; i++) {
     copy[i] = instructions[i];

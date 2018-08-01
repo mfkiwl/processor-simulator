@@ -69,8 +69,6 @@ class ALUReservationStation {
   //getters and setters
   public:
 
-    int getSize() const;
-
     void getCurrentInstructions(Instruction* const copy) const;
 
     void getCurrentReorderBufferIndexes(int* const copy) const;
