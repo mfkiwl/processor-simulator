@@ -99,11 +99,22 @@ void ALUReservationStation::flush() {
     nextInstructions[i] = (Instruction) {0,0,0,0};
     nextReorderBufferIndexes[i] = -1;
   }
+  numReservedSpaces = 0;
   opcode = 0;
   for(int i = 0; i < 3; i++) {
     operands[i] = 0;
   }
   reorderBufferIndex = -1;
+}
+
+//print information about the current
+void ALUReservationStation::print() const {
+  printf("ALU reservation station:\n");
+  for(int i = 0; i < size; i++) {
+    if(instructions[i].opcode != NOOP) {
+      printInstruction(instructions[i]);
+    }
+  }
 }
 
 bool ALUReservationStation::freeSpace() const {
@@ -124,16 +135,6 @@ bool ALUReservationStation::freeSpace() const {
 
 void ALUReservationStation::reserveSpace() {
   numReservedSpaces++;
-}
-
-//print information about the current
-void ALUReservationStation::print() const {
-  printf("ALU reservation station:\n");
-  for(int i = 0; i < size; i++) {
-    if(instructions[i].opcode != NOOP) {
-      printInstruction(instructions[i]);
-    }
-  }
 }
 
 //==============================================================================================

@@ -135,6 +135,10 @@ void DecodeIssueUnit::issue(int instructionToIssue) {
     //Load Store unit instructions
     case LW:
       if(loadStoreUnitReservationStation->freeSpace()) {
+
+        //reserve a space in the reservation station
+        loadStoreUnitReservationStation->reserveSpace();
+
         //get the destination architectural register
         int architecturalRegister = currentInstructions[instructionToIssue].operands[0];
 
@@ -162,6 +166,10 @@ void DecodeIssueUnit::issue(int instructionToIssue) {
 
     case LWR:
       if(loadStoreUnitReservationStation->freeSpace()) {
+
+        //reserve a space in the reservation station
+        loadStoreUnitReservationStation->reserveSpace();
+
         //get the destination architectural register
         int architecturalRegister = currentInstructions[instructionToIssue].operands[0];
 
@@ -192,6 +200,10 @@ void DecodeIssueUnit::issue(int instructionToIssue) {
 
     case SW:
       if(loadStoreUnitReservationStation->freeSpace()) {
+
+        //reserve a space in the reservation station
+        loadStoreUnitReservationStation->reserveSpace();
+
         //Instruction has been issued so add entry to the reorder buffer
         reorderBufferIndexes[instructionToIssue] = reorderBuffer->addEntry(STORE_TO_MEMORY, 0, 0, 0, 0, currentInstructions[instructionToIssue]);
 
@@ -205,6 +217,10 @@ void DecodeIssueUnit::issue(int instructionToIssue) {
 
     case SWR:
       if(loadStoreUnitReservationStation->freeSpace()) {
+
+        //reserve a space in the reservation station
+        loadStoreUnitReservationStation->reserveSpace();
+        
         //Instruction has been issued so add entry to the reorder buffer
         reorderBufferIndexes[instructionToIssue] = reorderBuffer->addEntry(STORE_TO_MEMORY, 0, 0, 0, 0, currentInstructions[instructionToIssue]);
 
@@ -297,7 +313,8 @@ void DecodeIssueUnit::pipeInstruction(int instructionToIssue) {
     case SUB:
       //Set the scoreboard value of the destination register to zero
       registerFile->setScoreBoardValue(currentInstructions[instructionToIssue].operands[0],0);
-      aluReservationStation->setNextInstruction(currentInstructions[instructionToIssue], reorderBufferIndexes[instructionToIssue]);
+      aluReservationStation->setNextInstruction(currentInstructions[instructionToIssue], 
+        reorderBufferIndexes[instructionToIssue]);
       break;
 
     //Load Store unit instructions
@@ -307,8 +324,8 @@ void DecodeIssueUnit::pipeInstruction(int instructionToIssue) {
       registerFile->setScoreBoardValue(currentInstructions[instructionToIssue].operands[0],0);
     case SW:
     case SWR:
-      loadStoreUnitReservationStation->setNextInstruction(currentInstructions[instructionToIssue]);
-      loadStoreUnitReservationStation->setNextReorderBufferIndex(reorderBufferIndexes[instructionToIssue]);
+      loadStoreUnitReservationStation->setNextInstruction(currentInstructions[instructionToIssue], 
+        reorderBufferIndexes[instructionToIssue]);
       break;
 
     //Branch unit instructions

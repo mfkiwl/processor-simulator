@@ -31,10 +31,10 @@ class LoadStoreUnitReservationStation {
     Instruction* const instructions;
     int* const reorderBufferIndexes;
 
-    const int issueWindowSize;
+    int numReservedSpaces;
 
     Instruction* const nextInstructions;
-    int nextReorderBufferIndex;
+    int* const nextReorderBufferIndexes;
 
     int opcode;
     int operands[3];
@@ -46,13 +46,9 @@ class LoadStoreUnitReservationStation {
   public:
 
     LoadStoreUnitReservationStation(RegisterFile* const registerFile, ReorderBuffer* const reorderBuffer, 
-      LoadStoreUnit* const loadStoreUnit, const int size, const int issueWindowSize);
+      LoadStoreUnit* const loadStoreUnit, const int size);
 
     void execute();
-
-    void addInstruction(const Instruction instruction, const int rbi);
-
-    bool freeSpace() const;
 
     void pipe();
 
@@ -60,8 +56,14 @@ class LoadStoreUnitReservationStation {
 
     void print() const;
 
+    bool freeSpace() const;
+
+    void reserveSpace();
+
   //private functions
   private:
+
+    void addNextInstructions();
 
     bool readyToDispatch(const int index) const;
 
@@ -74,10 +76,7 @@ class LoadStoreUnitReservationStation {
 
     void getCurrentReorderBufferIndexes(int* const copy) const;
 
-    void setNextInstruction(const Instruction instruction);
-
-    void setNextReorderBufferIndex(const int index);
-
+    void setNextInstruction(const Instruction instruction, const int rbi);
 };
 
 #endif

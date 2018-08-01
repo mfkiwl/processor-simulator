@@ -46,13 +46,13 @@ class ALUReservationStation {
 
     void pipe();
 
-    bool freeSpace() const;
-
-    void reserveSpace();
-
     void flush();
 
     void print() const;
+
+    bool freeSpace() const;
+
+    void reserveSpace();
 
   //private functions
   private:

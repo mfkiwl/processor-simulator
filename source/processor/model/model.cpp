@@ -50,8 +50,7 @@ Model::Model(const Instructions instructions) :
   branchUnit(&reorderBuffer),
   branchUnitReservationStation(&registerFile, &branchUnit, branchUnitReservationStationSize, issueWindowSize),
   loadStoreUnit(&memory, &reorderBuffer),
-  loadStoreUnitReservationStation(&registerFile, &reorderBuffer, &loadStoreUnit, loadStoreUnitReservationStationSize,
-    issueWindowSize)
+  loadStoreUnitReservationStation(&registerFile, &reorderBuffer, &loadStoreUnit, loadStoreUnitReservationStationSize)
 {}
 
 void Model::updateStats() {

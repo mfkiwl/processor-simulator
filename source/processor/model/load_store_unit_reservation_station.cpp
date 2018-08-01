@@ -18,7 +18,7 @@
 //public functions
 
 LoadStoreUnitReservationStation::LoadStoreUnitReservationStation(RegisterFile* const registerFile, 
-  ReorderBuffer* const reorderBuffer, LoadStoreUnit* const loadStoreUnit, const int size, const int issueWindowSize) : 
+  ReorderBuffer* const reorderBuffer, LoadStoreUnit* const loadStoreUnit, const int size) : 
   registerFile(registerFile),
   reorderBuffer(reorderBuffer),
   loadStoreUnit(loadStoreUnit),
@@ -27,9 +27,9 @@ LoadStoreUnitReservationStation::LoadStoreUnitReservationStation(RegisterFile* c
   size(size),
   instructions(new Instruction[size]),
   reorderBufferIndexes(new int[size]),
-  issueWindowSize(issueWindowSize),
-  nextInstructions(new Instruction[issueWindowSize]),
-  nextReorderBufferIndex(-1),
+  numReservedSpaces(0),
+  nextInstructions(new Instruction[size]),
+  nextReorderBufferIndexes(new int[size]),
   opcode(0),
   reorderBufferIndex(-1),
   dispatchIndex(-1)
@@ -38,9 +38,8 @@ LoadStoreUnitReservationStation::LoadStoreUnitReservationStation(RegisterFile* c
   for(int i = 0; i < size; i++) {
     instructions[i] = (Instruction) {0,0,0,0};
     reorderBufferIndexes[i] = -1;
-  }
-  for(int i = 0; i < issueWindowSize; i++) {
     nextInstructions[i] = (Instruction) {0,0,0,0};
+    nextReorderBufferIndexes[i] = -1;
   }
   //zero out all operands
   for(int i = 0; i < 3; i++) {
@@ -56,23 +55,6 @@ void LoadStoreUnitReservationStation::execute() {
     reorderBufferIndex = reorderBufferIndexes[tail];
     dispatchIndex = tail;
     tail = (tail + 1) % size;
-  }
-}
-
-void LoadStoreUnitReservationStation::addInstruction(const Instruction instruction, const int rbi) {
-  if(instruction.opcode != NOOP) {
-    instructions[head] = instruction;
-    reorderBufferIndexes[head] = rbi;
-    head = (head + 1) % size;
-  }
-}
-
-bool LoadStoreUnitReservationStation::freeSpace() const {
-  if(tail == head && instructions[head].opcode != NOOP) {
-    return false;
-  }
-  else {
-    return true;
   }
 }
 
@@ -100,17 +82,23 @@ void LoadStoreUnitReservationStation::pipe() {
     reorderBufferIndex = -1;
   }
   //add the next instruction to the buffer
-  addInstruction(nextInstructions[0], nextReorderBufferIndex);
+  addNextInstructions();
   //clear the nextInstruction and nextReorderBufferIndex
-  nextInstructions[0] = (Instruction) {0,0,0,0};
-  nextReorderBufferIndex = -1;
+  for(int i = 0; i < size; i++) {
+    nextInstructions[i] = (Instruction) {0,0,0,0};
+    nextReorderBufferIndexes[i] = -1;
+  }
+  numReservedSpaces = 0;
 }
 
 void LoadStoreUnitReservationStation::flush() {
   for(int i = 0; i < size; i++) {
     instructions[i] = (Instruction) {0,0,0,0};
     reorderBufferIndexes[i] = -1;
+    nextInstructions[i] = (Instruction) {0,0,0,0};
+    nextReorderBufferIndexes[i] = -1;
   }
+  numReservedSpaces = 0;
   opcode = 0;
   for(int i = 0; i < 3; i++) {
     operands[i] = 0;
@@ -127,8 +115,38 @@ void LoadStoreUnitReservationStation::print() const {
   }
 }
 
+bool LoadStoreUnitReservationStation::freeSpace() const {
+  int count = 0;
+  for(int i = 0; i < size; i++) {
+    if(instructions[i].opcode != NOOP) {
+      count++;
+    }
+  }
+  count += numReservedSpaces;
+  if(count == size) {
+    return false;
+  }
+  else {
+    return true;
+  }
+}
+
+void LoadStoreUnitReservationStation::reserveSpace() {
+  numReservedSpaces++;
+}
+
 //============================================================================================
 //private functions
+
+void LoadStoreUnitReservationStation::addNextInstructions() {
+  for(int i = 0; i < size; i++) {
+    if(nextInstructions[i].opcode != NOOP) {
+      instructions[head] = nextInstructions[i];
+      reorderBufferIndexes[head] = nextReorderBufferIndexes[i];
+      head = (head + 1) % size;
+    }
+  }
+}
 
 bool LoadStoreUnitReservationStation::readyToDispatch(const int index) const {
   Instruction instruction = instructions[index];
@@ -204,10 +222,12 @@ void LoadStoreUnitReservationStation::getCurrentReorderBufferIndexes(int* const 
   }
 }
 
-void LoadStoreUnitReservationStation::setNextInstruction(const Instruction instruction) {
-  nextInstructions[0] = instruction;
-}
-
-void LoadStoreUnitReservationStation::setNextReorderBufferIndex(const int index) {
-  nextReorderBufferIndex = index;
+void LoadStoreUnitReservationStation::setNextInstruction(const Instruction instruction, const int rbi) {
+  for(int i = 0; i < size; i++) {
+    if(nextInstructions[i].opcode == NOOP) {
+      nextInstructions[i] = instruction;
+      nextReorderBufferIndexes[i] = rbi;
+      break;
+    }
+  }
 }
