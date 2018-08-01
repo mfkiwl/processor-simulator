@@ -42,6 +42,9 @@ void DecodeIssueUnit::execute() {
   for(int i = 0; i < issueWindowSize; i++) {
     if(reorderBuffer->freeSpace()) {
       issue(i);
+      if(currentInstructionsIssued[i] != true) {
+        break;
+      }
     }
   }
 }
@@ -278,7 +281,7 @@ void DecodeIssueUnit::issue(int instructionToIssue) {
 
         //reserve a space in the reservation station
         branchUnitReservationStation->reserveSpace();
-        
+
         //Instruction has been issued so add entry to the reorder buffer
         reorderBufferIndexes[instructionToIssue] = reorderBuffer->addEntry(SYSCALL, 0, 0, 0, 0, currentInstructions[instructionToIssue]);
 

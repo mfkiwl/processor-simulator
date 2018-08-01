@@ -69,7 +69,7 @@ void BranchUnitReservationStation::pipe() {
     branchUnit->setNextOpcode(opcode);
     branchUnit->setNextOperands(operands);
     //Send the reorder buffer index to the execution unit
-    branchUnit->setNextReorderBufferIndex(reorderBufferIndexes[0]);
+    branchUnit->setNextReorderBufferIndex(reorderBufferIndex);
         
     //reset the outputs
     opcode = 0;
@@ -151,7 +151,7 @@ void BranchUnitReservationStation::addNextInstructions() {
     if(nextInstructions[i].opcode != NOOP) {
       int index = findFreePosition();
       instructions[index] = nextInstructions[i];
-      reorderBufferIndexes[index] = reorderBufferIndexes[i];
+      reorderBufferIndexes[index] = nextReorderBufferIndexes[i];
     }
   }
 }

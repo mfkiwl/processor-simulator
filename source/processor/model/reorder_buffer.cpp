@@ -104,6 +104,7 @@ void ReorderBuffer::execute() {
       if(buffer[tail][TYPE] == JUMP && buffer[tail][RESULT]) {
         *pc = buffer[tail][BRANCH_TARGET_ADDRESS];
         flushFlag = true;
+        break;
       }
       if(buffer[tail][TYPE] == SYSCALL) {
         *runningFlag = 0;
