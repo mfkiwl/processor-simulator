@@ -24,7 +24,7 @@ Model::Model(const Instructions instructions) :
   numArchitecturalRegisters(16),
   numPhysicalRegisters(128),
   memorySize(28),
-  issueWindowSize(1),
+  issueWindowSize(4),
   aluReservationStationSize(4),
   branchUnitReservationStationSize(4),
   loadStoreUnitReservationStationSize(4),
@@ -46,7 +46,7 @@ Model::Model(const Instructions instructions) :
   decodeIssueUnit(&registerFile, &reorderBuffer, &aluReservationStation, &branchUnitReservationStation, 
     &loadStoreUnitReservationStation, issueWindowSize),
   alu(&reorderBuffer),
-  aluReservationStation(&registerFile, &alu, aluReservationStationSize, issueWindowSize),
+  aluReservationStation(&registerFile, &alu, aluReservationStationSize),
   branchUnit(&reorderBuffer),
   branchUnitReservationStation(&registerFile, &branchUnit, branchUnitReservationStationSize, issueWindowSize),
   loadStoreUnit(&memory, &reorderBuffer),
@@ -246,12 +246,12 @@ void Model::getFetchUnitInstructions(Instruction* const copy) const {
   fetchUnit.getCurrentInstructions(copy);
 }
 
-Instruction Model::getDecodeIssueUnitInstruction() const {
-  return decodeIssueUnit.getCurrentInstruction();
+void Model::getDecodeIssueUnitInstructions(Instruction* const copy) const {
+  decodeIssueUnit.getInstructions(copy);
 }
 
-void Model::getDecodeIssueUnitInstructions(Instruction* const copy) const {
-  decodeIssueUnit.getCurrentInstructions(copy);
+void Model::getDecodeIssueUnitReorderBufferIndexes(int* const copy) const {
+  decodeIssueUnit.getReorderBufferIndexes(copy);
 }
 
 int Model::getAluReservationStationSize() const {

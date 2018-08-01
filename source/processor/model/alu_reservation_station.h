@@ -26,10 +26,10 @@ class ALUReservationStation {
     Instruction* const instructions;
     int* const reorderBufferIndexes;
 
-    const int issueWindowSize;
+    int numReservedSpaces;
 
     Instruction* const nextInstructions;
-    int nextReorderBufferIndex;
+    int* const nextReorderBufferIndexes;
 
     int opcode;
     int* const operands;
@@ -40,13 +40,15 @@ class ALUReservationStation {
   //public functions
   public:
 
-    ALUReservationStation(RegisterFile* const registerFile, ALU* const alu, const int size, const int issueWindowSize);
+    ALUReservationStation(RegisterFile* const registerFile, ALU* const alu, const int size);
 
     void execute();
 
     void pipe();
 
     bool freeSpace() const;
+
+    void reserveSpace();
 
     void flush();
 
@@ -57,7 +59,7 @@ class ALUReservationStation {
 
     int findFreePosition() const;
 
-    void addInstruction(const Instruction instruction, const int rbi);
+    void addNextInstructions();
 
     bool readyToDispatch(const int index) const;
 
@@ -67,13 +69,13 @@ class ALUReservationStation {
   //getters and setters
   public:
 
+    int getSize() const;
+
     void getCurrentInstructions(Instruction* const copy) const;
 
     void getCurrentReorderBufferIndexes(int* const copy) const;
 
-    void setNextInstruction(const Instruction instruction);
-
-    void setNextReorderBufferIndex(const int index);
+    void setNextInstruction(const Instruction instruction, const int rbi);
 };
 
 #endif

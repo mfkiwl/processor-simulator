@@ -297,7 +297,7 @@ void View::drawFetchUnit(const int issueWindowSize, const Instruction* const ins
   }
 }
 
-void View::drawDecodeIssueUnit(const int issueWindowSize, const Instruction* const instructions) {
+void View::drawDecodeIssueUnit(const int issueWindowSize, const Instruction* const instructions, const int* const reorderBufferIndexes) {
   int xPos = 260;
   int yPos = 60;
   int numOfHorizontalCells = 1;
@@ -306,11 +306,15 @@ void View::drawDecodeIssueUnit(const int issueWindowSize, const Instruction* con
   int cellHeight = 20;
 
   renderText(xPos, yPos, "Decode/Issue unit");
-  drawTable(xPos, yPos + cellHeight, numOfHorizontalCells, numOfVerticalCells, cellWidth, cellHeight);
+  drawTable(xPos, yPos + cellHeight, 1, numOfVerticalCells, 20, cellHeight);
+  drawTable(xPos + 20, yPos + cellHeight, numOfHorizontalCells, numOfVerticalCells, cellWidth, cellHeight);
   for(int i = 0; i < issueWindowSize; i++) {
+    if(reorderBufferIndexes[i] != -1) {
+      renderText(xPos, yPos + (i + 1) * cellHeight, intToString(reorderBufferIndexes[i]));
+    }
     std::string instructionString = instructionToString(instructions[i]);
     if(instructionString != "NOOP") {
-      renderText(xPos, yPos + (i + 1) * cellHeight, instructionString);
+      renderText(xPos + 20, yPos + (i + 1) * cellHeight, instructionString);
     }
   }
 }

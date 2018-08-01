@@ -45,8 +45,10 @@ void Controller::updateView() {
 
   //draw the instruction in the decode issue unit
   Instruction decodeIssueUnitInstructions[issueWindowSize];
+  int decodeIssueUnitReorderBufferIndexes[issueWindowSize];
   model.getDecodeIssueUnitInstructions(decodeIssueUnitInstructions);
-  view.drawDecodeIssueUnit(issueWindowSize, decodeIssueUnitInstructions);
+  model.getDecodeIssueUnitReorderBufferIndexes(decodeIssueUnitReorderBufferIndexes);
+  view.drawDecodeIssueUnit(issueWindowSize, decodeIssueUnitInstructions, decodeIssueUnitReorderBufferIndexes);
 
   //draw the instructions in the alu reservation station
   int aluReservationStationSize = model.getAluReservationStationSize();

@@ -40,7 +40,7 @@ class DecodeIssueUnit {
 
     bool* const currentInstructionsIssued;
 
-    int reorderBufferIndex;
+    int* const reorderBufferIndexes;
 
   //public functions
   public:
@@ -68,9 +68,9 @@ class DecodeIssueUnit {
 
     void setNextInstructions(const Instruction* const x);
 
-    Instruction getCurrentInstruction() const;
+    void getInstructions(Instruction* const copy) const;
 
-    void getCurrentInstructions(Instruction* const copy) const;
+    void getReorderBufferIndexes(int* const copy) const;
 };
 
 #endif

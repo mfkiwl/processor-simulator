@@ -19,15 +19,15 @@ using namespace std;
 //==========================================================================
 //public functions
 
-ALUReservationStation::ALUReservationStation(RegisterFile* const registerFile, ALU* const alu, const int size, const int issueWindowSize) : 
+ALUReservationStation::ALUReservationStation(RegisterFile* const registerFile, ALU* const alu, const int size) : 
   registerFile(registerFile),
   alu(alu),
   size(size),
   instructions(new Instruction[size]),
   reorderBufferIndexes(new int[size]),
-  issueWindowSize(issueWindowSize),
-  nextInstructions(new Instruction[issueWindowSize]),
-  nextReorderBufferIndex(-1),
+  numReservedSpaces(0),
+  nextInstructions(new Instruction[size]),
+  nextReorderBufferIndexes(new int[size]),
   opcode(0),
   operands(new int[3]),
   reorderBufferIndex(-1),
@@ -37,9 +37,8 @@ ALUReservationStation::ALUReservationStation(RegisterFile* const registerFile, A
   for(int i = 0; i < size; i++) {
     instructions[i] = (Instruction) {0,0,0,0};
     reorderBufferIndexes[i] = -1;
-  }
-  for(int i = 0; i < issueWindowSize; i++) {
     nextInstructions[i] = (Instruction) {0,0,0,0};
+    nextReorderBufferIndexes[i] = -1;
   }
   //zero out operands
   for(int i = 0; i < 3; i++) {
@@ -82,10 +81,14 @@ void ALUReservationStation::pipe() {
     reorderBufferIndex = -1;
   }
   //add the next instruction to the buffer
-  addInstruction(nextInstructions[0], nextReorderBufferIndex);
-  //clear the nextInstruction and nextReorderBufferIndex
-  nextInstructions[0] = (Instruction) {0,0,0,0};
-  nextReorderBufferIndex = -1;
+  addNextInstructions();
+  //clear the nextInstructions and nextReorderBufferIndexes
+  for(int i = 0; i < size; i++) {
+    nextInstructions[i] = (Instruction) {0,0,0,0};
+    nextReorderBufferIndexes[i] = -1;
+  }
+  //reset the number of reserved spaces
+  numReservedSpaces = 0;
 }
 
 //reset all member variables
@@ -93,6 +96,8 @@ void ALUReservationStation::flush() {
   for(int i = 0; i < size; i++) {
     instructions[i] = (Instruction) {0,0,0,0};
     reorderBufferIndexes[i] = -1;
+    nextInstructions[i] = (Instruction) {0,0,0,0};
+    nextReorderBufferIndexes[i] = -1;
   }
   opcode = 0;
   for(int i = 0; i < 3; i++) {
@@ -102,7 +107,23 @@ void ALUReservationStation::flush() {
 }
 
 bool ALUReservationStation::freeSpace() const {
-  return findFreePosition() != -1;
+  int count = 0;
+  for(int i = 0; i < size; i++) {
+    if(instructions[i].opcode != NOOP) {
+      count++;
+    }
+  }
+  count += numReservedSpaces;
+  if(count == size) {
+    return false;
+  }
+  else {
+    return true;
+  }
+}
+
+void ALUReservationStation::reserveSpace() {
+  numReservedSpaces++;
 }
 
 //print information about the current
@@ -127,11 +148,13 @@ int ALUReservationStation::findFreePosition() const {
   return -1;
 }
 
-void ALUReservationStation::addInstruction(const Instruction instruction, const int rbi) {
-  if(instruction.opcode != NOOP) {
-    int index = findFreePosition();
-    instructions[index] = instruction;
-    reorderBufferIndexes[index] = rbi;
+void ALUReservationStation::addNextInstructions() {
+  for(int i = 0; i < size; i++) {
+    if(nextInstructions[i].opcode != NOOP) {
+      int index = findFreePosition();
+      instructions[index] = nextInstructions[i];
+      reorderBufferIndexes[index] = nextReorderBufferIndexes[i];
+    }
   }
 }
 
@@ -191,6 +214,10 @@ void ALUReservationStation::fetchOperands(const int index) {
 //=========================================================================================
 //getters and setters
 
+int ALUReservationStation::getSize() const {
+  return size;
+}
+
 void ALUReservationStation::getCurrentInstructions(Instruction* const copy) const {
   for(int i = 0; i < size; i++) {
     copy[i] = instructions[i];
@@ -203,10 +230,12 @@ void ALUReservationStation::getCurrentReorderBufferIndexes(int* const copy) cons
   }
 }
 
-void ALUReservationStation::setNextInstruction(const Instruction instruction) {
-  nextInstructions[0] = instruction;
-}
-
-void ALUReservationStation::setNextReorderBufferIndex(const int index) {
-  nextReorderBufferIndex = index;
+void ALUReservationStation::setNextInstruction(const Instruction instruction, const int rbi) {
+  for(int i = 0; i < size; i++) {
+    if(nextInstructions[i].opcode == NOOP) {
+      nextInstructions[i] = instruction;
+      nextReorderBufferIndexes[i] = rbi;
+      break;
+    }
+  }
 }

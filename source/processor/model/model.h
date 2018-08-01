@@ -119,9 +119,9 @@ class Model {
 
     void getFetchUnitInstructions(Instruction* const copy) const;
 
-    Instruction getDecodeIssueUnitInstruction() const;
-
     void getDecodeIssueUnitInstructions(Instruction* const copy) const;
+
+    void getDecodeIssueUnitReorderBufferIndexes(int* const copy) const;
 
     int getAluReservationStationSize() const;
 

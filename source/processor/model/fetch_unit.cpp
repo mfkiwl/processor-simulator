@@ -42,7 +42,7 @@ void FetchUnit::execute() {
       //fetch instructions
       fetchInstructions();
       //increment the program counter
-      (*pc)++;
+      (*pc) += issueWindowSize;
     }
     else {
       //next instruction is noop if pc exceeds number of instructions
@@ -60,6 +60,9 @@ void FetchUnit::pipe() {
   if(decodeIssueUnit->allInstructionsIssued()) {
     //put the fetched instruction into the instruction register
     decodeIssueUnit->setNextInstructions(currentInstructions);
+    for(int i = 0; i < issueWindowSize; i++) {
+      currentInstructions[i] = (Instruction) {0,0,0,0};
+    }
   }
 }
 
