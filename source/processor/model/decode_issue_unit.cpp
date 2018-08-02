@@ -305,7 +305,7 @@ void DecodeIssueUnit::moveInstructions() {
   //find the index of the first instruction
   int start = 0;
   for(int i = 0; i < issueWindowSize; i++) {
-    if(currentInstructionsIssued[i] == false) {
+    if(currentInstructions[i].opcode != NOOP) {
       start = i;
       break;
     }
@@ -330,19 +330,24 @@ void DecodeIssueUnit::pipe() {
   for(int i = 0; i < issueWindowSize; i++) {
     if(currentInstructionsIssued[i]) {
       pipeInstruction(i);
+      currentInstructions[i] = (Instruction) {0,0,0,0};
+      currentInstructionsIssued[i] = false;
+      reorderBufferIndexes[i] = -1;
     }
   }
   //move the instructions so that they start at the top
   moveInstructions();
   //set the current instructions equal to the next instructions
   for(int i = 0; i < issueWindowSize; i++) {
-    if(currentInstructionsIssued[i]) {
-      //set the current instruction equal to the next instruction
-      currentInstructions[i] = nextInstructions[i];
-      currentInstructionsIssued[i] = false;
-      reorderBufferIndexes[i] = -1;
-      //clear the nextInstruction
-      nextInstructions[i] = (Instruction) {0,0,0,0};
+    if(nextInstructions[i].opcode != NOOP) {
+      for(int j = 0; j < issueWindowSize; j++) {
+        if(currentInstructions[j].opcode == NOOP) {
+          currentInstructions[j] = nextInstructions[i];
+          currentInstructionsIssued[j] = false;
+          reorderBufferIndexes[j] = -1;
+          break;
+        }
+      }
     }
   }
 }
@@ -421,6 +426,16 @@ bool DecodeIssueUnit::allInstructionsIssued() const {
     }
   }
   return true;
+}
+
+int DecodeIssueUnit::numFreeSpaces() const {
+  int count = 0;
+  for(int i = 0; i < issueWindowSize; i++) {
+    if(currentInstructionsIssued[i]) {
+      count++;
+    }
+  }
+  return count;
 }
 
 //======================================================================

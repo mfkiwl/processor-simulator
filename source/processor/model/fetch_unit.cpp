@@ -25,8 +25,8 @@ FetchUnit::FetchUnit(const Instructions instructions, int* const pc, DecodeIssue
   }
 }
 
-void FetchUnit::fetchInstructions() {
-  for(int i = 0; i < issueWindowSize; i++) {
+void FetchUnit::fetchInstructions(int num) {
+  for(int i = 0; i < num; i++) {
     if(*pc + i < instructions.getNumOfInstructions()) {
       currentInstructions[i] = instructions.at(*pc + i);
     }
@@ -37,16 +37,18 @@ void FetchUnit::fetchInstructions() {
 }
 
 void FetchUnit::execute() {
-  if(decodeIssueUnit->allInstructionsIssued()) {
+  int numToFetch = decodeIssueUnit->numFreeSpaces();
+  if(numToFetch > 0) {
     if(*pc < instructions.getNumOfInstructions()) {
       //fetch instructions
-      fetchInstructions();
+      fetchInstructions(numToFetch);
       //increment the program counter
-      (*pc) += issueWindowSize;
+      (*pc) += numToFetch;
     }
-    else {
-      //next instruction is noop if pc exceeds number of instructions
-      currentInstructions[0] = (Instruction) {0,0,0,0};
+  }
+  else {
+    for(int i = 0; i < issueWindowSize; i++) {
+      currentInstructions[i] = (Instruction) {0,0,0,0};
     }
   }
 }
@@ -57,12 +59,10 @@ void FetchUnit::print() const {
 }
 
 void FetchUnit::pipe() {
-  if(decodeIssueUnit->allInstructionsIssued()) {
-    //put the fetched instruction into the instruction register
-    decodeIssueUnit->setNextInstructions(currentInstructions);
-    for(int i = 0; i < issueWindowSize; i++) {
-      currentInstructions[i] = (Instruction) {0,0,0,0};
-    }
+  //put the fetched instruction into the instruction register
+  decodeIssueUnit->setNextInstructions(currentInstructions);
+  for(int i = 0; i < issueWindowSize; i++) {
+    currentInstructions[i] = (Instruction) {0,0,0,0};  
   }
 }
 

@@ -65,6 +65,8 @@ class DecodeIssueUnit {
 
     bool allInstructionsIssued() const;
 
+    int numFreeSpaces() const;
+
   //getters and setters
   public:
 

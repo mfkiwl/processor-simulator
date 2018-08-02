@@ -27,7 +27,7 @@ class FetchUnit {
     FetchUnit(const Instructions instructions, int* const pc, DecodeIssueUnit* const decodeIssueUnit, 
       const int issueWindowSize);
 
-    void fetchInstructions();
+    void fetchInstructions(int num);
 
     void execute();
 
