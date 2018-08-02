@@ -53,6 +53,8 @@ class DecodeIssueUnit {
 
     void issue(int instructionToIssue);
 
+    void moveInstructions();
+
     void pipe();
 
     void pipeInstruction(int instructionToIssue);

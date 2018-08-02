@@ -292,12 +292,48 @@ void DecodeIssueUnit::issue(int instructionToIssue) {
   }
 }
 
+void DecodeIssueUnit::moveInstructions() {
+  Instruction currentInstructionsCopy[issueWindowSize];
+  bool currentInstructionsIssuedCopy[issueWindowSize];
+  int reorderBufferIndexesCopy[issueWindowSize];
+  //copy the arrays
+  for(int i = 0; i < issueWindowSize; i++) {
+    currentInstructionsCopy[i] = currentInstructions[i];
+    currentInstructionsIssuedCopy[i] = currentInstructionsIssued[i];
+    reorderBufferIndexesCopy[i] = reorderBufferIndexes[i];
+  }
+  //find the index of the first instruction
+  int start = 0;
+  for(int i = 0; i < issueWindowSize; i++) {
+    if(currentInstructionsIssued[i] == false) {
+      start = i;
+      break;
+    }
+  }
+  //move the instructions up
+  for(int i = 0; i < issueWindowSize; i++) {
+    int index = start + i;
+    if(index < issueWindowSize) {
+      currentInstructions[i] = currentInstructionsCopy[index];
+      currentInstructionsIssued[i] = currentInstructionsIssuedCopy[index];
+      reorderBufferIndexes[i] = reorderBufferIndexesCopy[index];
+    }
+    else {
+      currentInstructions[i] = (Instruction) {0,0,0,0};
+      currentInstructionsIssued[i] = true;
+      reorderBufferIndexes[i] = -1;
+    }
+  }
+}
+
 void DecodeIssueUnit::pipe() {
   for(int i = 0; i < issueWindowSize; i++) {
     if(currentInstructionsIssued[i]) {
       pipeInstruction(i);
     }
   }
+  //move the instructions so that they start at the top
+  moveInstructions();
   //set the current instructions equal to the next instructions
   for(int i = 0; i < issueWindowSize; i++) {
     if(currentInstructionsIssued[i]) {
