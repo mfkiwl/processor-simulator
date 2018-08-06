@@ -23,11 +23,16 @@ class FetchUnit {
     const int issueWindowSize;
     Instruction* const currentInstructions;
 
+    const int size;
+    int head;
+    int tail;
+    int* const branchAddresses;
+
+  //public functions
   public:
+
     FetchUnit(const Instructions instructions, int* const pc, DecodeIssueUnit* const decodeIssueUnit, 
       const int issueWindowSize);
-
-    void fetchInstructions(int num);
 
     void execute();
 
@@ -37,8 +42,25 @@ class FetchUnit {
 
     void flush();
 
-    //=============================
-    // getter functions
+    int getTail();
+
+  //private functions
+  private:
+
+    void fetchInstructions(int num);
+
+    bool isABranchInstruction(Instruction instruction) const;
+
+    bool takeBranch(Instruction instruction);
+
+    void storeBranchAddress();
+
+    bool empty() const;
+
+    void printBranchAddresses() const;
+
+  //getter and setter functions
+  public:
     
     Instruction getCurrentInstruction() const;
 

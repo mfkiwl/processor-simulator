@@ -40,7 +40,7 @@ Model::Model(const Instructions instructions) :
   //components
   registerFile(numArchitecturalRegisters, numPhysicalRegisters), 
   memory(memorySize),
-  reorderBuffer(&registerFile, &memory, &pc, &runningFlag, &noOfInstructionsExecuted, reorderBufferSize, 
+  reorderBuffer(&registerFile, &memory, &fetchUnit, &pc, &runningFlag, &noOfInstructionsExecuted, reorderBufferSize, 
     numReorderBufferFields, issueWindowSize),
   fetchUnit(instructions, &pc, &decodeIssueUnit, issueWindowSize),
   decodeIssueUnit(&registerFile, &reorderBuffer, &aluReservationStation, &branchUnitReservationStation, 

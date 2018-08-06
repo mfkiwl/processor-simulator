@@ -9,6 +9,7 @@
 #include "register_file.h"
 #include "memory.h"
 #include "instructions.h"
+#include "fetch_unit.h"
 #include "constants.h"
 
 //===========================================
@@ -16,11 +17,12 @@
 
 using namespace std;
 
-ReorderBuffer::ReorderBuffer(RegisterFile* const registerFile, Memory* const memory, int* const pc, 
-int* const runningFlag, int* const noOfInstructionsExecuted, const int bufferSize, const int numFields, 
-const int issueWindowSize) : 
+ReorderBuffer::ReorderBuffer(RegisterFile* const registerFile, Memory* const memory, FetchUnit* const fetchUnit, 
+  int* const pc, int* const runningFlag, int* const noOfInstructionsExecuted, const int bufferSize, const int numFields, 
+  const int issueWindowSize) : 
   registerFile(registerFile),
   memory(memory),
+  fetchUnit(fetchUnit),
   pc(pc),
   flushFlag(false),
   runningFlag(runningFlag),
@@ -87,7 +89,6 @@ const int physicalRegister, const int previousPhysicalRegister, const Instructio
 void ReorderBuffer::execute() {
   for(int i = 0; i < issueWindowSize; i++) {
     if(buffer[tail][STATUS] == FINISHED) {
-      //buffer[tail][STATUS] = -1;
       if(buffer[tail][TYPE] == STORE_TO_REGISTER) {
         //write the result to the register
         registerFile->setPhysicalRegisterValue(buffer[tail][PHYSICAL_REGISTER], buffer[tail][RESULT]);
@@ -101,10 +102,12 @@ void ReorderBuffer::execute() {
       if(buffer[tail][TYPE] == STORE_TO_MEMORY) {
 
       }
-      if(buffer[tail][TYPE] == JUMP && buffer[tail][RESULT]) {
-        *pc = buffer[tail][BRANCH_TARGET_ADDRESS];
-        flushFlag = true;
-        break;
+      if(buffer[tail][TYPE] == JUMP) {
+        int branchAddress = fetchUnit->getTail();
+        if(buffer[tail][RESULT] == false) {
+          *pc = branchAddress + 1;
+          flushFlag = true;
+        }
       }
       if(buffer[tail][TYPE] == SYSCALL) {
         *runningFlag = 0;
@@ -114,7 +117,9 @@ void ReorderBuffer::execute() {
       //increment the number of instructions that we have executed
       (*noOfInstructionsExecuted)++;
       //increment the tail position
-      tail = (tail + 1) % bufferSize;
+      if(head != tail) {
+        tail = (tail + 1) % bufferSize;
+      }
     }
   }
 }
