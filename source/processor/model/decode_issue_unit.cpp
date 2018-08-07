@@ -26,23 +26,32 @@ DecodeIssueUnit::DecodeIssueUnit(RegisterFile* const registerFile, ReorderBuffer
   loadStoreUnitReservationStation(loadStoreUnitReservationStation),
   issueWindowSize(issueWindowSize),
   nextInstructions(new Instruction[issueWindowSize]),
-  currentInstructions(new Instruction[issueWindowSize]),
-  currentInstructionsIssued(new bool[issueWindowSize]),
+  nextBranchAddresses(new int[issueWindowSize]),
+  instructions(new Instruction[issueWindowSize]),
+  branchAddresses(new int[issueWindowSize]),
+  instructionsIssued(new bool[issueWindowSize]),
   reorderBufferIndexes(new int[issueWindowSize])
 {
+  //initialise arrays
   for(int i = 0; i < issueWindowSize; i++) {
     nextInstructions[i] = (Instruction) {0,0,0,0};
-    currentInstructions[i] = (Instruction) {0,0,0,0};
-    currentInstructionsIssued[i] = true;
+    nextBranchAddresses[i] = -1;
+    instructions[i] = (Instruction) {0,0,0,0};
+    instructionsIssued[i] = true;
     reorderBufferIndexes[i] = -1;
+    branchAddresses[i] = -1;
   }
 }
 
 void DecodeIssueUnit::execute() {
+  //try to issue all instructions in order
   for(int i = 0; i < issueWindowSize; i++) {
+    //if there is space in the reorder buffer
     if(reorderBuffer->freeSpace()) {
+      //try and issue instruction
       issue(i);
-      if(currentInstructionsIssued[i] != true) {
+      //if you can't issue an instruction then stop issuing
+      if(instructionsIssued[i] != true) {
         break;
       }
     }
@@ -50,12 +59,12 @@ void DecodeIssueUnit::execute() {
 }
 
 void DecodeIssueUnit::issue(int instructionToIssue) {
-  switch(currentInstructions[instructionToIssue].opcode) {
+  switch(instructions[instructionToIssue].opcode) {
 
     //NOOP instruction
     case NOOP:
       //take note that the instruction was issued
-      currentInstructionsIssued[instructionToIssue] = true;
+      instructionsIssued[instructionToIssue] = true;
       break;
 
     //ALU instructions
@@ -67,30 +76,30 @@ void DecodeIssueUnit::issue(int instructionToIssue) {
         aluReservationStation->reserveSpace();
 
         //get the destination architectural register
-        int architecturalRegister = currentInstructions[instructionToIssue].operands[0];
+        int architecturalRegister = instructions[instructionToIssue].operands[0];
 
         //get the current mapping of the destination architectural register
-        int oldPhysicalRegister = registerFile->getArchitecturalRegisterMapping(currentInstructions[instructionToIssue].operands[0]);
+        int oldPhysicalRegister = registerFile->getArchitecturalRegisterMapping(instructions[instructionToIssue].operands[0]);
 
         //find a free register to use as the destination
         int newPhysicalRegister = registerFile->findFreePhysicalRegister();
         registerFile->usePhysicalRegister(newPhysicalRegister);
 
         //Add instruction to the reorder buffer
-        reorderBufferIndexes[instructionToIssue] = reorderBuffer->addEntry(STORE_TO_REGISTER, 0, architecturalRegister, newPhysicalRegister, 
-          oldPhysicalRegister, currentInstructions[instructionToIssue]);
+        reorderBufferIndexes[instructionToIssue] = reorderBuffer->addEntry(STORE_TO_REGISTER, false, 0, architecturalRegister, newPhysicalRegister, 
+          oldPhysicalRegister, instructions[instructionToIssue]);
 
         //rename the source operands
-        currentInstructions[instructionToIssue].operands[1] = registerFile->getArchitecturalRegisterMapping(currentInstructions[instructionToIssue].operands[1]);
+        instructions[instructionToIssue].operands[1] = registerFile->getArchitecturalRegisterMapping(instructions[instructionToIssue].operands[1]);
 
          //update the rename table
-        registerFile->setArchitecturalRegisterMapping(currentInstructions[instructionToIssue].operands[0], newPhysicalRegister);
+        registerFile->setArchitecturalRegisterMapping(instructions[instructionToIssue].operands[0], newPhysicalRegister);
 
         //rename destination operand
-        currentInstructions[instructionToIssue].operands[0] = newPhysicalRegister;
+        instructions[instructionToIssue].operands[0] = newPhysicalRegister;
 
         //take note that the instruction was issued
-        currentInstructionsIssued[instructionToIssue] = true;
+        instructionsIssued[instructionToIssue] = true;
       }
       break;
 
@@ -107,31 +116,31 @@ void DecodeIssueUnit::issue(int instructionToIssue) {
         aluReservationStation->reserveSpace();
 
         //get the destination architectural register
-        int architecturalRegister = currentInstructions[instructionToIssue].operands[0];
+        int architecturalRegister = instructions[instructionToIssue].operands[0];
 
         //get the current mapping of the destination architectural register
-        int oldPhysicalRegister = registerFile->getArchitecturalRegisterMapping(currentInstructions[instructionToIssue].operands[0]);
+        int oldPhysicalRegister = registerFile->getArchitecturalRegisterMapping(instructions[instructionToIssue].operands[0]);
 
         //find a free register to use as the destination
         int newPhysicalRegister = registerFile->findFreePhysicalRegister();
         registerFile->usePhysicalRegister(newPhysicalRegister);
 
         //Add instruction to the reorder buffer
-        reorderBufferIndexes[instructionToIssue] = reorderBuffer->addEntry(STORE_TO_REGISTER, 0, architecturalRegister, newPhysicalRegister, 
-          oldPhysicalRegister, currentInstructions[instructionToIssue]);
+        reorderBufferIndexes[instructionToIssue] = reorderBuffer->addEntry(STORE_TO_REGISTER, false, 0, architecturalRegister, newPhysicalRegister, 
+          oldPhysicalRegister, instructions[instructionToIssue]);
 
         //rename the source operands
-        currentInstructions[instructionToIssue].operands[1] = registerFile->getArchitecturalRegisterMapping(currentInstructions[instructionToIssue].operands[1]);
-        currentInstructions[instructionToIssue].operands[2] = registerFile->getArchitecturalRegisterMapping(currentInstructions[instructionToIssue].operands[2]);
+        instructions[instructionToIssue].operands[1] = registerFile->getArchitecturalRegisterMapping(instructions[instructionToIssue].operands[1]);
+        instructions[instructionToIssue].operands[2] = registerFile->getArchitecturalRegisterMapping(instructions[instructionToIssue].operands[2]);
 
         //update the rename table
-        registerFile->setArchitecturalRegisterMapping(currentInstructions[instructionToIssue].operands[0], newPhysicalRegister);
+        registerFile->setArchitecturalRegisterMapping(instructions[instructionToIssue].operands[0], newPhysicalRegister);
 
         //take note that the instruction was issued
-        currentInstructionsIssued[instructionToIssue] = true;
+        instructionsIssued[instructionToIssue] = true;
 
         //rename the destination operand
-        currentInstructions[instructionToIssue].operands[0] = newPhysicalRegister;
+        instructions[instructionToIssue].operands[0] = newPhysicalRegister;
       }
       break;
 
@@ -143,27 +152,27 @@ void DecodeIssueUnit::issue(int instructionToIssue) {
         loadStoreUnitReservationStation->reserveSpace();
 
         //get the destination architectural register
-        int architecturalRegister = currentInstructions[instructionToIssue].operands[0];
+        int architecturalRegister = instructions[instructionToIssue].operands[0];
 
         //get the current mapping of the destination architectural register
-        int oldPhysicalRegister = registerFile->getArchitecturalRegisterMapping(currentInstructions[instructionToIssue].operands[0]);
+        int oldPhysicalRegister = registerFile->getArchitecturalRegisterMapping(instructions[instructionToIssue].operands[0]);
 
         //find a free register to use as the destination
         int newPhysicalRegister = registerFile->findFreePhysicalRegister();
         registerFile->usePhysicalRegister(newPhysicalRegister);
 
         //Instruction has been issued so add entry to the reorder buffer
-        reorderBufferIndexes[instructionToIssue] = reorderBuffer->addEntry(STORE_TO_REGISTER, 0, architecturalRegister, newPhysicalRegister, 
-          oldPhysicalRegister, currentInstructions[instructionToIssue]);
+        reorderBufferIndexes[instructionToIssue] = reorderBuffer->addEntry(STORE_TO_REGISTER, false, 0, architecturalRegister, newPhysicalRegister, 
+          oldPhysicalRegister, instructions[instructionToIssue]);
         
         //update the rename table
-        registerFile->setArchitecturalRegisterMapping(currentInstructions[instructionToIssue].operands[0], newPhysicalRegister);
+        registerFile->setArchitecturalRegisterMapping(instructions[instructionToIssue].operands[0], newPhysicalRegister);
 
         //rename the destination operand
-        currentInstructions[instructionToIssue].operands[0] = newPhysicalRegister;
+        instructions[instructionToIssue].operands[0] = newPhysicalRegister;
 
         //take note that the instruction was issued
-        currentInstructionsIssued[instructionToIssue] = true;
+        instructionsIssued[instructionToIssue] = true;
       }
       break;
 
@@ -174,30 +183,30 @@ void DecodeIssueUnit::issue(int instructionToIssue) {
         loadStoreUnitReservationStation->reserveSpace();
 
         //get the destination architectural register
-        int architecturalRegister = currentInstructions[instructionToIssue].operands[0];
+        int architecturalRegister = instructions[instructionToIssue].operands[0];
 
         //get the current mapping of the destination architectural register
-        int oldPhysicalRegister = registerFile->getArchitecturalRegisterMapping(currentInstructions[instructionToIssue].operands[0]);
+        int oldPhysicalRegister = registerFile->getArchitecturalRegisterMapping(instructions[instructionToIssue].operands[0]);
 
         //find a free register to use as the destination
         int newPhysicalRegister = registerFile->findFreePhysicalRegister();
         registerFile->usePhysicalRegister(newPhysicalRegister);
 
         //Instruction has been issued so add entry to the reorder buffer
-        reorderBufferIndexes[instructionToIssue] = reorderBuffer->addEntry(STORE_TO_REGISTER, 0, architecturalRegister, newPhysicalRegister, 
-          oldPhysicalRegister, currentInstructions[instructionToIssue]);
+        reorderBufferIndexes[instructionToIssue] = reorderBuffer->addEntry(STORE_TO_REGISTER, false, 0, architecturalRegister, newPhysicalRegister, 
+          oldPhysicalRegister, instructions[instructionToIssue]);
 
         //rename the source operands
-        currentInstructions[instructionToIssue].operands[1] = registerFile->getArchitecturalRegisterMapping(currentInstructions[instructionToIssue].operands[1]);
+        instructions[instructionToIssue].operands[1] = registerFile->getArchitecturalRegisterMapping(instructions[instructionToIssue].operands[1]);
 
         //update the rename table
-        registerFile->setArchitecturalRegisterMapping(currentInstructions[instructionToIssue].operands[0], newPhysicalRegister);
+        registerFile->setArchitecturalRegisterMapping(instructions[instructionToIssue].operands[0], newPhysicalRegister);
 
         //rename destination operand
-        currentInstructions[instructionToIssue].operands[0] = newPhysicalRegister;
+        instructions[instructionToIssue].operands[0] = newPhysicalRegister;
 
         //take note that the instruction was issued
-        currentInstructionsIssued[instructionToIssue] = true;
+        instructionsIssued[instructionToIssue] = true;
       }
       break;
 
@@ -208,13 +217,13 @@ void DecodeIssueUnit::issue(int instructionToIssue) {
         loadStoreUnitReservationStation->reserveSpace();
 
         //Instruction has been issued so add entry to the reorder buffer
-        reorderBufferIndexes[instructionToIssue] = reorderBuffer->addEntry(STORE_TO_MEMORY, 0, 0, 0, 0, currentInstructions[instructionToIssue]);
+        reorderBufferIndexes[instructionToIssue] = reorderBuffer->addEntry(STORE_TO_MEMORY, true, 0, 0, 0, 0, instructions[instructionToIssue]);
 
         //rename the registers
-        currentInstructions[instructionToIssue].operands[0] = registerFile->getArchitecturalRegisterMapping(currentInstructions[instructionToIssue].operands[0]);
+        instructions[instructionToIssue].operands[0] = registerFile->getArchitecturalRegisterMapping(instructions[instructionToIssue].operands[0]);
 
         //take note that the instruction was issued
-        currentInstructionsIssued[instructionToIssue] = true;
+        instructionsIssued[instructionToIssue] = true;
       }
       break;
 
@@ -225,14 +234,14 @@ void DecodeIssueUnit::issue(int instructionToIssue) {
         loadStoreUnitReservationStation->reserveSpace();
 
         //Instruction has been issued so add entry to the reorder buffer
-        reorderBufferIndexes[instructionToIssue] = reorderBuffer->addEntry(STORE_TO_MEMORY, 0, 0, 0, 0, currentInstructions[instructionToIssue]);
+        reorderBufferIndexes[instructionToIssue] = reorderBuffer->addEntry(STORE_TO_MEMORY, true, 0, 0, 0, 0, instructions[instructionToIssue]);
 
         //rename the registers
-        currentInstructions[instructionToIssue].operands[0] = registerFile->getArchitecturalRegisterMapping(currentInstructions[instructionToIssue].operands[0]);
-        currentInstructions[instructionToIssue].operands[1] = registerFile->getArchitecturalRegisterMapping(currentInstructions[instructionToIssue].operands[1]);
+        instructions[instructionToIssue].operands[0] = registerFile->getArchitecturalRegisterMapping(instructions[instructionToIssue].operands[0]);
+        instructions[instructionToIssue].operands[1] = registerFile->getArchitecturalRegisterMapping(instructions[instructionToIssue].operands[1]);
 
         //take note that the instruction was issued
-        currentInstructionsIssued[instructionToIssue] = true;
+        instructionsIssued[instructionToIssue] = true;
       }
       break;
 
@@ -245,14 +254,14 @@ void DecodeIssueUnit::issue(int instructionToIssue) {
         branchUnitReservationStation->reserveSpace();
 
         //Instruction has been issued so add entry to the reorder buffer
-        reorderBufferIndexes[instructionToIssue] = reorderBuffer->addEntry(JUMP, currentInstructions[instructionToIssue].operands[2], 0, 0, 0, currentInstructions[instructionToIssue]);
+        reorderBufferIndexes[instructionToIssue] = reorderBuffer->addEntry(JUMP, true, branchAddresses[instructionToIssue], 0, 0, 0, instructions[instructionToIssue]);
 
         //rename the registers
-        currentInstructions[instructionToIssue].operands[0] = registerFile->getArchitecturalRegisterMapping(currentInstructions[instructionToIssue].operands[0]);
-        currentInstructions[instructionToIssue].operands[1] = registerFile->getArchitecturalRegisterMapping(currentInstructions[instructionToIssue].operands[1]);
+        instructions[instructionToIssue].operands[0] = registerFile->getArchitecturalRegisterMapping(instructions[instructionToIssue].operands[0]);
+        instructions[instructionToIssue].operands[1] = registerFile->getArchitecturalRegisterMapping(instructions[instructionToIssue].operands[1]);
 
         //take note that the instruction was issued
-        currentInstructionsIssued[instructionToIssue] = true;
+        instructionsIssued[instructionToIssue] = true;
       }
       break;
     case BGEZ:
@@ -268,10 +277,10 @@ void DecodeIssueUnit::issue(int instructionToIssue) {
         branchUnitReservationStation->reserveSpace();
 
         //Instruction has been issued so add entry to the reorder buffer
-        reorderBufferIndexes[instructionToIssue] = reorderBuffer->addEntry(JUMP, currentInstructions[instructionToIssue].operands[0], 0, 0, 0, currentInstructions[instructionToIssue]);
+        reorderBufferIndexes[instructionToIssue] = reorderBuffer->addEntry(JUMP, true, branchAddresses[instructionToIssue], 0, 0, 0, instructions[instructionToIssue]);
 
         //take note that the instruction was issued
-        currentInstructionsIssued[instructionToIssue] = true;
+        instructionsIssued[instructionToIssue] = true;
       }
       break;
                     
@@ -283,29 +292,31 @@ void DecodeIssueUnit::issue(int instructionToIssue) {
         branchUnitReservationStation->reserveSpace();
 
         //Instruction has been issued so add entry to the reorder buffer
-        reorderBufferIndexes[instructionToIssue] = reorderBuffer->addEntry(SYSCALL, 0, 0, 0, 0, currentInstructions[instructionToIssue]);
+        reorderBufferIndexes[instructionToIssue] = reorderBuffer->addEntry(SYSCALL, false, 0, 0, 0, 0, instructions[instructionToIssue]);
 
         //take note that the instruction was issued
-        currentInstructionsIssued[instructionToIssue] = true;
+        instructionsIssued[instructionToIssue] = true;
       }
       break;
   }
 }
 
 void DecodeIssueUnit::moveInstructions() {
-  Instruction currentInstructionsCopy[issueWindowSize];
-  bool currentInstructionsIssuedCopy[issueWindowSize];
+  Instruction instructionsCopy[issueWindowSize];
+  int branchAddressesCopy[issueWindowSize];
+  bool instructionsIssuedCopy[issueWindowSize];
   int reorderBufferIndexesCopy[issueWindowSize];
   //copy the arrays
   for(int i = 0; i < issueWindowSize; i++) {
-    currentInstructionsCopy[i] = currentInstructions[i];
-    currentInstructionsIssuedCopy[i] = currentInstructionsIssued[i];
+    instructionsCopy[i] = instructions[i];
+    branchAddressesCopy[i] = branchAddresses[i];
+    instructionsIssuedCopy[i] = instructionsIssued[i];
     reorderBufferIndexesCopy[i] = reorderBufferIndexes[i];
   }
   //find the index of the first instruction
   int start = 0;
   for(int i = 0; i < issueWindowSize; i++) {
-    if(currentInstructions[i].opcode != NOOP) {
+    if(instructions[i].opcode != NOOP) {
       start = i;
       break;
     }
@@ -314,24 +325,28 @@ void DecodeIssueUnit::moveInstructions() {
   for(int i = 0; i < issueWindowSize; i++) {
     int index = start + i;
     if(index < issueWindowSize) {
-      currentInstructions[i] = currentInstructionsCopy[index];
-      currentInstructionsIssued[i] = currentInstructionsIssuedCopy[index];
+      instructions[i] = instructionsCopy[index];
+      branchAddresses[i] = branchAddressesCopy[index];
+      instructionsIssued[i] = instructionsIssuedCopy[index];
       reorderBufferIndexes[i] = reorderBufferIndexesCopy[index];
     }
     else {
-      currentInstructions[i] = (Instruction) {0,0,0,0};
-      currentInstructionsIssued[i] = true;
+      instructions[i] = (Instruction) {0,0,0,0};
+      branchAddresses[i] = -1;
+      instructionsIssued[i] = true;
       reorderBufferIndexes[i] = -1;
     }
   }
 }
 
 void DecodeIssueUnit::pipe() {
+  //pipe all instructions that have been issued
   for(int i = 0; i < issueWindowSize; i++) {
-    if(currentInstructionsIssued[i]) {
+    if(instructionsIssued[i]) {
       pipeInstruction(i);
-      currentInstructions[i] = (Instruction) {0,0,0,0};
-      currentInstructionsIssued[i] = false;
+      instructions[i] = (Instruction) {0,0,0,0};
+      branchAddresses[i] = -1;
+      instructionsIssued[i] = false;
       reorderBufferIndexes[i] = -1;
     }
   }
@@ -341,9 +356,10 @@ void DecodeIssueUnit::pipe() {
   for(int i = 0; i < issueWindowSize; i++) {
     if(nextInstructions[i].opcode != NOOP) {
       for(int j = 0; j < issueWindowSize; j++) {
-        if(currentInstructions[j].opcode == NOOP) {
-          currentInstructions[j] = nextInstructions[i];
-          currentInstructionsIssued[j] = false;
+        if(instructions[j].opcode == NOOP) {
+          instructions[j] = nextInstructions[i];
+          branchAddresses[j] = nextBranchAddresses[i];
+          instructionsIssued[j] = false;
           reorderBufferIndexes[j] = -1;
           break;
         }
@@ -354,7 +370,7 @@ void DecodeIssueUnit::pipe() {
 
 void DecodeIssueUnit::pipeInstruction(int instructionToIssue) {
   //send the current instruction to the necessary component
-  switch(currentInstructions[instructionToIssue].opcode) {
+  switch(instructions[instructionToIssue].opcode) {
 
     //NOOP instruction
     case NOOP:
@@ -368,8 +384,8 @@ void DecodeIssueUnit::pipeInstruction(int instructionToIssue) {
     case OR:
     case SUB:
       //Set the scoreboard value of the destination register to zero
-      registerFile->setScoreBoardValue(currentInstructions[instructionToIssue].operands[0],0);
-      aluReservationStation->setNextInstruction(currentInstructions[instructionToIssue], 
+      registerFile->setScoreBoardValue(instructions[instructionToIssue].operands[0],0);
+      aluReservationStation->setNextInstruction(instructions[instructionToIssue], 
         reorderBufferIndexes[instructionToIssue]);
       break;
 
@@ -377,10 +393,10 @@ void DecodeIssueUnit::pipeInstruction(int instructionToIssue) {
     case LW:
     case LWR:
       //Set the scoreboard value of the destination register to zero
-      registerFile->setScoreBoardValue(currentInstructions[instructionToIssue].operands[0],0);
+      registerFile->setScoreBoardValue(instructions[instructionToIssue].operands[0],0);
     case SW:
     case SWR:
-      loadStoreUnitReservationStation->setNextInstruction(currentInstructions[instructionToIssue], 
+      loadStoreUnitReservationStation->setNextInstruction(instructions[instructionToIssue], 
         reorderBufferIndexes[instructionToIssue]);
       break;
 
@@ -397,31 +413,34 @@ void DecodeIssueUnit::pipeInstruction(int instructionToIssue) {
     //Instruction to finish the program
     case HALT:
       //branchUnitReservationStation->addInstruction(currentInstruction, reorderBufferIndex);
-      branchUnitReservationStation->setNextInstruction(currentInstructions[instructionToIssue], 
+      branchUnitReservationStation->setNextInstruction(instructions[instructionToIssue], 
         reorderBufferIndexes[instructionToIssue]);
       break;
   }
 }
 
 void DecodeIssueUnit::flush() {
+  //reset all necessary data 
   for(int i = 0; i < issueWindowSize; i++) {
     nextInstructions[i] = (Instruction) {0,0,0,0};
-    currentInstructions[i] = (Instruction) {0,0,0,0};
-    currentInstructionsIssued[i] = true;
+    nextBranchAddresses[i] = -1;
+    instructions[i] = (Instruction) {0,0,0,0};
+    instructionsIssued[i] = true;
     reorderBufferIndexes[i] = -1;
+    branchAddresses[i] = -1;
   }
 }
 
 void DecodeIssueUnit::print() const {
   printf("DECODE ISSUE UNIT:");
   for(int i = 0; i < issueWindowSize; i++) {
-    printInstruction(currentInstructions[i]);    
+    printInstruction(instructions[i]);    
   }
 }
 
 bool DecodeIssueUnit::allInstructionsIssued() const {
   for(int i = 0; i < issueWindowSize; i++) {
-    if(!currentInstructionsIssued[i]) {
+    if(!instructionsIssued[i]) {
       return false;
     }
   }
@@ -431,7 +450,7 @@ bool DecodeIssueUnit::allInstructionsIssued() const {
 int DecodeIssueUnit::numFreeSpaces() const {
   int count = 0;
   for(int i = 0; i < issueWindowSize; i++) {
-    if(currentInstructionsIssued[i]) {
+    if(instructionsIssued[i]) {
       count++;
     }
   }
@@ -449,12 +468,18 @@ void DecodeIssueUnit::setNextInstructions(const Instruction* const x) {
 
 void DecodeIssueUnit::getInstructions(Instruction* const copy) const {
   for(int i = 0; i < issueWindowSize; i++) {
-    copy[i] = currentInstructions[i];
+    copy[i] = instructions[i];
   }
 }
 
 void DecodeIssueUnit::getReorderBufferIndexes(int* const copy) const {
   for(int i = 0; i < issueWindowSize; i++) {
     copy[i] = reorderBufferIndexes[i];
+  }
+}
+
+void DecodeIssueUnit::setNextBranchAddresses(const int* const x) {
+  for(int i = 0; i < issueWindowSize; i++) {
+    nextBranchAddresses[i] = x[i];
   }
 }

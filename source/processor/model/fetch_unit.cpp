@@ -15,23 +15,18 @@
 //============================================================
 //public functions
 
-FetchUnit::FetchUnit(const Instructions instructions, int* const pc, DecodeIssueUnit* const decodeIssueUnit, 
+FetchUnit::FetchUnit(const Instructions instructionBuffer, int* const pc, DecodeIssueUnit* const decodeIssueUnit, 
   const int issueWindowSize) :
-  instructions(instructions),
+  instructionBuffer(instructionBuffer),
   pc(pc),
   decodeIssueUnit(decodeIssueUnit),
   issueWindowSize(issueWindowSize),
-  currentInstructions(new Instruction[issueWindowSize]),
-  size(20),
-  head(0),
-  tail(0),
-  branchAddresses(new int[size])
+  instructions(new Instruction[issueWindowSize]),
+  branchAddresses(new int[issueWindowSize])
 {
   //initialise all instructions to NOOPs
   for(int i = 0; i < issueWindowSize; i++) {
-    currentInstructions[i] = (Instruction) {0,0,0,0};
-  }
-  for(int i = 0; i < size; i++) {
+    instructions[i] = (Instruction) {0,0,0,0};
     branchAddresses[i] = -1;
   }
 }
@@ -39,61 +34,55 @@ FetchUnit::FetchUnit(const Instructions instructions, int* const pc, DecodeIssue
 void FetchUnit::execute() {
   int numToFetch = decodeIssueUnit->numFreeSpaces();
   if(numToFetch > 0) {
-    if(*pc < instructions.getNumOfInstructions()) {
+    if(*pc < instructionBuffer.getNumOfInstructions()) {
       //fetch the next instructions
       fetchInstructions(numToFetch);
-    }
-  }
-  else {
-    for(int i = 0; i < issueWindowSize; i++) {
-      currentInstructions[i] = (Instruction) {0,0,0,0};
     }
   }
 }
 
 void FetchUnit::print() const {
   printf("FETCHED INSTRUCTION: ");
-  printInstruction(currentInstructions[0]);
+  printInstruction(instructions[0]);
 }
 
 void FetchUnit::pipe() {
   //put the fetched instruction into the instruction register
-  decodeIssueUnit->setNextInstructions(currentInstructions);
+  decodeIssueUnit->setNextInstructions(instructions);
+  decodeIssueUnit->setNextBranchAddresses(branchAddresses);
   for(int i = 0; i < issueWindowSize; i++) {
-    currentInstructions[i] = (Instruction) {0,0,0,0};  
+    instructions[i] = (Instruction) {0,0,0,0};
+    branchAddresses[i] = -1;
   }
 }
 
 void FetchUnit::flush() {
-  currentInstructions[0] = (Instruction) {0,0,0,0};
-}
-
-int FetchUnit::getTail() {
-  int address = branchAddresses[tail];
-  branchAddresses[tail] = -1;
-  if(tail != head) {
-    tail = (tail + 1) % size;
+  for(int i = 0; i < issueWindowSize; i++) {
+    instructions[i] = (Instruction) {0,0,0,0};
+    branchAddresses[i] = -1;
   }
-  return address;
 }
 
 //============================================================================
 //private functions
 
+void FetchUnit::printBranchAddresses() {
+  for(int i = 0; i < issueWindowSize; i++) {
+    printf("%d ", branchAddresses[i]);
+  }
+}
+
 void FetchUnit::fetchInstructions(int num) {
   for(int i = 0; i < num; i++) {
-    if(*pc < instructions.getNumOfInstructions()) {
-      currentInstructions[i] = instructions.at(*pc);
-      if(isABranchInstruction(currentInstructions[i])) {
-        storeBranchAddress();
-        takeBranch(currentInstructions[i]);
+    if(*pc < instructionBuffer.getNumOfInstructions()) {
+      instructions[i] = instructionBuffer.at(*pc);
+      if(isABranchInstruction(instructions[i])) {
+        branchAddresses[i] = *pc;
+        takeBranch(instructions[i]);
       }
       else {
         (*pc)++;
       }
-    }
-    else {
-      currentInstructions[i] = (Instruction) {0,0,0,0};
     }
   }
 }
@@ -149,44 +138,11 @@ bool FetchUnit::takeBranch(Instruction instruction) {
   return false;
 }
 
-bool FetchUnit::empty() const {
-  if(head == tail && branchAddresses[head] == -1) {
-    return true;
-  }
-  else {
-    return false;
-  }
-}
-
-void FetchUnit::storeBranchAddress() {
-  if(!empty()) {
-    head = (head + 1) % size;
-  }
-  branchAddresses[head] = *pc;
-}
-
-void FetchUnit::printBranchAddresses() const {
-  printf("head: %d\n", head);
-  printf("tail: %d\n", tail);
-  if(!empty()) {
-    int i = tail;
-    while(i != head) {
-      printf("%d ", branchAddresses[i]);
-      i = (i + 1) % size;
-    }
-    printf("%d ", branchAddresses[i]);
-  }
-}
-
 //======================================
 // getter and setter functions
 
-Instruction FetchUnit::getCurrentInstruction() const {
-  return currentInstructions[0];
-}
-
-void FetchUnit::getCurrentInstructions(Instruction* const copy) const {
+void FetchUnit::getInstructions(Instruction* const copy) const {
   for(int i = 0; i < issueWindowSize; i++) {
-    copy[i] = currentInstructions[i];
+    copy[i] = instructions[i];
   }
 }

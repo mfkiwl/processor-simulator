@@ -17,8 +17,11 @@
 
 using namespace std;
 
+//========================================================
+//public functions
+
 ReorderBuffer::ReorderBuffer(RegisterFile* const registerFile, Memory* const memory, FetchUnit* const fetchUnit, 
-  int* const pc, int* const runningFlag, int* const noOfInstructionsExecuted, const int bufferSize, const int numFields, 
+  int* const pc, int* const runningFlag, int* const noOfInstructionsExecuted, const int bufferSize, 
   const int issueWindowSize) : 
   registerFile(registerFile),
   memory(memory),
@@ -30,7 +33,7 @@ ReorderBuffer::ReorderBuffer(RegisterFile* const registerFile, Memory* const mem
   buffer(new int*[bufferSize]),
   head(0),
   tail(0),
-  numFields(numFields),
+  numFields(8),
   instructions(new Instruction[bufferSize]),
   noOfInstructionsExecuted(noOfInstructionsExecuted),
   issueWindowSize(issueWindowSize)
@@ -69,14 +72,17 @@ bool ReorderBuffer::empty() const {
   }
 }
 
-int ReorderBuffer::addEntry(const Type type, const int branchTargetAddress, const int architecturalRegister,
-const int physicalRegister, const int previousPhysicalRegister, const Instruction instruction) {
+int ReorderBuffer::addEntry(const Type type, const bool branchPrediction, const int branchTargetAddress, 
+  const int architecturalRegister, const int physicalRegister, const int previousPhysicalRegister, 
+  const Instruction instruction)
+{
   if(!empty()) {
     head = (head + 1) % bufferSize;
   }
   buffer[head][TYPE] = type;
   buffer[head][STATUS] = ISSUED;
   buffer[head][RESULT] = 0;
+  buffer[head][BRANCH_PREDICTION] = branchPrediction;
   buffer[head][BRANCH_TARGET_ADDRESS] = branchTargetAddress;
   buffer[head][ARCHITECTURAL_REGISTER] = architecturalRegister;
   buffer[head][PHYSICAL_REGISTER] = physicalRegister;
@@ -106,9 +112,8 @@ void ReorderBuffer::execute() {
         (*noOfInstructionsExecuted)++;
       }
       if(buffer[tail][TYPE] == JUMP) {
-        int branchAddress = fetchUnit->getTail();
-        if(buffer[tail][RESULT] == false) {
-          *pc = branchAddress + 1;
+        if(buffer[tail][RESULT] != buffer[tail][BRANCH_PREDICTION]) {
+          *pc = buffer[tail][BRANCH_TARGET_ADDRESS] + 1;
           flushFlag = true;
         }
         else {
@@ -157,7 +162,9 @@ void ReorderBuffer::flush() {
     buffer[i][TYPE] = -1;
     buffer[i][STATUS] = -1;
     buffer[i][RESULT] = -1;
+    buffer[i][BRANCH_PREDICTION] = -1;
     buffer[i][BRANCH_TARGET_ADDRESS] = -1;
+    buffer[i][ARCHITECTURAL_REGISTER] = -1;
     buffer[i][PHYSICAL_REGISTER] = -1;
     buffer[i][PREVIOUS_PHYSICAL_REGISTER] = -1;
   }
@@ -184,6 +191,9 @@ void ReorderBuffer::print() const {
   }
 }
 
+//==================================================================
+//getters and setters
+
 int ReorderBuffer::getTailIndex() const {
   return tail;
 }
@@ -208,4 +218,8 @@ void ReorderBuffer::getReorderBufferFields(int** const copy) const {
 
 bool ReorderBuffer::getFlushFlag() const {
   return flushFlag;
+}
+
+int ReorderBuffer::getNumFields() const {
+  return numFields;
 }

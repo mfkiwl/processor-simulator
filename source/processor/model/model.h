@@ -41,7 +41,6 @@ class Model {
     const int branchUnitReservationStationSize;
     const int loadStoreUnitReservationStationSize;
     const int reorderBufferSize;
-    const int numReorderBufferFields;
 
     //registers
     int pc;
@@ -114,8 +113,6 @@ class Model {
     void getLatestArchitecturalRegisterValues(int* const copy) const;
 
     void getAllMemoryValues(int* const copy) const;
-
-    Instruction getFetchUnitInstruction() const;
 
     void getFetchUnitInstructions(Instruction* const copy) const;
 

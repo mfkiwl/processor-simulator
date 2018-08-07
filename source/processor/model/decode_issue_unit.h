@@ -34,12 +34,11 @@ class DecodeIssueUnit {
 
     //Instruction given from the fetch unit
     Instruction* const nextInstructions;
+    int* const nextBranchAddresses;
 
-    //the current instruction
-    Instruction* const currentInstructions;
-
-    bool* const currentInstructionsIssued;
-
+    Instruction* const instructions;
+    int* const branchAddresses;
+    bool* const instructionsIssued;
     int* const reorderBufferIndexes;
 
   //public functions
@@ -75,6 +74,8 @@ class DecodeIssueUnit {
     void getInstructions(Instruction* const copy) const;
 
     void getReorderBufferIndexes(int* const copy) const;
+
+    void setNextBranchAddresses(const int* const x);
 };
 
 #endif

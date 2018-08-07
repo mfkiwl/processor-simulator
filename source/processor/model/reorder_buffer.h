@@ -48,15 +48,15 @@ class ReorderBuffer {
   public:
 
     ReorderBuffer(RegisterFile* const registerFile, Memory* const memory, FetchUnit* const fetchUnit, int* const pc, 
-      int* const runningFlag, int* const noOfInstructionsExecuted, const int bufferSize, const int numFields, 
-      const int issueWindowSize);
+      int* const runningFlag, int* const noOfInstructionsExecuted, const int bufferSize, const int issueWindowSize);
 
     bool freeSpace() const;
 
     bool empty() const;
 
-    int addEntry(const Type type, const int branchTargetAddress, const int architecturalRegister,
-    const int physicalRegister, const int previousPhysicalRegister, const Instruction instruction);
+    int addEntry(const Type type, const bool branchPrediction, const int branchTargetAddress, 
+      const int architecturalRegister, const int physicalRegister, const int previousPhysicalRegister, 
+      const Instruction instruction);
 
     void execute();
 
@@ -86,6 +86,8 @@ class ReorderBuffer {
     void getReorderBufferFields(int** const copy) const;
 
     bool getFlushFlag() const;
+
+    int getNumFields() const;
 };
 
 #endif

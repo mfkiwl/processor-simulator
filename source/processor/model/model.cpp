@@ -29,7 +29,6 @@ Model::Model(const Instructions instructions) :
   branchUnitReservationStationSize(4),
   loadStoreUnitReservationStationSize(4),
   reorderBufferSize(22),
-  numReorderBufferFields(7),
 
   //special purpose registers
   pc(0),
@@ -41,7 +40,7 @@ Model::Model(const Instructions instructions) :
   registerFile(numArchitecturalRegisters, numPhysicalRegisters), 
   memory(memorySize),
   reorderBuffer(&registerFile, &memory, &fetchUnit, &pc, &runningFlag, &noOfInstructionsExecuted, reorderBufferSize, 
-    numReorderBufferFields, issueWindowSize),
+    issueWindowSize),
   fetchUnit(instructions, &pc, &decodeIssueUnit, issueWindowSize),
   decodeIssueUnit(&registerFile, &reorderBuffer, &aluReservationStation, &branchUnitReservationStation, 
     &loadStoreUnitReservationStation, issueWindowSize),
@@ -237,12 +236,8 @@ void Model::getAllMemoryValues(int* const copy) const {
   memory.getAllMemoryValues(copy);
 }
 
-Instruction Model::getFetchUnitInstruction() const {
-  return fetchUnit.getCurrentInstruction();
-}
-
 void Model::getFetchUnitInstructions(Instruction* const copy) const {
-  fetchUnit.getCurrentInstructions(copy);
+  fetchUnit.getInstructions(copy);
 }
 
 void Model::getDecodeIssueUnitInstructions(Instruction* const copy) const {
@@ -287,7 +282,7 @@ void Model::getLoadStoreUnitReservationStationInstructions(Instruction* const co
 
 void Model::getLoadStoreUnitReservationStationReorderBufferIndexes(int* const copy) const {
   loadStoreUnitReservationStation.getCurrentReorderBufferIndexes(copy);
-}
+}  
 
 int Model::getAluResult() const {
   return alu.getResult();
@@ -298,7 +293,7 @@ int Model::getReorderBufferSize() const {
 }
 
 int Model::getNumReorderBufferFields() const {
-  return numReorderBufferFields;
+  return reorderBuffer.getNumFields();
 }
 
 int Model::getAluReorderBufferIndex() const {
