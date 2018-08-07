@@ -7,6 +7,8 @@
 #include "memory.h"
 #include "reorder_buffer.h"
 
+#include <stdio.h>
+
 //===========================================
 //class implementation
 
@@ -42,8 +44,10 @@ void StoreBuffer::addToBuffer(const int address, const int value, const int reor
 
 void StoreBuffer::incrementSteps() {
   //increment the current step for all inflight instructions in the write buffer
-  for(int i = tail; i < head; i++) {
-    buffer[i][STEP] += 1;
+  int i = tail;
+  while(i != head) {
+    buffer[i][STEP]++;
+    i = (i + 1) % size;
   }
 }
 
@@ -63,7 +67,7 @@ void StoreBuffer::writeIfReady() {
     buffer[tail][REORDER_BUFFER_INDEX] = -1;
     buffer[tail][STEP] = -1;
     //update the start and end of the buffer
-    tail += 1;
+    tail = (tail + 1) % size;
   }
 }
 
@@ -76,4 +80,13 @@ void StoreBuffer::flush() {
   }
   head = 0;
   tail = 0;
+}
+
+void StoreBuffer::print() const {
+  printf("tail: %d\n", tail);
+  printf("head: %d\n", head);
+  for(int i = 0; i < size; i++) {
+    printf("%d ", buffer[i][REORDER_BUFFER_INDEX]);
+  }
+  printf("\n");
 }

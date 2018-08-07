@@ -44,6 +44,8 @@ class StoreBuffer {
     void writeIfReady();
 
     void flush();
+
+    void print() const;
 };
 
 #endif

@@ -40,8 +40,10 @@ void LoadBuffer::addToBuffer(const int destinationRegister, const int address, c
 
 void LoadBuffer::incrementSteps() {
   //increment the current step for all inflight instructions in the read buffer
-  for(int i = tail; i < head; i++) {
-    buffer[i][STEP] += 1;
+  int i = tail;
+  while(i != head) {
+    buffer[i][STEP]++;
+    i = (i + 1) % size;
   }
 }
 
@@ -59,7 +61,7 @@ void LoadBuffer::readIfReady() {
     buffer[tail][REORDER_BUFFER_INDEX] = -1;
     buffer[tail][STEP] = -1;
     //increment the tail index
-    tail += 1;
+    tail = (tail + 1) % size;
   }
 }
 

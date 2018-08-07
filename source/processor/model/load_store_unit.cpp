@@ -15,7 +15,7 @@ LoadStoreUnit::LoadStoreUnit(Memory* const memory, ReorderBuffer* const reorderB
   reorderBuffer(reorderBuffer),
   nextOpcode(0),
   currentOpcode(0),
-  bufferSize(100),
+  bufferSize(20),
   writeCycles(5),
   readCycles(5),
   storeBuffer(memory, reorderBuffer, bufferSize, writeCycles),

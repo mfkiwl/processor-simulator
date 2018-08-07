@@ -98,9 +98,12 @@ void ReorderBuffer::execute() {
         registerFile->setScoreBoardValue(buffer[tail][PHYSICAL_REGISTER], 1);
         //free the previous physical register
         registerFile->freePhysicalRegister(buffer[tail][PREVIOUS_PHYSICAL_REGISTER]);
+        //increment the number of instructions that we have executed
+        (*noOfInstructionsExecuted)++;
       }
       if(buffer[tail][TYPE] == STORE_TO_MEMORY) {
-
+        //increment the number of instructions that we have executed
+        (*noOfInstructionsExecuted)++;
       }
       if(buffer[tail][TYPE] == JUMP) {
         int branchAddress = fetchUnit->getTail();
@@ -108,14 +111,18 @@ void ReorderBuffer::execute() {
           *pc = branchAddress + 1;
           flushFlag = true;
         }
+        else {
+          //increment the number of instructions that we have executed
+          (*noOfInstructionsExecuted)++;
+        }
       }
       if(buffer[tail][TYPE] == SYSCALL) {
         *runningFlag = 0;
+        //increment the number of instructions that we have executed
+        (*noOfInstructionsExecuted)++;
       }
       //reset the reorder buffer entry
       resetEntry(tail);
-      //increment the number of instructions that we have executed
-      (*noOfInstructionsExecuted)++;
       //increment the tail position
       if(head != tail) {
         tail = (tail + 1) % bufferSize;
