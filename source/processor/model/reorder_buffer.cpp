@@ -21,7 +21,7 @@ using namespace std;
 //public functions
 
 ReorderBuffer::ReorderBuffer(RegisterFile* const registerFile, Memory* const memory, FetchUnit* const fetchUnit, 
-  int* const pc, int* const runningFlag, int* const noOfInstructionsExecuted, const int bufferSize, 
+  int* const pc, bool* const runningFlag, int* const noOfInstructionsExecuted, const int bufferSize, 
   const int issueWindowSize) : 
   registerFile(registerFile),
   memory(memory),
@@ -95,6 +95,10 @@ int ReorderBuffer::addEntry(const Type type, const bool branchPrediction, const 
 void ReorderBuffer::execute() {
   for(int i = 0; i < issueWindowSize; i++) {
     if(buffer[tail][STATUS] == FINISHED) {
+
+      //increment the number of instructions that we have executed
+      (*noOfInstructionsExecuted)++;
+
       if(buffer[tail][TYPE] == STORE_TO_REGISTER) {
         //write the result to the register
         registerFile->setPhysicalRegisterValue(buffer[tail][PHYSICAL_REGISTER], buffer[tail][RESULT]);
@@ -104,30 +108,24 @@ void ReorderBuffer::execute() {
         registerFile->setScoreBoardValue(buffer[tail][PHYSICAL_REGISTER], 1);
         //free the previous physical register
         registerFile->freePhysicalRegister(buffer[tail][PREVIOUS_PHYSICAL_REGISTER]);
-        //increment the number of instructions that we have executed
-        (*noOfInstructionsExecuted)++;
       }
       if(buffer[tail][TYPE] == STORE_TO_MEMORY) {
-        //increment the number of instructions that we have executed
-        (*noOfInstructionsExecuted)++;
+
       }
       if(buffer[tail][TYPE] == JUMP) {
         if(buffer[tail][RESULT] != buffer[tail][BRANCH_PREDICTION]) {
-          *pc = buffer[tail][BRANCH_TARGET_ADDRESS] + 1;
+          *pc = buffer[tail][BRANCH_TARGET_ADDRESS];
           flushFlag = true;
-        }
-        else {
-          //increment the number of instructions that we have executed
-          (*noOfInstructionsExecuted)++;
+          break;
         }
       }
       if(buffer[tail][TYPE] == SYSCALL) {
-        *runningFlag = 0;
-        //increment the number of instructions that we have executed
-        (*noOfInstructionsExecuted)++;
+        *runningFlag = false;
       }
+
       //reset the reorder buffer entry
       resetEntry(tail);
+      
       //increment the tail position
       if(head != tail) {
         tail = (tail + 1) % bufferSize;

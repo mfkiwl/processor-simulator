@@ -18,7 +18,8 @@
 
 DecodeIssueUnit::DecodeIssueUnit(RegisterFile* const registerFile, ReorderBuffer* const reorderBuffer, 
   ALUReservationStation* const aluReservationStation, BranchUnitReservationStation* const branchUnitReservationStation, 
-  LoadStoreUnitReservationStation* const loadStoreUnitReservationStation, const int issueWindowSize) :
+  LoadStoreUnitReservationStation* const loadStoreUnitReservationStation, const int issueWindowSize, 
+  const bool branchPrediction) :
   registerFile(registerFile),
   reorderBuffer(reorderBuffer),
   aluReservationStation(aluReservationStation),
@@ -30,7 +31,8 @@ DecodeIssueUnit::DecodeIssueUnit(RegisterFile* const registerFile, ReorderBuffer
   instructions(new Instruction[issueWindowSize]),
   branchAddresses(new int[issueWindowSize]),
   instructionsIssued(new bool[issueWindowSize]),
-  reorderBufferIndexes(new int[issueWindowSize])
+  reorderBufferIndexes(new int[issueWindowSize]),
+  branchPrediction(branchPrediction)
 {
   //initialise arrays
   for(int i = 0; i < issueWindowSize; i++) {
@@ -254,7 +256,14 @@ void DecodeIssueUnit::issue(int instructionToIssue) {
         branchUnitReservationStation->reserveSpace();
 
         //Instruction has been issued so add entry to the reorder buffer
-        reorderBufferIndexes[instructionToIssue] = reorderBuffer->addEntry(JUMP, true, branchAddresses[instructionToIssue], 0, 0, 0, instructions[instructionToIssue]);
+        if(branchPrediction) {
+          reorderBufferIndexes[instructionToIssue] = reorderBuffer->addEntry(JUMP, true, 
+            branchAddresses[instructionToIssue], 0, 0, 0, instructions[instructionToIssue]);
+        }
+        else {
+          reorderBufferIndexes[instructionToIssue] = reorderBuffer->addEntry(JUMP, false,
+            branchAddresses[instructionToIssue], 0, 0, 0, instructions[instructionToIssue]);
+        }
 
         //rename the registers
         instructions[instructionToIssue].operands[0] = registerFile->getArchitecturalRegisterMapping(instructions[instructionToIssue].operands[0]);
@@ -277,7 +286,14 @@ void DecodeIssueUnit::issue(int instructionToIssue) {
         branchUnitReservationStation->reserveSpace();
 
         //Instruction has been issued so add entry to the reorder buffer
-        reorderBufferIndexes[instructionToIssue] = reorderBuffer->addEntry(JUMP, true, branchAddresses[instructionToIssue], 0, 0, 0, instructions[instructionToIssue]);
+        if(branchPrediction) {
+          reorderBufferIndexes[instructionToIssue] = reorderBuffer->addEntry(JUMP, true, 
+            branchAddresses[instructionToIssue], 0, 0, 0, instructions[instructionToIssue]);
+        }
+        else {
+          reorderBufferIndexes[instructionToIssue] = reorderBuffer->addEntry(JUMP, false,
+            branchAddresses[instructionToIssue], 0, 0, 0, instructions[instructionToIssue]);
+        }
 
         //take note that the instruction was issued
         instructionsIssued[instructionToIssue] = true;

@@ -27,7 +27,7 @@ class ReorderBuffer {
 
     int* const pc;
     bool flushFlag;
-    int* const runningFlag;
+    bool* const runningFlag;
 
     const int bufferSize;
     int** const buffer;
@@ -48,7 +48,7 @@ class ReorderBuffer {
   public:
 
     ReorderBuffer(RegisterFile* const registerFile, Memory* const memory, FetchUnit* const fetchUnit, int* const pc, 
-      int* const runningFlag, int* const noOfInstructionsExecuted, const int bufferSize, const int issueWindowSize);
+      bool* const runningFlag, int* const noOfInstructionsExecuted, const int bufferSize, const int issueWindowSize);
 
     bool freeSpace() const;
 

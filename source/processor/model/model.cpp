@@ -34,16 +34,17 @@ Model::Model(const Instructions instructions) :
   pc(0),
 
   //status flags
-  runningFlag(1),
+  branchPrediction(true),
+  runningFlag(true),
 
   //components
   registerFile(numArchitecturalRegisters, numPhysicalRegisters), 
   memory(memorySize),
   reorderBuffer(&registerFile, &memory, &fetchUnit, &pc, &runningFlag, &noOfInstructionsExecuted, reorderBufferSize, 
     issueWindowSize),
-  fetchUnit(instructions, &pc, &decodeIssueUnit, issueWindowSize),
+  fetchUnit(instructions, &pc, &decodeIssueUnit, issueWindowSize, branchPrediction),
   decodeIssueUnit(&registerFile, &reorderBuffer, &aluReservationStation, &branchUnitReservationStation, 
-    &loadStoreUnitReservationStation, issueWindowSize),
+    &loadStoreUnitReservationStation, issueWindowSize, branchPrediction),
   alu(&reorderBuffer),
   aluReservationStation(&registerFile, &alu, aluReservationStationSize),
   branchUnit(&reorderBuffer),
@@ -200,7 +201,7 @@ int Model::getIssueWindowSize() const {
   return issueWindowSize;
 }
 
-int Model::getRunningFlag() const {
+bool Model::getRunningFlag() const {
   return runningFlag;
 }
 

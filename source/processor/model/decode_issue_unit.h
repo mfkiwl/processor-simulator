@@ -41,12 +41,15 @@ class DecodeIssueUnit {
     bool* const instructionsIssued;
     int* const reorderBufferIndexes;
 
+    const bool branchPrediction;
+
   //public functions
   public:
     DecodeIssueUnit(RegisterFile* const registerFile, ReorderBuffer* const reorderBuffer, 
       ALUReservationStation* const aluReservationStation, 
       BranchUnitReservationStation* const branchUnitReservationStation, 
-      LoadStoreUnitReservationStation* const loadStoreUnitReservationStation, const int issueWindowSize);
+      LoadStoreUnitReservationStation* const loadStoreUnitReservationStation, const int issueWindowSize, 
+      const bool branchPrediction);
 
     void execute();
 

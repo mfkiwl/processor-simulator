@@ -16,13 +16,14 @@
 //public functions
 
 FetchUnit::FetchUnit(const Instructions instructionBuffer, int* const pc, DecodeIssueUnit* const decodeIssueUnit, 
-  const int issueWindowSize) :
+  const int issueWindowSize, const bool branchPrediction) :
   instructionBuffer(instructionBuffer),
   pc(pc),
   decodeIssueUnit(decodeIssueUnit),
   issueWindowSize(issueWindowSize),
   instructions(new Instruction[issueWindowSize]),
-  branchAddresses(new int[issueWindowSize])
+  branchAddresses(new int[issueWindowSize]),
+  branchPrediction(branchPrediction)
 {
   //initialise all instructions to NOOPs
   for(int i = 0; i < issueWindowSize; i++) {
@@ -77,8 +78,14 @@ void FetchUnit::fetchInstructions(int num) {
     if(*pc < instructionBuffer.getNumOfInstructions()) {
       instructions[i] = instructionBuffer.at(*pc);
       if(isABranchInstruction(instructions[i])) {
-        branchAddresses[i] = *pc;
-        takeBranch(instructions[i]);
+        if(branchPrediction) {
+          branchAddresses[i] = *pc + 1;
+          takeBranch(instructions[i]);
+        }
+        else {
+          branchAddresses[i] = getBranchTargetAddress(instructions[i]);
+          (*pc)++;
+        }
       }
       else {
         (*pc)++;
@@ -136,6 +143,28 @@ bool FetchUnit::takeBranch(Instruction instruction) {
       return true;
   }
   return false;
+}
+
+int FetchUnit::getBranchTargetAddress(Instruction instruction) const {
+  switch(instruction.opcode) {
+    case BEQ:
+      return instruction.operands[2];
+    case BNE:
+      return instruction.operands[2];
+    case BGEZ:
+      return instruction.operands[1];
+    case BGTZ:
+      return instruction.operands[1];
+    case BLEZ:
+      return instruction.operands[1];
+    case BLTZ:
+      return instruction.operands[1];
+    case J:
+      return instruction.operands[0];
+    case JR:
+      return -1;
+  }
+  return -1;
 }
 
 //======================================

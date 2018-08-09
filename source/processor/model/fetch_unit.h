@@ -25,11 +25,13 @@ class FetchUnit {
 
     int* const branchAddresses;
 
+    const bool branchPrediction;
+
   //public functions
   public:
 
     FetchUnit(const Instructions instructionBuffer, int* const pc, DecodeIssueUnit* const decodeIssueUnit, 
-      const int issueWindowSize);
+      const int issueWindowSize, const bool branchPrediction);
 
     void execute();
 
@@ -49,6 +51,8 @@ class FetchUnit {
     bool isABranchInstruction(Instruction instruction) const;
 
     bool takeBranch(Instruction instruction);
+
+    int getBranchTargetAddress(Instruction instruction) const;
 
   //getter and setter functions
   public:

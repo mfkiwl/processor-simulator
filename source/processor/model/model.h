@@ -46,8 +46,8 @@ class Model {
     int pc;
 
     //status flags
-    int flushFlag;
-    int runningFlag;
+    bool branchPrediction;
+    bool runningFlag;
 
     //components
     RegisterFile registerFile;
@@ -96,7 +96,7 @@ class Model {
 
     int getIssueWindowSize() const;
 
-    int getRunningFlag() const;
+    bool getRunningFlag() const;
 
     int getNoOfInstructionsExecuted() const;
 
