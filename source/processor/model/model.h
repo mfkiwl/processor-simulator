@@ -41,6 +41,7 @@ class Model {
     const int branchUnitReservationStationSize;
     const int loadStoreUnitReservationStationSize;
     const int reorderBufferSize;
+    const int numALUs;
 
     //registers
     int pc;
@@ -55,7 +56,7 @@ class Model {
     ReorderBuffer reorderBuffer;
     FetchUnit fetchUnit;
     DecodeIssueUnit decodeIssueUnit;
-    ALU alu;
+    ALU* const alu;
     ALUReservationStation aluReservationStation;
     BranchUnit branchUnit;
     BranchUnitReservationStation branchUnitReservationStation;
@@ -138,13 +139,15 @@ class Model {
 
     void getLoadStoreUnitReservationStationReorderBufferIndexes(int* const copy) const;
 
-    int getAluResult() const;
+    int getNumALUs() const;
+
+    void getAluResults(int* const copy) const;
 
     int getReorderBufferSize() const;
 
     int getNumReorderBufferFields() const;
 
-    int getAluReorderBufferIndex() const;
+    void getAluReorderBufferIndexes(int* const copy) const;
 
     bool getBranchUnitSuccessful() const;
 

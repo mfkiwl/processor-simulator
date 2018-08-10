@@ -91,7 +91,7 @@ class View {
     void drawLoadStoreUnitReservationStation(const int reservationStationSize, const Instruction* const instructions, 
       const int* const reorderBufferIndexes);
 
-    void drawAlu(const int result, const int reorderBufferIndex);
+    void drawAlu(const int numALUs, const int* const results, const int* const reorderBufferIndex);
 
     void drawBranchUnit(const bool successful, const int reorderBufferIndex);
 

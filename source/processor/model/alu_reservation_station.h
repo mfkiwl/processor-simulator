@@ -20,6 +20,7 @@ class ALUReservationStation {
   private:
     
     RegisterFile* const registerFile;
+    const int numALUs;
     ALU* const alu;
 
     const int size;
@@ -31,16 +32,12 @@ class ALUReservationStation {
     Instruction* const nextInstructions;
     int* const nextReorderBufferIndexes;
 
-    int opcode;
-    int* const operands;
-    int reorderBufferIndex;
-
-    int dispatchIndex;
+    int* const dispatchIndexes;
 
   //public functions
   public:
 
-    ALUReservationStation(RegisterFile* const registerFile, ALU* const alu, const int size);
+    ALUReservationStation(RegisterFile* const registerFile, const int numALUs, ALU* const alu, const int size);
 
     void execute();
 

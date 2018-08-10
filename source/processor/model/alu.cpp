@@ -13,6 +13,13 @@
 //===========================================
 // class implementation
 
+//===============================================================
+//public functions
+
+ALU::ALU() :
+  reorderBuffer(NULL)
+{}
+
 ALU::ALU(ReorderBuffer* const reorderBuffer) : 
   reorderBuffer(reorderBuffer),
   nextOpcode(0),
@@ -74,6 +81,9 @@ void ALU::pipe() {
   nextReorderBufferIndex = -1;
 }
 
+//========================================================================
+//getters and setters
+
 void ALU::setNextOpcode(const int x) {
   nextOpcode = x;
 }
@@ -106,4 +116,8 @@ int ALU::getResult() const {
 
 int ALU::getReorderBufferIndex() const {
   return currentReorderBufferIndex;
+}
+
+void ALU::setReorderBufferPointer(ReorderBuffer* p) {
+  reorderBuffer = p;
 }

@@ -12,10 +12,11 @@ class ReorderBuffer;
 //class declaration
 class ALU {
 
+  //private members
   private:
 
     //forward components
-    ReorderBuffer* const reorderBuffer;
+    ReorderBuffer* reorderBuffer;
 
     //decoded instruction
     int nextOpcode;
@@ -30,13 +31,21 @@ class ALU {
     //instruction result
     int currentResult;
 
-
+  //public functions
   public:
+
+    ALU();
+
     ALU(ReorderBuffer* const reorderBuffer);
 
     void execute();
 
     void pipe();
+
+    void flush();
+
+  //getters and setters
+  public:
 
     void setNextOpcode(const int x);
 
@@ -44,11 +53,11 @@ class ALU {
 
     void setNextReorderBufferIndex(const int i);
 
-    void flush();
-
     int getResult() const;
 
     int getReorderBufferIndex() const;
+
+    void setReorderBufferPointer(ReorderBuffer* p);
 };
 
 #endif

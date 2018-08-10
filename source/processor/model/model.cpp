@@ -29,6 +29,7 @@ Model::Model(const Instructions instructions) :
   branchUnitReservationStationSize(4),
   loadStoreUnitReservationStationSize(4),
   reorderBufferSize(22),
+  numALUs(2),
 
   //special purpose registers
   pc(0),
@@ -45,13 +46,17 @@ Model::Model(const Instructions instructions) :
   fetchUnit(instructions, &pc, &decodeIssueUnit, issueWindowSize, branchPrediction),
   decodeIssueUnit(&registerFile, &reorderBuffer, &aluReservationStation, &branchUnitReservationStation, 
     &loadStoreUnitReservationStation, issueWindowSize, branchPrediction),
-  alu(&reorderBuffer),
-  aluReservationStation(&registerFile, &alu, aluReservationStationSize),
+  alu(new ALU[numALUs]),
+  aluReservationStation(&registerFile, numALUs, alu, aluReservationStationSize),
   branchUnit(&reorderBuffer),
   branchUnitReservationStation(&registerFile, &branchUnit, branchUnitReservationStationSize),
   loadStoreUnit(&memory, &reorderBuffer),
   loadStoreUnitReservationStation(&registerFile, &reorderBuffer, &loadStoreUnit, loadStoreUnitReservationStationSize)
-{}
+{
+  for(int i = 0; i < numALUs; i++) {
+    alu[i].setReorderBufferPointer(&reorderBuffer);
+  }
+}
 
 void Model::updateStats() {
   //increment the number of clock cycles performed
@@ -132,7 +137,9 @@ void Model::dispatch() {
 }
 
 void Model::execute() {
-  alu.execute();
+  for(int i = 0; i < numALUs; i++) {
+    alu[i].execute();
+  }
   loadStoreUnit.execute();
   branchUnit.execute();
 }
@@ -152,7 +159,9 @@ void Model::pipe() {
   loadStoreUnitReservationStation.pipe();
 
   //propogate the outputs of the reservation stations through the pipeline
-  alu.pipe();
+  for(int i = 0; i < numALUs; i++) {
+    alu[i].pipe();
+  }
   branchUnit.pipe();
   loadStoreUnit.pipe();
 }
@@ -167,7 +176,9 @@ void Model::flushPipeline() {
   branchUnitReservationStation.flush();
   loadStoreUnitReservationStation.flush();
   //flush execution units
-  alu.flush();
+  for(int i = 0; i < numALUs; i++) {
+    alu[i].flush();
+  }
   branchUnit.flush();
   loadStoreUnit.flush();
   //flush reorder buffer
@@ -283,10 +294,16 @@ void Model::getLoadStoreUnitReservationStationInstructions(Instruction* const co
 
 void Model::getLoadStoreUnitReservationStationReorderBufferIndexes(int* const copy) const {
   loadStoreUnitReservationStation.getCurrentReorderBufferIndexes(copy);
-}  
+}
 
-int Model::getAluResult() const {
-  return alu.getResult();
+int Model::getNumALUs() const {
+  return numALUs;
+}
+
+void Model::getAluResults(int* const copy) const {
+  for(int i = 0; i < numALUs; i++) {
+    copy[i] = alu[i].getResult();
+  }
 }
 
 int Model::getReorderBufferSize() const {
@@ -297,8 +314,10 @@ int Model::getNumReorderBufferFields() const {
   return reorderBuffer.getNumFields();
 }
 
-int Model::getAluReorderBufferIndex() const {
-  return alu.getReorderBufferIndex();
+void Model::getAluReorderBufferIndexes(int* const copy) const {
+  for(int i = 0; i < numALUs; i++) {
+    copy[i] = alu[i].getReorderBufferIndex();
+  }
 }
 
 bool Model::getBranchUnitSuccessful() const {

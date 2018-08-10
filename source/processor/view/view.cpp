@@ -391,7 +391,7 @@ void View::drawLoadStoreUnitReservationStation(const int reservationStationSize,
   }
 }
 
-void View::drawAlu(const int result, const int reorderBufferIndex) {
+void View::drawAlu(const int numALUs, const int* const results, const int* const reorderBufferIndexes) {
   int xPos = 50;
   int yPos = 300;
   int numOfHorizontalCells = 2;
@@ -399,11 +399,13 @@ void View::drawAlu(const int result, const int reorderBufferIndex) {
   int cellWidth = 20;
   int cellHeight = 20;
 
-  renderText(xPos, yPos - cellHeight, "ALU : ");
-  drawTable(xPos, yPos, numOfHorizontalCells, numOfVerticalCells, cellWidth, cellHeight);
-  if(reorderBufferIndex != -1) {
-    renderText(xPos, yPos, intToString(reorderBufferIndex));
-    renderText(xPos + cellWidth, yPos, intToString(result));
+  for(int i = 0; i < numALUs; i++) {
+    renderText(xPos + i * 50, yPos - cellHeight, "ALU : ");
+    drawTable(xPos + i * 50, yPos, numOfHorizontalCells, numOfVerticalCells, cellWidth, cellHeight);
+    if(reorderBufferIndexes[i] != -1) {
+      renderText(xPos + i * 50, yPos, intToString(reorderBufferIndexes[i]));
+      renderText(xPos + i * 50 + cellWidth, yPos, intToString(results[i]));
+    }
   }
 }
 

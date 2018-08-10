@@ -19,8 +19,10 @@ using namespace std;
 //==========================================================================
 //public functions
 
-ALUReservationStation::ALUReservationStation(RegisterFile* const registerFile, ALU* const alu, const int size) : 
+ALUReservationStation::ALUReservationStation(RegisterFile* const registerFile, const int numALUs, ALU* const alu, 
+  const int size) : 
   registerFile(registerFile),
+  numALUs(numALUs),
   alu(alu),
   size(size),
   instructions(new Instruction[size]),
@@ -28,10 +30,7 @@ ALUReservationStation::ALUReservationStation(RegisterFile* const registerFile, A
   numReservedSpaces(0),
   nextInstructions(new Instruction[size]),
   nextReorderBufferIndexes(new int[size]),
-  opcode(0),
-  operands(new int[3]),
-  reorderBufferIndex(-1),
-  dispatchIndex(-1)
+  dispatchIndexes(new int[numALUs])
 {
   //inialise arrays
   for(int i = 0; i < size; i++) {
@@ -40,45 +39,42 @@ ALUReservationStation::ALUReservationStation(RegisterFile* const registerFile, A
     nextInstructions[i] = (Instruction) {0,0,0,0};
     nextReorderBufferIndexes[i] = -1;
   }
-  //zero out operands
-  for(int i = 0; i < 3; i++) {
-    operands[i] = 0;
+  for(int i = 0; i < numALUs; i++) {
+    dispatchIndexes[i] = -1;
   }
 }
 
 void ALUReservationStation::execute() {
+  int count = 0;
   //try and find an instruction that can be dispatched
   for(int i = 0; i < size; i++) {
     if(readyToDispatch(i)) {
       fetchOperands(i);
-      reorderBufferIndex = reorderBufferIndexes[i];
-      dispatchIndex = i;
-      break;
+      dispatchIndexes[count] = i;
+      count++;
+      if(count == numALUs) {
+        break;
+      }
     }
   }
 }
 
 void ALUReservationStation::pipe() {
   //send current instruction to the alu
-  if(reorderBufferIndex != -1) {
+  for(int i = 0; i < numALUs; i++) {
+    if(dispatchIndexes[i] != -1) {
 
-    //clear the dispatched instruction from the reservation station
-    instructions[dispatchIndex] = (Instruction) {0,0,0,0};
-    reorderBufferIndexes[dispatchIndex] = -1;
-    dispatchIndex = -1;
+      //send the decoded instruction to the execution unit
+      alu[i].setNextOpcode(instructions[dispatchIndexes[i]].opcode);
+      alu[i].setNextOperands(instructions[dispatchIndexes[i]].operands);
+      //Send the reorder buffer index to the alu
+      alu[i].setNextReorderBufferIndex(reorderBufferIndexes[dispatchIndexes[i]]);
 
-    //send the decoded instruction to the execution unit
-    alu->setNextOpcode(opcode);
-    alu->setNextOperands(operands);
-    //Send the reorder buffer index to the alu
-    alu->setNextReorderBufferIndex(reorderBufferIndex);
-        
-    //reset the outputs
-    opcode = 0;
-    for(int i = 0; i < 3; i++) {
-      operands[i] = 0;
+      //clear the dispatched instruction from the reservation station
+      instructions[dispatchIndexes[i]] = (Instruction) {0,0,0,0};
+      reorderBufferIndexes[dispatchIndexes[i]] = -1;
+      dispatchIndexes[i] = -1;
     }
-    reorderBufferIndex = -1;
   }
   //add the next instruction to the buffer
   addNextInstructions();
@@ -99,12 +95,10 @@ void ALUReservationStation::flush() {
     nextInstructions[i] = (Instruction) {0,0,0,0};
     nextReorderBufferIndexes[i] = -1;
   }
-  numReservedSpaces = 0;
-  opcode = 0;
-  for(int i = 0; i < 3; i++) {
-    operands[i] = 0;
+  for(int i = 0; i < numALUs; i++) {
+    dispatchIndexes[i] = -1;
   }
-  reorderBufferIndex = -1;
+  numReservedSpaces = 0;
 }
 
 //print information about the current
@@ -188,14 +182,8 @@ bool ALUReservationStation::readyToDispatch(const int index) const {
 }
 
 void ALUReservationStation::fetchOperands(const int index) {
-  Instruction instruction = instructions[index];
-  //getting the opcode and incomplete operands from the instruction
-  opcode = instruction.opcode;
-  for(int i = 0; i < 3; i++) {
-    operands[i] = instruction.operands[i];
-  }
   //fetching the operands for the instruction
-  switch(opcode) {
+  switch(instructions[index].opcode) {
     case NOOP:
       break;
     case ADD:
@@ -203,11 +191,11 @@ void ALUReservationStation::fetchOperands(const int index) {
     case MULT:
     case OR:
     case SUB:
-      operands[1] = registerFile->getPhysicalRegisterValue(operands[1]);
-      operands[2] = registerFile->getPhysicalRegisterValue(operands[2]);
+      instructions[index].operands[1] = registerFile->getPhysicalRegisterValue(instructions[index].operands[1]);
+      instructions[index].operands[2] = registerFile->getPhysicalRegisterValue(instructions[index].operands[2]);
       break;
     case ADDI:
-      operands[1] = registerFile->getPhysicalRegisterValue(operands[1]);
+      instructions[index].operands[1] = registerFile->getPhysicalRegisterValue(instructions[index].operands[1]);
       break;
   }
 }

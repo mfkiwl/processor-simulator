@@ -78,9 +78,12 @@ void Controller::updateView() {
     loadStoreUnitReservationStationReorderBufferIndexes);
 
   //draw the alu
-  int aluResult = model.getAluResult();
-  int aluReorderBufferIndex = model.getAluReorderBufferIndex();
-  view.drawAlu(aluResult, aluReorderBufferIndex);
+  int numALUs = model.getNumALUs();
+  int aluResults[numALUs];
+  model.getAluResults(aluResults);
+  int aluReorderBufferIndexes[numALUs];
+  model.getAluReorderBufferIndexes(aluReorderBufferIndexes);
+  view.drawAlu(numALUs, aluResults, aluReorderBufferIndexes);
 
   //draw the branch unit
   bool branchUnitSuccessful = model.getBranchUnitSuccessful();
