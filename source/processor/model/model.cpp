@@ -7,8 +7,8 @@
 #include <stdio.h>
 #include <string>
 
-//===========================================
-//class implementation
+//===========================================================================================================
+//public functions
 
 Model::Model(const Instructions instructions) :
 
@@ -58,18 +58,6 @@ Model::Model(const Instructions instructions) :
   }
 }
 
-void Model::updateStats() {
-  //increment the number of clock cycles performed
-  noOfClockCycles++;
-  //calculate the number of instructions exected per clock cycles
-  if(noOfClockCycles == 0) {
-    noOfInstructionsPerCycle = 0;
-  }
-  else {
-    noOfInstructionsPerCycle = (float) noOfInstructionsExecuted / (float) noOfClockCycles;
-  }
-}
-
 void Model::cycle() {
 
   //pipeline the instructions
@@ -99,6 +87,19 @@ void Model::cycle() {
   updateStats();
 
 }
+
+void Model::printInfo() const {
+  printf("______________________________________\n\n");
+  printf("Number of instructions executed: %d\n", noOfInstructionsExecuted);
+  printf("Number of clock cycles: %d\n", noOfClockCycles);
+  printf("Instruction per cycle: %.2f\n", noOfInstructionsPerCycle);
+  printf("\n");
+  printf("PC: %d\n", pc);
+  registerFile.printRegisters();
+}
+
+//=================================================================================================
+//private functions
 
 void Model::run() {
 
@@ -187,18 +188,20 @@ void Model::flushPipeline() {
   registerFile.resetScoreBoard();
 }
 
-void Model::printInfo() const {
-  printf("______________________________________\n\n");
-  printf("Number of instructions executed: %d\n", noOfInstructionsExecuted);
-  printf("Number of clock cycles: %d\n", noOfClockCycles);
-  printf("Instruction per cycle: %.2f\n", noOfInstructionsPerCycle);
-  printf("\n");
-  printf("PC: %d\n", pc);
-  registerFile.printRegisters();
+void Model::updateStats() {
+  //increment the number of clock cycles performed
+  noOfClockCycles++;
+  //calculate the number of instructions exected per clock cycles
+  if(noOfClockCycles == 0) {
+    noOfInstructionsPerCycle = 0;
+  }
+  else {
+    noOfInstructionsPerCycle = (float) noOfInstructionsExecuted / (float) noOfClockCycles;
+  }
 }
 
-//=============================================
-// getter functions
+//========================================================================================================
+// getter and setter functions
 
 int Model::getNumRegisters() const {
   return numArchitecturalRegisters;

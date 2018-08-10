@@ -14,7 +14,7 @@
 //===========================================
 //class implementation
 
-//=======================================================================================
+//================================================================================================
 //public functions
 
 BranchUnitReservationStation::BranchUnitReservationStation(RegisterFile* const registerFile, 
@@ -27,8 +27,6 @@ BranchUnitReservationStation::BranchUnitReservationStation(RegisterFile* const r
   numReservedSpaces(0),
   nextInstructions(new Instruction[size]),
   nextReorderBufferIndexes(new int[size]),
-  opcode(0),
-  reorderBufferIndex(-1),
   dispatchIndex(-1)
 {
   //set all instructions to NOOPs
@@ -38,10 +36,6 @@ BranchUnitReservationStation::BranchUnitReservationStation(RegisterFile* const r
     nextInstructions[i] = (Instruction) {0,0,0,0};
     nextReorderBufferIndexes[i] = -1;
   }
-  //zero out operands
-  for(int i = 0; i < 3; i++) {
-    operands[i] = 0;
-  }
 }
 
 void BranchUnitReservationStation::execute() {
@@ -49,7 +43,6 @@ void BranchUnitReservationStation::execute() {
   for(int i = 0; i < size; i++) {
     if(readyToDispatch(i)) {
       fetchOperands(i);
-      reorderBufferIndex = reorderBufferIndexes[i];
       dispatchIndex = i;
       break;
     }
@@ -58,25 +51,18 @@ void BranchUnitReservationStation::execute() {
 
 void BranchUnitReservationStation::pipe() {
   //send current instruction to the branch unit
-  if(reorderBufferIndex != -1) {
+  if(dispatchIndex != -1) {
+
+    //send the decoded instruction to the execution unit
+    branchUnit->setNextOpcode(instructions[dispatchIndex].opcode);
+    branchUnit->setNextOperands(instructions[dispatchIndex].operands);
+    //Send the reorder buffer index to the execution unit
+    branchUnit->setNextReorderBufferIndex(reorderBufferIndexes[dispatchIndex]);
   
     //clear the dispatched instruction from the reservation station
     instructions[dispatchIndex] = (Instruction) {0,0,0,0};
     reorderBufferIndexes[dispatchIndex] = -1;
     dispatchIndex = -1;
-
-    //send the decoded instruction to the execution unit
-    branchUnit->setNextOpcode(opcode);
-    branchUnit->setNextOperands(operands);
-    //Send the reorder buffer index to the execution unit
-    branchUnit->setNextReorderBufferIndex(reorderBufferIndex);
-        
-    //reset the outputs
-    opcode = 0;
-    for(int i = 0; i < 3; i++) {
-      operands[i] = 0;
-    }
-    reorderBufferIndex = -1;
   }
   //add the next instruction to the buffer
   addNextInstructions();
@@ -97,11 +83,6 @@ void BranchUnitReservationStation::flush() {
     nextReorderBufferIndexes[i] = -1;
   }
   numReservedSpaces = 0;
-  opcode = 0;
-  for(int i = 0; i < 3; i++) {
-    operands[i] = 0;
-  }
-  reorderBufferIndex = -1;
 }
 
 void BranchUnitReservationStation::print() const {
@@ -186,26 +167,20 @@ bool BranchUnitReservationStation::readyToDispatch(const int index) const {
 }
 
 void BranchUnitReservationStation::fetchOperands(const int index) {
-  Instruction instruction = instructions[index];
-  //getting the opcode and incomplete operands from the instruction
-  opcode = instruction.opcode;
-  for(int i = 0; i < 3; i++) {
-    operands[i] = instruction.operands[i];
-  }
   //fetching the operands for the instruction
-  switch(opcode) {
+  switch(instructions[index].opcode) {
     case NOOP:
       break;
     case BEQ:
     case BNE:
-      operands[0] = registerFile->getPhysicalRegisterValue(operands[0]);
-      operands[1] = registerFile->getPhysicalRegisterValue(operands[1]);
+      instructions[index].operands[0] = registerFile->getPhysicalRegisterValue(instructions[index].operands[0]);
+      instructions[index].operands[1] = registerFile->getPhysicalRegisterValue(instructions[index].operands[1]);
       break;
     case BGEZ:
     case BGTZ:
     case BLEZ:
     case BLTZ:
-      operands[0] = registerFile->getPhysicalRegisterValue(operands[0]);
+      instructions[index].operands[0] = registerFile->getPhysicalRegisterValue(instructions[index].operands[0]);
       break;
     case J:
     case JR:

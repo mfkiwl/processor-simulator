@@ -12,24 +12,24 @@ class ReorderBuffer;
 //class declaration
 class ALU {
 
-  //private members
+  //private member variables
   private:
 
     //forward components
     ReorderBuffer* reorderBuffer;
 
-    //decoded instruction
+    //next information
     int nextOpcode;
-    int currentOpcode;
     int nextOperands[3];
-    int currentOperands[3];
-    
-    //position in the reorder buffer
     int nextReorderBufferIndex;
-    int currentReorderBufferIndex;
+
+    //current information
+    int opcode;
+    int operands[3];
+    int reorderBufferIndex;
 
     //instruction result
-    int currentResult;
+    int result;
 
   //public functions
   public:

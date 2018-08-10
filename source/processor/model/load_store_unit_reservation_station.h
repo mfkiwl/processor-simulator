@@ -36,10 +36,6 @@ class LoadStoreUnitReservationStation {
     Instruction* const nextInstructions;
     int* const nextReorderBufferIndexes;
 
-    int opcode;
-    int operands[3];
-    int reorderBufferIndex;
-
     int dispatchIndex;
 
   //public functions

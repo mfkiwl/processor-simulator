@@ -11,23 +11,25 @@ class ReorderBuffer;
 //class declaration
 class BranchUnit {
 
+  //private member variables
   private:
 	
     ReorderBuffer* const reorderBuffer;
 
-    //decoded instruction
+    //decoded information
     int nextOpcode;
-    int currentOpcode;
     int nextOperands[3];
-    int currentOperands[3];
-
-    //position in the reorder buffer
     int nextReorderBufferIndex;
-    int currentReorderBufferIndex;
 
-    //if the branch condition is met or not
+    //next information
+    int opcode;
+    int operands[3];
+    int reorderBufferIndex;
+
+    //branch outcome
     bool successful;
 
+  //public functions
   public:
     BranchUnit(ReorderBuffer* const reorderBuffer);
 
@@ -35,11 +37,14 @@ class BranchUnit {
 
     void pipe();
 
+    void flush();
+
+  //getters and setters
+  public:
+
     void setNextOpcode(const int x);
 
     void setNextOperands(const int x[3]);
-
-    void flush();
 
     void setNextReorderBufferIndex(const int i);
 

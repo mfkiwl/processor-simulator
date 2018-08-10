@@ -11,9 +11,6 @@
 #include "load_store_unit.h"
 #include "instructions.h"
 
-//===========================================
-//class implementation
-
 //======================================================================================================
 //public functions
 
@@ -30,8 +27,6 @@ LoadStoreUnitReservationStation::LoadStoreUnitReservationStation(RegisterFile* c
   numReservedSpaces(0),
   nextInstructions(new Instruction[size]),
   nextReorderBufferIndexes(new int[size]),
-  opcode(0),
-  reorderBufferIndex(-1),
   dispatchIndex(-1)
 {
   //set all instructions to NOOPs
@@ -41,10 +36,6 @@ LoadStoreUnitReservationStation::LoadStoreUnitReservationStation(RegisterFile* c
     nextInstructions[i] = (Instruction) {0,0,0,0};
     nextReorderBufferIndexes[i] = -1;
   }
-  //zero out all operands
-  for(int i = 0; i < 3; i++) {
-    operands[i] = 0;
-  }
 }
 
 void LoadStoreUnitReservationStation::execute() {
@@ -52,7 +43,6 @@ void LoadStoreUnitReservationStation::execute() {
   //instruction being exeucted in order
   if(readyToDispatch(tail)) {
     fetchOperands(tail);
-    reorderBufferIndex = reorderBufferIndexes[tail];
     dispatchIndex = tail;
     tail = (tail + 1) % size;
   }
@@ -60,26 +50,18 @@ void LoadStoreUnitReservationStation::execute() {
 
 void LoadStoreUnitReservationStation::pipe() {
   //send current instruction to the load store unit
-  if(reorderBufferIndex != -1) {
+  if(dispatchIndex != -1) {
+
+    //send the decoded instruction to the execution unit
+    loadStoreUnit->setNextOpcode(instructions[dispatchIndex].opcode);
+    loadStoreUnit->setNextOperands(instructions[dispatchIndex].operands);
+    //Send the reorder buffer index to the execution unit
+    loadStoreUnit->setNextReorderBufferIndex(reorderBufferIndexes[dispatchIndex]);
 
     //clear the dispatched instruction from the reservation station
     instructions[dispatchIndex] = (Instruction) {0,0,0,0};
     reorderBufferIndexes[dispatchIndex] = -1;
     dispatchIndex = -1;
-
-    //send the decoded instruction to the execution unit
-    loadStoreUnit->setNextOpcode(opcode);
-    loadStoreUnit->setNextOperands(operands);
-
-    //Send the reorder buffer index to the execution unit
-    loadStoreUnit->setNextReorderBufferIndex(reorderBufferIndex);
-        
-    //reset the outputs
-    opcode = 0;
-    for(int i = 0; i < 3; i++) {
-      operands[i] = 0;
-    }
-    reorderBufferIndex = -1;
   }
   //add the next instruction to the buffer
   addNextInstructions();
@@ -101,11 +83,6 @@ void LoadStoreUnitReservationStation::flush() {
     nextReorderBufferIndexes[i] = -1;
   }
   numReservedSpaces = 0;
-  opcode = 0;
-  for(int i = 0; i < 3; i++) {
-    operands[i] = 0;
-  }
-  reorderBufferIndex = -1;
 }
 
 void LoadStoreUnitReservationStation::print() const {
@@ -184,27 +161,21 @@ bool LoadStoreUnitReservationStation::readyToDispatch(const int index) const {
 
 //dispatch bound fetch
 void LoadStoreUnitReservationStation::fetchOperands(const int index) {
-  Instruction instruction = instructions[index];
-  //getting the opcode and incomplete operands from the instruction
-  opcode = instruction.opcode;
-  for(int i = 0; i < 3; i++) {
-    operands[i] = instruction.operands[i];
-  }
   //fetching the operands for the instruction
-  switch(opcode) {
+  switch(instructions[index].opcode) {
     case NOOP:
       break;
     case LW:
       break;
     case SW:
-      operands[0] = registerFile->getPhysicalRegisterValue(operands[0]);
+      instructions[index].operands[0] = registerFile->getPhysicalRegisterValue(instructions[index].operands[0]);
       break;
     case LWR:
-      operands[1] = registerFile->getPhysicalRegisterValue(operands[1]);
+      instructions[index].operands[1] = registerFile->getPhysicalRegisterValue(instructions[index].operands[1]);
       break;
     case SWR:
-      operands[0] = registerFile->getPhysicalRegisterValue(operands[0]);
-      operands[1] = registerFile->getPhysicalRegisterValue(operands[1]);
+      instructions[index].operands[0] = registerFile->getPhysicalRegisterValue(instructions[index].operands[0]);
+      instructions[index].operands[1] = registerFile->getPhysicalRegisterValue(instructions[index].operands[1]);
       break;
   }
 }

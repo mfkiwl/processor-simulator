@@ -22,6 +22,7 @@
 //class declaration
 class Model {
 
+  //private member variables
   private:
 
     //Instructions to execute
@@ -63,12 +64,16 @@ class Model {
     LoadStoreUnit loadStoreUnit;
     LoadStoreUnitReservationStation loadStoreUnitReservationStation;
 
+  //public functions
   public:
+
     Model(const Instructions instructions);
 
-    void updateStats();
-
     void cycle();
+
+    void printInfo() const;
+
+  private:
 
     void run();
 
@@ -86,10 +91,10 @@ class Model {
 
     void flushPipeline();
 
-    void printInfo() const;
+    void updateStats();
 
-    //===============================
-    // getter functions
+  //getters and setters
+  public:
 
     int getNumRegisters() const;
 
