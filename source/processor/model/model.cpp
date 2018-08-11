@@ -29,7 +29,7 @@ Model::Model(const Instructions instructions) :
   branchUnitReservationStationSize(4),
   loadStoreUnitReservationStationSize(4),
   reorderBufferSize(22),
-  numALUs(2),
+  numALUs(4),
 
   //special purpose registers
   pc(0),

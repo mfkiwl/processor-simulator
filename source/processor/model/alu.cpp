@@ -17,8 +17,18 @@
 //public functions
 
 ALU::ALU() :
-  reorderBuffer(NULL)
-{}
+  reorderBuffer(NULL),
+  nextOpcode(0),
+  nextReorderBufferIndex(-1),
+  opcode(0),
+  reorderBufferIndex(-1),
+  result(0)
+{
+  for(int i = 0; i < 3; i++) {
+    nextOperands[i] = 0;
+    operands[i] = 0;
+  }
+}
 
 ALU::ALU(ReorderBuffer* const reorderBuffer) : 
   reorderBuffer(reorderBuffer),
