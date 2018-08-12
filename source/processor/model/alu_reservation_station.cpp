@@ -114,7 +114,7 @@ void ALUReservationStation::print() const {
 bool ALUReservationStation::freeSpace() const {
   int count = 0;
   for(int i = 0; i < size; i++) {
-    if(instructions[i].opcode != NOOP) {
+    if(instructions[i].opcode != NOOP && dispatchIndexes[i] == -1) {
       count++;
     }
   }
