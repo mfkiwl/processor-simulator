@@ -34,7 +34,7 @@ LoadBuffer::LoadBuffer(Memory* const memory, ReorderBuffer* const reorderBuffer,
 void LoadBuffer::addToBuffer(const int destinationRegister, const int address, const int reorderBufferIndex) {
   buffer[head][ADDRESS] = address;
   buffer[head][REORDER_BUFFER_INDEX] = reorderBufferIndex;
-  buffer[head][STEP] = 0;
+  buffer[head][STEP] = 1;
   head = (head + 1) % size;
 }
 

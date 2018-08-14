@@ -38,7 +38,7 @@ void StoreBuffer::addToBuffer(const int address, const int value, const int reor
   buffer[head][ADDRESS] = address;
   buffer[head][VALUE] = value;
   buffer[head][REORDER_BUFFER_INDEX] = reorderBufferIndex;
-  buffer[head][STEP] = 0;
+  buffer[head][STEP] = 1;
   head = (head + 1) % size;
 }
 

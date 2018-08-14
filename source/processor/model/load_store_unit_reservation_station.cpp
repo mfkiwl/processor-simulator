@@ -42,7 +42,6 @@ void LoadStoreUnitReservationStation::execute() {
   //dispatch the instruction at the tail if is is ready, this results in all of the load and store
   //instruction being exeucted in order
   if(readyToDispatch(tail)) {
-    fetchOperands(tail);
     dispatchIndex = tail;
     tail = (tail + 1) % size;
   }
@@ -51,6 +50,9 @@ void LoadStoreUnitReservationStation::execute() {
 void LoadStoreUnitReservationStation::pipe() {
   //send current instruction to the load store unit
   if(dispatchIndex != -1) {
+
+    //replace placeholder operands with their values
+    fetchOperands(dispatchIndex);
 
     //send the decoded instruction to the execution unit
     loadStoreUnit->setNextOpcode(instructions[dispatchIndex].opcode);
@@ -100,6 +102,9 @@ bool LoadStoreUnitReservationStation::freeSpace() const {
     if(instructions[i].opcode != NOOP) {
       count++;
     }
+  }
+  if(dispatchIndex != -1) {
+    count--;
   }
   count += numReservedSpaces;
   if(count == size) {
