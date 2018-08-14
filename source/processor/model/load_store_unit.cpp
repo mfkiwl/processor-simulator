@@ -60,6 +60,9 @@ void LoadStoreUnit::execute() {
         break;
     }
   }
+  //perform the read and write instructions when the step number has been met
+  storeBuffer.writeIfReady();
+  loadBuffer.readIfReady();
 
   //increment the step numbers for each inflight read and write instruction
   storeBuffer.incrementSteps();
@@ -67,9 +70,6 @@ void LoadStoreUnit::execute() {
 }
 
 void LoadStoreUnit::pipe() {
-  //perform the read and write instructions when the step number has been met
-  storeBuffer.writeIfReady();
-  loadBuffer.readIfReady();
 
   //set the  values equal to the next values
   opcode = nextOpcode;

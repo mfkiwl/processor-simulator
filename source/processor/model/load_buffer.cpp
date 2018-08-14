@@ -48,7 +48,7 @@ void LoadBuffer::incrementSteps() {
 }
 
 void LoadBuffer::readIfReady() {
-  if(buffer[tail][STEP] > steps) {
+  if(buffer[tail][STEP] >= steps) {
     //get the values from the buffer entry
     int address = buffer[tail][ADDRESS];
     int reorderBufferIndex = buffer[tail][REORDER_BUFFER_INDEX];
