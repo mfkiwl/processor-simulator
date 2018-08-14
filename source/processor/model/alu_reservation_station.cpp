@@ -5,6 +5,7 @@
 //===========================================
 // included dependencies
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "register_file.h"
 #include "alu.h"
@@ -47,7 +48,9 @@ ALUReservationStation::ALUReservationStation(RegisterFile* const registerFile, c
 void ALUReservationStation::execute() {
   int count = 0;
   //try and find an instruction that can be dispatched
-  for(int i = 0; i < size; i++) {
+  int start = rand() % size;
+  int i = start;
+  do {
     if(readyToDispatch(i)) {
       fetchOperands(i);
       dispatchIndexes[count] = i;
@@ -56,7 +59,9 @@ void ALUReservationStation::execute() {
         break;
       }
     }
+    i = (i + 1) % size;
   }
+  while(i != start);
 }
 
 void ALUReservationStation::pipe() {
@@ -114,8 +119,13 @@ void ALUReservationStation::print() const {
 bool ALUReservationStation::freeSpace() const {
   int count = 0;
   for(int i = 0; i < size; i++) {
-    if(instructions[i].opcode != NOOP && dispatchIndexes[i] == -1) {
+    if(instructions[i].opcode != NOOP) {
       count++;
+    }
+  }
+  for(int i = 0; i < numALUs; i++) {
+    if(dispatchIndexes[i] != -1) {
+      count--;
     }
   }
   count += numReservedSpaces;
