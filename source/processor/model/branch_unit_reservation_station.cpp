@@ -5,6 +5,7 @@
 //===========================================
 // included dependencies
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "register_file.h"
 #include "branch_unit.h"
@@ -40,18 +41,24 @@ BranchUnitReservationStation::BranchUnitReservationStation(RegisterFile* const r
 
 void BranchUnitReservationStation::execute() {
   //try and find an instruction that can be dispatched
-  for(int i = 0; i < size; i++) {
+  int start = rand() % size;
+  int i = start;
+  do {
     if(readyToDispatch(i)) {
-      fetchOperands(i);
       dispatchIndex = i;
       break;
     }
+    i = (i + 1) % size;
   }
+  while(i != start);
 }
 
 void BranchUnitReservationStation::pipe() {
   //send current instruction to the branch unit
   if(dispatchIndex != -1) {
+
+    //fetch the operand values that we have been waiting for
+    fetchOperands(dispatchIndex);
 
     //send the decoded instruction to the execution unit
     branchUnit->setNextOpcode(instructions[dispatchIndex].opcode);
@@ -101,6 +108,9 @@ bool BranchUnitReservationStation::freeSpace() const {
     if(instructions[i].opcode != NOOP) {
       count++;
     }
+  }
+  if(dispatchIndex != -1) {
+    count--;
   }
   count += numReservedSpaces;
   if(count == size) {
