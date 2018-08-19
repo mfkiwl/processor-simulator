@@ -24,13 +24,15 @@ class ALUReservationStation {
     ALU* const alu;
 
     const int size;
-    Instruction* const instructions;
-    int* const reorderBufferIndexes;
-
-    int numReservedSpaces;
 
     Instruction* const nextInstructions;
     int* const nextReorderBufferIndexes;
+
+    Instruction* const instructions;
+    bool** const validBits;
+    int* const reorderBufferIndexes;
+
+    int numReservedSpaces;
 
     int* const dispatchIndexes;
 
@@ -53,6 +55,10 @@ class ALUReservationStation {
 
   //private functions
   private:
+
+    void setValidBits();
+
+    void checkOperandAvailability();
 
     int findFreePosition() const;
 

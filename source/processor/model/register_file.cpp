@@ -23,7 +23,7 @@ RegisterFile::RegisterFile(const int numOfArchitecturalRegisters, const int numO
   renameTable(new int[numOfArchitecturalRegisters]),
   physicalRegisters(new int[numOfPhysicalRegisters]),
   freeList(new int[numOfPhysicalRegisters]),
-  scoreBoard(new int[numOfPhysicalRegisters]),
+  scoreBoard(new bool[numOfPhysicalRegisters]),
   rollbackRenameTable(new int[numOfArchitecturalRegisters])
 {
   //set all the physical register values to 0
@@ -32,7 +32,7 @@ RegisterFile::RegisterFile(const int numOfArchitecturalRegisters, const int numO
   for(int i = 0; i < numOfPhysicalRegisters; i++) {
     physicalRegisters[i] = 0;
     freeList[i] = 1;
-    scoreBoard[i] = 1;
+    scoreBoard[i] = true;
   }
   //map each architectural register to a unique physical register
   //set the latest architecural register values to 0
@@ -45,7 +45,7 @@ RegisterFile::RegisterFile(const int numOfArchitecturalRegisters, const int numO
 
 void RegisterFile::resetScoreBoard() {
   for(int i = 0; i < numOfPhysicalRegisters; i++) {
-    scoreBoard[i] = 1;
+    scoreBoard[i] = true;
   }
 }
 
@@ -134,7 +134,7 @@ void RegisterFile::flush() {
   }
   //reset the scoreboard
   for(int i = 0; i < numOfPhysicalRegisters; i++) {
-    scoreBoard[i] = 1;
+    scoreBoard[i] = true;
   }
 }
 
@@ -184,14 +184,14 @@ void RegisterFile::setPhysicalRegisterValue(const int i, const int val) {
   physicalRegisters[i] = val;
 }
 
-int RegisterFile::getScoreBoardValue(const int i) const {
+bool RegisterFile::getScoreBoardValue(const int i) const {
   if(i < 0 || i >= numOfPhysicalRegisters) {
     printf("ScoreBoard index %d is out of range when trying to get scoreBoard value.\n", i);
   }
   return scoreBoard[i];
 }
 
-void RegisterFile::setScoreBoardValue(const int i, const int val) {
+void RegisterFile::setScoreBoardValue(const int i, const bool val) {
   if(i < 0 || i >= numOfPhysicalRegisters) {
     printf("ScoreBoard index %d is out of range when trying to set scoreBoard value.\n", i);
   }

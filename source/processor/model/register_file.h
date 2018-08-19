@@ -19,7 +19,7 @@ class RegisterFile {
     //tells whether each physical registers is free to be used or not
     int* const freeList;
     //tells us whether each physical register is in the process of being written to
-    int* const scoreBoard;
+    bool* const scoreBoard;
 
     int* const rollbackRenameTable;
 
@@ -57,9 +57,9 @@ class RegisterFile {
 
     void setPhysicalRegisterValue(const int i, const int val);
 
-    int getScoreBoardValue(const int i) const;
+    bool getScoreBoardValue(const int i) const;
 
-    void setScoreBoardValue(const int i, const int val);
+    void setScoreBoardValue(const int i, const bool val);
 
     void setArchitecturalRegisterMapping(const int i, const int val) const;
 

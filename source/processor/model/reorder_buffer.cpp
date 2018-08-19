@@ -105,7 +105,7 @@ void ReorderBuffer::execute() {
         //update the rollback rename table
         registerFile->setRollbackRenameTableMapping(buffer[tail][ARCHITECTURAL_REGISTER], buffer[tail][PHYSICAL_REGISTER]);
         //Set the scoreBoard of the destination register to 1
-        registerFile->setScoreBoardValue(buffer[tail][PHYSICAL_REGISTER], 1);
+        registerFile->setScoreBoardValue(buffer[tail][PHYSICAL_REGISTER], true);
         //free the previous physical register
         registerFile->freePhysicalRegister(buffer[tail][PREVIOUS_PHYSICAL_REGISTER]);
       }

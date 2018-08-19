@@ -400,7 +400,7 @@ void DecodeIssueUnit::pipeInstruction(int instructionToIssue) {
     case OR:
     case SUB:
       //Set the scoreboard value of the destination register to zero
-      registerFile->setScoreBoardValue(instructions[instructionToIssue].operands[0],0);
+      registerFile->setScoreBoardValue(instructions[instructionToIssue].operands[0],false);
       aluReservationStation->setNextInstruction(instructions[instructionToIssue], 
         reorderBufferIndexes[instructionToIssue]);
       break;
@@ -409,7 +409,7 @@ void DecodeIssueUnit::pipeInstruction(int instructionToIssue) {
     case LW:
     case LWR:
       //Set the scoreboard value of the destination register to zero
-      registerFile->setScoreBoardValue(instructions[instructionToIssue].operands[0],0);
+      registerFile->setScoreBoardValue(instructions[instructionToIssue].operands[0],false);
     case SW:
     case SWR:
       loadStoreUnitReservationStation->setNextInstruction(instructions[instructionToIssue], 
