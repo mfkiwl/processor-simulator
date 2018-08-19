@@ -23,13 +23,15 @@ class BranchUnitReservationStation {
     BranchUnit* const branchUnit;
 
     const int size;
-    Instruction* const instructions;
-    int* const reorderBufferIndexes;
-
-    int numReservedSpaces;
 
     Instruction* const nextInstructions;
     int* const nextReorderBufferIndexes;
+
+    Instruction* const instructions;
+    bool** const validBits;
+    int* const reorderBufferIndexes;
+
+    int numReservedSpaces;
 
     int dispatchIndex;
 
@@ -52,6 +54,8 @@ class BranchUnitReservationStation {
 
   //private functions
   private:
+
+    void checkOperandAvailability();
 
     int findFreePosition() const;
 

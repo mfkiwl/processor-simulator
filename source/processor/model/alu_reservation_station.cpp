@@ -106,11 +106,11 @@ void ALUReservationStation::pipe() {
 void ALUReservationStation::flush() {
   for(int i = 0; i < size; i++) {
     nextInstructions[i] = (Instruction) {0,0,0,0};
+    nextReorderBufferIndexes[i] = -1;
+    instructions[i] = (Instruction) {0,0,0,0};
     for(int j = 0; j < 3; j++) {
       validBits[i][j] = false;
     }
-    nextReorderBufferIndexes[i] = -1;
-    instructions[i] = (Instruction) {0,0,0,0};
     reorderBufferIndexes[i] = -1;
   }
   for(int i = 0; i < numALUs; i++) {

@@ -23,23 +23,30 @@ BranchUnitReservationStation::BranchUnitReservationStation(RegisterFile* const r
   registerFile(registerFile),
   branchUnit(branchUnit),
   size(size),
-  instructions(new Instruction[size]),
-  reorderBufferIndexes(new int[size]),
-  numReservedSpaces(0),
   nextInstructions(new Instruction[size]),
   nextReorderBufferIndexes(new int[size]),
+  instructions(new Instruction[size]),
+  validBits(new bool*[size]),
+  reorderBufferIndexes(new int[size]),
+  numReservedSpaces(0),
   dispatchIndex(-1)
 {
   //set all instructions to NOOPs
   for(int i = 0; i < size; i++) {
-    instructions[i] = (Instruction) {0,0,0,0};
-    reorderBufferIndexes[i] = -1;
     nextInstructions[i] = (Instruction) {0,0,0,0};
     nextReorderBufferIndexes[i] = -1;
+    instructions[i] = (Instruction) {0,0,0,0};
+    validBits[i] = new bool[3];
+    for(int j = 0; j < 3; j++) {
+      validBits[i][j] = false;
+    }
+    reorderBufferIndexes[i] = -1;
   }
 }
 
 void BranchUnitReservationStation::execute() {
+  //try and fetch operands values that we are waiting for
+  checkOperandAvailability();
   //try and find an instruction that can be dispatched
   int start = rand() % size;
   int i = start;
@@ -57,9 +64,6 @@ void BranchUnitReservationStation::pipe() {
   //send current instruction to the branch unit
   if(dispatchIndex != -1) {
 
-    //fetch the operand values that we have been waiting for
-    fetchOperands(dispatchIndex);
-
     //send the decoded instruction to the execution unit
     branchUnit->setNextOpcode(instructions[dispatchIndex].opcode);
     branchUnit->setNextOperands(instructions[dispatchIndex].operands);
@@ -68,6 +72,9 @@ void BranchUnitReservationStation::pipe() {
   
     //clear the dispatched instruction from the reservation station
     instructions[dispatchIndex] = (Instruction) {0,0,0,0};
+    for(int j = 0; j < 3; j++) {
+      validBits[dispatchIndex][j] = false;
+    }
     reorderBufferIndexes[dispatchIndex] = -1;
     dispatchIndex = -1;
   }
@@ -84,10 +91,13 @@ void BranchUnitReservationStation::pipe() {
 
 void BranchUnitReservationStation::flush() {
   for(int i = 0; i < size; i++) {
-    instructions[i] = (Instruction) {0,0,0,0};
-    reorderBufferIndexes[i] = -1;
     nextInstructions[i] = (Instruction) {0,0,0,0};
     nextReorderBufferIndexes[i] = -1;
+    instructions[i] = (Instruction) {0,0,0,0};
+    for(int j = 0; j < 3; j++) {
+      validBits[i][j] = false;
+    }
+    reorderBufferIndexes[i] = -1;
   }
   numReservedSpaces = 0;
 }
@@ -128,6 +138,40 @@ void BranchUnitReservationStation::reserveSpace() {
 //==========================================================================================
 //private functions
 
+void BranchUnitReservationStation::checkOperandAvailability() {
+  for(int i = 0; i < size; i++) {
+    switch(instructions[i].opcode) {
+      case NOOP:
+        break;
+      case BEQ:
+      case BNE:
+        if(!validBits[i][0]) {
+          if(registerFile->getScoreBoardValue(instructions[i].operands[0])) {
+            instructions[i].operands[0] = registerFile->getPhysicalRegisterValue(instructions[i].operands[0]);
+            validBits[i][0] = true;
+          }
+        }
+        if(!validBits[i][1]) {
+          if(registerFile->getScoreBoardValue(instructions[i].operands[1])) {
+            instructions[i].operands[1] = registerFile->getPhysicalRegisterValue(instructions[i].operands[1]);
+            validBits[i][1] = true;
+          }
+        }
+        break;
+      case BGEZ:
+      case BGTZ:
+      case BLEZ:
+      case BLTZ:
+        break;
+      case J:
+      case JR:
+      case HALT:
+        break;
+    }
+  }
+}
+
+
 int BranchUnitReservationStation::findFreePosition() const {
   for(int i = 0; i < size; i++) {
     if(instructions[i].opcode == NOOP) {
@@ -148,14 +192,13 @@ void BranchUnitReservationStation::addNextInstructions() {
 }
 
 bool BranchUnitReservationStation::readyToDispatch(const int index) const {
-  Instruction instruction = instructions[index];
-  //check that the source register are ready to use
-  switch(instruction.opcode) {
+  //check that operands are valid
+  switch(instructions[index].opcode) {
     case NOOP:
       return false;
     case BEQ:
     case BNE:
-      if(registerFile->getScoreBoardValue(instruction.operands[0]) && registerFile->getScoreBoardValue(instruction.operands[1])) {
+      if(validBits[index][0] && validBits[index][1]) {
         return true;
       }
       break;
@@ -163,9 +206,6 @@ bool BranchUnitReservationStation::readyToDispatch(const int index) const {
     case BGTZ:
     case BLEZ:
     case BLTZ:
-      if(registerFile->getScoreBoardValue(instruction.operands[0])) {
-        return true;
-      }
       break;
     case J:
     case JR:

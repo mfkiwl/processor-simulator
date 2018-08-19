@@ -56,8 +56,6 @@ class ALUReservationStation {
   //private functions
   private:
 
-    void setValidBits();
-
     void checkOperandAvailability();
 
     int findFreePosition() const;
