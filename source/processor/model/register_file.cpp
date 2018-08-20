@@ -120,6 +120,10 @@ void RegisterFile::freePhysicalRegister(const int i) {
   physicalRegisters[i] = 0;
 }
 
+bool RegisterFile::freePhysicalRegisterAvailable() const {
+  return findFreePhysicalRegister() != -1;
+}
+
 void RegisterFile::flush() {
   //rollback the rename table
   for(int i = 0; i < numOfArchitecturalRegisters; i++) {

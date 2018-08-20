@@ -72,7 +72,7 @@ void DecodeIssueUnit::issue(int instructionToIssue) {
     //ALU instructions
     case ADDI:
       //if there is space in the reservation then issue the instruction
-      if(aluReservationStation->freeSpace()) {
+      if(aluReservationStation->freeSpace() && registerFile->freePhysicalRegisterAvailable()) {
 
         //reserve a space in the reservation station
         aluReservationStation->reserveSpace();
@@ -112,7 +112,7 @@ void DecodeIssueUnit::issue(int instructionToIssue) {
     case SUB:
 
       //if there is space in the reservation then issue the instruction
-      if(aluReservationStation->freeSpace()) {
+      if(aluReservationStation->freeSpace() && registerFile->freePhysicalRegisterAvailable()) {
 
         //reserve a space in the reservation station
         aluReservationStation->reserveSpace();
@@ -148,7 +148,7 @@ void DecodeIssueUnit::issue(int instructionToIssue) {
 
     //Load Store unit instructions
     case LW:
-      if(loadStoreUnitReservationStation->freeSpace()) {
+      if(loadStoreUnitReservationStation->freeSpace() && registerFile->freePhysicalRegisterAvailable()) {
 
         //reserve a space in the reservation station
         loadStoreUnitReservationStation->reserveSpace();
@@ -179,7 +179,7 @@ void DecodeIssueUnit::issue(int instructionToIssue) {
       break;
 
     case LWR:
-      if(loadStoreUnitReservationStation->freeSpace()) {
+      if(loadStoreUnitReservationStation->freeSpace() && registerFile->freePhysicalRegisterAvailable()) {
 
         //reserve a space in the reservation station
         loadStoreUnitReservationStation->reserveSpace();

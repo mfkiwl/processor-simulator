@@ -38,6 +38,8 @@ class RegisterFile {
 
     void freePhysicalRegister(const int i);
 
+    bool freePhysicalRegisterAvailable() const;
+
     void flush();
 
     void usePhysicalRegister(const int i);

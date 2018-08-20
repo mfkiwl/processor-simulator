@@ -22,7 +22,7 @@ Model::Model(const Instructions instructions) :
 
   //processor configuration
   numArchitecturalRegisters(16),
-  numPhysicalRegisters(128),
+  numPhysicalRegisters(32),
   memorySize(28),
   issueWindowSize(4),
   aluReservationStationSize(4),
