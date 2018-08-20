@@ -25,16 +25,18 @@ class LoadStoreUnitReservationStation {
     ReorderBuffer* const reorderBuffer;
     LoadStoreUnit* const loadStoreUnit;
 
-    int tail;
-    int head;
     const int size;
-    Instruction* const instructions;
-    int* const reorderBufferIndexes;
-
-    int numReservedSpaces;
 
     Instruction* const nextInstructions;
     int* const nextReorderBufferIndexes;
+
+    int tail;
+    int head;
+    Instruction* const instructions;
+    bool** const validBits;
+    int* const reorderBufferIndexes;
+
+    int numReservedSpaces;
 
     int dispatchIndex;
 
@@ -58,6 +60,8 @@ class LoadStoreUnitReservationStation {
 
   //private functions
   private:
+
+    void checkOperandAvailability();
 
     void addNextInstructions();
 

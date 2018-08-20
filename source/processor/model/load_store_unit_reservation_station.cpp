@@ -19,26 +19,32 @@ LoadStoreUnitReservationStation::LoadStoreUnitReservationStation(RegisterFile* c
   registerFile(registerFile),
   reorderBuffer(reorderBuffer),
   loadStoreUnit(loadStoreUnit),
-  tail(0),
-  head(0),
   size(size),
-  instructions(new Instruction[size]),
-  reorderBufferIndexes(new int[size]),
-  numReservedSpaces(0),
   nextInstructions(new Instruction[size]),
   nextReorderBufferIndexes(new int[size]),
+  tail(0),
+  head(0),
+  instructions(new Instruction[size]),
+  validBits(new bool*[size]),
+  reorderBufferIndexes(new int[size]),
+  numReservedSpaces(0),
   dispatchIndex(-1)
 {
   //set all instructions to NOOPs
   for(int i = 0; i < size; i++) {
-    instructions[i] = (Instruction) {0,0,0,0};
-    reorderBufferIndexes[i] = -1;
     nextInstructions[i] = (Instruction) {0,0,0,0};
     nextReorderBufferIndexes[i] = -1;
+    instructions[i] = (Instruction) {0,0,0,0};
+    validBits[i] = new bool[3];
+    for(int j = 0; j < 3; j++) {
+      validBits[i][j] = false;
+    }
+    reorderBufferIndexes[i] = -1;
   }
 }
 
 void LoadStoreUnitReservationStation::execute() {
+  checkOperandAvailability();
   //dispatch the instruction at the tail if is is ready, this results in all of the load and store
   //instruction being exeucted in order
   if(readyToDispatch(tail)) {
@@ -51,9 +57,6 @@ void LoadStoreUnitReservationStation::pipe() {
   //send current instruction to the load store unit
   if(dispatchIndex != -1) {
 
-    //replace placeholder operands with their values
-    fetchOperands(dispatchIndex);
-
     //send the decoded instruction to the execution unit
     loadStoreUnit->setNextOpcode(instructions[dispatchIndex].opcode);
     loadStoreUnit->setNextOperands(instructions[dispatchIndex].operands);
@@ -62,6 +65,9 @@ void LoadStoreUnitReservationStation::pipe() {
 
     //clear the dispatched instruction from the reservation station
     instructions[dispatchIndex] = (Instruction) {0,0,0,0};
+    for(int j = 0; j < 3; j++) {
+      validBits[dispatchIndex][j] = false;
+    }
     reorderBufferIndexes[dispatchIndex] = -1;
     dispatchIndex = -1;
   }
@@ -79,10 +85,13 @@ void LoadStoreUnitReservationStation::flush() {
   head = 0;
   tail = 0;
   for(int i = 0; i < size; i++) {
-    instructions[i] = (Instruction) {0,0,0,0};
-    reorderBufferIndexes[i] = -1;
     nextInstructions[i] = (Instruction) {0,0,0,0};
     nextReorderBufferIndexes[i] = -1;
+    instructions[i] = (Instruction) {0,0,0,0};
+    for(int j = 0; j < 3; j++) {
+      validBits[i][j] = false;
+    }
+    reorderBufferIndexes[i] = -1;
   }
   numReservedSpaces = 0;
 }
@@ -122,6 +131,48 @@ void LoadStoreUnitReservationStation::reserveSpace() {
 //============================================================================================
 //private functions
 
+void LoadStoreUnitReservationStation::checkOperandAvailability() {
+  for(int i = 0; i < size; i++) {
+    switch(instructions[i].opcode) {
+      case NOOP:
+        break;
+      case LW:
+        break;
+      break;
+      case SW:
+        if(!validBits[i][0]) {
+          if(registerFile->getScoreBoardValue(instructions[i].operands[0])) {
+            instructions[i].operands[0] = registerFile->getPhysicalRegisterValue(instructions[i].operands[0]);
+            validBits[i][0] = true;
+          }
+        }
+        break;
+      case LWR:
+        if(!validBits[i][1]) {
+          if(registerFile->getScoreBoardValue(instructions[i].operands[1])) {
+            instructions[i].operands[1] = registerFile->getPhysicalRegisterValue(instructions[i].operands[1]);
+            validBits[i][1] = true;
+          }
+        }
+        break;
+      case SWR:
+        if(!validBits[i][0]) {
+          if(registerFile->getScoreBoardValue(instructions[i].operands[0])) {
+            instructions[i].operands[0] = registerFile->getPhysicalRegisterValue(instructions[i].operands[0]);
+            validBits[i][0] = true;
+          }
+        }
+        if(!validBits[i][1]) {
+          if(registerFile->getScoreBoardValue(instructions[i].operands[1])) {
+            instructions[i].operands[1] = registerFile->getPhysicalRegisterValue(instructions[i].operands[1]);
+            validBits[i][1] = true;
+          }
+        }
+        break;
+    }
+  }
+}
+
 void LoadStoreUnitReservationStation::addNextInstructions() {
   for(int i = 0; i < size; i++) {
     if(nextInstructions[i].opcode != NOOP) {
@@ -133,9 +184,8 @@ void LoadStoreUnitReservationStation::addNextInstructions() {
 }
 
 bool LoadStoreUnitReservationStation::readyToDispatch(const int index) const {
-  Instruction instruction = instructions[index];
   //check that the source register are ready to use
-  switch(instruction.opcode) {
+  switch(instructions[index].opcode) {
     case NOOP:
       return false;
     case LW:
@@ -144,19 +194,19 @@ bool LoadStoreUnitReservationStation::readyToDispatch(const int index) const {
     break;
     case SW:
       //ready if the source registers are ready and the instruction is at the ROB tail
-      if(registerFile->getScoreBoardValue(instruction.operands[0]) && reorderBufferIndexes[index] == reorderBuffer->getTailIndex()) {
+      if(validBits[index][0] && reorderBufferIndexes[index] == reorderBuffer->getTailIndex()) {
         return true;
       }
       break;
     case LWR:
       //ready is the source registers are ready
-      if(registerFile->getScoreBoardValue(instruction.operands[1])) {
+      if(validBits[index][1]) {
         return true;
       }
       break;
     case SWR:
       //ready if the source registers are ready and the instruction is at the ROB tail
-      if(registerFile->getScoreBoardValue(instruction.operands[0]) && registerFile->getScoreBoardValue(instruction.operands[1]) && reorderBufferIndexes[index] == reorderBuffer->getTailIndex()) {
+      if(validBits[index][0] && validBits[index][1] && reorderBufferIndexes[index] == reorderBuffer->getTailIndex()) {
         return true;
       }
       break;
