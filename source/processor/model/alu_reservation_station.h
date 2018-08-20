@@ -64,9 +64,6 @@ class ALUReservationStation {
 
     bool readyToDispatch(const int index) const;
 
-    //dispatch bound fetch
-    void fetchOperands(const int index);
-
   //getters and setters
   public:
 

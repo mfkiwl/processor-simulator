@@ -67,8 +67,6 @@ class LoadStoreUnitReservationStation {
 
     bool readyToDispatch(const int index) const;
 
-    void fetchOperands(const int index);
-
   //getters and setters
   public:
 

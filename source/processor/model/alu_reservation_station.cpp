@@ -238,25 +238,6 @@ bool ALUReservationStation::readyToDispatch(const int index) const {
   return false;
 }
 
-void ALUReservationStation::fetchOperands(const int index) {
-  //fetching the operands for the instruction
-  switch(instructions[index].opcode) {
-    case NOOP:
-      break;
-    case ADD:
-    case AND:
-    case MULT:
-    case OR:
-    case SUB:
-      instructions[index].operands[1] = registerFile->getPhysicalRegisterValue(instructions[index].operands[1]);
-      instructions[index].operands[2] = registerFile->getPhysicalRegisterValue(instructions[index].operands[2]);
-      break;
-    case ADDI:
-      instructions[index].operands[1] = registerFile->getPhysicalRegisterValue(instructions[index].operands[1]);
-      break;
-  }
-}
-
 //=========================================================================================
 //getters and setters
 

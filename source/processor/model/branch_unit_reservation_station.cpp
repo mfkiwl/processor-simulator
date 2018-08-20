@@ -216,30 +216,6 @@ bool BranchUnitReservationStation::readyToDispatch(const int index) const {
   return false;
 }
 
-void BranchUnitReservationStation::fetchOperands(const int index) {
-  //fetching the operands for the instruction
-  switch(instructions[index].opcode) {
-    case NOOP:
-      break;
-    case BEQ:
-    case BNE:
-      instructions[index].operands[0] = registerFile->getPhysicalRegisterValue(instructions[index].operands[0]);
-      instructions[index].operands[1] = registerFile->getPhysicalRegisterValue(instructions[index].operands[1]);
-      break;
-    case BGEZ:
-    case BGTZ:
-    case BLEZ:
-    case BLTZ:
-      instructions[index].operands[0] = registerFile->getPhysicalRegisterValue(instructions[index].operands[0]);
-      break;
-    case J:
-    case JR:
-    case HALT:
-      break;
-  }
-}
-
-
 //=====================================================================================
 //getters and setters
 

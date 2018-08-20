@@ -214,27 +214,6 @@ bool LoadStoreUnitReservationStation::readyToDispatch(const int index) const {
   return false;
 }
 
-//dispatch bound fetch
-void LoadStoreUnitReservationStation::fetchOperands(const int index) {
-  //fetching the operands for the instruction
-  switch(instructions[index].opcode) {
-    case NOOP:
-      break;
-    case LW:
-      break;
-    case SW:
-      instructions[index].operands[0] = registerFile->getPhysicalRegisterValue(instructions[index].operands[0]);
-      break;
-    case LWR:
-      instructions[index].operands[1] = registerFile->getPhysicalRegisterValue(instructions[index].operands[1]);
-      break;
-    case SWR:
-      instructions[index].operands[0] = registerFile->getPhysicalRegisterValue(instructions[index].operands[0]);
-      instructions[index].operands[1] = registerFile->getPhysicalRegisterValue(instructions[index].operands[1]);
-      break;
-  }
-}
-
 //=============================================================================================
 //getters and setters
 
