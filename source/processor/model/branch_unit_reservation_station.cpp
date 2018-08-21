@@ -135,6 +135,37 @@ void BranchUnitReservationStation::reserveSpace() {
   numReservedSpaces++;
 }
 
+void BranchUnitReservationStation::broadcast(int physicalRegister, int value) {
+  for(int i = 0; i < size; i++) {
+    switch(instructions[i].opcode) {
+      case NOOP:
+        break;
+      case BEQ:
+      case BNE:
+        if(!validBits[i][0] && instructions[i].operands[0] == physicalRegister) {
+          instructions[i].operands[0] = value;
+          validBits[i][0] = true;
+        }
+        if(!validBits[i][1] && instructions[i].operands[1] == physicalRegister) {
+          instructions[i].operands[1] = value;
+          validBits[i][1] = true;
+        }
+        break;
+      case BGEZ:
+      case BGTZ:
+      case BLEZ:
+      case BLTZ:
+        break;
+      case J:
+      case JR:
+      case HALT:
+        break;
+    }
+  }
+}
+
+
+
 //==========================================================================================
 //private functions
 

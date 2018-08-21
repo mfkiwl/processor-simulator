@@ -55,6 +55,9 @@ Model::Model(const Instructions instructions) :
 {
   for(int i = 0; i < numALUs; i++) {
     alu[i].setReorderBufferPointer(&reorderBuffer);
+    alu[i].setALUReservationStationPointer(&aluReservationStation);
+    alu[i].setLoadStoreUnitReservationStationPointer(&loadStoreUnitReservationStation);
+    alu[i].setBranchUnitReservationStationPointer(&branchUnitReservationStation);
   }
 }
 

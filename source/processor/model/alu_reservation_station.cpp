@@ -154,6 +154,35 @@ void ALUReservationStation::reserveSpace() {
   numReservedSpaces++;
 }
 
+void ALUReservationStation::broadcast(int physicalRegister, int value) {
+  for(int i = 0; i < size; i++) {
+    switch(instructions[i].opcode) {
+      case NOOP:
+        break;
+      case ADD:
+      case AND:
+      case MULT:
+      case OR:
+      case SUB:
+        if(!validBits[i][1] && instructions[i].operands[1] == physicalRegister) {
+          instructions[i].operands[1] = value;
+          validBits[i][1] = true;
+        }
+        if(!validBits[i][2] && instructions[i].operands[2] == physicalRegister) {
+          instructions[i].operands[2] = value;
+          validBits[i][2] = true;
+        }
+        break;
+      case ADDI:
+        if(!validBits[i][1] && instructions[i].operands[1] == physicalRegister) {
+          instructions[i].operands[1] = value;
+          validBits[i][1] = true;
+        }
+        break;
+    }
+  }
+}
+
 //==============================================================================================
 //private functions
 

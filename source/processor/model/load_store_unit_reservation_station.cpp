@@ -214,6 +214,39 @@ bool LoadStoreUnitReservationStation::readyToDispatch(const int index) const {
   return false;
 }
 
+void LoadStoreUnitReservationStation::broadcast(int physicalRegister, int value) {
+  for(int i = 0; i < size; i++) {
+    switch(instructions[i].opcode) {
+      case NOOP:
+        break;
+      case LW:
+        break;
+      case SW:
+        if(!validBits[i][0] && instructions[i].operands[0] == physicalRegister) {
+          instructions[i].operands[0] = value;
+          validBits[i][0] = true;
+        }
+        break;
+      case LWR:
+        if(!validBits[i][1] && instructions[i].operands[1] == physicalRegister) {
+          instructions[i].operands[1] = value;
+          validBits[i][1] = true;
+        }
+        break;
+      case SWR:
+        if(!validBits[i][0] && instructions[i].operands[0] == physicalRegister) {
+          instructions[i].operands[0] = value;
+          validBits[i][0] = true;
+        }
+        if(!validBits[i][1] && instructions[i].operands[1] == physicalRegister) {
+          instructions[i].operands[1] = value;
+          validBits[i][1] = true;
+        }
+        break;
+    }
+  }
+}
+
 //=============================================================================================
 //getters and setters
 

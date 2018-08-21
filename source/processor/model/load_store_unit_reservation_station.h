@@ -58,6 +58,8 @@ class LoadStoreUnitReservationStation {
 
     void reserveSpace();
 
+    void broadcast(int physicalRegister, int value);
+
   //private functions
   private:
 

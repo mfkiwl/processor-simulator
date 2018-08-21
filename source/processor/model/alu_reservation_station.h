@@ -53,6 +53,8 @@ class ALUReservationStation {
 
     void reserveSpace();
 
+    void broadcast(int physicalRegister, int value);
+
   //private functions
   private:
 
