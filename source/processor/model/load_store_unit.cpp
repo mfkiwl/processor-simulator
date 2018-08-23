@@ -10,7 +10,8 @@
 //==============================================================================================================
 //public functions
 
-LoadStoreUnit::LoadStoreUnit(Memory* const memory, ReorderBuffer* const reorderBuffer) :
+LoadStoreUnit::LoadStoreUnit(Memory* const memory, ReorderBuffer* const reorderBuffer, 
+  ALUReservationStation* const aluReservationStation) :
   memory(memory),
   reorderBuffer(reorderBuffer),
   nextOpcode(0),
@@ -21,7 +22,8 @@ LoadStoreUnit::LoadStoreUnit(Memory* const memory, ReorderBuffer* const reorderB
   writeCycles(5),
   readCycles(5),
   storeBuffer(memory, reorderBuffer, bufferSize, writeCycles),
-  loadBuffer(memory, reorderBuffer, bufferSize, readCycles)
+  loadBuffer(memory, reorderBuffer, bufferSize, readCycles, aluReservationStation),
+  aluReservationStation(aluReservationStation)
 {
   //initially set all Operands to zero
   for(int i = 0; i < 3; i++) {

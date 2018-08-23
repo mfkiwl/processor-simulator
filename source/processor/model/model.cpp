@@ -50,7 +50,7 @@ Model::Model(const Instructions instructions) :
   aluReservationStation(&registerFile, numALUs, alu, aluReservationStationSize),
   branchUnit(&reorderBuffer),
   branchUnitReservationStation(&registerFile, &branchUnit, branchUnitReservationStationSize),
-  loadStoreUnit(&memory, &reorderBuffer),
+  loadStoreUnit(&memory, &reorderBuffer, &aluReservationStation),
   loadStoreUnitReservationStation(&registerFile, &reorderBuffer, &loadStoreUnit, loadStoreUnitReservationStationSize)
 {
   for(int i = 0; i < numALUs; i++) {

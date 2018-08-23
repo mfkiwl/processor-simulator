@@ -7,6 +7,7 @@
 //forward declared dependencies
 class Memory;
 class ReorderBuffer;
+class ALUReservationStation;
 
 //=================================
 // included dependencies
@@ -41,10 +42,13 @@ class LoadStoreUnit {
     StoreBuffer storeBuffer;
     LoadBuffer loadBuffer;
 
+    ALUReservationStation* const aluReservationStation;
+
   //public functions
   public:
 
-    LoadStoreUnit(Memory* const memory, ReorderBuffer* const reorderBuffer);
+    LoadStoreUnit(Memory* const memory, ReorderBuffer* const reorderBuffer, 
+      ALUReservationStation* const aluReservationStation);
 
     void execute();
 
