@@ -63,8 +63,12 @@ class StoreQueue {
 
   	void broadcast(int physicalRegister, int value);
 
+    bool checkLoad(int age, int address);
+
   //private functions
   private:
+
+    void incrementAges();
 
   	void checkOperandAvailability();
 

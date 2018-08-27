@@ -67,6 +67,8 @@ class LoadQueue {
   //private functions
   private:
 
+  	void incrementAges();
+
   	void checkOperandAvailability();
 
   	bool readyToDispatch(const int index) const;

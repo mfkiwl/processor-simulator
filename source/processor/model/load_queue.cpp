@@ -47,6 +47,7 @@ LoadQueue::LoadQueue(ReorderBuffer* const reorderBuffer, RegisterFile* const reg
     }
 
 void LoadQueue::execute() {
+  incrementAges();
   checkOperandAvailability();
   //dispatch the instruction at the tail if is is ready, this results in all of the load and store
   //instruction being exeucted in order
@@ -154,6 +155,14 @@ void LoadQueue::broadcast(int physicalRegister, int value) {
 //====================================================================================================================
 //private functions
 
+void LoadQueue::incrementAges() {
+  for(int i = 0; i < size; i++) {
+  	if(instructions[i].opcode != NOOP) {
+  	  ages[i]++;
+  	}
+  }
+}
+
 void LoadQueue::checkOperandAvailability() {
   for(int i = 0; i < size; i++) {
     switch(instructions[i].opcode) {
@@ -179,14 +188,14 @@ bool LoadQueue::readyToDispatch(const int index) const {
     case NOOP:
       return false;
     case LW:
-      if(reorderBufferIndexes[index] == reorderBuffer->getTailIndex()) {
+      if(storeQueue->checkLoad(ages[index], instructions[index].operands[1])) {
         //ready
         return true;
       }
     break;
     case LWR:
       //ready is the source registers are ready
-      if(validBits[index][1] && reorderBufferIndexes[index] == reorderBuffer->getTailIndex() ) {
+      if(validBits[index][1] && storeQueue->checkLoad(ages[index], instructions[index].operands[1])) {
         return true;
       }
       break;
@@ -198,7 +207,6 @@ void LoadQueue::addNextInstructions() {
   for(int i = 0; i < size; i++) {
     if(nextInstructions[i].opcode != NOOP) {
       instructions[head] = nextInstructions[i];
-      ages[head]++;
       reorderBufferIndexes[head] = nextReorderBufferIndexes[i];
       head = (head + 1) % size;
     }

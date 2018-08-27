@@ -46,6 +46,7 @@ StoreQueue::StoreQueue(ReorderBuffer* const reorderBuffer, RegisterFile* const r
     }
 
 void StoreQueue::execute() {
+  incrementAges();
   checkOperandAvailability();
   //dispatch the instruction at the tail if is is ready, this results in all of the load and store
   //instruction being exeucted in order
@@ -157,9 +158,42 @@ void StoreQueue::broadcast(int physicalRegister, int value) {
   }
 }
 
+bool StoreQueue::checkLoad(int age, int address) {
+  for(int i = 0; i < size; i++) {
+    switch(instructions[i].opcode) {
+      case NOOP:
+        break;
+      case SW:
+        if(ages[i] > age && instructions[i].operands[1] == address) {
+          return false;
+        }
+        break;
+      case SWR:
+        if(ages[i] > age) {
+          if(!validBits[i][1]) {
+            return false;
+          }
+          else if(instructions[i].operands[1] == address) {
+            return false;
+          }
+        }
+        break;
+    }
+  }
+  return true;
+}
+
 
 //====================================================================================================================
 //private functions
+
+void StoreQueue::incrementAges() {
+  for(int i = 0; i < size; i++) {
+    if(instructions[i].opcode != NOOP) {
+      ages[i]++;
+    }
+  }
+}
 
 void StoreQueue::checkOperandAvailability() {
   for(int i = 0; i < size; i++) {
