@@ -45,18 +45,20 @@ Model::Model(const Instructions instructions) :
     issueWindowSize),
   fetchUnit(instructions, &pc, &decodeIssueUnit, issueWindowSize, branchPrediction),
   decodeIssueUnit(&registerFile, &reorderBuffer, &aluReservationStation, &branchUnitReservationStation, 
-    &loadStoreUnitReservationStation, issueWindowSize, branchPrediction),
+    &storeQueue, &loadQueue, issueWindowSize, branchPrediction),
   alu(new ALU[numALUs]),
   aluReservationStation(&registerFile, numALUs, alu, aluReservationStationSize),
   branchUnit(&reorderBuffer),
   branchUnitReservationStation(&registerFile, &branchUnit, branchUnitReservationStationSize),
   loadStoreUnit(&memory, &reorderBuffer, &aluReservationStation),
-  loadStoreUnitReservationStation(&registerFile, &reorderBuffer, &loadStoreUnit, loadStoreUnitReservationStationSize)
+  storeQueue(&reorderBuffer, &registerFile, &loadStoreUnit, loadStoreUnitReservationStationSize),
+  loadQueue(&reorderBuffer, &registerFile, &storeQueue, &loadStoreUnit, loadStoreUnitReservationStationSize)
 {
   for(int i = 0; i < numALUs; i++) {
     alu[i].setReorderBufferPointer(&reorderBuffer);
     alu[i].setALUReservationStationPointer(&aluReservationStation);
-    alu[i].setLoadStoreUnitReservationStationPointer(&loadStoreUnitReservationStation);
+    alu[i].setStoreQueuePointer(&storeQueue);
+    alu[i].setLoadQueuePointer(&loadQueue);
     alu[i].setBranchUnitReservationStationPointer(&branchUnitReservationStation);
   }
 }
@@ -137,7 +139,8 @@ void Model::decodeIssue() {
 void Model::dispatch() {
   aluReservationStation.execute();
   branchUnitReservationStation.execute();
-  loadStoreUnitReservationStation.execute();
+  storeQueue.execute();
+  loadQueue.execute();
 }
 
 void Model::execute() {
@@ -160,7 +163,8 @@ void Model::pipe() {
   //propogate the outputs of the reservation stations through the pipeline
   aluReservationStation.pipe();
   branchUnitReservationStation.pipe();
-  loadStoreUnitReservationStation.pipe();
+  storeQueue.pipe();
+  loadQueue.pipe();
 
   //propogate the outputs of the reservation stations through the pipeline
   for(int i = 0; i < numALUs; i++) {
@@ -178,7 +182,8 @@ void Model::flushPipeline() {
   //flush reservation stations
   aluReservationStation.flush();
   branchUnitReservationStation.flush();
-  loadStoreUnitReservationStation.flush();
+  storeQueue.flush();
+  loadQueue.flush();
   //flush execution units
   for(int i = 0; i < numALUs; i++) {
     alu[i].flush();
@@ -295,11 +300,11 @@ int Model::getLoadStoreUnitReservationStationSize() const {
 }
 
 void Model::getLoadStoreUnitReservationStationInstructions(Instruction* const copy) const {
-  loadStoreUnitReservationStation.getCurrentInstructions(copy);
+  storeQueue.getCurrentInstructions(copy);
 }
 
 void Model::getLoadStoreUnitReservationStationReorderBufferIndexes(int* const copy) const {
-  loadStoreUnitReservationStation.getCurrentReorderBufferIndexes(copy);
+  storeQueue.getCurrentReorderBufferIndexes(copy);
 }
 
 int Model::getNumALUs() const {

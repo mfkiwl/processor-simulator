@@ -17,6 +17,8 @@
 #include "branch_unit_reservation_station.h"
 #include "load_store_unit.h"
 #include "load_store_unit_reservation_station.h"
+#include "store_queue.h"
+#include "load_queue.h"
 
 //===========================
 //class declaration
@@ -62,7 +64,8 @@ class Model {
     BranchUnit branchUnit;
     BranchUnitReservationStation branchUnitReservationStation;
     LoadStoreUnit loadStoreUnit;
-    LoadStoreUnitReservationStation loadStoreUnitReservationStation;
+    StoreQueue storeQueue;
+    LoadQueue loadQueue;
 
   //public functions
   public:

@@ -7,7 +7,8 @@
 #include "register_file.h"
 #include "reorder_buffer.h"
 #include "alu_reservation_station.h"
-#include "load_store_unit_reservation_station.h"
+#include "store_queue.h"
+#include "load_queue.h"
 #include "branch_unit_reservation_station.h"
 #include "constants.h"
 
@@ -22,7 +23,8 @@
 ALU::ALU() :
   reorderBuffer(NULL),
   aluReservationStation(NULL),
-  loadStoreUnitReservationStation(NULL),
+  storeQueue(NULL),
+  loadQueue(NULL),
   branchUnitReservationStation(NULL),
   nextOpcode(0),
   nextReorderBufferIndex(-1),
@@ -39,7 +41,8 @@ ALU::ALU() :
 ALU::ALU(ReorderBuffer* const reorderBuffer, ALUReservationStation* const aluReservationStation) : 
   reorderBuffer(reorderBuffer),
   aluReservationStation(aluReservationStation),
-  loadStoreUnitReservationStation(NULL),
+  storeQueue(NULL),
+  loadQueue(NULL),
   nextOpcode(0),
   nextReorderBufferIndex(-1),
   opcode(0),
@@ -77,7 +80,8 @@ void ALU::execute() {
     //tell the reorder buffer the result
     reorderBuffer->finishedEntry(reorderBufferIndex, result);
     aluReservationStation->broadcast(operands[0], result);
-    loadStoreUnitReservationStation->broadcast(operands[0], result);
+    storeQueue->broadcast(operands[0], result);
+    loadQueue->broadcast(operands[0], result);
     branchUnitReservationStation->broadcast(operands[0], result);
   }
 }
@@ -147,8 +151,12 @@ void ALU::setALUReservationStationPointer(ALUReservationStation* p) {
   aluReservationStation = p;
 }
 
-void ALU::setLoadStoreUnitReservationStationPointer(LoadStoreUnitReservationStation* p) {
-  loadStoreUnitReservationStation = p;
+void ALU::setStoreQueuePointer(StoreQueue* p) {
+  storeQueue = p;
+}
+
+void ALU::setLoadQueuePointer(LoadQueue* p) {
+  loadQueue = p;
 }
 
 void ALU::setBranchUnitReservationStationPointer(BranchUnitReservationStation* p) {

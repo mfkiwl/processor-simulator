@@ -36,7 +36,9 @@ memory \
 model \
 register_file \
 reorder_buffer \
-store_buffer
+store_buffer \
+load_queue \
+store_queue
 
 # VIEW_MODULES contains a list of the "modules" in the view source code
 VIEW_MODULES = \

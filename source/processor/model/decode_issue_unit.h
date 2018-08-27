@@ -11,6 +11,8 @@ class ALUReservationStation;
 class BranchUnitReservationStation;
 class LoadStoreUnitReservationStation;
 class LoadStoreUnit;
+class LoadQueue;
+class StoreQueue;
 
 //=================================
 // included dependencies
@@ -28,7 +30,8 @@ class DecodeIssueUnit {
     ReorderBuffer* const reorderBuffer;
     ALUReservationStation* const aluReservationStation;
     BranchUnitReservationStation* const branchUnitReservationStation;
-    LoadStoreUnitReservationStation* const loadStoreUnitReservationStation;
+    StoreQueue* const storeQueue;
+    LoadQueue* const loadQueue;
 
     const int issueWindowSize;
 
@@ -48,7 +51,7 @@ class DecodeIssueUnit {
     DecodeIssueUnit(RegisterFile* const registerFile, ReorderBuffer* const reorderBuffer, 
       ALUReservationStation* const aluReservationStation, 
       BranchUnitReservationStation* const branchUnitReservationStation, 
-      LoadStoreUnitReservationStation* const loadStoreUnitReservationStation, const int issueWindowSize, 
+      StoreQueue* const storeQueue, LoadQueue* const loadQueue, const int issueWindowSize, 
       const bool branchPrediction);
 
     void execute();

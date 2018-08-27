@@ -11,6 +11,8 @@
 #include "alu_reservation_station.h"
 #include "branch_unit_reservation_station.h"
 #include "load_store_unit_reservation_station.h"
+#include "store_queue.h"
+#include "load_queue.h"
 #include "instructions.h"
 
 //===========================================
@@ -18,13 +20,14 @@
 
 DecodeIssueUnit::DecodeIssueUnit(RegisterFile* const registerFile, ReorderBuffer* const reorderBuffer, 
   ALUReservationStation* const aluReservationStation, BranchUnitReservationStation* const branchUnitReservationStation, 
-  LoadStoreUnitReservationStation* const loadStoreUnitReservationStation, const int issueWindowSize, 
+  StoreQueue* const storeQueue, LoadQueue* const loadQueue, const int issueWindowSize, 
   const bool branchPrediction) :
   registerFile(registerFile),
   reorderBuffer(reorderBuffer),
   aluReservationStation(aluReservationStation),
   branchUnitReservationStation(branchUnitReservationStation),
-  loadStoreUnitReservationStation(loadStoreUnitReservationStation),
+  storeQueue(storeQueue),
+  loadQueue(loadQueue),
   issueWindowSize(issueWindowSize),
   nextInstructions(new Instruction[issueWindowSize]),
   nextBranchAddresses(new int[issueWindowSize]),
@@ -148,10 +151,10 @@ void DecodeIssueUnit::issue(int instructionToIssue) {
 
     //Load Store unit instructions
     case LW:
-      if(loadStoreUnitReservationStation->freeSpace() && registerFile->freePhysicalRegisterAvailable()) {
+      if(loadQueue->freeSpace() && registerFile->freePhysicalRegisterAvailable()) {
 
         //reserve a space in the reservation station
-        loadStoreUnitReservationStation->reserveSpace();
+        loadQueue->reserveSpace();
 
         //get the destination architectural register
         int architecturalRegister = instructions[instructionToIssue].operands[0];
@@ -179,10 +182,10 @@ void DecodeIssueUnit::issue(int instructionToIssue) {
       break;
 
     case LWR:
-      if(loadStoreUnitReservationStation->freeSpace() && registerFile->freePhysicalRegisterAvailable()) {
+      if(loadQueue->freeSpace() && registerFile->freePhysicalRegisterAvailable()) {
 
         //reserve a space in the reservation station
-        loadStoreUnitReservationStation->reserveSpace();
+        loadQueue->reserveSpace();
 
         //get the destination architectural register
         int architecturalRegister = instructions[instructionToIssue].operands[0];
@@ -213,10 +216,10 @@ void DecodeIssueUnit::issue(int instructionToIssue) {
       break;
 
     case SW:
-      if(loadStoreUnitReservationStation->freeSpace()) {
+      if(storeQueue->freeSpace()) {
 
         //reserve a space in the reservation station
-        loadStoreUnitReservationStation->reserveSpace();
+        storeQueue->reserveSpace();
 
         //Instruction has been issued so add entry to the reorder buffer
         reorderBufferIndexes[instructionToIssue] = reorderBuffer->addEntry(STORE_TO_MEMORY, true, 0, 0, 0, 0, instructions[instructionToIssue]);
@@ -230,10 +233,10 @@ void DecodeIssueUnit::issue(int instructionToIssue) {
       break;
 
     case SWR:
-      if(loadStoreUnitReservationStation->freeSpace()) {
+      if(storeQueue->freeSpace()) {
 
         //reserve a space in the reservation station
-        loadStoreUnitReservationStation->reserveSpace();
+        storeQueue->reserveSpace();
 
         //Instruction has been issued so add entry to the reorder buffer
         reorderBufferIndexes[instructionToIssue] = reorderBuffer->addEntry(STORE_TO_MEMORY, true, 0, 0, 0, 0, instructions[instructionToIssue]);
@@ -410,9 +413,12 @@ void DecodeIssueUnit::pipeInstruction(int instructionToIssue) {
     case LWR:
       //Set the scoreboard value of the destination register to zero
       registerFile->setScoreBoardValue(instructions[instructionToIssue].operands[0],false);
+      loadQueue->setNextInstruction(instructions[instructionToIssue], 
+        reorderBufferIndexes[instructionToIssue]);
+      break;
     case SW:
     case SWR:
-      loadStoreUnitReservationStation->setNextInstruction(instructions[instructionToIssue], 
+      storeQueue->setNextInstruction(instructions[instructionToIssue], 
         reorderBufferIndexes[instructionToIssue]);
       break;
 

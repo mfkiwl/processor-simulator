@@ -14,10 +14,14 @@ LoadStoreUnit::LoadStoreUnit(Memory* const memory, ReorderBuffer* const reorderB
   ALUReservationStation* const aluReservationStation) :
   memory(memory),
   reorderBuffer(reorderBuffer),
-  nextOpcode(0),
-  nextReorderBufferIndex(-1),
-  opcode(0),
-  reorderBufferIndex(-1),
+  nextLoadOpcode(0),
+  nextLoadReorderBufferIndex(-1),
+  nextStoreOpcode(0),
+  nextStoreReorderBufferIndex(-1),
+  loadOpcode(0),
+  loadReorderBufferIndex(-1),
+  storeOpcode(0),
+  storeReorderBufferIndex(-1),
   bufferSize(20),
   writeCycles(5),
   readCycles(5),
@@ -27,41 +31,57 @@ LoadStoreUnit::LoadStoreUnit(Memory* const memory, ReorderBuffer* const reorderB
 {
   //initially set all Operands to zero
   for(int i = 0; i < 3; i++) {
-    nextOperands[i] = 0;
-    operands[i] = 0;
+    nextLoadOperands[i] = 0;
+    nextStoreOperands[i] = 0;
+    loadOperands[i] = 0;
+    storeOperands[i] = 0;
   }
 }
 
 void LoadStoreUnit::execute() {
-  if(opcode != NOOP) {
+  if(loadOpcode != NOOP) {
 
     //tell reorder buffer that we are executing the instruction
-    reorderBuffer->executingEntry(reorderBufferIndex);
+    reorderBuffer->executingEntry(loadReorderBufferIndex);
+
+    //variables to hold temperary info
+    int address;
+
+    //execute the instruction
+    switch(loadOpcode) {
+      case LW:
+      case LWR:
+        address = 0 + loadOperands[1];
+        //and to the read buffer to be read from memory when ready
+        loadBuffer.addToBuffer(loadOperands[0], address, loadReorderBufferIndex);
+        reorderBuffer->executingEntry(loadReorderBufferIndex);
+        break;
+    }
+  }
+
+  if(storeOpcode != NOOP) {
+
+    //tell reorder buffer that we are executing the instruction
+    reorderBuffer->executingEntry(storeReorderBufferIndex);
 
     //variables to hold temperary info
     int address;
     int value;
 
     //execute the instruction
-    switch(opcode) {
-      case LW:
-      case LWR:
-        address = 0 + operands[1];
-        //and to the read buffer to be read from memory when ready
-        loadBuffer.addToBuffer(operands[0], address, reorderBufferIndex);
-        reorderBuffer->executingEntry(reorderBufferIndex);
-        break;
+    switch(storeOpcode) {
       case SW:
       case SWR:
         //get the address in memory to update and the value to update it to
-        value = operands[0];
-        address = 0 + operands[1];
+        value = storeOperands[0];
+        address = 0 + storeOperands[1];
         //and to the write buffer to be written to memory when ready
-        storeBuffer.addToBuffer(address, value, reorderBufferIndex);
-        reorderBuffer->executingEntry(reorderBufferIndex);
+        storeBuffer.addToBuffer(address, value, storeReorderBufferIndex);
+        reorderBuffer->executingEntry(storeReorderBufferIndex);
         break;
     }
   }
+
   //perform the read and write instructions when the step number has been met
   storeBuffer.writeIfReady();
   loadBuffer.readIfReady();
@@ -74,29 +94,38 @@ void LoadStoreUnit::execute() {
 void LoadStoreUnit::pipe() {
 
   //set the  values equal to the next values
-  opcode = nextOpcode;
+  loadOpcode = nextLoadOpcode;
+  storeOpcode = nextStoreOpcode;
   for(int i = 0; i < 3; i++) {
-    operands[i] = nextOperands[i];
+    loadOperands[i] = nextLoadOperands[i];
+    storeOperands[i] = nextStoreOperands[i];
   }
-  reorderBufferIndex = nextReorderBufferIndex;
+  loadReorderBufferIndex = nextLoadReorderBufferIndex;
+  storeReorderBufferIndex = nextStoreReorderBufferIndex;
 
   //reset the next values
-  nextOpcode = 0;
+  nextLoadOpcode = 0;
+  nextStoreOpcode = 0;
   for(int i = 0; i < 3; i++) {
-    nextOperands[i] = 0;
+    nextLoadOperands[i] = 0;
+    nextStoreOperands[i] = 0;
   }
-  nextReorderBufferIndex = -1;
+  nextLoadReorderBufferIndex = -1;
+  nextStoreReorderBufferIndex = -1;
 }
 
 void LoadStoreUnit::flush() {
-  nextOpcode = 0;
-  opcode = 0;
+  nextLoadOpcode = 0;
+  nextStoreOpcode = 0;
+  loadOpcode = 0;
   for(int i = 0; i < 3; i++) {
-    nextOperands[i] = 0;
-    operands[i] = 0;
+    nextLoadOperands[i] = 0;
+    nextStoreOperands[i] = 0;
+    loadOperands[i] = 0;
   }
-  nextReorderBufferIndex = -1;
-  reorderBufferIndex = -1;
+  nextLoadReorderBufferIndex = -1;
+  nextStoreReorderBufferIndex = -1;
+  loadReorderBufferIndex = -1;
   storeBuffer.flush();
   loadBuffer.flush();
 }
@@ -104,16 +133,30 @@ void LoadStoreUnit::flush() {
 //===============================================================================================================
 //getters and setters
 
-void LoadStoreUnit::setNextOpcode(const int x) {
-  nextOpcode = x;
+void LoadStoreUnit::setNextLoadOpcode(const int x) {
+  nextLoadOpcode = x;
 }
 
-void LoadStoreUnit::setNextOperands(const int x[3]) {
+void LoadStoreUnit::setNextLoadOperands(const int x[3]) {
   for(int i = 0; i < 3; i++) {
-   nextOperands[i] = x[i];
+    nextLoadOperands[i] = x[i];
   }
 }
 
-void LoadStoreUnit::setNextReorderBufferIndex(const int i) {
-  nextReorderBufferIndex = i;
+void LoadStoreUnit::setNextLoadReorderBufferIndex(const int i) {
+  nextLoadReorderBufferIndex = i;
+}
+
+void LoadStoreUnit::setNextStoreOpcode(const int x) {
+  nextStoreOpcode = x;
+}
+
+void LoadStoreUnit::setNextStoreOperands(const int x[3]) {
+  for(int i = 0; i < 3; i++) {
+    nextStoreOperands[i] = x[i];
+  }
+}
+
+void LoadStoreUnit::setNextStoreReorderBufferIndex(const int i) {
+  nextStoreReorderBufferIndex = i;
 }

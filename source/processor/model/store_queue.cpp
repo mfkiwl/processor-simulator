@@ -1,49 +1,51 @@
 //===========================================
 //included header file containing interface
-#include "load_store_unit_reservation_station.h"
+#include "store_queue.h"
 
 //===========================================
 // included dependencies
-#include <stdio.h>
-
-#include "register_file.h"
 #include "reorder_buffer.h"
+#include "register_file.h"
+#include "load_queue.h"
 #include "load_store_unit.h"
 #include "instructions.h"
+#include "constants.h"
 
-//======================================================================================================
+//==============================================================================================================
 //public functions
 
-LoadStoreUnitReservationStation::LoadStoreUnitReservationStation(RegisterFile* const registerFile, 
-  ReorderBuffer* const reorderBuffer, LoadStoreUnit* const loadStoreUnit, const int size) : 
-  registerFile(registerFile),
-  reorderBuffer(reorderBuffer),
-  loadStoreUnit(loadStoreUnit),
-  size(size),
-  nextInstructions(new Instruction[size]),
-  nextReorderBufferIndexes(new int[size]),
-  tail(0),
-  head(0),
-  instructions(new Instruction[size]),
-  validBits(new bool*[size]),
-  reorderBufferIndexes(new int[size]),
-  numReservedSpaces(0),
-  dispatchIndex(-1)
-{
-  //set all instructions to NOOPs
-  for(int i = 0; i < size; i++) {
-    nextInstructions[i] = (Instruction) {0,0,0,0};
-    nextReorderBufferIndexes[i] = -1;
-    instructions[i] = (Instruction) {0,0,0,0};
-    validBits[i] = new bool[3];
-    for(int j = 0; j < 3; j++) {
-      validBits[i][j] = false;
+StoreQueue::StoreQueue(ReorderBuffer* const reorderBuffer, RegisterFile* const registerFile, 
+  LoadStoreUnit* const loadStoreUnit, const int size) :
+    reorderBuffer(reorderBuffer),
+    registerFile(registerFile),
+    loadStoreUnit(loadStoreUnit),
+    size(size),
+    nextInstructions(new Instruction[size]),
+    nextReorderBufferIndexes(new int[size]),
+    head(0),
+    tail(0),
+    instructions(new Instruction[size]),
+    ages(new int[size]),
+    validBits(new bool*[size]),
+    reorderBufferIndexes(new int[size]),
+    numReservedSpaces(0),
+    dispatchIndex(-1)
+    {
+  	  //initialise arrays
+  	  for(int i = 0; i < size; i++) {
+  	    nextInstructions[i] = (Instruction) {0,0,0,0};
+  	    nextReorderBufferIndexes[i] = -1;
+  	    instructions[i] = (Instruction) {0,0,0,0};
+        ages[i] = 0;
+  	    validBits[i] = new bool[3];
+  	    for(int j = 0; j < 3; j++) {
+  	  	  validBits[i][j] = false;
+  	    }
+  	    reorderBufferIndexes[i] = -1;
+  	  }
     }
-    reorderBufferIndexes[i] = -1;
-  }
-}
 
-void LoadStoreUnitReservationStation::execute() {
+void StoreQueue::execute() {
   checkOperandAvailability();
   //dispatch the instruction at the tail if is is ready, this results in all of the load and store
   //instruction being exeucted in order
@@ -53,31 +55,19 @@ void LoadStoreUnitReservationStation::execute() {
   }
 }
 
-void LoadStoreUnitReservationStation::pipe() {
+void StoreQueue::pipe() {
   //send current instruction to the load store unit
   if(dispatchIndex != -1) {
 
-    switch(instructions[dispatchIndex].opcode) {
-      case SW:
-      case SWR:
-        //send the decoded instruction to the execution unit
-        loadStoreUnit->setNextStoreOpcode(instructions[dispatchIndex].opcode);
-        loadStoreUnit->setNextStoreOperands(instructions[dispatchIndex].operands);
-        //Send the reorder buffer index to the execution unit
-        loadStoreUnit->setNextStoreReorderBufferIndex(reorderBufferIndexes[dispatchIndex]);
-        break;
-      case LW:
-      case LWR:
-        //send the decoded instruction to the execution unit
-        loadStoreUnit->setNextLoadOpcode(instructions[dispatchIndex].opcode);
-        loadStoreUnit->setNextLoadOperands(instructions[dispatchIndex].operands);
-        //Send the reorder buffer index to the execution unit
-        loadStoreUnit->setNextLoadReorderBufferIndex(reorderBufferIndexes[dispatchIndex]);
-        break;
-    }
+    //send the decoded instruction to the execution unit
+    loadStoreUnit->setNextStoreOpcode(instructions[dispatchIndex].opcode);
+    loadStoreUnit->setNextStoreOperands(instructions[dispatchIndex].operands);
+    //Send the reorder buffer index to the execution unit
+    loadStoreUnit->setNextStoreReorderBufferIndex(reorderBufferIndexes[dispatchIndex]);
 
     //clear the dispatched instruction from the reservation station
     instructions[dispatchIndex] = (Instruction) {0,0,0,0};
+    ages[dispatchIndex] = 0;
     for(int j = 0; j < 3; j++) {
       validBits[dispatchIndex][j] = false;
     }
@@ -94,13 +84,14 @@ void LoadStoreUnitReservationStation::pipe() {
   numReservedSpaces = 0;
 }
 
-void LoadStoreUnitReservationStation::flush() {
+void StoreQueue::flush() {
   head = 0;
   tail = 0;
   for(int i = 0; i < size; i++) {
     nextInstructions[i] = (Instruction) {0,0,0,0};
     nextReorderBufferIndexes[i] = -1;
     instructions[i] = (Instruction) {0,0,0,0};
+    ages[i] = 0;
     for(int j = 0; j < 3; j++) {
       validBits[i][j] = false;
     }
@@ -109,7 +100,7 @@ void LoadStoreUnitReservationStation::flush() {
   numReservedSpaces = 0;
 }
 
-void LoadStoreUnitReservationStation::print() const {
+void StoreQueue::print() const {
   printf("Load/Store Unit reservation station:\n");
   for(int i = 0; i < size; i++) {
     if(instructions[i].opcode != NOOP) {
@@ -118,7 +109,7 @@ void LoadStoreUnitReservationStation::print() const {
   }
 }
 
-bool LoadStoreUnitReservationStation::freeSpace() const {
+bool StoreQueue::freeSpace() const {
   int count = 0;
   for(int i = 0; i < size; i++) {
     if(instructions[i].opcode != NOOP) {
@@ -137,27 +128,19 @@ bool LoadStoreUnitReservationStation::freeSpace() const {
   }
 }
 
-void LoadStoreUnitReservationStation::reserveSpace() {
+void StoreQueue::reserveSpace() {
   numReservedSpaces++;
 }
 
-void LoadStoreUnitReservationStation::broadcast(int physicalRegister, int value) {
+void StoreQueue::broadcast(int physicalRegister, int value) {
   for(int i = 0; i < size; i++) {
     switch(instructions[i].opcode) {
       case NOOP:
-        break;
-      case LW:
         break;
       case SW:
         if(!validBits[i][0] && instructions[i].operands[0] == physicalRegister) {
           instructions[i].operands[0] = value;
           validBits[i][0] = true;
-        }
-        break;
-      case LWR:
-        if(!validBits[i][1] && instructions[i].operands[1] == physicalRegister) {
-          instructions[i].operands[1] = value;
-          validBits[i][1] = true;
         }
         break;
       case SWR:
@@ -174,30 +157,20 @@ void LoadStoreUnitReservationStation::broadcast(int physicalRegister, int value)
   }
 }
 
-//============================================================================================
+
+//====================================================================================================================
 //private functions
 
-void LoadStoreUnitReservationStation::checkOperandAvailability() {
+void StoreQueue::checkOperandAvailability() {
   for(int i = 0; i < size; i++) {
     switch(instructions[i].opcode) {
       case NOOP:
         break;
-      case LW:
-        break;
-      break;
       case SW:
         if(!validBits[i][0]) {
           if(registerFile->getScoreBoardValue(instructions[i].operands[0])) {
             instructions[i].operands[0] = registerFile->getPhysicalRegisterValue(instructions[i].operands[0]);
             validBits[i][0] = true;
-          }
-        }
-        break;
-      case LWR:
-        if(!validBits[i][1]) {
-          if(registerFile->getScoreBoardValue(instructions[i].operands[1])) {
-            instructions[i].operands[1] = registerFile->getPhysicalRegisterValue(instructions[i].operands[1]);
-            validBits[i][1] = true;
           }
         }
         break;
@@ -219,34 +192,14 @@ void LoadStoreUnitReservationStation::checkOperandAvailability() {
   }
 }
 
-void LoadStoreUnitReservationStation::addNextInstructions() {
-  for(int i = 0; i < size; i++) {
-    if(nextInstructions[i].opcode != NOOP) {
-      instructions[head] = nextInstructions[i];
-      reorderBufferIndexes[head] = nextReorderBufferIndexes[i];
-      head = (head + 1) % size;
-    }
-  }
-}
-
-bool LoadStoreUnitReservationStation::readyToDispatch(const int index) const {
+bool StoreQueue::readyToDispatch(const int index) const {
   //check that the source register are ready to use
   switch(instructions[index].opcode) {
     case NOOP:
       return false;
-    case LW:
-      //ready
-      return true;
-    break;
     case SW:
       //ready if the source registers are ready and the instruction is at the ROB tail
       if(validBits[index][0] && reorderBufferIndexes[index] == reorderBuffer->getTailIndex()) {
-        return true;
-      }
-      break;
-    case LWR:
-      //ready is the source registers are ready
-      if(validBits[index][1]) {
         return true;
       }
       break;
@@ -260,22 +213,37 @@ bool LoadStoreUnitReservationStation::readyToDispatch(const int index) const {
   return false;
 }
 
+void StoreQueue::addNextInstructions() {
+  for(int i = 0; i < size; i++) {
+    if(nextInstructions[i].opcode != NOOP) {
+      instructions[head] = nextInstructions[i];
+      ages[head]++;
+      reorderBufferIndexes[head] = nextReorderBufferIndexes[i];
+      head = (head + 1) % size;
+    }
+  }
+}
+
 //=============================================================================================
 //getters and setters
 
-void LoadStoreUnitReservationStation::getCurrentInstructions(Instruction* const copy) const {
+int StoreQueue::getTailAge() const {
+  return ages[tail];
+}
+
+void StoreQueue::getCurrentInstructions(Instruction* const copy) const {
   for(int i = 0; i < size; i++) {
     copy[i] = instructions[i];
   }
 }
 
-void LoadStoreUnitReservationStation::getCurrentReorderBufferIndexes(int* const copy) const {
+void StoreQueue::getCurrentReorderBufferIndexes(int* const copy) const {
   for(int i = 0; i < size; i++) {
     copy[i] = reorderBufferIndexes[i];
   }
 }
 
-void LoadStoreUnitReservationStation::setNextInstruction(const Instruction instruction, const int rbi) {
+void StoreQueue::setNextInstruction(const Instruction instruction, const int rbi) {
   for(int i = 0; i < size; i++) {
     if(nextInstructions[i].opcode == NOOP) {
       nextInstructions[i] = instruction;

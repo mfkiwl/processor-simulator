@@ -26,13 +26,21 @@ class LoadStoreUnit {
     ReorderBuffer* const reorderBuffer;
 
     //decoded instruction
-    int nextOpcode;
-    int nextOperands[3];
-    int nextReorderBufferIndex;
+    int nextLoadOpcode;
+    int nextLoadOperands[3];
+    int nextLoadReorderBufferIndex;
 
-    int opcode;
-    int operands[3];
-    int reorderBufferIndex;
+    int nextStoreOpcode;
+    int nextStoreOperands[3];
+    int nextStoreReorderBufferIndex;
+
+    int loadOpcode;
+    int loadOperands[3];
+    int loadReorderBufferIndex;
+
+    int storeOpcode;
+    int storeOperands[3];
+    int storeReorderBufferIndex;
 
     const int bufferSize;
     const int writeCycles;
@@ -59,11 +67,17 @@ class LoadStoreUnit {
   //getters and setters
   public:
 
-    void setNextOpcode(const int x);
+    void setNextLoadOpcode(const int x);
 
-    void setNextOperands(const int x[3]);
+    void setNextLoadOperands(const int x[3]);
 
-    void setNextReorderBufferIndex(const int i);
+    void setNextLoadReorderBufferIndex(const int i);
+
+    void setNextStoreOpcode(const int x);
+
+    void setNextStoreOperands(const int x[3]);
+
+    void setNextStoreReorderBufferIndex(const int i);
 };
 
 #endif
