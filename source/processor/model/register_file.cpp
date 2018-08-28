@@ -67,7 +67,7 @@ void RegisterFile::printRegisters() const {
   printf("Registers: ");
   int lengths[numOfArchitecturalRegisters];
   for(int i = 0; i < numOfArchitecturalRegisters; i++) {
-    lengths[i] = intLength(physicalRegisters[renameTable[i]]);
+    lengths[i] = intLength(physicalRegisters[rollbackRenameTable[i]]);
   }
   for(int i = 0; i < numOfArchitecturalRegisters; i++) {
     printf("R%d ", i);
@@ -83,10 +83,10 @@ void RegisterFile::printRegisters() const {
   printf("Values:    ");
   for(int i = 0; i < numOfArchitecturalRegisters; i++) {
     if(lengths[i] == 1) {
-      printf("%d  ", physicalRegisters[renameTable[i]]);
+      printf("%d  ", physicalRegisters[rollbackRenameTable[i]]);
     }
     else {
-      printf("%d ", physicalRegisters[renameTable[i]]);
+      printf("%d ", physicalRegisters[rollbackRenameTable[i]]);
     }
     if(i >= 10) {
       printf(" ");
