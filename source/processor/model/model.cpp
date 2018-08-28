@@ -22,12 +22,13 @@ Model::Model(const Instructions instructions) :
 
   //processor configuration
   numArchitecturalRegisters(16),
-  numPhysicalRegisters(32),
+  numPhysicalRegisters(64),
   memorySize(28),
   issueWindowSize(4),
   aluReservationStationSize(4),
   branchUnitReservationStationSize(4),
-  loadStoreUnitReservationStationSize(4),
+  storeQueueSize(4),
+  loadQueueSize(4),
   reorderBufferSize(22),
   numALUs(2),
 
@@ -51,8 +52,8 @@ Model::Model(const Instructions instructions) :
   branchUnit(&reorderBuffer),
   branchUnitReservationStation(&registerFile, &branchUnit, branchUnitReservationStationSize),
   loadStoreUnit(&memory, &reorderBuffer, &aluReservationStation),
-  storeQueue(&reorderBuffer, &registerFile, &loadStoreUnit, loadStoreUnitReservationStationSize),
-  loadQueue(&reorderBuffer, &registerFile, &storeQueue, &loadStoreUnit, loadStoreUnitReservationStationSize)
+  storeQueue(&reorderBuffer, &registerFile, &loadStoreUnit, storeQueueSize),
+  loadQueue(&reorderBuffer, &registerFile, &storeQueue, &loadStoreUnit, loadQueueSize)
 {
   for(int i = 0; i < numALUs; i++) {
     alu[i].setReorderBufferPointer(&reorderBuffer);
@@ -295,16 +296,28 @@ void Model::getBranchUnitReservationStationReorderBufferIndexes(int* const copy)
   branchUnitReservationStation.getCurrentReorderBufferIndexes(copy);
 }
 
-int Model::getLoadStoreUnitReservationStationSize() const {
-  return loadStoreUnitReservationStationSize;
+int Model::getStoreQueueSize() const {
+  return storeQueueSize;
 }
 
-void Model::getLoadStoreUnitReservationStationInstructions(Instruction* const copy) const {
+void Model::getStoreQueueInstructions(Instruction* const copy) const {
   storeQueue.getCurrentInstructions(copy);
 }
 
-void Model::getLoadStoreUnitReservationStationReorderBufferIndexes(int* const copy) const {
+void Model::getStoreQueueReorderBufferIndexes(int* const copy) const {
   storeQueue.getCurrentReorderBufferIndexes(copy);
+}
+
+int Model::getLoadQueueSize() const {
+  return loadQueueSize;
+}
+
+void Model::getLoadQueueInstructions(Instruction* const copy) const {
+  loadQueue.getCurrentInstructions(copy);
+}
+
+void Model::getLoadQueueReorderBufferIndexes(int* const copy) const {
+  loadQueue.getCurrentReorderBufferIndexes(copy);
 }
 
 int Model::getNumALUs() const {

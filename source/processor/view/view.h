@@ -88,7 +88,10 @@ class View {
     void drawBranchUnitReservationStation(const int reservationStationSize, const Instruction* const instructions, 
       const int* const reorderBufferIndexes);
 
-    void drawLoadStoreUnitReservationStation(const int reservationStationSize, const Instruction* const instructions, 
+    void drawStoreQueue(const int size, const Instruction* const instructions, 
+      const int* const reorderBufferIndexes);
+
+    void drawLoadQueue(const int size, const Instruction* const instructions, 
       const int* const reorderBufferIndexes);
 
     void drawAlu(const int numALUs, const int* const results, const int* const reorderBufferIndex);

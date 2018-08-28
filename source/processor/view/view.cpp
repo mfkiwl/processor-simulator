@@ -367,26 +367,48 @@ void View::drawBranchUnitReservationStation(const int reservationStationSize, co
   }
 }
 
-void View::drawLoadStoreUnitReservationStation(const int reservationStationSize, const Instruction* const instructions, 
+void View::drawStoreQueue(const int size, const Instruction* const instructions, 
   const int* const reorderBufferIndexes)
 {
   int xPos = 450;
-  int yPos = 160;
+  int yPos = 220;
   int numOfHorizontalCells = 1;
-  int numOfVerticalCells = reservationStationSize;
+  int numOfVerticalCells = size;
   int cellWidth = 150;
   int cellHeight = 20;
 
-  renderText(xPos, yPos, "Load/Store Unit");
-  renderText(xPos, yPos + cellHeight, "Reservation Station : ");
+  renderText(xPos, yPos, "Store Queue");
 
-  drawTable(xPos, yPos + cellHeight * 2, 1, numOfVerticalCells, 20, cellHeight);
-  drawTable(xPos + 20, yPos + cellHeight * 2, numOfHorizontalCells, numOfVerticalCells, cellWidth, cellHeight);
+  drawTable(xPos, yPos + cellHeight, 1, numOfVerticalCells, 20, cellHeight);
+  drawTable(xPos + 20, yPos + cellHeight, numOfHorizontalCells, numOfVerticalCells, cellWidth, cellHeight);
 
-  for(int i = 0; i < reservationStationSize; i++) {
+  for(int i = 0; i < size; i++) {
     if(reorderBufferIndexes[i] != -1) {
-      renderText(xPos, yPos + (2 + i) * cellHeight, intToString(reorderBufferIndexes[i]));
-      renderText(xPos + 20, yPos + (2 + i) * cellHeight, instructionToString(instructions[i]));
+      renderText(xPos, yPos + (1 + i) * cellHeight, intToString(reorderBufferIndexes[i]));
+      renderText(xPos + 20, yPos + (1 + i) * cellHeight, instructionToString(instructions[i]));
+    }
+  }
+}
+
+void View::drawLoadQueue(const int size, const Instruction* const instructions, 
+  const int* const reorderBufferIndexes)
+{
+  int xPos = 450;
+  int yPos = 120;
+  int numOfHorizontalCells = 1;
+  int numOfVerticalCells = size;
+  int cellWidth = 150;
+  int cellHeight = 20;
+
+  renderText(xPos, yPos, "Load Queue");
+
+  drawTable(xPos, yPos + cellHeight, 1, numOfVerticalCells, 20, cellHeight);
+  drawTable(xPos + 20, yPos + cellHeight, numOfHorizontalCells, numOfVerticalCells, cellWidth, cellHeight);
+
+  for(int i = 0; i < size; i++) {
+    if(reorderBufferIndexes[i] != -1) {
+      renderText(xPos, yPos + (1 + i) * cellHeight, intToString(reorderBufferIndexes[i]));
+      renderText(xPos + 20, yPos + (1 + i) * cellHeight, instructionToString(instructions[i]));
     }
   }
 }

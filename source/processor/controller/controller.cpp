@@ -68,14 +68,23 @@ void Controller::updateView() {
   view.drawBranchUnitReservationStation(branchUnitReservationStationSize, branchUnitReservationStationInstructions, 
     branchUnitReservationStationReorderBufferIndexes);
 
-  //draw the instructions in the load store unit reservation station
-  int loadStoreUnitReservationStationSize = model.getLoadStoreUnitReservationStationSize();
-  Instruction loadStoreUnitReservationStationInstructions[loadStoreUnitReservationStationSize];
-  model.getLoadStoreUnitReservationStationInstructions(loadStoreUnitReservationStationInstructions);
-  int loadStoreUnitReservationStationReorderBufferIndexes[loadStoreUnitReservationStationSize];
-  model.getLoadStoreUnitReservationStationReorderBufferIndexes(loadStoreUnitReservationStationReorderBufferIndexes);
-  view.drawLoadStoreUnitReservationStation(loadStoreUnitReservationStationSize, loadStoreUnitReservationStationInstructions, 
-    loadStoreUnitReservationStationReorderBufferIndexes);
+  //draw the instructions in the store queue
+  int storeQueueSize = model.getStoreQueueSize();
+  Instruction storeQueueInstructions[storeQueueSize];
+  model.getStoreQueueInstructions(storeQueueInstructions);
+  int storeQueueReorderBufferIndexes[storeQueueSize];
+  model.getStoreQueueReorderBufferIndexes(storeQueueReorderBufferIndexes);
+  view.drawStoreQueue(storeQueueSize, storeQueueInstructions, 
+    storeQueueReorderBufferIndexes);
+
+  //draw the instructions in the load queue
+  int loadQueueSize = model.getLoadQueueSize();
+  Instruction loadQueueInstructions[loadQueueSize];
+  model.getLoadQueueInstructions(loadQueueInstructions);
+  int loadQueueReorderBufferIndexes[loadQueueSize];
+  model.getLoadQueueReorderBufferIndexes(loadQueueReorderBufferIndexes);
+  view.drawLoadQueue(loadQueueSize, loadQueueInstructions, 
+    loadQueueReorderBufferIndexes);
 
   //draw the alu
   int numALUs = model.getNumALUs();

@@ -42,7 +42,8 @@ class Model {
     const int issueWindowSize;
     const int aluReservationStationSize;
     const int branchUnitReservationStationSize;
-    const int loadStoreUnitReservationStationSize;
+    const int storeQueueSize;
+    const int loadQueueSize;
     const int reorderBufferSize;
     const int numALUs;
 
@@ -141,11 +142,17 @@ class Model {
 
     void getBranchUnitReservationStationReorderBufferIndexes(int* const copy) const;
 
-    int getLoadStoreUnitReservationStationSize() const;
+    int getStoreQueueSize() const;
 
-    void getLoadStoreUnitReservationStationInstructions(Instruction* const copy) const;
+    void getStoreQueueInstructions(Instruction* const copy) const;
 
-    void getLoadStoreUnitReservationStationReorderBufferIndexes(int* const copy) const;
+    void getStoreQueueReorderBufferIndexes(int* const copy) const;
+
+    int getLoadQueueSize() const;
+
+    void getLoadQueueInstructions(Instruction* const copy) const;
+
+    void getLoadQueueReorderBufferIndexes(int* const copy) const;
 
     int getNumALUs() const;
 
