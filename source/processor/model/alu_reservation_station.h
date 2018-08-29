@@ -74,6 +74,8 @@ class ALUReservationStation {
     void getCurrentReorderBufferIndexes(int* const copy) const;
 
     void setNextInstruction(const Instruction instruction, const int rbi);
+
+    void getValidBits(bool** const copy) const;
 };
 
 #endif

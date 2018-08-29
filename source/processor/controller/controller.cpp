@@ -56,8 +56,13 @@ void Controller::updateView() {
   model.getAluReservationStationInstructions(aluReservationStationInstructions);
   int aluReservationStationReorderBufferIndexes[aluReservationStationSize];
   model.getAluReservationStationReorderBufferIndexes(aluReservationStationReorderBufferIndexes);
+  bool** aluReservationStationValidBits = new bool*[aluReservationStationSize];
+  for(int i = 0; i < aluReservationStationSize; i++) {
+    aluReservationStationValidBits[i] = new bool[3];
+  }
+  model.getAluReservationStationValidBits(aluReservationStationValidBits);
   view.drawAluReservationStation(aluReservationStationSize, aluReservationStationInstructions, 
-    aluReservationStationReorderBufferIndexes);
+    aluReservationStationReorderBufferIndexes, aluReservationStationValidBits);
 
   //draw the instructions in the branch unit reservation station
   int branchUnitReservationStationSize = model.getBranchUnitReservationStationSize();

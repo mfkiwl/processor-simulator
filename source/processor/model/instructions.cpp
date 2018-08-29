@@ -183,8 +183,30 @@ std::string floatToString(const float i) {
   return output;
 }
 
+std::string opcodeToString(const int opcode) {
+  switch(opcode) {
+    case ADD:
+      return "ADD";
+      break;
+    case ADDI:
+      return "ADDI";
+      break;
+    case AND:
+      return "AND";
+      break;
+    case MULT:
+      return "MULT";
+      break;
+    case OR:
+      return "OR";
+      break;
+    case SUB:
+      return "SUB";
+      break;
+  }
+}
+
 std::string instructionToString(const Instruction instruction) {
-  std::stringstream ss;
   switch(instruction.opcode) {
     case NOOP:
       return "NOOP";

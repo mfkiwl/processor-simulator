@@ -15,6 +15,7 @@ and may not be redistributed without written permission.*/
 
 #include "lTexture.h"
 #include "../model/instructions.h"
+#include "../model/constants.h"
 
 //===========================================
 // implementation
@@ -320,25 +321,42 @@ void View::drawDecodeIssueUnit(const int issueWindowSize, const Instruction* con
 }
 
 void View::drawAluReservationStation(const int reservationStationSize, const Instruction* const instructions, 
-  const int* const reorderBufferIndexes) 
+  const int* const reorderBufferIndexes, bool** const validBits) 
 {
+  //specification
   int xPos = 50;
   int yPos = 160;
-  int numOfHorizontalCells = 1;
   int numOfVerticalCells = reservationStationSize;
-  int cellWidth = 150;
+  int cellWidth = 40;
   int cellHeight = 20;
+  int instructionCellWidth = 50;
 
+  //draw label
   renderText(xPos, yPos, "ALU");
   renderText(xPos, yPos + cellHeight, "Reservation Station : ");
 
-  drawTable(xPos, yPos + cellHeight * 2, 1, numOfVerticalCells, 20, cellHeight);
-  drawTable(xPos + 20, yPos + cellHeight * 2, numOfHorizontalCells, numOfVerticalCells, cellWidth, cellHeight);
+  //draw table
+  drawTable(xPos, yPos + cellHeight * 2, 1, numOfVerticalCells, cellWidth, cellHeight);
+  drawTable(xPos + cellWidth, yPos + cellHeight * 2, 1, numOfVerticalCells, instructionCellWidth, cellHeight);
+  drawTable(xPos + cellWidth + instructionCellWidth, yPos + cellHeight * 2, 2, numOfVerticalCells, cellWidth, cellHeight);
 
   for(int i = 0; i < reservationStationSize; i++) {
     if(reorderBufferIndexes[i] != -1) {
+      //draw reorder buffer index
       renderText(xPos, yPos + (2 + i) * cellHeight, intToString(reorderBufferIndexes[i]));
-      renderText(xPos + 20, yPos + (2 + i) * cellHeight, instructionToString(instructions[i]));
+      //draw opcode
+      renderText(xPos + cellWidth, yPos + (2 + i) * cellHeight, opcodeToString(instructions[i].opcode));
+      //draw operands
+      for(int j = 1; j < 3; j++) {
+        std::string operandText;
+        if(!validBits[i][j]) {
+          operandText = "R" + intToString(instructions[i].operands[j]);
+        }
+        else {
+          operandText = intToString(instructions[i].operands[j]);
+        }
+        renderText(xPos + instructionCellWidth + j * cellWidth, yPos + (2 + i) * cellHeight, operandText);
+      }
     }
   }
 }
@@ -447,7 +465,7 @@ void View::drawBranchUnit(const bool successful, const int reorderBufferIndex) {
   }
 }
 
-void View::drawReorderBuffer(const int size, const int numFields, const int tailIndex, const int headIndex, const Instruction* instructions, int** const fields) {
+void View::drawReorderBuffer(const int size, const int numFields, const int tailIndex, const int headIndex, const Instruction* const instructions, int** const fields) {
   int xPos = 690;
   int yPos = 10;
   int numOfHorizontalCells = numFields;

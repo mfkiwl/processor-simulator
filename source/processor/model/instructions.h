@@ -47,6 +47,8 @@ std::string intToString(const int i);
 
 std::string floatToString(const float i);
 
+std::string opcodeToString(const int opcode);
+
 std::string instructionToString(const Instruction instruction);
 
 #endif

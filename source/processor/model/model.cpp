@@ -71,7 +71,6 @@ void Model::cycle() {
 
   //writeback the results
   commit();
-
   //check if we should flush the pipeline
   if(reorderBuffer.getFlushFlag() == 1) {
     flushPipeline();
@@ -282,6 +281,10 @@ void Model::getAluReservationStationInstructions(Instruction* const copy) const 
 
 void Model::getAluReservationStationReorderBufferIndexes(int* const copy) const {
   aluReservationStation.getCurrentReorderBufferIndexes(copy);
+}
+
+void Model::getAluReservationStationValidBits(bool** const copy) const {
+  aluReservationStation.getValidBits(copy);
 }
 
 int Model::getBranchUnitReservationStationSize() const {
