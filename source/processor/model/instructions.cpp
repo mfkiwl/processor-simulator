@@ -203,6 +203,45 @@ std::string opcodeToString(const int opcode) {
     case SUB:
       return "SUB";
       break;
+    case LW:
+      return "LW";
+      break;
+    case LWR:
+      return "LWR";
+      break;
+    case SW:
+      return "SW";
+      break;
+    case SWR:
+      return "SWR";
+      break;
+    case BEQ:
+      return "BEQ";
+      break;
+    case BGEZ:
+      return "BGEZ";
+      break;
+    case BGTZ:
+      return "BGTZ";
+      break;
+    case BLEZ:
+      return "BLEZ";
+      break;
+    case BLTZ:
+      return "BLTZ";
+      break;
+    case BNE:
+      return "BNE";
+      break;
+    case J:
+      return "J";
+      break;
+    case JR:
+      return "JR";
+      break;
+    case HALT:
+      return "HALT";
+      break;
   }
 }
 

@@ -362,31 +362,47 @@ void View::drawAluReservationStation(const int reservationStationSize, const Ins
 }
 
 void View::drawBranchUnitReservationStation(const int reservationStationSize, const Instruction* const instructions, 
-  const int* const reorderBufferIndexes) 
+  const int* const reorderBufferIndexes, bool** const validBits) 
 {
+  //specification
   int xPos = 250;
   int yPos = 160;
-  int numOfHorizontalCells = 1;
   int numOfVerticalCells = reservationStationSize;
-  int cellWidth = 150;
+  int cellWidth = 40;
   int cellHeight = 20;
+  int instructionCellWidth = 50;
 
+  //draw label
   renderText(xPos, yPos, "Branch Unit");
   renderText(xPos, yPos + cellHeight, "Reservation Station : ");
 
-  drawTable(xPos, yPos + cellHeight * 2, 1, numOfVerticalCells, 20, cellHeight);
-  drawTable(xPos + 20, yPos + cellHeight * 2, numOfHorizontalCells, numOfVerticalCells, cellWidth, cellHeight);
+  //draw table
+  drawTable(xPos, yPos + cellHeight * 2, 1, numOfVerticalCells, cellWidth, cellHeight);
+  drawTable(xPos + cellWidth, yPos + cellHeight * 2, 1, numOfVerticalCells, instructionCellWidth, cellHeight);
+  drawTable(xPos + cellWidth + instructionCellWidth, yPos + cellHeight * 2, 2, numOfVerticalCells, cellWidth, cellHeight);
 
   for(int i = 0; i < reservationStationSize; i++) {
     if(reorderBufferIndexes[i] != -1) {
+      //draw reorder buffer index
       renderText(xPos, yPos + (2 + i) * cellHeight, intToString(reorderBufferIndexes[i]));
-      renderText(xPos + 20, yPos + (2 + i) * cellHeight, instructionToString(instructions[i]));
+      //draw opcode
+      renderText(xPos + cellWidth, yPos + (2 + i) * cellHeight, opcodeToString(instructions[i].opcode));
+      //draw operands
+      for(int j = 0; j < 2; j++) {
+        std::string operandString;
+        if(!validBits[i][j]) {
+          operandString = "R" + intToString(instructions[i].operands[j]);
+        }
+        else {
+          operandString = intToString(instructions[i].operands[j]);
+        }
+        renderText(xPos + instructionCellWidth + (j + 1) * cellWidth, yPos + (2 + i) * cellHeight, operandString);
+      }
     }
   }
 }
 
-void View::drawStoreQueue(const int size, const Instruction* const instructions, 
-  const int* const reorderBufferIndexes)
+void View::drawStoreQueue(const int size, const Instruction* const instructions, const int* const reorderBufferIndexes)
 {
   int xPos = 450;
   int yPos = 220;

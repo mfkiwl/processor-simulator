@@ -74,6 +74,8 @@ class BranchUnitReservationStation {
 
     void setNextInstruction(const Instruction instruction, const int rbi);
 
+    void getValidBits(bool** const copy) const;
+
 };
 
 #endif

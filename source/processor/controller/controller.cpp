@@ -70,8 +70,13 @@ void Controller::updateView() {
   model.getBranchUnitReservationStationInstructions(branchUnitReservationStationInstructions);
   int branchUnitReservationStationReorderBufferIndexes[branchUnitReservationStationSize];
   model.getBranchUnitReservationStationReorderBufferIndexes(branchUnitReservationStationReorderBufferIndexes);
+  bool** branchUnitReservationStationValidBits = new bool*[branchUnitReservationStationSize];
+  for(int i = 0; i < branchUnitReservationStationSize; i++) {
+    branchUnitReservationStationValidBits[i] = new bool[3];
+  }
+  model.getBranchUnitReservationStationValidBits(branchUnitReservationStationValidBits);
   view.drawBranchUnitReservationStation(branchUnitReservationStationSize, branchUnitReservationStationInstructions, 
-    branchUnitReservationStationReorderBufferIndexes);
+    branchUnitReservationStationReorderBufferIndexes, branchUnitReservationStationValidBits);
 
   //draw the instructions in the store queue
   int storeQueueSize = model.getStoreQueueSize();
