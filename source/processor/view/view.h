@@ -89,10 +89,10 @@ class View {
       const int* const reorderBufferIndexes, bool** const validBits);
 
     void drawStoreQueue(const int size, const Instruction* const instructions, 
-      const int* const reorderBufferIndexes);
+      const int* const reorderBufferIndexes, bool** const validBits);
 
     void drawLoadQueue(const int size, const Instruction* const instructions, 
-      const int* const reorderBufferIndexes);
+      const int* const reorderBufferIndexes, bool** const validBits);
 
     void drawAlu(const int numALUs, const int* const results, const int* const reorderBufferIndex);
 

@@ -402,47 +402,82 @@ void View::drawBranchUnitReservationStation(const int reservationStationSize, co
   }
 }
 
-void View::drawStoreQueue(const int size, const Instruction* const instructions, const int* const reorderBufferIndexes)
+void View::drawStoreQueue(const int size, const Instruction* const instructions, 
+  const int* const reorderBufferIndexes, bool** const validBits)
 {
+  //specifications
   int xPos = 450;
   int yPos = 220;
-  int numOfHorizontalCells = 1;
   int numOfVerticalCells = size;
-  int cellWidth = 150;
+  int cellWidth = 40;
   int cellHeight = 20;
+  int instructionCellWidth = 50;
 
+  //draw label
   renderText(xPos, yPos, "Store Queue");
 
-  drawTable(xPos, yPos + cellHeight, 1, numOfVerticalCells, 20, cellHeight);
-  drawTable(xPos + 20, yPos + cellHeight, numOfHorizontalCells, numOfVerticalCells, cellWidth, cellHeight);
+  //draw table
+  drawTable(xPos, yPos + cellHeight, 1, numOfVerticalCells, cellWidth, cellHeight);
+  drawTable(xPos + cellWidth, yPos + cellHeight, 1, numOfVerticalCells, instructionCellWidth, cellHeight);
+  drawTable(xPos + cellWidth + instructionCellWidth, yPos + cellHeight, 2, numOfVerticalCells, cellWidth, cellHeight);
 
   for(int i = 0; i < size; i++) {
     if(reorderBufferIndexes[i] != -1) {
+      //draw reorder buffer index
       renderText(xPos, yPos + (1 + i) * cellHeight, intToString(reorderBufferIndexes[i]));
-      renderText(xPos + 20, yPos + (1 + i) * cellHeight, instructionToString(instructions[i]));
+      //draw opcode
+      renderText(xPos + cellWidth, yPos + (1 + i) * cellHeight, opcodeToString(instructions[i].opcode));
+      //draw operands
+      for(int j = 0; j < 2; j++) {
+        std::string operandString;
+        if(!validBits[i][j]) {
+          operandString = "R" + intToString(instructions[i].operands[j]);
+        }
+        else {
+          operandString = intToString(instructions[i].operands[j]);
+        }
+        renderText(xPos + instructionCellWidth + (1 + j) * cellWidth, yPos + (1 + i) * cellHeight, operandString);
+      }
     }
   }
 }
 
 void View::drawLoadQueue(const int size, const Instruction* const instructions, 
-  const int* const reorderBufferIndexes)
+  const int* const reorderBufferIndexes, bool** const validBits)
 {
+  //specification
   int xPos = 450;
   int yPos = 120;
-  int numOfHorizontalCells = 1;
   int numOfVerticalCells = size;
-  int cellWidth = 150;
+  int cellWidth = 40;
   int cellHeight = 20;
+  int instructionCellWidth = 50;
 
+  //draw label
   renderText(xPos, yPos, "Load Queue");
 
-  drawTable(xPos, yPos + cellHeight, 1, numOfVerticalCells, 20, cellHeight);
-  drawTable(xPos + 20, yPos + cellHeight, numOfHorizontalCells, numOfVerticalCells, cellWidth, cellHeight);
+  //draw table
+  drawTable(xPos, yPos + cellHeight, 1, numOfVerticalCells, cellWidth, cellHeight);
+  drawTable(xPos + cellWidth, yPos + cellHeight, 1, numOfVerticalCells, instructionCellWidth, cellHeight);
+  drawTable(xPos + cellWidth + instructionCellWidth, yPos + cellHeight, 2, numOfVerticalCells, cellWidth, cellHeight);
 
   for(int i = 0; i < size; i++) {
     if(reorderBufferIndexes[i] != -1) {
+      //draw reorder buffer index
       renderText(xPos, yPos + (1 + i) * cellHeight, intToString(reorderBufferIndexes[i]));
-      renderText(xPos + 20, yPos + (1 + i) * cellHeight, instructionToString(instructions[i]));
+      //draw opcode
+      renderText(xPos + cellWidth, yPos + (1 + i) * cellHeight, opcodeToString(instructions[i].opcode));
+      //draw operands
+      for(int j = 0; j < 2; j++) {
+        std::string operandString;
+        if(!validBits[i][j]) {
+          operandString = "R" + intToString(instructions[i].operands[j]);
+        }
+        else {
+          operandString = intToString(instructions[i].operands[j]);
+        }
+        renderText(xPos + instructionCellWidth + (1 + j) * cellWidth, yPos + (1 + i) * cellHeight, operandString);
+      }
     }
   }
 }

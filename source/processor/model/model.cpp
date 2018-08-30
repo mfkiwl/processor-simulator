@@ -315,6 +315,10 @@ void Model::getStoreQueueReorderBufferIndexes(int* const copy) const {
   storeQueue.getCurrentReorderBufferIndexes(copy);
 }
 
+void Model::getStoreQueueValidBits(bool** const copy) const {
+  storeQueue.getValidBits(copy);
+}
+
 int Model::getLoadQueueSize() const {
   return loadQueueSize;
 }
@@ -325,6 +329,10 @@ void Model::getLoadQueueInstructions(Instruction* const copy) const {
 
 void Model::getLoadQueueReorderBufferIndexes(int* const copy) const {
   loadQueue.getCurrentReorderBufferIndexes(copy);
+}
+
+void Model::getLoadQueueValidBits(bool** const copy) const {
+  loadQueue.getValidBits(copy);
 }
 
 int Model::getNumALUs() const {

@@ -152,11 +152,15 @@ class Model {
 
     void getStoreQueueReorderBufferIndexes(int* const copy) const;
 
+    void getStoreQueueValidBits(bool** const copy) const;
+
     int getLoadQueueSize() const;
 
     void getLoadQueueInstructions(Instruction* const copy) const;
 
     void getLoadQueueReorderBufferIndexes(int* const copy) const;
+
+    void getLoadQueueValidBits(bool** const copy) const;
 
     int getNumALUs() const;
 
