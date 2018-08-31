@@ -40,6 +40,7 @@ class DecodeIssueUnit {
     int* const nextBranchAddresses;
 
     Instruction* const instructions;
+    int** const operandTypes;
     int* const branchAddresses;
     bool* const instructionsIssued;
     int* const reorderBufferIndexes;

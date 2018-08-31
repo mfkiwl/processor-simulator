@@ -25,9 +25,11 @@ class BranchUnitReservationStation {
     const int size;
 
     Instruction* const nextInstructions;
+    int** const nextOperandTypes;
     int* const nextReorderBufferIndexes;
 
     Instruction* const instructions;
+    int** const operandTypes;
     bool** const validBits;
     int* const reorderBufferIndexes;
 
@@ -72,7 +74,7 @@ class BranchUnitReservationStation {
 
     void getCurrentReorderBufferIndexes(int* const copy) const;
 
-    void setNextInstruction(const Instruction instruction, const int rbi);
+    void setNextInstruction(const Instruction instruction, const int types[], const int rbi);
 
     void getValidBits(bool** const copy) const;
 

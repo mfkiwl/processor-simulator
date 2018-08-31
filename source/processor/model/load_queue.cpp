@@ -22,10 +22,12 @@ LoadQueue::LoadQueue(ReorderBuffer* const reorderBuffer, RegisterFile* const reg
     loadStoreUnit(loadStoreUnit),
     size(size),
     nextInstructions(new Instruction[size]),
+    nextOperandTypes(new int*[size]),
     nextReorderBufferIndexes(new int[size]),
     head(0),
     tail(0),
     instructions(new Instruction[size]),
+    operandTypes(new int*[size]),
     ages(new int[size]),
     validBits(new bool*[size]),
     reorderBufferIndexes(new int[size]),
@@ -35,8 +37,16 @@ LoadQueue::LoadQueue(ReorderBuffer* const reorderBuffer, RegisterFile* const reg
   	  //initialise arrays
   	  for(int i = 0; i < size; i++) {
   	    nextInstructions[i] = (Instruction) {0,0,0,0};
+        nextOperandTypes[i] = new int[3];
+        for(int j = 0; j < 3; j++) {
+          nextOperandTypes[i][j] = NONE;
+        }
   	    nextReorderBufferIndexes[i] = -1;
   	    instructions[i] = (Instruction) {0,0,0,0};
+        operandTypes[i] = new int[3];
+        for(int j = 0; j < 3; j++) {
+          operandTypes[i][j] = NONE;
+        }
   	    ages[i] = 0;
   	    validBits[i] = new bool[3];
   	    for(int j = 0; j < 3; j++) {
@@ -69,6 +79,9 @@ void LoadQueue::pipe() {
 
     //clear the dispatched instruction from the reservation station
     instructions[dispatchIndex] = (Instruction) {0,0,0,0};
+    for(int j = 0; j < 3; j++) {
+      operandTypes[dispatchIndex][j] = NONE;
+    }
     ages[dispatchIndex] = 0;
     for(int j = 0; j < 3; j++) {
       validBits[dispatchIndex][j] = false;
@@ -81,6 +94,9 @@ void LoadQueue::pipe() {
   //clear the nextInstruction and nextReorderBufferIndex
   for(int i = 0; i < size; i++) {
     nextInstructions[i] = (Instruction) {0,0,0,0};
+    for(int j = 0; j < 3; j++) {
+      nextOperandTypes[i][j] = NONE;
+    }
     nextReorderBufferIndexes[i] = -1;
   }
   numReservedSpaces = 0;
@@ -91,8 +107,14 @@ void LoadQueue::flush() {
   tail = 0;
   for(int i = 0; i < size; i++) {
     nextInstructions[i] = (Instruction) {0,0,0,0};
+    for(int j = 0; j < 3; j++) {
+      nextOperandTypes[i][j] = NONE;
+    }
     nextReorderBufferIndexes[i] = -1;
     instructions[i] = (Instruction) {0,0,0,0};
+    for(int j=  0; j < 3; j++) {
+      operandTypes[i][j] = NONE;
+    }
     ages[i] = 0;
     for(int j = 0; j < 3; j++) {
       validBits[i][j] = false;
@@ -207,6 +229,9 @@ void LoadQueue::addNextInstructions() {
   for(int i = 0; i < size; i++) {
     if(nextInstructions[i].opcode != NOOP) {
       instructions[head] = nextInstructions[i];
+      for(int j = 0; j < 3; j++) {
+        operandTypes[head][j] = nextOperandTypes[i][j];
+      }
       reorderBufferIndexes[head] = nextReorderBufferIndexes[i];
       head = (head + 1) % size;
     }
@@ -228,10 +253,13 @@ void LoadQueue::getCurrentReorderBufferIndexes(int* const copy) const {
   }
 }
 
-void LoadQueue::setNextInstruction(const Instruction instruction, const int rbi) {
+void LoadQueue::setNextInstruction(const Instruction instruction, const int types[], const int rbi) {
   for(int i = 0; i < size; i++) {
     if(nextInstructions[i].opcode == NOOP) {
       nextInstructions[i] = instruction;
+      for(int j = 0; j < 3; j++) {
+        nextOperandTypes[i][j] = types[j];
+      }
       nextReorderBufferIndexes[i] = rbi;
       break;
     }

@@ -55,4 +55,11 @@ enum Status {
   FINISHED
 };
 
+enum OperandTypes {
+  NONE,
+  REGISTER,
+  ROB,
+  CONSTANT
+};
+
 #endif

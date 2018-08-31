@@ -242,6 +242,9 @@ std::string opcodeToString(const int opcode) {
     case HALT:
       return "HALT";
       break;
+    default:
+      return "";
+      break;
   }
 }
 
