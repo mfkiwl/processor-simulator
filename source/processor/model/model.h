@@ -136,7 +136,7 @@ class Model {
 
     void getAluReservationStationReorderBufferIndexes(int* const copy) const;
 
-    void getAluReservationStationValidBits(bool** const copy) const;
+    void getAluReservationStationOperandTypes(OperandType** const copy) const;
 
     int getBranchUnitReservationStationSize() const;
 

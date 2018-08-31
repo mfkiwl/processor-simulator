@@ -31,7 +31,6 @@ ALUReservationStation::ALUReservationStation(RegisterFile* const registerFile, c
   nextReorderBufferIndexes(new int[size]),
   instructions(new Instruction[size]),
   operandTypes(new OperandType*[size]),
-  validBits(new bool*[size]),
   reorderBufferIndexes(new int[size]),
   numReservedSpaces(0),
   dispatchIndexes(new int[numALUs])
@@ -48,10 +47,6 @@ ALUReservationStation::ALUReservationStation(RegisterFile* const registerFile, c
     operandTypes[i] = new OperandType[3];
     for(int j = 0; j < 3; j++) {
       operandTypes[i][j] = NONE;
-    }
-    validBits[i] = new bool[3];
-    for(int j = 0; j < 3; j++) {
-      validBits[i][j] = false;
     }
     reorderBufferIndexes[i] = -1;
   }
@@ -95,10 +90,7 @@ void ALUReservationStation::pipe() {
       //clear the dispatched instruction from the reservation station
       instructions[dispatchIndexes[i]] = (Instruction) {0,0,0,0};
       for(int j = 0; j < 3; j++) {
-        operandTypes[i][j] = NONE;
-      }
-      for(int j = 0; j < 3; j++) {
-        validBits[dispatchIndexes[i]][j] = false;
+        operandTypes[dispatchIndexes[i]][j] = NONE;
       }
       reorderBufferIndexes[dispatchIndexes[i]] = -1;
       dispatchIndexes[i] = -1;
@@ -126,9 +118,6 @@ void ALUReservationStation::flush() {
     instructions[i] = (Instruction) {0,0,0,0};
     for(int j = 0; j < 3; j++) {
       operandTypes[i][j] = NONE;
-    }
-    for(int j = 0; j < 3; j++) {
-      validBits[i][j] = false;
     }
     reorderBufferIndexes[i] = -1;
   }
@@ -183,19 +172,19 @@ void ALUReservationStation::broadcast(int physicalRegister, int value) {
       case MULT:
       case OR:
       case SUB:
-        if(!validBits[i][1] && instructions[i].operands[1] == physicalRegister) {
+        if(!(operandTypes[i][1] == CONSTANT) && instructions[i].operands[1] == physicalRegister) {
           instructions[i].operands[1] = value;
-          validBits[i][1] = true;
+          operandTypes[i][1] = CONSTANT;
         }
-        if(!validBits[i][2] && instructions[i].operands[2] == physicalRegister) {
+        if(!(operandTypes[i][2] == CONSTANT) && instructions[i].operands[2] == physicalRegister) {
           instructions[i].operands[2] = value;
-          validBits[i][2] = true;
+          operandTypes[i][2] = CONSTANT;
         }
         break;
       case ADDI:
-        if(!validBits[i][1] && instructions[i].operands[1] == physicalRegister) {
+        if(!(operandTypes[i][1] == CONSTANT) && instructions[i].operands[1] == physicalRegister) {
           instructions[i].operands[1] = value;
-          validBits[i][1] = true;
+          operandTypes[i][1] = CONSTANT;
         }
         break;
     }
@@ -215,32 +204,25 @@ void ALUReservationStation::checkOperandAvailability() {
       case MULT:
       case OR:
       case SUB:
-        if(!validBits[i][1]) {
+        if(!(operandTypes[i][1] == CONSTANT)) {
           if(registerFile->getScoreBoardValue(instructions[i].operands[1])) {
             instructions[i].operands[1] = registerFile->getPhysicalRegisterValue(instructions[i].operands[1]);
-            validBits[i][1] = true;
             operandTypes[i][1] = CONSTANT;
           }
         }
-        if(!validBits[i][2]) {
+        if(!(operandTypes[i][2] == CONSTANT)) {
           if(registerFile->getScoreBoardValue(instructions[i].operands[2])) {
             instructions[i].operands[2] = registerFile->getPhysicalRegisterValue(instructions[i].operands[2]);
-            validBits[i][2] = true;
             operandTypes[i][2] = CONSTANT;
           }
         }
         break;
       case ADDI:
-        if(!validBits[i][1]) {
+        if(!(operandTypes[i][1] == CONSTANT)) {
           if(registerFile->getScoreBoardValue(instructions[i].operands[1])) {
             instructions[i].operands[1] = registerFile->getPhysicalRegisterValue(instructions[i].operands[1]);
-            validBits[i][1] = true;
             operandTypes[i][1] = CONSTANT;
           }
-        }
-        if(!validBits[i][2]) {
-          validBits[i][2] = true;
-          operandTypes[i][2] = CONSTANT;
         }
         break;
     }
@@ -280,12 +262,12 @@ bool ALUReservationStation::readyToDispatch(const int index) const {
     case MULT:
     case OR:
     case SUB:
-      if(validBits[index][1] && validBits[index][2]) {
+      if(operandTypes[index][1] == CONSTANT && operandTypes[index][2] == CONSTANT) {
         return true;
       }
       break;
     case ADDI:
-      if(validBits[index][1]) {
+      if(operandTypes[index][1] == CONSTANT) {
         return true;
       }
       break;
@@ -324,10 +306,10 @@ void ALUReservationStation::setNextInstruction(const Instruction instruction, co
   }
 }
 
-void ALUReservationStation::getValidBits(bool** const copy) const {
+void ALUReservationStation::getOperandTypes(OperandType** const copy) const {
   for(int i = 0; i < size; i++) {
     for(int j = 0; j < 3; j++) {
-      copy[i][j] = validBits[i][j];
+      copy[i][j] = operandTypes[i][j];
     }
   }
 }

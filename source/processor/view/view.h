@@ -18,6 +18,7 @@ class Instruction;
 #include <SDL2/SDL_ttf.h>
 
 #include "lTexture.h"
+#include "../model/constants.h"
 
 //=================================
 // interface
@@ -83,7 +84,7 @@ class View {
     void drawDecodeIssueUnit(const int issueWindowSize, const Instruction* const instructions, const int* const reorderBufferIndexes);
 
     void drawAluReservationStation(const int reservationStationSize, const Instruction* const instructions, 
-      const int* const reorderBufferIndexes, bool** const validBits);
+      const int* const reorderBufferIndexes, OperandType** const operandTypes);
 
     void drawBranchUnitReservationStation(const int reservationStationSize, const Instruction* const instructions, 
       const int* const reorderBufferIndexes, bool** const validBits);

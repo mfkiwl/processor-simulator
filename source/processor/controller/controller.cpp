@@ -8,6 +8,7 @@
 
 #include "../model/model.h"
 #include "../view/view.h"
+#include "../model/constants.h"
 
 //===========================================
 // class implementation
@@ -56,13 +57,13 @@ void Controller::updateView() {
   model.getAluReservationStationInstructions(aluReservationStationInstructions);
   int aluReservationStationReorderBufferIndexes[aluReservationStationSize];
   model.getAluReservationStationReorderBufferIndexes(aluReservationStationReorderBufferIndexes);
-  bool** aluReservationStationValidBits = new bool*[aluReservationStationSize];
+  OperandType** aluReservationStationOperandTypes = new OperandType*[aluReservationStationSize];
   for(int i = 0; i < aluReservationStationSize; i++) {
-    aluReservationStationValidBits[i] = new bool[3];
+    aluReservationStationOperandTypes[i] = new OperandType[3];
   }
-  model.getAluReservationStationValidBits(aluReservationStationValidBits);
+  model.getAluReservationStationOperandTypes(aluReservationStationOperandTypes);
   view.drawAluReservationStation(aluReservationStationSize, aluReservationStationInstructions, 
-    aluReservationStationReorderBufferIndexes, aluReservationStationValidBits);
+    aluReservationStationReorderBufferIndexes, aluReservationStationOperandTypes);
 
   //draw the instructions in the branch unit reservation station
   int branchUnitReservationStationSize = model.getBranchUnitReservationStationSize();

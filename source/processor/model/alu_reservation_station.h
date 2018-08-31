@@ -32,7 +32,6 @@ class ALUReservationStation {
 
     Instruction* const instructions;
     OperandType** const operandTypes;
-    bool** const validBits;
     int* const reorderBufferIndexes;
 
     int numReservedSpaces;
@@ -78,7 +77,7 @@ class ALUReservationStation {
 
     void setNextInstruction(const Instruction instruction, const OperandType types[], const int rbi);
 
-    void getValidBits(bool** const copy) const;
+    void getOperandTypes(OperandType** const copy) const;
 
     void setNextOperandTypes(int** const copy) const;
 };

@@ -321,7 +321,7 @@ void View::drawDecodeIssueUnit(const int issueWindowSize, const Instruction* con
 }
 
 void View::drawAluReservationStation(const int reservationStationSize, const Instruction* const instructions, 
-  const int* const reorderBufferIndexes, bool** const validBits) 
+  const int* const reorderBufferIndexes, OperandType** const operandTypes) 
 {
   //specification
   int xPos = 50;
@@ -349,10 +349,10 @@ void View::drawAluReservationStation(const int reservationStationSize, const Ins
       //draw operands
       for(int j = 1; j < 3; j++) {
         std::string operandText;
-        if(!validBits[i][j]) {
+        if(operandTypes[i][j] == REGISTER) {
           operandText = "R" + intToString(instructions[i].operands[j]);
         }
-        else {
+        else if(operandTypes[i][j] == CONSTANT) {
           operandText = intToString(instructions[i].operands[j]);
         }
         renderText(xPos + instructionCellWidth + j * cellWidth, yPos + (2 + i) * cellHeight, operandText);

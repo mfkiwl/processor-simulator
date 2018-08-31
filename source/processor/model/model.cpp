@@ -283,8 +283,8 @@ void Model::getAluReservationStationReorderBufferIndexes(int* const copy) const 
   aluReservationStation.getCurrentReorderBufferIndexes(copy);
 }
 
-void Model::getAluReservationStationValidBits(bool** const copy) const {
-  aluReservationStation.getValidBits(copy);
+void Model::getAluReservationStationOperandTypes(OperandType** const copy) const {
+  aluReservationStation.getOperandTypes(copy);
 }
 
 int Model::getBranchUnitReservationStationSize() const {
