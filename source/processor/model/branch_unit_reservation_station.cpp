@@ -24,10 +24,10 @@ BranchUnitReservationStation::BranchUnitReservationStation(RegisterFile* const r
   branchUnit(branchUnit),
   size(size),
   nextInstructions(new Instruction[size]),
-  nextOperandTypes(new int*[size]),
+  nextOperandTypes(new OperandType*[size]),
   nextReorderBufferIndexes(new int[size]),
   instructions(new Instruction[size]),
-  operandTypes(new int*[size]),
+  operandTypes(new OperandType*[size]),
   validBits(new bool*[size]),
   reorderBufferIndexes(new int[size]),
   numReservedSpaces(0),
@@ -36,13 +36,13 @@ BranchUnitReservationStation::BranchUnitReservationStation(RegisterFile* const r
   //set all instructions to NOOPs
   for(int i = 0; i < size; i++) {
     nextInstructions[i] = (Instruction) {0,0,0,0};
-    nextOperandTypes[i] = new int[3];
+    nextOperandTypes[i] = new OperandType[3];
     for(int j = 0; j < 3; j++) {
       nextOperandTypes[i][j] = NONE;
     }
     nextReorderBufferIndexes[i] = -1;
     instructions[i] = (Instruction) {0,0,0,0};
-    operandTypes[i] = new int[3];
+    operandTypes[i] = new OperandType[3];
     for(int j = 0; j < 3; j++) {
       operandTypes[i][j] = NONE;
     }
@@ -281,7 +281,7 @@ void BranchUnitReservationStation::getCurrentReorderBufferIndexes(int* const cop
   }
 }
 
-void BranchUnitReservationStation::setNextInstruction(const Instruction instruction, const int types[], 
+void BranchUnitReservationStation::setNextInstruction(const Instruction instruction, const OperandType types[], 
   const int rbi) 
 {
   for(int i = 0; i < size; i++) {

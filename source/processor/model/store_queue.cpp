@@ -21,12 +21,12 @@ StoreQueue::StoreQueue(ReorderBuffer* const reorderBuffer, RegisterFile* const r
     loadStoreUnit(loadStoreUnit),
     size(size),
     nextInstructions(new Instruction[size]),
-    nextOperandTypes(new int*[size]),
+    nextOperandTypes(new OperandType*[size]),
     nextReorderBufferIndexes(new int[size]),
     head(0),
     tail(0),
     instructions(new Instruction[size]),
-    operandTypes(new int*[size]),
+    operandTypes(new OperandType*[size]),
     ages(new int[size]),
     validBits(new bool*[size]),
     reorderBufferIndexes(new int[size]),
@@ -36,13 +36,13 @@ StoreQueue::StoreQueue(ReorderBuffer* const reorderBuffer, RegisterFile* const r
   	  //initialise arrays
   	  for(int i = 0; i < size; i++) {
   	    nextInstructions[i] = (Instruction) {0,0,0,0};
-        nextOperandTypes[i] = new int[3];
+        nextOperandTypes[i] = new OperandType[3];
         for(int j = 0; j < 3; j++) {
           nextOperandTypes[i][j] = NONE;
         }
   	    nextReorderBufferIndexes[i] = -1;
   	    instructions[i] = (Instruction) {0,0,0,0};
-        operandTypes[i] = new int[3];
+        operandTypes[i] = new OperandType[3];
         for(int j = 0; j < 3; j++) {
           operandTypes[i][j] = NONE;
         }
@@ -302,7 +302,7 @@ void StoreQueue::getCurrentReorderBufferIndexes(int* const copy) const {
   }
 }
 
-void StoreQueue::setNextInstruction(const Instruction instruction, const int types[], const int rbi) {
+void StoreQueue::setNextInstruction(const Instruction instruction, const OperandType types[], const int rbi) {
   for(int i = 0; i < size; i++) {
     if(nextInstructions[i].opcode == NOOP) {
       nextInstructions[i] = instruction;

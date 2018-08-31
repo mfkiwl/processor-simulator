@@ -14,6 +14,8 @@ class Instruction;
 //=================================
 // included dependencies
 
+#include "constants.h"
+
 //===========================
 //class declaration
 class StoreQueue {
@@ -28,14 +30,14 @@ class StoreQueue {
   	const int size;
 
   	Instruction* const nextInstructions;
-    int** const nextOperandTypes;
+    OperandType** const nextOperandTypes;
   	int* const nextReorderBufferIndexes;
 
   	int head;
   	int tail;
 
   	Instruction* const instructions;
-    int** const operandTypes;
+    OperandType** const operandTypes;
     int* const ages;
   	bool** const validBits;
   	int* const reorderBufferIndexes;
@@ -87,7 +89,7 @@ class StoreQueue {
 
     void getCurrentReorderBufferIndexes(int* const copy) const;
 
-    void setNextInstruction(const Instruction instruction, const int types[], const int rbi);
+    void setNextInstruction(const Instruction instruction, const OperandType types[], const int rbi);
 
     void getValidBits(bool** const copy) const;
 };

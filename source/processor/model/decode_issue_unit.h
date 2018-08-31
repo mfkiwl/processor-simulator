@@ -17,6 +17,7 @@ class StoreQueue;
 //=================================
 // included dependencies
 #include "instructions.h"
+#include "constants.h"
 
 //===========================
 //class declaration
@@ -40,7 +41,7 @@ class DecodeIssueUnit {
     int* const nextBranchAddresses;
 
     Instruction* const instructions;
-    int** const operandTypes;
+    OperandType** const operandTypes;
     int* const branchAddresses;
     bool* const instructionsIssued;
     int* const reorderBufferIndexes;

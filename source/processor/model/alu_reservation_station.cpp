@@ -27,10 +27,10 @@ ALUReservationStation::ALUReservationStation(RegisterFile* const registerFile, c
   alu(alu),
   size(size),
   nextInstructions(new Instruction[size]),
-  nextOperandTypes(new int*[size]),
+  nextOperandTypes(new OperandType*[size]),
   nextReorderBufferIndexes(new int[size]),
   instructions(new Instruction[size]),
-  operandTypes(new int*[size]),
+  operandTypes(new OperandType*[size]),
   validBits(new bool*[size]),
   reorderBufferIndexes(new int[size]),
   numReservedSpaces(0),
@@ -39,13 +39,13 @@ ALUReservationStation::ALUReservationStation(RegisterFile* const registerFile, c
   //inialise arrays
   for(int i = 0; i < size; i++) {
     nextInstructions[i] = (Instruction) {0,0,0,0};
-    nextOperandTypes[i] = new int[3];
+    nextOperandTypes[i] = new OperandType[3];
     for(int j = 0; j < 3; j++) {
       nextOperandTypes[i][j] = NONE;
     }
     nextReorderBufferIndexes[i] = -1;
     instructions[i] = (Instruction) {0,0,0,0};
-    operandTypes[i] = new int[size];
+    operandTypes[i] = new OperandType[3];
     for(int j = 0; j < 3; j++) {
       operandTypes[i][j] = NONE;
     }
@@ -219,12 +219,14 @@ void ALUReservationStation::checkOperandAvailability() {
           if(registerFile->getScoreBoardValue(instructions[i].operands[1])) {
             instructions[i].operands[1] = registerFile->getPhysicalRegisterValue(instructions[i].operands[1]);
             validBits[i][1] = true;
+            operandTypes[i][1] = CONSTANT;
           }
         }
         if(!validBits[i][2]) {
           if(registerFile->getScoreBoardValue(instructions[i].operands[2])) {
             instructions[i].operands[2] = registerFile->getPhysicalRegisterValue(instructions[i].operands[2]);
             validBits[i][2] = true;
+            operandTypes[i][2] = CONSTANT;
           }
         }
         break;
@@ -233,10 +235,12 @@ void ALUReservationStation::checkOperandAvailability() {
           if(registerFile->getScoreBoardValue(instructions[i].operands[1])) {
             instructions[i].operands[1] = registerFile->getPhysicalRegisterValue(instructions[i].operands[1]);
             validBits[i][1] = true;
+            operandTypes[i][1] = CONSTANT;
           }
         }
         if(!validBits[i][2]) {
           validBits[i][2] = true;
+          operandTypes[i][2] = CONSTANT;
         }
         break;
     }
@@ -307,7 +311,7 @@ void ALUReservationStation::getCurrentReorderBufferIndexes(int* const copy) cons
   }
 }
 
-void ALUReservationStation::setNextInstruction(const Instruction instruction, const int types[], const int rbi) {
+void ALUReservationStation::setNextInstruction(const Instruction instruction, const OperandType types[], const int rbi) {
   for(int i = 0; i < size; i++) {
     if(nextInstructions[i].opcode == NOOP) {
       nextInstructions[i] = instruction;

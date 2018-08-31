@@ -14,6 +14,7 @@
 #include "store_queue.h"
 #include "load_queue.h"
 #include "instructions.h"
+#include "constants.h"
 
 //===========================================
 //class implementation
@@ -32,7 +33,7 @@ DecodeIssueUnit::DecodeIssueUnit(RegisterFile* const registerFile, ReorderBuffer
   nextInstructions(new Instruction[issueWindowSize]),
   nextBranchAddresses(new int[issueWindowSize]),
   instructions(new Instruction[issueWindowSize]),
-  operandTypes(new int*[issueWindowSize]),
+  operandTypes(new OperandType*[issueWindowSize]),
   branchAddresses(new int[issueWindowSize]),
   instructionsIssued(new bool[issueWindowSize]),
   reorderBufferIndexes(new int[issueWindowSize]),
@@ -43,7 +44,7 @@ DecodeIssueUnit::DecodeIssueUnit(RegisterFile* const registerFile, ReorderBuffer
     nextInstructions[i] = (Instruction) {0,0,0,0};
     nextBranchAddresses[i] = -1;
     instructions[i] = (Instruction) {0,0,0,0};
-    operandTypes[i] = new int[3];
+    operandTypes[i] = new OperandType[3];
     for(int j = 0; j < 3; j++) {
       operandTypes[i][j] = NONE;
     }
@@ -101,15 +102,15 @@ void DecodeIssueUnit::issue(int instructionToIssue) {
 
         //rename the source operands
         instructions[instructionToIssue].operands[1] = registerFile->getArchitecturalRegisterMapping(instructions[instructionToIssue].operands[1]);
-        operandTypes[instructionToIssue][1] = REGISTER;
 
         //update the rename table
         registerFile->setArchitecturalRegisterMapping(instructions[instructionToIssue].operands[0], newPhysicalRegister);
 
         //rename destination operand
         instructions[instructionToIssue].operands[0] = newPhysicalRegister;
+        
         operandTypes[instructionToIssue][0] = REGISTER;
-
+        operandTypes[instructionToIssue][1] = REGISTER;
         operandTypes[instructionToIssue][2] = CONSTANT;
 
         //take note that the instruction was issued
@@ -346,7 +347,7 @@ void DecodeIssueUnit::issue(int instructionToIssue) {
 
 void DecodeIssueUnit::moveInstructions() {
   Instruction instructionsCopy[issueWindowSize];
-  int operandTypesCopy[issueWindowSize][3];
+  OperandType operandTypesCopy[issueWindowSize][3];
   int branchAddressesCopy[issueWindowSize];
   bool instructionsIssuedCopy[issueWindowSize];
   int reorderBufferIndexesCopy[issueWindowSize];
