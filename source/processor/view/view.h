@@ -87,7 +87,7 @@ class View {
       const int* const reorderBufferIndexes, OperandType** const operandTypes);
 
     void drawBranchUnitReservationStation(const int reservationStationSize, const Instruction* const instructions, 
-      const int* const reorderBufferIndexes, bool** const validBits);
+      const int* const reorderBufferIndexes, OperandType** const OperandTypes);
 
     void drawStoreQueue(const int size, const Instruction* const instructions, 
       const int* const reorderBufferIndexes, bool** const validBits);

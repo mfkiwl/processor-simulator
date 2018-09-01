@@ -109,6 +109,7 @@ void DecodeIssueUnit::issue(int instructionToIssue) {
         //rename destination operand
         instructions[instructionToIssue].operands[0] = newPhysicalRegister;
         
+        //set the operand types
         operandTypes[instructionToIssue][0] = REGISTER;
         operandTypes[instructionToIssue][1] = REGISTER;
         operandTypes[instructionToIssue][2] = CONSTANT;
@@ -146,19 +147,21 @@ void DecodeIssueUnit::issue(int instructionToIssue) {
 
         //rename the source operands
         instructions[instructionToIssue].operands[1] = registerFile->getArchitecturalRegisterMapping(instructions[instructionToIssue].operands[1]);
-        operandTypes[instructionToIssue][1] = REGISTER;
         instructions[instructionToIssue].operands[2] = registerFile->getArchitecturalRegisterMapping(instructions[instructionToIssue].operands[2]);
-        operandTypes[instructionToIssue][2] = REGISTER;
 
         //update the rename table
         registerFile->setArchitecturalRegisterMapping(instructions[instructionToIssue].operands[0], newPhysicalRegister);
 
-        //take note that the instruction was issued
-        instructionsIssued[instructionToIssue] = true;
-
         //rename the destination operand
         instructions[instructionToIssue].operands[0] = newPhysicalRegister;
+
+        //set the operand types
         operandTypes[instructionToIssue][0] = REGISTER;
+        operandTypes[instructionToIssue][1] = REGISTER;
+        operandTypes[instructionToIssue][2] = REGISTER;
+
+        //take note that the instruction was issued
+        instructionsIssued[instructionToIssue] = true;
       }
       break;
 
@@ -293,9 +296,12 @@ void DecodeIssueUnit::issue(int instructionToIssue) {
 
         //rename the registers
         instructions[instructionToIssue].operands[0] = registerFile->getArchitecturalRegisterMapping(instructions[instructionToIssue].operands[0]);
-        operandTypes[instructionToIssue][0] = REGISTER;
         instructions[instructionToIssue].operands[1] = registerFile->getArchitecturalRegisterMapping(instructions[instructionToIssue].operands[1]);
+
+        //set the operand types
+        operandTypes[instructionToIssue][0] = REGISTER;
         operandTypes[instructionToIssue][1] = REGISTER;
+        operandTypes[instructionToIssue][2] = CONSTANT;
 
         //take note that the instruction was issued
         instructionsIssued[instructionToIssue] = true;

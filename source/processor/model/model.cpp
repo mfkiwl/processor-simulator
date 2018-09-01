@@ -299,8 +299,8 @@ void Model::getBranchUnitReservationStationReorderBufferIndexes(int* const copy)
   branchUnitReservationStation.getCurrentReorderBufferIndexes(copy);
 }
 
-void Model::getBranchUnitReservationStationValidBits(bool** const copy) const {
-  branchUnitReservationStation.getValidBits(copy);
+void Model::getBranchUnitReservationStationOperandTypes(OperandType** const copy) const {
+  branchUnitReservationStation.getOperandTypes(copy);
 }
 
 int Model::getStoreQueueSize() const {

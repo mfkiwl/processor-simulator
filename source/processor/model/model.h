@@ -144,7 +144,7 @@ class Model {
 
     void getBranchUnitReservationStationReorderBufferIndexes(int* const copy) const;
 
-    void getBranchUnitReservationStationValidBits(bool** const copy) const;
+    void getBranchUnitReservationStationOperandTypes(OperandType** const copy) const;
 
     int getStoreQueueSize() const;
 

@@ -28,7 +28,6 @@ BranchUnitReservationStation::BranchUnitReservationStation(RegisterFile* const r
   nextReorderBufferIndexes(new int[size]),
   instructions(new Instruction[size]),
   operandTypes(new OperandType*[size]),
-  validBits(new bool*[size]),
   reorderBufferIndexes(new int[size]),
   numReservedSpaces(0),
   dispatchIndex(-1)
@@ -45,10 +44,6 @@ BranchUnitReservationStation::BranchUnitReservationStation(RegisterFile* const r
     operandTypes[i] = new OperandType[3];
     for(int j = 0; j < 3; j++) {
       operandTypes[i][j] = NONE;
-    }
-    validBits[i] = new bool[3];
-    for(int j = 0; j < 3; j++) {
-      validBits[i][j] = false;
     }
     reorderBufferIndexes[i] = -1;
   }
@@ -83,7 +78,7 @@ void BranchUnitReservationStation::pipe() {
     //clear the dispatched instruction from the reservation station
     instructions[dispatchIndex] = (Instruction) {0,0,0,0};
     for(int j = 0; j < 3; j++) {
-      validBits[dispatchIndex][j] = false;
+      operandTypes[dispatchIndex][j] = NONE;
     }
     reorderBufferIndexes[dispatchIndex] = -1;
     dispatchIndex = -1;
@@ -109,9 +104,6 @@ void BranchUnitReservationStation::flush() {
     instructions[i] = (Instruction) {0,0,0,0};
     for(int j = 0; j < 3; j++) {
       operandTypes[i][j] = NONE;
-    }
-    for(int j = 0; j < 3; j++) {
-      validBits[i][j] = false;
     }
     reorderBufferIndexes[i] = -1;
   }
@@ -158,13 +150,13 @@ void BranchUnitReservationStation::broadcast(int physicalRegister, int value) {
         break;
       case BEQ:
       case BNE:
-        if(!validBits[i][0] && instructions[i].operands[0] == physicalRegister) {
+        if(!(operandTypes[i][0] == CONSTANT) && instructions[i].operands[0] == physicalRegister) {
           instructions[i].operands[0] = value;
-          validBits[i][0] = true;
+          operandTypes[i][0] = CONSTANT;
         }
-        if(!validBits[i][1] && instructions[i].operands[1] == physicalRegister) {
+        if(!(operandTypes[i][1] == CONSTANT) && instructions[i].operands[1] == physicalRegister) {
           instructions[i].operands[1] = value;
-          validBits[i][1] = true;
+          operandTypes[i][1] = CONSTANT;
         }
         break;
       case BGEZ:
@@ -192,16 +184,16 @@ void BranchUnitReservationStation::checkOperandAvailability() {
         break;
       case BEQ:
       case BNE:
-        if(!validBits[i][0]) {
+        if(!(operandTypes[i][0] == CONSTANT)) {
           if(registerFile->getScoreBoardValue(instructions[i].operands[0])) {
             instructions[i].operands[0] = registerFile->getPhysicalRegisterValue(instructions[i].operands[0]);
-            validBits[i][0] = true;
+            operandTypes[i][0] = CONSTANT;
           }
         }
-        if(!validBits[i][1]) {
+        if(!(operandTypes[i][1] == CONSTANT)) {
           if(registerFile->getScoreBoardValue(instructions[i].operands[1])) {
             instructions[i].operands[1] = registerFile->getPhysicalRegisterValue(instructions[i].operands[1]);
-            validBits[i][1] = true;
+            operandTypes[i][1] = CONSTANT;
           }
         }
         break;
@@ -248,7 +240,7 @@ bool BranchUnitReservationStation::readyToDispatch(const int index) const {
       return false;
     case BEQ:
     case BNE:
-      if(validBits[index][0] && validBits[index][1]) {
+      if(operandTypes[index][0] == CONSTANT && operandTypes[index][1] == CONSTANT) {
         return true;
       }
       break;
@@ -296,10 +288,10 @@ void BranchUnitReservationStation::setNextInstruction(const Instruction instruct
   }
 }
 
-void BranchUnitReservationStation::getValidBits(bool** const copy) const {
+void BranchUnitReservationStation::getOperandTypes(OperandType** const copy) const {
   for(int i = 0; i < size; i++) {
     for(int j = 0; j < 3; j++) {
-      copy[i][j] = validBits[i][j];
+      copy[i][j] = operandTypes[i][j];
     }
   }
 }

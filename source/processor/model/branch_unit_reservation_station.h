@@ -31,7 +31,6 @@ class BranchUnitReservationStation {
 
     Instruction* const instructions;
     OperandType** const operandTypes;
-    bool** const validBits;
     int* const reorderBufferIndexes;
 
     int numReservedSpaces;
@@ -77,7 +76,7 @@ class BranchUnitReservationStation {
 
     void setNextInstruction(const Instruction instruction, const OperandType types[], const int rbi);
 
-    void getValidBits(bool** const copy) const;
+    void getOperandTypes(OperandType** const copy) const;
 
 };
 
