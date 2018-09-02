@@ -298,7 +298,9 @@ void View::drawFetchUnit(const int issueWindowSize, const Instruction* const ins
   }
 }
 
-void View::drawDecodeIssueUnit(const int issueWindowSize, const Instruction* const instructions, const int* const reorderBufferIndexes) {
+void View::drawDecodeIssueUnit(const int issueWindowSize, const Instruction instructions[], 
+  const int reorderBufferIndexes[]) 
+{
   int xPos = 260;
   int yPos = 60;
   int numOfHorizontalCells = 1;
@@ -320,8 +322,8 @@ void View::drawDecodeIssueUnit(const int issueWindowSize, const Instruction* con
   }
 }
 
-void View::drawAluReservationStation(const int reservationStationSize, const Instruction* const instructions, 
-  const int* const reorderBufferIndexes, OperandType** const operandTypes) 
+void View::drawAluReservationStation(const int reservationStationSize, const Instruction instructions[], 
+  const int reorderBufferIndexes[], const OperandType operandTypes[][3]) 
 {
   //specification
   int xPos = 50;
@@ -361,8 +363,8 @@ void View::drawAluReservationStation(const int reservationStationSize, const Ins
   }
 }
 
-void View::drawBranchUnitReservationStation(const int reservationStationSize, const Instruction* const instructions, 
-  const int* const reorderBufferIndexes, OperandType** const operandTypes) 
+void View::drawBranchUnitReservationStation(const int reservationStationSize, const Instruction instructions[], 
+  const int reorderBufferIndexes[], const OperandType operandTypes[][3]) 
 {
   //specification
   int xPos = 250;
@@ -402,8 +404,8 @@ void View::drawBranchUnitReservationStation(const int reservationStationSize, co
   }
 }
 
-void View::drawStoreQueue(const int size, const Instruction* const instructions, 
-  const int* const reorderBufferIndexes, bool** const validBits)
+void View::drawStoreQueue(const int size, const Instruction instructions[], const int reorderBufferIndexes[], 
+  const bool validBits[][3])
 {
   //specifications
   int xPos = 450;
@@ -442,8 +444,8 @@ void View::drawStoreQueue(const int size, const Instruction* const instructions,
   }
 }
 
-void View::drawLoadQueue(const int size, const Instruction* const instructions, 
-  const int* const reorderBufferIndexes, bool** const validBits)
+void View::drawLoadQueue(const int size, const Instruction instructions[], const int reorderBufferIndexes[], 
+  const bool validBits[][3])
 {
   //specification
   int xPos = 450;

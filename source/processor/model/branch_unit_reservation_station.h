@@ -70,13 +70,13 @@ class BranchUnitReservationStation {
   //getters and setters
   public:
 
-    void getCurrentInstructions(Instruction* const copy) const;
-
-    void getCurrentReorderBufferIndexes(int* const copy) const;
-
     void setNextInstruction(const Instruction instruction, const OperandType types[], const int rbi);
 
-    void getOperandTypes(OperandType** const copy) const;
+    void getCurrentInstructions(Instruction copy[]) const;
+
+    void getCurrentReorderBufferIndexes(int copy[]) const;
+
+    void getOperandTypes(OperandType copy[][3]) const;
 
 };
 

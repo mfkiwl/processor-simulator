@@ -57,10 +57,7 @@ void Controller::updateView() {
   model.getAluReservationStationInstructions(aluReservationStationInstructions);
   int aluReservationStationReorderBufferIndexes[aluReservationStationSize];
   model.getAluReservationStationReorderBufferIndexes(aluReservationStationReorderBufferIndexes);
-  OperandType** aluReservationStationOperandTypes = new OperandType*[aluReservationStationSize];
-  for(int i = 0; i < aluReservationStationSize; i++) {
-    aluReservationStationOperandTypes[i] = new OperandType[3];
-  }
+  OperandType aluReservationStationOperandTypes[aluReservationStationSize][3];
   model.getAluReservationStationOperandTypes(aluReservationStationOperandTypes);
   view.drawAluReservationStation(aluReservationStationSize, aluReservationStationInstructions, 
     aluReservationStationReorderBufferIndexes, aluReservationStationOperandTypes);
@@ -71,10 +68,7 @@ void Controller::updateView() {
   model.getBranchUnitReservationStationInstructions(branchUnitReservationStationInstructions);
   int branchUnitReservationStationReorderBufferIndexes[branchUnitReservationStationSize];
   model.getBranchUnitReservationStationReorderBufferIndexes(branchUnitReservationStationReorderBufferIndexes);
-  OperandType** branchUnitReservationStationOperandTypes = new OperandType*[branchUnitReservationStationSize];
-  for(int i = 0; i < branchUnitReservationStationSize; i++) {
-    branchUnitReservationStationOperandTypes[i] = new OperandType[3];
-  }
+  OperandType branchUnitReservationStationOperandTypes[branchUnitReservationStationSize][3];
   model.getBranchUnitReservationStationOperandTypes(branchUnitReservationStationOperandTypes);
   view.drawBranchUnitReservationStation(branchUnitReservationStationSize, branchUnitReservationStationInstructions, 
     branchUnitReservationStationReorderBufferIndexes, branchUnitReservationStationOperandTypes);
@@ -85,13 +79,9 @@ void Controller::updateView() {
   model.getStoreQueueInstructions(storeQueueInstructions);
   int storeQueueReorderBufferIndexes[storeQueueSize];
   model.getStoreQueueReorderBufferIndexes(storeQueueReorderBufferIndexes);
-  bool** storeQueueValidBits = new bool*[storeQueueSize];
-  for(int i = 0; i < storeQueueSize; i++) {
-    storeQueueValidBits[i] = new bool[3];
-  }
+  bool storeQueueValidBits[storeQueueSize][3];
   model.getStoreQueueValidBits(storeQueueValidBits);
-  view.drawStoreQueue(storeQueueSize, storeQueueInstructions, 
-    storeQueueReorderBufferIndexes, storeQueueValidBits);
+  view.drawStoreQueue(storeQueueSize, storeQueueInstructions, storeQueueReorderBufferIndexes, storeQueueValidBits);
 
   //draw the instructions in the load queue
   int loadQueueSize = model.getLoadQueueSize();
@@ -99,13 +89,9 @@ void Controller::updateView() {
   model.getLoadQueueInstructions(loadQueueInstructions);
   int loadQueueReorderBufferIndexes[loadQueueSize];
   model.getLoadQueueReorderBufferIndexes(loadQueueReorderBufferIndexes);
-  bool** loadQueueValidBits = new bool*[loadQueueSize];
-  for(int i = 0; i < loadQueueSize; i++) {
-    loadQueueValidBits[i] = new bool[3];
-  }
+  bool loadQueueValidBits[loadQueueSize][3];
   model.getLoadQueueValidBits(loadQueueValidBits);
-  view.drawLoadQueue(loadQueueSize, loadQueueInstructions, 
-    loadQueueReorderBufferIndexes, loadQueueValidBits);
+  view.drawLoadQueue(loadQueueSize, loadQueueInstructions, loadQueueReorderBufferIndexes, loadQueueValidBits);
 
   //draw the alu
   int numALUs = model.getNumALUs();

@@ -57,7 +57,7 @@ class FetchUnit {
   //getter and setter functions
   public:
 
-    void getInstructions(Instruction* const copy) const;
+    void getInstructions(Instruction copy[]) const;
 };
 
 #endif

@@ -540,13 +540,13 @@ void DecodeIssueUnit::setNextInstructions(const Instruction* const x) {
   }
 }
 
-void DecodeIssueUnit::getInstructions(Instruction* const copy) const {
+void DecodeIssueUnit::getInstructions(Instruction copy[]) const {
   for(int i = 0; i < issueWindowSize; i++) {
     copy[i] = instructions[i];
   }
 }
 
-void DecodeIssueUnit::getReorderBufferIndexes(int* const copy) const {
+void DecodeIssueUnit::getReorderBufferIndexes(int copy[]) const {
   for(int i = 0; i < issueWindowSize; i++) {
     copy[i] = reorderBufferIndexes[i];
   }

@@ -81,13 +81,13 @@ class LoadQueue {
   //getters and setters
   public:
 
-    void getCurrentInstructions(Instruction* const copy) const;
-
-    void getCurrentReorderBufferIndexes(int* const copy) const;
-
     void setNextInstruction(const Instruction instruction, const OperandType types[], const int rbi);
 
-    void getValidBits(bool** const copy) const;
+    void getCurrentInstructions(Instruction copy[]) const;
+
+    void getCurrentReorderBufferIndexes(int copy[]) const;
+
+    void getValidBits(bool copy[][3]) const;
 };
 
 #endif

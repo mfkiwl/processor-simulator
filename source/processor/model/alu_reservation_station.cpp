@@ -281,18 +281,6 @@ bool ALUReservationStation::readyToDispatch(const int index) const {
 //=========================================================================================
 //getters and setters
 
-void ALUReservationStation::getCurrentInstructions(Instruction* const copy) const {
-  for(int i = 0; i < size; i++) {
-    copy[i] = instructions[i];
-  }
-}
-
-void ALUReservationStation::getCurrentReorderBufferIndexes(int* const copy) const {
-  for(int i = 0; i < size; i++) {
-    copy[i] = reorderBufferIndexes[i];
-  }
-}
-
 void ALUReservationStation::setNextInstruction(const Instruction instruction, const OperandType types[], const int rbi) {
   for(int i = 0; i < size; i++) {
     if(nextInstructions[i].opcode == NOOP) {
@@ -306,7 +294,19 @@ void ALUReservationStation::setNextInstruction(const Instruction instruction, co
   }
 }
 
-void ALUReservationStation::getOperandTypes(OperandType** const copy) const {
+void ALUReservationStation::getCurrentInstructions(Instruction copy[]) const {
+  for(int i = 0; i < size; i++) {
+    copy[i] = instructions[i];
+  }
+}
+
+void ALUReservationStation::getCurrentReorderBufferIndexes(int copy[]) const {
+  for(int i = 0; i < size; i++) {
+    copy[i] = reorderBufferIndexes[i];
+  }
+}
+
+void ALUReservationStation::getOperandTypes(OperandType copy[][3]) const {
   for(int i = 0; i < size; i++) {
     for(int j = 0; j < 3; j++) {
       copy[i][j] = operandTypes[i][j];

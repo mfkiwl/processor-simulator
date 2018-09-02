@@ -259,15 +259,15 @@ void Model::getAllMemoryValues(int* const copy) const {
   memory.getAllMemoryValues(copy);
 }
 
-void Model::getFetchUnitInstructions(Instruction* const copy) const {
+void Model::getFetchUnitInstructions(Instruction copy[]) const {
   fetchUnit.getInstructions(copy);
 }
 
-void Model::getDecodeIssueUnitInstructions(Instruction* const copy) const {
+void Model::getDecodeIssueUnitInstructions(Instruction copy[]) const {
   decodeIssueUnit.getInstructions(copy);
 }
 
-void Model::getDecodeIssueUnitReorderBufferIndexes(int* const copy) const {
+void Model::getDecodeIssueUnitReorderBufferIndexes(int copy[]) const {
   decodeIssueUnit.getReorderBufferIndexes(copy);
 }
 
@@ -275,15 +275,15 @@ int Model::getAluReservationStationSize() const {
   return aluReservationStationSize;
 }
 
-void Model::getAluReservationStationInstructions(Instruction* const copy) const {
+void Model::getAluReservationStationInstructions(Instruction copy[]) const {
   aluReservationStation.getCurrentInstructions(copy);
 }
 
-void Model::getAluReservationStationReorderBufferIndexes(int* const copy) const {
+void Model::getAluReservationStationReorderBufferIndexes(int copy[]) const {
   aluReservationStation.getCurrentReorderBufferIndexes(copy);
 }
 
-void Model::getAluReservationStationOperandTypes(OperandType** const copy) const {
+void Model::getAluReservationStationOperandTypes(OperandType copy[][3]) const {
   aluReservationStation.getOperandTypes(copy);
 }
 
@@ -291,15 +291,15 @@ int Model::getBranchUnitReservationStationSize() const {
   return branchUnitReservationStationSize;
 }
 
-void Model::getBranchUnitReservationStationInstructions(Instruction* const copy) const {
+void Model::getBranchUnitReservationStationInstructions(Instruction copy[]) const {
   branchUnitReservationStation.getCurrentInstructions(copy);
 }
 
-void Model::getBranchUnitReservationStationReorderBufferIndexes(int* const copy) const {
+void Model::getBranchUnitReservationStationReorderBufferIndexes(int copy[]) const {
   branchUnitReservationStation.getCurrentReorderBufferIndexes(copy);
 }
 
-void Model::getBranchUnitReservationStationOperandTypes(OperandType** const copy) const {
+void Model::getBranchUnitReservationStationOperandTypes(OperandType copy[][3]) const {
   branchUnitReservationStation.getOperandTypes(copy);
 }
 
@@ -307,15 +307,15 @@ int Model::getStoreQueueSize() const {
   return storeQueueSize;
 }
 
-void Model::getStoreQueueInstructions(Instruction* const copy) const {
+void Model::getStoreQueueInstructions(Instruction copy[]) const {
   storeQueue.getCurrentInstructions(copy);
 }
 
-void Model::getStoreQueueReorderBufferIndexes(int* const copy) const {
+void Model::getStoreQueueReorderBufferIndexes(int copy[]) const {
   storeQueue.getCurrentReorderBufferIndexes(copy);
 }
 
-void Model::getStoreQueueValidBits(bool** const copy) const {
+void Model::getStoreQueueValidBits(bool copy[][3]) const {
   storeQueue.getValidBits(copy);
 }
 
@@ -323,15 +323,15 @@ int Model::getLoadQueueSize() const {
   return loadQueueSize;
 }
 
-void Model::getLoadQueueInstructions(Instruction* const copy) const {
+void Model::getLoadQueueInstructions(Instruction copy[]) const {
   loadQueue.getCurrentInstructions(copy);
 }
 
-void Model::getLoadQueueReorderBufferIndexes(int* const copy) const {
+void Model::getLoadQueueReorderBufferIndexes(int copy[]) const {
   loadQueue.getCurrentReorderBufferIndexes(copy);
 }
 
-void Model::getLoadQueueValidBits(bool** const copy) const {
+void Model::getLoadQueueValidBits(bool copy[][3]) const {
   loadQueue.getValidBits(copy);
 }
 

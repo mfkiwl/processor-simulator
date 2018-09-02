@@ -124,43 +124,43 @@ class Model {
 
     void getAllMemoryValues(int* const copy) const;
 
-    void getFetchUnitInstructions(Instruction* const copy) const;
+    void getFetchUnitInstructions(Instruction copy[]) const;
 
-    void getDecodeIssueUnitInstructions(Instruction* const copy) const;
+    void getDecodeIssueUnitInstructions(Instruction copy[]) const;
 
-    void getDecodeIssueUnitReorderBufferIndexes(int* const copy) const;
+    void getDecodeIssueUnitReorderBufferIndexes(int copy[]) const;
 
     int getAluReservationStationSize() const;
 
-    void getAluReservationStationInstructions(Instruction* const copy) const;
+    void getAluReservationStationInstructions(Instruction copy[]) const;
 
-    void getAluReservationStationReorderBufferIndexes(int* const copy) const;
+    void getAluReservationStationReorderBufferIndexes(int copy[]) const;
 
-    void getAluReservationStationOperandTypes(OperandType** const copy) const;
+    void getAluReservationStationOperandTypes(OperandType copy[][3]) const;
 
     int getBranchUnitReservationStationSize() const;
 
-    void getBranchUnitReservationStationInstructions(Instruction* const copy) const;
+    void getBranchUnitReservationStationInstructions(Instruction copy[]) const;
 
-    void getBranchUnitReservationStationReorderBufferIndexes(int* const copy) const;
+    void getBranchUnitReservationStationReorderBufferIndexes(int copy[]) const;
 
-    void getBranchUnitReservationStationOperandTypes(OperandType** const copy) const;
+    void getBranchUnitReservationStationOperandTypes(OperandType copy[][3]) const;
 
     int getStoreQueueSize() const;
 
-    void getStoreQueueInstructions(Instruction* const copy) const;
+    void getStoreQueueInstructions(Instruction copy[]) const;
 
-    void getStoreQueueReorderBufferIndexes(int* const copy) const;
+    void getStoreQueueReorderBufferIndexes(int copy[]) const;
 
-    void getStoreQueueValidBits(bool** const copy) const;
+    void getStoreQueueValidBits(bool copy[][3]) const;
 
     int getLoadQueueSize() const;
 
-    void getLoadQueueInstructions(Instruction* const copy) const;
+    void getLoadQueueInstructions(Instruction copy[]) const;
 
-    void getLoadQueueReorderBufferIndexes(int* const copy) const;
+    void getLoadQueueReorderBufferIndexes(int copy[]) const;
 
-    void getLoadQueueValidBits(bool** const copy) const;
+    void getLoadQueueValidBits(bool copy[][3]) const;
 
     int getNumALUs() const;
 

@@ -290,18 +290,6 @@ int StoreQueue::getTailAge() const {
   return ages[tail];
 }
 
-void StoreQueue::getCurrentInstructions(Instruction* const copy) const {
-  for(int i = 0; i < size; i++) {
-    copy[i] = instructions[i];
-  }
-}
-
-void StoreQueue::getCurrentReorderBufferIndexes(int* const copy) const {
-  for(int i = 0; i < size; i++) {
-    copy[i] = reorderBufferIndexes[i];
-  }
-}
-
 void StoreQueue::setNextInstruction(const Instruction instruction, const OperandType types[], const int rbi) {
   for(int i = 0; i < size; i++) {
     if(nextInstructions[i].opcode == NOOP) {
@@ -315,7 +303,19 @@ void StoreQueue::setNextInstruction(const Instruction instruction, const Operand
   }
 }
 
-void StoreQueue::getValidBits(bool** const copy) const {
+void StoreQueue::getCurrentInstructions(Instruction copy[]) const {
+  for(int i = 0; i < size; i++) {
+    copy[i] = instructions[i];
+  }
+}
+
+void StoreQueue::getCurrentReorderBufferIndexes(int copy[]) const {
+  for(int i = 0; i < size; i++) {
+    copy[i] = reorderBufferIndexes[i];
+  }
+}
+
+void StoreQueue::getValidBits(bool copy[][3]) const {
   for(int i = 0; i < size; i++) {
     for(int j = 0; j < 3; j++) {
       copy[i][j] = validBits[i][j];

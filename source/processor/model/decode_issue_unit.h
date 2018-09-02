@@ -79,9 +79,9 @@ class DecodeIssueUnit {
 
     void setNextInstructions(const Instruction* const x);
 
-    void getInstructions(Instruction* const copy) const;
+    void getInstructions(Instruction copy[]) const;
 
-    void getReorderBufferIndexes(int* const copy) const;
+    void getReorderBufferIndexes(int copy[]) const;
 
     void setNextBranchAddresses(const int* const x);
 };

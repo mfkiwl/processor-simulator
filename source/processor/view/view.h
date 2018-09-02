@@ -81,19 +81,20 @@ class View {
 
     void drawFetchUnit(const int issueWindowSize, const Instruction* const instructions);
 
-    void drawDecodeIssueUnit(const int issueWindowSize, const Instruction* const instructions, const int* const reorderBufferIndexes);
+    void drawDecodeIssueUnit(const int issueWindowSize, const Instruction instructions[], 
+      const int reorderBufferIndexes[]);
 
-    void drawAluReservationStation(const int reservationStationSize, const Instruction* const instructions, 
-      const int* const reorderBufferIndexes, OperandType** const operandTypes);
+    void drawAluReservationStation(const int reservationStationSize, const Instruction instructions[], 
+      const int reorderBufferIndexes[], const OperandType operandTypes[][3]);
 
-    void drawBranchUnitReservationStation(const int reservationStationSize, const Instruction* const instructions, 
-      const int* const reorderBufferIndexes, OperandType** const OperandTypes);
+    void drawBranchUnitReservationStation(const int reservationStationSize, const Instruction instructions[], 
+      const int reorderBufferIndexes[], const OperandType OperandTypes[][3]);
 
-    void drawStoreQueue(const int size, const Instruction* const instructions, 
-      const int* const reorderBufferIndexes, bool** const validBits);
+    void drawStoreQueue(const int size, const Instruction instructions[], const int reorderBufferIndexes[], 
+      const bool validBits[][3]);
 
-    void drawLoadQueue(const int size, const Instruction* const instructions, 
-      const int* const reorderBufferIndexes, bool** const validBits);
+    void drawLoadQueue(const int size, const Instruction instructions[], const int reorderBufferIndexes[], 
+      const bool validBits[][3]);
 
     void drawAlu(const int numALUs, const int* const results, const int* const reorderBufferIndex);
 

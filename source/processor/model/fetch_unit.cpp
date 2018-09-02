@@ -170,7 +170,7 @@ int FetchUnit::getBranchTargetAddress(Instruction instruction) const {
 //======================================
 // getter and setter functions
 
-void FetchUnit::getInstructions(Instruction* const copy) const {
+void FetchUnit::getInstructions(Instruction copy[]) const {
   for(int i = 0; i < issueWindowSize; i++) {
     copy[i] = instructions[i];
   }

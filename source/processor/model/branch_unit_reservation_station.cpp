@@ -261,18 +261,6 @@ bool BranchUnitReservationStation::readyToDispatch(const int index) const {
 //=====================================================================================
 //getters and setters
 
-void BranchUnitReservationStation::getCurrentInstructions(Instruction* const copy) const {
-  for(int i = 0; i < size; i++) {
-    copy[i] = instructions[i];
-  }
-}
-
-void BranchUnitReservationStation::getCurrentReorderBufferIndexes(int* const copy) const {
-  for(int i = 0; i < size; i++) {
-    copy[i] = reorderBufferIndexes[i];
-  }
-}
-
 void BranchUnitReservationStation::setNextInstruction(const Instruction instruction, const OperandType types[], 
   const int rbi) 
 {
@@ -288,7 +276,19 @@ void BranchUnitReservationStation::setNextInstruction(const Instruction instruct
   }
 }
 
-void BranchUnitReservationStation::getOperandTypes(OperandType** const copy) const {
+void BranchUnitReservationStation::getCurrentInstructions(Instruction copy[]) const {
+  for(int i = 0; i < size; i++) {
+    copy[i] = instructions[i];
+  }
+}
+
+void BranchUnitReservationStation::getCurrentReorderBufferIndexes(int copy[]) const {
+  for(int i = 0; i < size; i++) {
+    copy[i] = reorderBufferIndexes[i];
+  }
+}
+
+void BranchUnitReservationStation::getOperandTypes(OperandType copy[][3]) const {
   for(int i = 0; i < size; i++) {
     for(int j = 0; j < 3; j++) {
       copy[i][j] = operandTypes[i][j];
