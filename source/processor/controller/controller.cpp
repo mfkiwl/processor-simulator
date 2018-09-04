@@ -108,17 +108,14 @@ void Controller::updateView() {
 
   //draw the reorder buffer
   int reorderBufferSize = model.getReorderBufferSize();
-  int numReorderBufferFields = model.getNumReorderBufferFields();
   int reorderBufferTailIndex = model.getReorderBufferTailIndex();
   int reorderBufferHeadIndex = model.getReorderBufferHeadIndex();
   Instruction reorderBufferInstructions[reorderBufferSize];
   model.getReorderBufferInstructions(reorderBufferInstructions);
-  int** reorderBufferFields = new int*[reorderBufferSize];
-  for(int i = 0; i < reorderBufferSize; i++) {
-    reorderBufferFields[i] = new int[numReorderBufferFields];
-  }
+  int reorderBufferFields[reorderBufferSize][ReorderBufferIndex::COUNT];
   model.getReorderBufferFields(reorderBufferFields);
-  view.drawReorderBuffer(reorderBufferSize, numReorderBufferFields, reorderBufferTailIndex, reorderBufferHeadIndex, reorderBufferInstructions, reorderBufferFields);
+  view.drawReorderBuffer(reorderBufferSize, reorderBufferTailIndex, reorderBufferHeadIndex, reorderBufferInstructions, 
+    reorderBufferFields);
 
   //draw the register file
   int numRegisters = model.getNumRegisters();

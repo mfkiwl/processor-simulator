@@ -49,11 +49,11 @@ class RegisterFile {
 
     int getNumOfArchitecturalRegisters() const;
 
-    void getRenameTable(int* const copy) const;
+    void getRenameTable(int copy[]) const;
 
-    void getLatestArchitecturalRegisterValues(int* const copy) const;
+    void getLatestArchitecturalRegisterValues(int copy[]) const;
 
-    void getArchitecturalRegisterValues(int* const copy) const;
+    void getArchitecturalRegisterValues(int copy[]) const;
 
     int getPhysicalRegisterValue(const int i) const;
 

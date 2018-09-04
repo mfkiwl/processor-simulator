@@ -243,19 +243,19 @@ int Model::getPC() const {
   return pc;
 }
 
-void Model::getRenameTable(int* const copy) const {
+void Model::getRenameTable(int copy[]) const {
   registerFile.getRenameTable(copy);
 }
 
-void Model::getArchitecturalRegisterValues(int* const copy) const {
+void Model::getArchitecturalRegisterValues(int copy[]) const {
   registerFile.getArchitecturalRegisterValues(copy);
 }
 
-void Model::getLatestArchitecturalRegisterValues(int* const copy) const {
+void Model::getLatestArchitecturalRegisterValues(int copy[]) const {
   registerFile.getLatestArchitecturalRegisterValues(copy);
 }
 
-void Model::getAllMemoryValues(int* const copy) const {
+void Model::getAllMemoryValues(int copy[]) const {
   memory.getAllMemoryValues(copy);
 }
 
@@ -339,7 +339,7 @@ int Model::getNumALUs() const {
   return numALUs;
 }
 
-void Model::getAluResults(int* const copy) const {
+void Model::getAluResults(int copy[]) const {
   for(int i = 0; i < numALUs; i++) {
     copy[i] = alu[i].getResult();
   }
@@ -349,11 +349,7 @@ int Model::getReorderBufferSize() const {
   return reorderBufferSize;
 }
 
-int Model::getNumReorderBufferFields() const {
-  return reorderBuffer.getNumFields();
-}
-
-void Model::getAluReorderBufferIndexes(int* const copy) const {
+void Model::getAluReorderBufferIndexes(int copy[]) const {
   for(int i = 0; i < numALUs; i++) {
     copy[i] = alu[i].getReorderBufferIndex();
   }
@@ -367,11 +363,11 @@ int Model::getBranchUnitReorderBufferIndex() const {
   return branchUnit.getReorderBufferIndex();
 }
 
-void Model::getReorderBufferInstructions(Instruction* const copy) const {
+void Model::getReorderBufferInstructions(Instruction copy[]) const {
   reorderBuffer.getReorderBufferInstructions(copy);
 }
 
-void Model::getReorderBufferFields(int** const copy) const {
+void Model::getReorderBufferFields(int copy[][ReorderBufferIndex::COUNT]) const {
   reorderBuffer.getReorderBufferFields(copy);
 }
 

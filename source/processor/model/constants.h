@@ -36,7 +36,7 @@ enum Type {
 };
 
 //index in the reorder buffer
-enum Index {
+enum ReorderBufferIndex {
   TYPE,
   STATUS,
   RESULT,
@@ -44,7 +44,8 @@ enum Index {
   BRANCH_TARGET_ADDRESS,
   ARCHITECTURAL_REGISTER,
   PHYSICAL_REGISTER,
-  PREVIOUS_PHYSICAL_REGISTER
+  PREVIOUS_PHYSICAL_REGISTER,
+  COUNT
 };
 
 //status in the reorder buffer

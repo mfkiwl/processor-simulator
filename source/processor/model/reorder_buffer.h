@@ -34,8 +34,6 @@ class ReorderBuffer {
     int head;
     int tail;
 
-    const int numFields;
-
     //stores the original instruction issued
     Instruction* const instructions;
 
@@ -81,13 +79,11 @@ class ReorderBuffer {
 
     int getHeadIndex() const;
 
-    void getReorderBufferInstructions(Instruction* const copy) const;
+    void getReorderBufferInstructions(Instruction copy[]) const;
 
-    void getReorderBufferFields(int** const copy) const;
+    void getReorderBufferFields(int copy[][ReorderBufferIndex::COUNT]) const;
 
     bool getFlushFlag() const;
-
-    int getNumFields() const;
 };
 
 #endif

@@ -116,13 +116,13 @@ class Model {
 
     int getPC() const;
 
-    void getRenameTable(int* const copy) const;
+    void getRenameTable(int copy[]) const;
 
-    void getArchitecturalRegisterValues(int* const copy) const;
+    void getArchitecturalRegisterValues(int copy[]) const;
 
-    void getLatestArchitecturalRegisterValues(int* const copy) const;
+    void getLatestArchitecturalRegisterValues(int copy[]) const;
 
-    void getAllMemoryValues(int* const copy) const;
+    void getAllMemoryValues(int copy[]) const;
 
     void getFetchUnitInstructions(Instruction copy[]) const;
 
@@ -164,21 +164,19 @@ class Model {
 
     int getNumALUs() const;
 
-    void getAluResults(int* const copy) const;
+    void getAluResults(int copy[]) const;
 
     int getReorderBufferSize() const;
 
-    int getNumReorderBufferFields() const;
-
-    void getAluReorderBufferIndexes(int* const copy) const;
+    void getAluReorderBufferIndexes(int copy[]) const;
 
     bool getBranchUnitSuccessful() const;
 
     int getBranchUnitReorderBufferIndex() const;
 
-    void getReorderBufferInstructions(Instruction* const copy) const;
+    void getReorderBufferInstructions(Instruction copy[]) const;
 
-    void getReorderBufferFields(int** const copy) const;
+    void getReorderBufferFields(int copy[][ReorderBufferIndex::COUNT]) const;
 
     int getReorderBufferTailIndex() const;
 

@@ -16,7 +16,7 @@ class Memory {
   public:
     Memory(const int size);
 
-    void getAllMemoryValues(int* const copy) const;
+    void getAllMemoryValues(int copy[]) const;
 
     int loadFromMemory(const int address) const;
 

@@ -67,19 +67,22 @@ class View {
     //handle events
     void eventHandler();
 
-    void drawTable(const int xPos, const int yPos, const int noOfHorizontalCells, const int noOfVerticalCells, const int cellWidth, const int cellHeight);
+    void drawTable(const int xPos, const int yPos, const int noOfHorizontalCells, const int noOfVerticalCells, 
+      const int cellWidth, const int cellHeight);
 
-    void drawTextCell(const int xPos, const int yPos, const int width, const int height, const std::string text, const int xOffset, const int yOffset);
+    void drawTextCell(const int xPos, const int yPos, const int width, const int height, const std::string text, 
+      const int xOffset, const int yOffset);
 
-    void drawRegisterFile(const int numRegisters, const int* const registerValues, const int* const renameTable);
+    void drawRegisterFile(const int numRegisters, const int registerValues[], const int renameTable[]);
 
-    void drawMemory(const int memorySize, const int* const memoryValues);
+    void drawMemory(const int memorySize, const int memoryValues[]);
 
-    void drawProcessorStats(const int numOfInstructionsExecuted, const int numOfClockCycles, const float numOfInstructionsExecutedPerCycle);
+    void drawProcessorStats(const int numOfInstructionsExecuted, const int numOfClockCycles, 
+      const float numOfInstructionsExecutedPerCycle);
 
     void drawPC(const int programCounter);
 
-    void drawFetchUnit(const int issueWindowSize, const Instruction* const instructions);
+    void drawFetchUnit(const int issueWindowSize, const Instruction instructions[]);
 
     void drawDecodeIssueUnit(const int issueWindowSize, const Instruction instructions[], 
       const int reorderBufferIndexes[]);
@@ -96,12 +99,12 @@ class View {
     void drawLoadQueue(const int size, const Instruction instructions[], const int reorderBufferIndexes[], 
       const bool validBits[][3]);
 
-    void drawAlu(const int numALUs, const int* const results, const int* const reorderBufferIndex);
+    void drawAlu(const int numALUs, const int results[], const int reorderBufferIndexes[]);
 
     void drawBranchUnit(const bool successful, const int reorderBufferIndex);
 
-    void drawReorderBuffer(const int size, const int numFields, const int tailIndex, const int headIndex, 
-      const Instruction* const instructions, int** const fields);
+    void drawReorderBuffer(const int size, const int tailIndex, const int headIndex, 
+      const Instruction instructions[], int fields[][ReorderBufferIndex::COUNT]);
 
     void clearScreen();
 

@@ -33,18 +33,17 @@ ReorderBuffer::ReorderBuffer(RegisterFile* const registerFile, Memory* const mem
   buffer(new int*[bufferSize]),
   head(0),
   tail(0),
-  numFields(8),
   instructions(new Instruction[bufferSize]),
   noOfInstructionsExecuted(noOfInstructionsExecuted),
   issueWindowSize(issueWindowSize)
 {
   //dynamically allocated a 2d array to the read and write buffer
   for(int i = 0; i < bufferSize; i++) {
-    buffer[i] = new int[numFields];
+    buffer[i] = new int[ReorderBufferIndex::COUNT];
   }
   //initialise all elements of the read and write buffer to zero
   for(int i = 0; i < bufferSize; i++) {
-    for(int j = 0; j < numFields; j++) {
+    for(int j = 0; j < ReorderBufferIndex::COUNT; j++) {
       buffer[i][j] = -1;
     }
   }
@@ -136,7 +135,7 @@ void ReorderBuffer::execute() {
 
 void ReorderBuffer::resetEntry(const int index) {
   instructions[index] = (Instruction) {0,0,0,0};
-  for(int i = 0; i < numFields; i++) {
+  for(int i = 0; i < ReorderBufferIndex::COUNT; i++) {
     buffer[index][i] = -1;
   }
 }
@@ -200,15 +199,15 @@ int ReorderBuffer::getHeadIndex() const {
   return head;
 }
 
-void ReorderBuffer::getReorderBufferInstructions(Instruction* const copy) const {
+void ReorderBuffer::getReorderBufferInstructions(Instruction copy[]) const {
   for(int i = 0; i < bufferSize; i++) {
     copy[i] = instructions[i];
   }
 }
 
-void ReorderBuffer::getReorderBufferFields(int** const copy) const {
+void ReorderBuffer::getReorderBufferFields(int copy[][ReorderBufferIndex::COUNT]) const {
   for(int i = 0; i < bufferSize; i++) {
-    for(int j = 0; j < numFields; j++) {
+    for(int j = 0; j < ReorderBufferIndex::COUNT; j++) {
       copy[i][j] = buffer[i][j];
     }
   }
@@ -216,8 +215,4 @@ void ReorderBuffer::getReorderBufferFields(int** const copy) const {
 
 bool ReorderBuffer::getFlushFlag() const {
   return flushFlag;
-}
-
-int ReorderBuffer::getNumFields() const {
-  return numFields;
 }

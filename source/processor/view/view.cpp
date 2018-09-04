@@ -172,7 +172,7 @@ void View::drawTextCell(const int xPos, const int yPos, const int width, const i
   SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
 }
 
-void View::drawRegisterFile(const int numRegisters, const int* const registerValues, const int* const renameTable) {
+void View::drawRegisterFile(const int numRegisters, const int registerValues[], const int renameTable[]) {
 
   //table info
   int noOfHorizontalCells = numRegisters;
@@ -218,7 +218,7 @@ void View::drawRegisterFile(const int numRegisters, const int* const registerVal
   SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
 }
 
-void View::drawMemory(const int memorySize, const int* const memoryValues) {
+void View::drawMemory(const int memorySize, const int memoryValues[]) {
   //table info
   int noOfHorizontalCells = memorySize;
   int noOfVerticalCells = 2;
@@ -280,7 +280,7 @@ void View::drawPC(const int programCounter) {
   renderText(xPos, yPos, "PC : " + intToString(programCounter));
 }
 
-void View::drawFetchUnit(const int issueWindowSize, const Instruction* const instructions) {
+void View::drawFetchUnit(const int issueWindowSize, const Instruction instructions[]) {
   int xPos = 60;
   int yPos = 60;
   int numOfHorizontalCells = 1;
@@ -484,7 +484,7 @@ void View::drawLoadQueue(const int size, const Instruction instructions[], const
   }
 }
 
-void View::drawAlu(const int numALUs, const int* const results, const int* const reorderBufferIndexes) {
+void View::drawAlu(const int numALUs, const int results[], const int reorderBufferIndexes[]) {
   int xPos = 50;
   int yPos = 300;
   int numOfHorizontalCells = 2;
@@ -518,7 +518,11 @@ void View::drawBranchUnit(const bool successful, const int reorderBufferIndex) {
   }
 }
 
-void View::drawReorderBuffer(const int size, const int numFields, const int tailIndex, const int headIndex, const Instruction* const instructions, int** const fields) {
+void View::drawReorderBuffer(const int size, const int tailIndex, const int headIndex, 
+  const Instruction instructions[], int fields[][ReorderBufferIndex::COUNT]) 
+{
+  int numFields = ReorderBufferIndex::COUNT;
+
   int xPos = 690;
   int yPos = 10;
   int numOfHorizontalCells = numFields;

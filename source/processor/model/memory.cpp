@@ -19,7 +19,7 @@ Memory::Memory(const int size) :
   }
 }
 
-void Memory::getAllMemoryValues(int* const copy) const {
+void Memory::getAllMemoryValues(int copy[]) const {
   for(int i = 0; i < size; i++) {
     copy[i] = memory[i];
   }

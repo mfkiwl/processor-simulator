@@ -156,19 +156,19 @@ int RegisterFile::getNumOfArchitecturalRegisters() const {
   return numOfArchitecturalRegisters;
 }
 
-void RegisterFile::getRenameTable(int* const copy) const {
+void RegisterFile::getRenameTable(int copy[]) const {
   for(int i = 0; i < numOfArchitecturalRegisters; i++) {
     copy[i] = renameTable[i];
   }
 }
 
-void RegisterFile::getArchitecturalRegisterValues(int* const copy) const {
+void RegisterFile::getArchitecturalRegisterValues(int copy[]) const {
   for(int i = 0; i < numOfArchitecturalRegisters; i++) {
     copy[i] = physicalRegisters[renameTable[i]];
   }
 }
 
-void RegisterFile::getLatestArchitecturalRegisterValues(int* const copy) const {
+void RegisterFile::getLatestArchitecturalRegisterValues(int copy[]) const {
   for(int i = 0; i < numOfArchitecturalRegisters; i++) {
     copy[i] = physicalRegisters[rollbackRenameTable[i]];
   }
