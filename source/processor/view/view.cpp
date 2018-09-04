@@ -419,7 +419,7 @@ void View::drawBranchUnitReservationStation(const int reservationStationSize, co
 }
 
 void View::drawStoreQueue(const int size, const Instruction instructions[], const int reorderBufferIndexes[], 
-  const bool validBits[][3])
+  const OperandType operandTypes[][3])
 {
   //specifications
   int xPos = 450;
@@ -446,10 +446,10 @@ void View::drawStoreQueue(const int size, const Instruction instructions[], cons
       //draw operands
       for(int j = 0; j < 2; j++) {
         std::string operandString;
-        if(!validBits[i][j]) {
+        if(operandTypes[i][j] == REGISTER) {
           operandString = "R" + intToString(instructions[i].operands[j]);
         }
-        else {
+        if(operandTypes[i][j] == CONSTANT) {
           operandString = intToString(instructions[i].operands[j]);
         }
         renderText(xPos + instructionCellWidth + (1 + j) * cellWidth, yPos + (1 + i) * cellHeight, operandString);

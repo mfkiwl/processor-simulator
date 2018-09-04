@@ -315,8 +315,8 @@ void Model::getStoreQueueReorderBufferIndexes(int copy[]) const {
   storeQueue.getCurrentReorderBufferIndexes(copy);
 }
 
-void Model::getStoreQueueValidBits(bool copy[][3]) const {
-  storeQueue.getValidBits(copy);
+void Model::getStoreQueueOperandTypes(OperandType copy[][3]) const {
+  storeQueue.getOperandTypes(copy);
 }
 
 int Model::getLoadQueueSize() const {

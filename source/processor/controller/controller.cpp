@@ -79,9 +79,9 @@ void Controller::updateView() {
   model.getStoreQueueInstructions(storeQueueInstructions);
   int storeQueueReorderBufferIndexes[storeQueueSize];
   model.getStoreQueueReorderBufferIndexes(storeQueueReorderBufferIndexes);
-  bool storeQueueValidBits[storeQueueSize][3];
-  model.getStoreQueueValidBits(storeQueueValidBits);
-  view.drawStoreQueue(storeQueueSize, storeQueueInstructions, storeQueueReorderBufferIndexes, storeQueueValidBits);
+  OperandType storeQueueOperandTypes[storeQueueSize][3];
+  model.getStoreQueueOperandTypes(storeQueueOperandTypes);
+  view.drawStoreQueue(storeQueueSize, storeQueueInstructions, storeQueueReorderBufferIndexes, storeQueueOperandTypes);
 
   //draw the instructions in the load queue
   int loadQueueSize = model.getLoadQueueSize();

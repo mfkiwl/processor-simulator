@@ -161,19 +161,19 @@ void StoreQueue::broadcast(int physicalRegister, int value) {
       case NOOP:
         break;
       case SW:
-        if(!validBits[i][0] && instructions[i].operands[0] == physicalRegister) {
+        if(!(operandTypes[i][0] == CONSTANT) && instructions[i].operands[0] == physicalRegister) {
           instructions[i].operands[0] = value;
-          validBits[i][0] = true;
+          operandTypes[i][0] = CONSTANT;
         }
         break;
       case SWR:
-        if(!validBits[i][0] && instructions[i].operands[0] == physicalRegister) {
+        if(!(operandTypes[i][0] == CONSTANT) && instructions[i].operands[0] == physicalRegister) {
           instructions[i].operands[0] = value;
-          validBits[i][0] = true;
+          operandTypes[i][0] = CONSTANT;
         }
-        if(!validBits[i][1] && instructions[i].operands[1] == physicalRegister) {
+        if(!(operandTypes[i][1] == CONSTANT) && instructions[i].operands[1] == physicalRegister) {
           instructions[i].operands[1] = value;
-          validBits[i][1] = true;
+          operandTypes[i][1] = CONSTANT;
         }
         break;
     }
@@ -192,7 +192,7 @@ bool StoreQueue::checkLoad(int age, int address) {
         break;
       case SWR:
         if(ages[i] > age) {
-          if(!validBits[i][1]) {
+          if(!(operandTypes[i][1] == CONSTANT)) {
             return false;
           }
           else if(instructions[i].operands[1] == address) {
@@ -223,24 +223,24 @@ void StoreQueue::checkOperandAvailability() {
       case NOOP:
         break;
       case SW:
-        if(!validBits[i][0]) {
+        if(!(operandTypes[i][0] == CONSTANT)) {
           if(registerFile->getScoreBoardValue(instructions[i].operands[0])) {
             instructions[i].operands[0] = registerFile->getPhysicalRegisterValue(instructions[i].operands[0]);
-            validBits[i][0] = true;
+            operandTypes[i][0] = CONSTANT;
           }
         }
         break;
       case SWR:
-        if(!validBits[i][0]) {
+        if(!(operandTypes[i][0] == CONSTANT)) {
           if(registerFile->getScoreBoardValue(instructions[i].operands[0])) {
             instructions[i].operands[0] = registerFile->getPhysicalRegisterValue(instructions[i].operands[0]);
-            validBits[i][0] = true;
+            operandTypes[i][0] = CONSTANT;
           }
         }
-        if(!validBits[i][1]) {
+        if(!(operandTypes[i][1] == CONSTANT)) {
           if(registerFile->getScoreBoardValue(instructions[i].operands[1])) {
             instructions[i].operands[1] = registerFile->getPhysicalRegisterValue(instructions[i].operands[1]);
-            validBits[i][1] = true;
+            operandTypes[i][1] = CONSTANT;
           }
         }
         break;
@@ -255,13 +255,15 @@ bool StoreQueue::readyToDispatch(const int index) const {
       return false;
     case SW:
       //ready if the source registers are ready and the instruction is at the ROB tail
-      if(validBits[index][0] && reorderBufferIndexes[index] == reorderBuffer->getTailIndex()) {
+      if((operandTypes[index][0] == CONSTANT) && reorderBufferIndexes[index] == reorderBuffer->getTailIndex()) {
         return true;
       }
       break;
     case SWR:
       //ready if the source registers are ready and the instruction is at the ROB tail
-      if(validBits[index][0] && validBits[index][1] && reorderBufferIndexes[index] == reorderBuffer->getTailIndex()) {
+      if((operandTypes[index][0] == CONSTANT) && (operandTypes[index][1] == CONSTANT) && 
+        reorderBufferIndexes[index] == reorderBuffer->getTailIndex())
+      {
         return true;
       }
       break;
@@ -319,6 +321,14 @@ void StoreQueue::getValidBits(bool copy[][3]) const {
   for(int i = 0; i < size; i++) {
     for(int j = 0; j < 3; j++) {
       copy[i][j] = validBits[i][j];
+    }
+  }
+}
+
+void StoreQueue::getOperandTypes(OperandType copy[][3]) const {
+  for(int i = 0; i < size; i++) {
+    for(int j = 0; j < 3; j++) {
+      copy[i][j] = operandTypes[i][j];
     }
   }
 }

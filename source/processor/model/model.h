@@ -152,7 +152,7 @@ class Model {
 
     void getStoreQueueReorderBufferIndexes(int copy[]) const;
 
-    void getStoreQueueValidBits(bool copy[][3]) const;
+    void getStoreQueueOperandTypes(OperandType copy[][3]) const;
 
     int getLoadQueueSize() const;
 

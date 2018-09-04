@@ -94,7 +94,7 @@ class View {
       const int reorderBufferIndexes[], const OperandType OperandTypes[][3]);
 
     void drawStoreQueue(const int size, const Instruction instructions[], const int reorderBufferIndexes[], 
-      const bool validBits[][3]);
+      const OperandType operandTypes[][3]);
 
     void drawLoadQueue(const int size, const Instruction instructions[], const int reorderBufferIndexes[], 
       const bool validBits[][3]);
