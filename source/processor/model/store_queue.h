@@ -39,7 +39,6 @@ class StoreQueue {
   	Instruction* const instructions;
     OperandType** const operandTypes;
     int* const ages;
-  	bool** const validBits;
   	int* const reorderBufferIndexes;
 
   	int numReservedSpaces;
@@ -90,8 +89,6 @@ class StoreQueue {
     void getCurrentInstructions(Instruction copy[]) const;
 
     void getCurrentReorderBufferIndexes(int copy[]) const;
-
-    void getValidBits(bool copy[][3]) const;
 
     void getOperandTypes(OperandType copy[][3]) const;
 };

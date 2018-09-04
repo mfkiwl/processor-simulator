@@ -28,7 +28,6 @@ StoreQueue::StoreQueue(ReorderBuffer* const reorderBuffer, RegisterFile* const r
     instructions(new Instruction[size]),
     operandTypes(new OperandType*[size]),
     ages(new int[size]),
-    validBits(new bool*[size]),
     reorderBufferIndexes(new int[size]),
     numReservedSpaces(0),
     dispatchIndex(-1)
@@ -47,10 +46,6 @@ StoreQueue::StoreQueue(ReorderBuffer* const reorderBuffer, RegisterFile* const r
           operandTypes[i][j] = NONE;
         }
         ages[i] = 0;
-  	    validBits[i] = new bool[3];
-  	    for(int j = 0; j < 3; j++) {
-  	  	  validBits[i][j] = false;
-  	    }
   	    reorderBufferIndexes[i] = -1;
   	  }
     }
@@ -82,9 +77,6 @@ void StoreQueue::pipe() {
       operandTypes[dispatchIndex][j] = NONE;
     }
     ages[dispatchIndex] = 0;
-    for(int j = 0; j < 3; j++) {
-      validBits[dispatchIndex][j] = false;
-    }
     reorderBufferIndexes[dispatchIndex] = -1;
     dispatchIndex = -1;
   }
@@ -115,9 +107,6 @@ void StoreQueue::flush() {
       operandTypes[i][j] = NONE;
     }
     ages[i] = 0;
-    for(int j = 0; j < 3; j++) {
-      validBits[i][j] = false;
-    }
     reorderBufferIndexes[i] = -1;
   }
   numReservedSpaces = 0;
@@ -314,14 +303,6 @@ void StoreQueue::getCurrentInstructions(Instruction copy[]) const {
 void StoreQueue::getCurrentReorderBufferIndexes(int copy[]) const {
   for(int i = 0; i < size; i++) {
     copy[i] = reorderBufferIndexes[i];
-  }
-}
-
-void StoreQueue::getValidBits(bool copy[][3]) const {
-  for(int i = 0; i < size; i++) {
-    for(int j = 0; j < 3; j++) {
-      copy[i][j] = validBits[i][j];
-    }
   }
 }
 

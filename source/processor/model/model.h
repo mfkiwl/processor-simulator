@@ -160,7 +160,7 @@ class Model {
 
     void getLoadQueueReorderBufferIndexes(int copy[]) const;
 
-    void getLoadQueueValidBits(bool copy[][3]) const;
+    void getLoadQueueOperandTypes(OperandType copy[][3]) const;
 
     int getNumALUs() const;
 

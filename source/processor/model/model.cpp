@@ -331,8 +331,8 @@ void Model::getLoadQueueReorderBufferIndexes(int copy[]) const {
   loadQueue.getCurrentReorderBufferIndexes(copy);
 }
 
-void Model::getLoadQueueValidBits(bool copy[][3]) const {
-  loadQueue.getValidBits(copy);
+void Model::getLoadQueueOperandTypes(OperandType copy[][3]) const {
+  loadQueue.getOperandTypes(copy);
 }
 
 int Model::getNumALUs() const {

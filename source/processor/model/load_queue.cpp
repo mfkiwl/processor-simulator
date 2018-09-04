@@ -29,7 +29,6 @@ LoadQueue::LoadQueue(ReorderBuffer* const reorderBuffer, RegisterFile* const reg
     instructions(new Instruction[size]),
     operandTypes(new OperandType*[size]),
     ages(new int[size]),
-    validBits(new bool*[size]),
     reorderBufferIndexes(new int[size]),
     numReservedSpaces(0),
     dispatchIndex(-1)
@@ -48,10 +47,6 @@ LoadQueue::LoadQueue(ReorderBuffer* const reorderBuffer, RegisterFile* const reg
           operandTypes[i][j] = NONE;
         }
   	    ages[i] = 0;
-  	    validBits[i] = new bool[3];
-  	    for(int j = 0; j < 3; j++) {
-  	  	  validBits[i][j] = false;
-  	    }
   	    reorderBufferIndexes[i] = -1;
   	  }
     }
@@ -83,9 +78,6 @@ void LoadQueue::pipe() {
       operandTypes[dispatchIndex][j] = NONE;
     }
     ages[dispatchIndex] = 0;
-    for(int j = 0; j < 3; j++) {
-      validBits[dispatchIndex][j] = false;
-    }
     reorderBufferIndexes[dispatchIndex] = -1;
     dispatchIndex = -1;
   }
@@ -116,9 +108,6 @@ void LoadQueue::flush() {
       operandTypes[i][j] = NONE;
     }
     ages[i] = 0;
-    for(int j = 0; j < 3; j++) {
-      validBits[i][j] = false;
-    }
     reorderBufferIndexes[i] = -1;
   }
   numReservedSpaces = 0;
@@ -164,9 +153,9 @@ void LoadQueue::broadcast(int physicalRegister, int value) {
       case LW:
         break;
       case LWR:
-        if(!validBits[i][1] && instructions[i].operands[1] == physicalRegister) {
+        if(!(operandTypes[i][1] == CONSTANT) && instructions[i].operands[1] == physicalRegister) {
           instructions[i].operands[1] = value;
-          validBits[i][1] = true;
+          operandTypes[i][1] = CONSTANT;
         }
         break;
     }
@@ -193,10 +182,10 @@ void LoadQueue::checkOperandAvailability() {
       case LW:
         break;
       case LWR:
-        if(!validBits[i][1]) {
+        if(!(operandTypes[i][1] == CONSTANT)) {
           if(registerFile->getScoreBoardValue(instructions[i].operands[1])) {
             instructions[i].operands[1] = registerFile->getPhysicalRegisterValue(instructions[i].operands[1]);
-            validBits[i][1] = true;
+            operandTypes[i][1] = CONSTANT;
           }
         }
         break;
@@ -217,7 +206,7 @@ bool LoadQueue::readyToDispatch(const int index) const {
     break;
     case LWR:
       //ready is the source registers are ready
-      if(validBits[index][1] && storeQueue->checkLoad(ages[index], instructions[index].operands[1])) {
+      if((operandTypes[index][1] == CONSTANT) && storeQueue->checkLoad(ages[index], instructions[index].operands[1])) {
         return true;
       }
       break;
@@ -266,10 +255,10 @@ void LoadQueue::getCurrentReorderBufferIndexes(int copy[]) const {
   }
 }
 
-void LoadQueue::getValidBits(bool copy[][3]) const {
+void LoadQueue::getOperandTypes(OperandType copy[][3]) const {
   for(int i = 0; i < size; i++) {
     for(int j = 0; j < 3; j++) {
-      copy[i][j] = validBits[i][j];
+      copy[i][j] = operandTypes[i][j];
     }
   }
 }

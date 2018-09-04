@@ -39,7 +39,6 @@ class LoadQueue {
   	Instruction* const instructions;
     OperandType** const operandTypes;
   	int* const ages;
-  	bool** const validBits;
   	int* const reorderBufferIndexes;
 
   	int numReservedSpaces;
@@ -87,7 +86,7 @@ class LoadQueue {
 
     void getCurrentReorderBufferIndexes(int copy[]) const;
 
-    void getValidBits(bool copy[][3]) const;
+    void getOperandTypes(OperandType copy[][3]) const;
 };
 
 #endif

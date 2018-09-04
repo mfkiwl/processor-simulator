@@ -89,9 +89,9 @@ void Controller::updateView() {
   model.getLoadQueueInstructions(loadQueueInstructions);
   int loadQueueReorderBufferIndexes[loadQueueSize];
   model.getLoadQueueReorderBufferIndexes(loadQueueReorderBufferIndexes);
-  bool loadQueueValidBits[loadQueueSize][3];
-  model.getLoadQueueValidBits(loadQueueValidBits);
-  view.drawLoadQueue(loadQueueSize, loadQueueInstructions, loadQueueReorderBufferIndexes, loadQueueValidBits);
+  OperandType loadQueueOperandTypes[loadQueueSize][3];
+  model.getLoadQueueOperandTypes(loadQueueOperandTypes);
+  view.drawLoadQueue(loadQueueSize, loadQueueInstructions, loadQueueReorderBufferIndexes, loadQueueOperandTypes);
 
   //draw the alu
   int numALUs = model.getNumALUs();

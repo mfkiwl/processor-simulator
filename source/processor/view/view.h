@@ -97,7 +97,7 @@ class View {
       const OperandType operandTypes[][3]);
 
     void drawLoadQueue(const int size, const Instruction instructions[], const int reorderBufferIndexes[], 
-      const bool validBits[][3]);
+      const OperandType operandTypes[][3]);
 
     void drawAlu(const int numALUs, const int results[], const int reorderBufferIndexes[]);
 
