@@ -35,14 +35,14 @@ BranchUnitReservationStation::BranchUnitReservationStation(RegisterFile* const r
   //set all instructions to NOOPs
   for(int i = 0; i < size; i++) {
     nextInstructions[i] = (Instruction) {0,0,0,0};
-    nextOperandTypes[i] = new OperandType[3];
-    for(int j = 0; j < 3; j++) {
+    nextOperandTypes[i] = new OperandType[numOfOperands];
+    for(int j = 0; j < numOfOperands; j++) {
       nextOperandTypes[i][j] = NONE;
     }
     nextReorderBufferIndexes[i] = -1;
     instructions[i] = (Instruction) {0,0,0,0};
-    operandTypes[i] = new OperandType[3];
-    for(int j = 0; j < 3; j++) {
+    operandTypes[i] = new OperandType[numOfOperands];
+    for(int j = 0; j < numOfOperands; j++) {
       operandTypes[i][j] = NONE;
     }
     reorderBufferIndexes[i] = -1;
@@ -100,6 +100,9 @@ void BranchUnitReservationStation::pipe() {
 void BranchUnitReservationStation::flush() {
   for(int i = 0; i < size; i++) {
     nextInstructions[i] = (Instruction) {0,0,0,0};
+    for(int j = 0; j < 3; j++) {
+      nextOperandTypes[i][j] = NONE;
+    }
     nextReorderBufferIndexes[i] = -1;
     instructions[i] = (Instruction) {0,0,0,0};
     for(int j = 0; j < 3; j++) {

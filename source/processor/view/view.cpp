@@ -383,6 +383,17 @@ void View::drawBranchUnitReservationStation(const int reservationStationSize, co
   drawTable(xPos + cellWidth, yPos + cellHeight * 2, 1, numOfVerticalCells, instructionCellWidth, cellHeight);
   drawTable(xPos + cellWidth + instructionCellWidth, yPos + cellHeight * 2, 2, numOfVerticalCells, cellWidth, cellHeight);
 
+/*
+  printf("operandTypes:\n");
+  for(int i = 0; i < reservationStationSize; i++) {
+    for(int j = 0; j < 3; j++) {
+      printf("%d ", operandTypes[i][j]);
+    }
+    printf("\n");
+  }
+  printf("\n");
+*/
+
   for(int i = 0; i < reservationStationSize; i++) {
     if(reorderBufferIndexes[i] != -1) {
       //draw reorder buffer index
@@ -397,6 +408,9 @@ void View::drawBranchUnitReservationStation(const int reservationStationSize, co
         }
         else if(operandTypes[i][j] == CONSTANT) {
           operandString = intToString(instructions[i].operands[j]);
+        }
+        else if(operandTypes[i][j] == NONE) {
+          operandString = " ";
         }
         renderText(xPos + instructionCellWidth + (j + 1) * cellWidth, yPos + (2 + i) * cellHeight, operandString);
       }

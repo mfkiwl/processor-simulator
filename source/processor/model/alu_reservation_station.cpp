@@ -114,6 +114,9 @@ void ALUReservationStation::pipe() {
 void ALUReservationStation::flush() {
   for(int i = 0; i < size; i++) {
     nextInstructions[i] = (Instruction) {0,0,0,0};
+    for(int j = 0; j < 3; j++) {
+      nextOperandTypes[i][j] = NONE;
+    }
     nextReorderBufferIndexes[i] = -1;
     instructions[i] = (Instruction) {0,0,0,0};
     for(int j = 0; j < 3; j++) {
@@ -281,7 +284,8 @@ bool ALUReservationStation::readyToDispatch(const int index) const {
 //=========================================================================================
 //getters and setters
 
-void ALUReservationStation::setNextInstruction(const Instruction instruction, const OperandType types[], const int rbi) {
+void ALUReservationStation::setNextInstruction(const Instruction instruction, const OperandType types[], 
+  const int rbi) {
   for(int i = 0; i < size; i++) {
     if(nextInstructions[i].opcode == NOOP) {
       nextInstructions[i] = instruction;

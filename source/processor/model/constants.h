@@ -63,4 +63,6 @@ enum OperandType {
   CONSTANT
 };
 
+const int numOfOperands = 3;
+
 #endif
