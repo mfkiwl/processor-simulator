@@ -35,14 +35,14 @@ StoreQueue::StoreQueue(ReorderBuffer* const reorderBuffer, RegisterFile* const r
   	  //initialise arrays
   	  for(int i = 0; i < size; i++) {
   	    nextInstructions[i] = (Instruction) {0,0,0,0};
-        nextOperandTypes[i] = new OperandType[3];
-        for(int j = 0; j < 3; j++) {
+        nextOperandTypes[i] = new OperandType[numOfOperands];
+        for(int j = 0; j < numOfOperands; j++) {
           nextOperandTypes[i][j] = NONE;
         }
   	    nextReorderBufferIndexes[i] = -1;
   	    instructions[i] = (Instruction) {0,0,0,0};
-        operandTypes[i] = new OperandType[3];
-        for(int j = 0; j < 3; j++) {
+        operandTypes[i] = new OperandType[numOfOperands];
+        for(int j = 0; j < numOfOperands; j++) {
           operandTypes[i][j] = NONE;
         }
         ages[i] = 0;
@@ -73,7 +73,7 @@ void StoreQueue::pipe() {
 
     //clear the dispatched instruction from the reservation station
     instructions[dispatchIndex] = (Instruction) {0,0,0,0};
-    for(int j = 0; j < 3; j++) {
+    for(int j = 0; j < numOfOperands; j++) {
       operandTypes[dispatchIndex][j] = NONE;
     }
     ages[dispatchIndex] = 0;
@@ -85,7 +85,7 @@ void StoreQueue::pipe() {
   //clear the nextInstruction and nextReorderBufferIndex
   for(int i = 0; i < size; i++) {
     nextInstructions[i] = (Instruction) {0,0,0,0};
-    for(int j = 0; j < 3; j++) {
+    for(int j = 0; j < numOfOperands; j++) {
       nextOperandTypes[i][j] = NONE;
     }
     nextReorderBufferIndexes[i] = -1;
@@ -98,12 +98,12 @@ void StoreQueue::flush() {
   tail = 0;
   for(int i = 0; i < size; i++) {
     nextInstructions[i] = (Instruction) {0,0,0,0};
-    for(int j = 0; j < 3; j++) {
+    for(int j = 0; j < numOfOperands; j++) {
       nextOperandTypes[i][j] = NONE;
     }
     nextReorderBufferIndexes[i] = -1;
     instructions[i] = (Instruction) {0,0,0,0};
-    for(int j = 0; j < 3; j++) {
+    for(int j = 0; j < numOfOperands; j++) {
       operandTypes[i][j] = NONE;
     }
     ages[i] = 0;
@@ -264,7 +264,7 @@ void StoreQueue::addNextInstructions() {
   for(int i = 0; i < size; i++) {
     if(nextInstructions[i].opcode != NOOP) {
       instructions[head] = nextInstructions[i];
-      for(int j = 0; j < 3; j++) {
+      for(int j = 0; j < numOfOperands; j++) {
         operandTypes[head][j] = nextOperandTypes[i][j];
       }
       ages[head]++;
@@ -285,7 +285,7 @@ void StoreQueue::setNextInstruction(const Instruction instruction, const Operand
   for(int i = 0; i < size; i++) {
     if(nextInstructions[i].opcode == NOOP) {
       nextInstructions[i] = instruction;
-      for(int j = 0; j < 3; j++) {
+      for(int j = 0; j < numOfOperands; j++) {
         nextOperandTypes[i][j] = types[j];
       }
       nextReorderBufferIndexes[i] = rbi;
@@ -306,9 +306,9 @@ void StoreQueue::getCurrentReorderBufferIndexes(int copy[]) const {
   }
 }
 
-void StoreQueue::getOperandTypes(OperandType copy[][3]) const {
+void StoreQueue::getOperandTypes(OperandType copy[][numOfOperands]) const {
   for(int i = 0; i < size; i++) {
-    for(int j = 0; j < 3; j++) {
+    for(int j = 0; j < numOfOperands; j++) {
       copy[i][j] = operandTypes[i][j];
     }
   }

@@ -10,7 +10,6 @@
 #include "reorder_buffer.h"
 #include "alu_reservation_station.h"
 #include "branch_unit_reservation_station.h"
-#include "load_store_unit_reservation_station.h"
 #include "store_queue.h"
 #include "load_queue.h"
 #include "instructions.h"
@@ -44,8 +43,8 @@ DecodeIssueUnit::DecodeIssueUnit(RegisterFile* const registerFile, ReorderBuffer
     nextInstructions[i] = (Instruction) {0,0,0,0};
     nextBranchAddresses[i] = -1;
     instructions[i] = (Instruction) {0,0,0,0};
-    operandTypes[i] = new OperandType[3];
-    for(int j = 0; j < 3; j++) {
+    operandTypes[i] = new OperandType[numOfOperands];
+    for(int j = 0; j < numOfOperands; j++) {
       operandTypes[i][j] = NONE;
     }
     instructionsIssued[i] = true;
@@ -353,14 +352,14 @@ void DecodeIssueUnit::issue(int instructionToIssue) {
 
 void DecodeIssueUnit::moveInstructions() {
   Instruction instructionsCopy[issueWindowSize];
-  OperandType operandTypesCopy[issueWindowSize][3];
+  OperandType operandTypesCopy[issueWindowSize][numOfOperands];
   int branchAddressesCopy[issueWindowSize];
   bool instructionsIssuedCopy[issueWindowSize];
   int reorderBufferIndexesCopy[issueWindowSize];
   //copy the arrays
   for(int i = 0; i < issueWindowSize; i++) {
     instructionsCopy[i] = instructions[i];
-    for(int j = 0; j < 3; j++) {
+    for(int j = 0; j < numOfOperands; j++) {
       operandTypesCopy[i][j] = operandTypes[i][j];
     }
     branchAddressesCopy[i] = branchAddresses[i];
@@ -380,7 +379,7 @@ void DecodeIssueUnit::moveInstructions() {
     int index = start + i;
     if(index < issueWindowSize) {
       instructions[i] = instructionsCopy[index];
-      for(int j = 0; j < 3; j++) {
+      for(int j = 0; j < numOfOperands; j++) {
         operandTypes[i][j] = operandTypesCopy[i][j];
       }
       branchAddresses[i] = branchAddressesCopy[index];
@@ -389,7 +388,7 @@ void DecodeIssueUnit::moveInstructions() {
     }
     else {
       instructions[i] = (Instruction) {0,0,0,0};
-      for(int j = 0; j < 3; j++) {
+      for(int j = 0; j < numOfOperands; j++) {
         operandTypes[i][j] = NONE;
       }
       branchAddresses[i] = -1;
@@ -405,7 +404,7 @@ void DecodeIssueUnit::pipe() {
     if(instructionsIssued[i]) {
       pipeInstruction(i);
       instructions[i] = (Instruction) {0,0,0,0};
-      for(int j = 0; j < 3; j++) {
+      for(int j = 0; j < numOfOperands; j++) {
         operandTypes[i][j] = NONE;
       }
       branchAddresses[i] = -1;
@@ -422,7 +421,7 @@ void DecodeIssueUnit::pipe() {
         if(instructions[j].opcode == NOOP) {
           instructions[j] = nextInstructions[i];
           branchAddresses[j] = nextBranchAddresses[i];
-          for(int j = 0; j < 3; j++) {
+          for(int j = 0; j < numOfOperands; j++) {
             operandTypes[i][j] = NONE;
           }
           instructionsIssued[j] = false;
@@ -496,7 +495,7 @@ void DecodeIssueUnit::flush() {
     nextInstructions[i] = (Instruction) {0,0,0,0};
     nextBranchAddresses[i] = -1;
     instructions[i] = (Instruction) {0,0,0,0};
-    for(int j = 0; j < 3; j++) {
+    for(int j = 0; j < numOfOperands; j++) {
       operandTypes[i][j] = NONE;
     }
     instructionsIssued[i] = true;
@@ -534,7 +533,7 @@ int DecodeIssueUnit::numFreeSpaces() const {
 //======================================================================
 //getters and setters
 
-void DecodeIssueUnit::setNextInstructions(const Instruction* const x) {
+void DecodeIssueUnit::setNextInstructions(const Instruction x[]) {
   for(int i = 0; i < issueWindowSize; i++) {
     nextInstructions[i] = x[i];
   }
@@ -552,7 +551,7 @@ void DecodeIssueUnit::getReorderBufferIndexes(int copy[]) const {
   }
 }
 
-void DecodeIssueUnit::setNextBranchAddresses(const int* const x) {
+void DecodeIssueUnit::setNextBranchAddresses(const int x[]) {
   for(int i = 0; i < issueWindowSize; i++) {
     nextBranchAddresses[i] = x[i];
   }

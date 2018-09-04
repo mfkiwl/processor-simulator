@@ -90,7 +90,7 @@ class StoreQueue {
 
     void getCurrentReorderBufferIndexes(int copy[]) const;
 
-    void getOperandTypes(OperandType copy[][3]) const;
+    void getOperandTypes(OperandType copy[][numOfOperands]) const;
 };
 
 #endif

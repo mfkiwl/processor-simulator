@@ -77,7 +77,7 @@ void BranchUnitReservationStation::pipe() {
   
     //clear the dispatched instruction from the reservation station
     instructions[dispatchIndex] = (Instruction) {0,0,0,0};
-    for(int j = 0; j < 3; j++) {
+    for(int j = 0; j < numOfOperands; j++) {
       operandTypes[dispatchIndex][j] = NONE;
     }
     reorderBufferIndexes[dispatchIndex] = -1;
@@ -88,7 +88,7 @@ void BranchUnitReservationStation::pipe() {
   //clear the nextInstruction and nextReorderBufferIndex
   for(int i = 0; i < size; i++) {
     nextInstructions[i] = (Instruction) {0,0,0,0};
-    for(int j = 0; j < 3; j++) {
+    for(int j = 0; j < numOfOperands; j++) {
       nextOperandTypes[i][j] = NONE;
     }
     nextReorderBufferIndexes[i] = -1;
@@ -100,12 +100,12 @@ void BranchUnitReservationStation::pipe() {
 void BranchUnitReservationStation::flush() {
   for(int i = 0; i < size; i++) {
     nextInstructions[i] = (Instruction) {0,0,0,0};
-    for(int j = 0; j < 3; j++) {
+    for(int j = 0; j < numOfOperands; j++) {
       nextOperandTypes[i][j] = NONE;
     }
     nextReorderBufferIndexes[i] = -1;
     instructions[i] = (Instruction) {0,0,0,0};
-    for(int j = 0; j < 3; j++) {
+    for(int j = 0; j < numOfOperands; j++) {
       operandTypes[i][j] = NONE;
     }
     reorderBufferIndexes[i] = -1;
@@ -228,7 +228,7 @@ void BranchUnitReservationStation::addNextInstructions() {
     if(nextInstructions[i].opcode != NOOP) {
       int index = findFreePosition();
       instructions[index] = nextInstructions[i];
-      for(int j = 0; j < 3; j++) {
+      for(int j = 0; j < numOfOperands; j++) {
         operandTypes[index][j] = nextOperandTypes[i][j];
       }
       reorderBufferIndexes[index] = nextReorderBufferIndexes[i];
@@ -270,7 +270,7 @@ void BranchUnitReservationStation::setNextInstruction(const Instruction instruct
   for(int i = 0; i < size; i++) {
     if(nextInstructions[i].opcode == NOOP) {
       nextInstructions[i] = instruction;
-      for(int j = 0; j < 3; j++) {
+      for(int j = 0; j < numOfOperands; j++) {
         nextOperandTypes[i][j] = types[j];
       }
       nextReorderBufferIndexes[i] = rbi;
@@ -291,9 +291,9 @@ void BranchUnitReservationStation::getCurrentReorderBufferIndexes(int copy[]) co
   }
 }
 
-void BranchUnitReservationStation::getOperandTypes(OperandType copy[][3]) const {
+void BranchUnitReservationStation::getOperandTypes(OperandType copy[][numOfOperands]) const {
   for(int i = 0; i < size; i++) {
-    for(int j = 0; j < 3; j++) {
+    for(int j = 0; j < numOfOperands; j++) {
       copy[i][j] = operandTypes[i][j];
     }
   }

@@ -6,13 +6,14 @@
 //=================================
 //included dependencies
 #include <string>
+#include "constants.h"
 
 //=================================
 //interface
 
 struct Instruction {
 	int opcode;
-	int operands[3];
+	int operands[numOfOperands];
 };
 
 class Instructions {

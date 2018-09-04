@@ -77,13 +77,13 @@ class DecodeIssueUnit {
   //getters and setters
   public:
 
-    void setNextInstructions(const Instruction* const x);
+    void setNextInstructions(const Instruction x[]);
 
     void getInstructions(Instruction copy[]) const;
 
     void getReorderBufferIndexes(int copy[]) const;
 
-    void setNextBranchAddresses(const int* const x);
+    void setNextBranchAddresses(const int x[]);
 };
 
 #endif

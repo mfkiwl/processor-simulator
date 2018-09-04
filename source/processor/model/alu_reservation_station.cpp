@@ -38,14 +38,14 @@ ALUReservationStation::ALUReservationStation(RegisterFile* const registerFile, c
   //inialise arrays
   for(int i = 0; i < size; i++) {
     nextInstructions[i] = (Instruction) {0,0,0,0};
-    nextOperandTypes[i] = new OperandType[3];
-    for(int j = 0; j < 3; j++) {
+    nextOperandTypes[i] = new OperandType[numOfOperands];
+    for(int j = 0; j < numOfOperands; j++) {
       nextOperandTypes[i][j] = NONE;
     }
     nextReorderBufferIndexes[i] = -1;
     instructions[i] = (Instruction) {0,0,0,0};
-    operandTypes[i] = new OperandType[3];
-    for(int j = 0; j < 3; j++) {
+    operandTypes[i] = new OperandType[numOfOperands];
+    for(int j = 0; j < numOfOperands; j++) {
       operandTypes[i][j] = NONE;
     }
     reorderBufferIndexes[i] = -1;
@@ -89,7 +89,7 @@ void ALUReservationStation::pipe() {
 
       //clear the dispatched instruction from the reservation station
       instructions[dispatchIndexes[i]] = (Instruction) {0,0,0,0};
-      for(int j = 0; j < 3; j++) {
+      for(int j = 0; j < numOfOperands; j++) {
         operandTypes[dispatchIndexes[i]][j] = NONE;
       }
       reorderBufferIndexes[dispatchIndexes[i]] = -1;
@@ -101,7 +101,7 @@ void ALUReservationStation::pipe() {
   //clear the nextInstructions and nextReorderBufferIndexes
   for(int i = 0; i < size; i++) {
     nextInstructions[i] = (Instruction) {0,0,0,0};
-    for(int j = 0; j < 3; j++) {
+    for(int j = 0; j < numOfOperands; j++) {
       nextOperandTypes[i][j] = NONE;
     }
     nextReorderBufferIndexes[i] = -1;
@@ -114,12 +114,12 @@ void ALUReservationStation::pipe() {
 void ALUReservationStation::flush() {
   for(int i = 0; i < size; i++) {
     nextInstructions[i] = (Instruction) {0,0,0,0};
-    for(int j = 0; j < 3; j++) {
+    for(int j = 0; j < numOfOperands; j++) {
       nextOperandTypes[i][j] = NONE;
     }
     nextReorderBufferIndexes[i] = -1;
     instructions[i] = (Instruction) {0,0,0,0};
-    for(int j = 0; j < 3; j++) {
+    for(int j = 0; j < numOfOperands; j++) {
       operandTypes[i][j] = NONE;
     }
     reorderBufferIndexes[i] = -1;
@@ -246,7 +246,7 @@ void ALUReservationStation::addNextInstructions() {
     if(nextInstructions[i].opcode != NOOP) {
       int index = findFreePosition();
       instructions[index] = nextInstructions[i];
-      for(int j = 0; j < 3; j++) {
+      for(int j = 0; j < numOfOperands; j++) {
         operandTypes[index][j] = nextOperandTypes[i][j];
       }
       reorderBufferIndexes[index] = nextReorderBufferIndexes[i];
@@ -289,7 +289,7 @@ void ALUReservationStation::setNextInstruction(const Instruction instruction, co
   for(int i = 0; i < size; i++) {
     if(nextInstructions[i].opcode == NOOP) {
       nextInstructions[i] = instruction;
-      for(int j = 0; j < 3; j++) {
+      for(int j = 0; j < numOfOperands; j++) {
         nextOperandTypes[i][j] = types[j];
       }
       nextReorderBufferIndexes[i] = rbi;
@@ -310,9 +310,9 @@ void ALUReservationStation::getCurrentReorderBufferIndexes(int copy[]) const {
   }
 }
 
-void ALUReservationStation::getOperandTypes(OperandType copy[][3]) const {
+void ALUReservationStation::getOperandTypes(OperandType copy[][numOfOperands]) const {
   for(int i = 0; i < size; i++) {
-    for(int j = 0; j < 3; j++) {
+    for(int j = 0; j < numOfOperands; j++) {
       copy[i][j] = operandTypes[i][j];
     }
   }

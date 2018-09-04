@@ -13,6 +13,7 @@ class ALUReservationStation;
 // included dependencies
 #include "store_buffer.h"
 #include "load_buffer.h"
+#include "constants.h"
 
 //===========================
 //class declaration
@@ -27,19 +28,19 @@ class LoadStoreUnit {
 
     //decoded instruction
     int nextLoadOpcode;
-    int nextLoadOperands[3];
+    int nextLoadOperands[numOfOperands];
     int nextLoadReorderBufferIndex;
 
     int nextStoreOpcode;
-    int nextStoreOperands[3];
+    int nextStoreOperands[numOfOperands];
     int nextStoreReorderBufferIndex;
 
     int loadOpcode;
-    int loadOperands[3];
+    int loadOperands[numOfOperands];
     int loadReorderBufferIndex;
 
     int storeOpcode;
-    int storeOperands[3];
+    int storeOperands[numOfOperands];
     int storeReorderBufferIndex;
 
     const int bufferSize;
@@ -69,13 +70,13 @@ class LoadStoreUnit {
 
     void setNextLoadOpcode(const int x);
 
-    void setNextLoadOperands(const int x[3]);
+    void setNextLoadOperands(const int x[numOfOperands]);
 
     void setNextLoadReorderBufferIndex(const int i);
 
     void setNextStoreOpcode(const int x);
 
-    void setNextStoreOperands(const int x[3]);
+    void setNextStoreOperands(const int x[numOfOperands]);
 
     void setNextStoreReorderBufferIndex(const int i);
 };

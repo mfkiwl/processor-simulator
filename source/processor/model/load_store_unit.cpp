@@ -30,7 +30,7 @@ LoadStoreUnit::LoadStoreUnit(Memory* const memory, ReorderBuffer* const reorderB
   aluReservationStation(aluReservationStation)
 {
   //initially set all Operands to zero
-  for(int i = 0; i < 3; i++) {
+  for(int i = 0; i < numOfOperands; i++) {
     nextLoadOperands[i] = 0;
     nextStoreOperands[i] = 0;
     loadOperands[i] = 0;
@@ -96,7 +96,7 @@ void LoadStoreUnit::pipe() {
   //set the  values equal to the next values
   loadOpcode = nextLoadOpcode;
   storeOpcode = nextStoreOpcode;
-  for(int i = 0; i < 3; i++) {
+  for(int i = 0; i < numOfOperands; i++) {
     loadOperands[i] = nextLoadOperands[i];
     storeOperands[i] = nextStoreOperands[i];
   }
@@ -106,7 +106,7 @@ void LoadStoreUnit::pipe() {
   //reset the next values
   nextLoadOpcode = 0;
   nextStoreOpcode = 0;
-  for(int i = 0; i < 3; i++) {
+  for(int i = 0; i < numOfOperands; i++) {
     nextLoadOperands[i] = 0;
     nextStoreOperands[i] = 0;
   }
@@ -118,7 +118,7 @@ void LoadStoreUnit::flush() {
   nextLoadOpcode = 0;
   nextStoreOpcode = 0;
   loadOpcode = 0;
-  for(int i = 0; i < 3; i++) {
+  for(int i = 0; i < numOfOperands; i++) {
     nextLoadOperands[i] = 0;
     nextStoreOperands[i] = 0;
     loadOperands[i] = 0;
@@ -137,8 +137,8 @@ void LoadStoreUnit::setNextLoadOpcode(const int x) {
   nextLoadOpcode = x;
 }
 
-void LoadStoreUnit::setNextLoadOperands(const int x[3]) {
-  for(int i = 0; i < 3; i++) {
+void LoadStoreUnit::setNextLoadOperands(const int x[numOfOperands]) {
+  for(int i = 0; i < numOfOperands; i++) {
     nextLoadOperands[i] = x[i];
   }
 }
@@ -151,8 +151,8 @@ void LoadStoreUnit::setNextStoreOpcode(const int x) {
   nextStoreOpcode = x;
 }
 
-void LoadStoreUnit::setNextStoreOperands(const int x[3]) {
-  for(int i = 0; i < 3; i++) {
+void LoadStoreUnit::setNextStoreOperands(const int x[numOfOperands]) {
+  for(int i = 0; i < numOfOperands; i++) {
     nextStoreOperands[i] = x[i];
   }
 }

@@ -31,7 +31,6 @@ fetch_unit \
 instructions \
 load_buffer \
 load_store_unit \
-load_store_unit_reservation_station \
 memory \
 model \
 register_file \

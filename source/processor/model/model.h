@@ -16,7 +16,6 @@
 #include "branch_unit.h"
 #include "branch_unit_reservation_station.h"
 #include "load_store_unit.h"
-#include "load_store_unit_reservation_station.h"
 #include "store_queue.h"
 #include "load_queue.h"
 
@@ -136,7 +135,7 @@ class Model {
 
     void getAluReservationStationReorderBufferIndexes(int copy[]) const;
 
-    void getAluReservationStationOperandTypes(OperandType copy[][3]) const;
+    void getAluReservationStationOperandTypes(OperandType copy[][numOfOperands]) const;
 
     int getBranchUnitReservationStationSize() const;
 
@@ -144,7 +143,7 @@ class Model {
 
     void getBranchUnitReservationStationReorderBufferIndexes(int copy[]) const;
 
-    void getBranchUnitReservationStationOperandTypes(OperandType copy[][3]) const;
+    void getBranchUnitReservationStationOperandTypes(OperandType copy[][numOfOperands]) const;
 
     int getStoreQueueSize() const;
 
@@ -152,7 +151,7 @@ class Model {
 
     void getStoreQueueReorderBufferIndexes(int copy[]) const;
 
-    void getStoreQueueOperandTypes(OperandType copy[][3]) const;
+    void getStoreQueueOperandTypes(OperandType copy[][numOfOperands]) const;
 
     int getLoadQueueSize() const;
 
@@ -160,7 +159,7 @@ class Model {
 
     void getLoadQueueReorderBufferIndexes(int copy[]) const;
 
-    void getLoadQueueOperandTypes(OperandType copy[][3]) const;
+    void getLoadQueueOperandTypes(OperandType copy[][numOfOperands]) const;
 
     int getNumALUs() const;
 

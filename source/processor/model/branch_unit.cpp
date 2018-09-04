@@ -21,7 +21,7 @@ BranchUnit::BranchUnit(ReorderBuffer* const reorderBuffer) :
   successful(false)
 {
   //set all operands to zero
-  for(int i = 0; i < 3; i++) {
+  for(int i = 0; i < numOfOperands; i++) {
     nextOperands[i] = 0;
     operands[i] = 0;
   }
@@ -67,14 +67,14 @@ void BranchUnit::pipe() {
 
   //set the  values equal to the next values
   opcode = nextOpcode;
-  for(int i = 0; i < 3; i++) {
+  for(int i = 0; i < numOfOperands; i++) {
     operands[i] = nextOperands[i];
   }
   reorderBufferIndex = nextReorderBufferIndex;
 
   //clear the next values
   nextOpcode = 0;
-  for(int i = 0; i < 3; i++) {
+  for(int i = 0; i < numOfOperands; i++) {
     nextOperands[i] = 0;
   }
   nextReorderBufferIndex = -1;
@@ -83,7 +83,7 @@ void BranchUnit::pipe() {
 void BranchUnit::flush() {
   nextOpcode = 0;
   opcode = 0;
-  for(int i = 0; i < 3; i++) {
+  for(int i = 0; i < numOfOperands; i++) {
     nextOperands[i] = 0;
     operands[i] = 0;
   }
@@ -99,8 +99,8 @@ void BranchUnit::setNextOpcode(const int x) {
   nextOpcode = x;
 }
 
-void BranchUnit::setNextOperands(const int x[3]) {
-  for(int i = 0; i < 3; i++) {
+void BranchUnit::setNextOperands(const int x[numOfOperands]) {
+  for(int i = 0; i < numOfOperands; i++) {
     nextOperands[i] = x[i];
   }
 }

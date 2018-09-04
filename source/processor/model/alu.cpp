@@ -32,7 +32,7 @@ ALU::ALU() :
   reorderBufferIndex(-1),
   result(0)
 {
-  for(int i = 0; i < 3; i++) {
+  for(int i = 0; i < numOfOperands; i++) {
     nextOperands[i] = 0;
     operands[i] = 0;
   }
@@ -49,7 +49,7 @@ ALU::ALU(ReorderBuffer* const reorderBuffer, ALUReservationStation* const aluRes
   reorderBufferIndex(-1),
   result(0)
 {
-  for(int i = 0; i < 3; i++) {
+  for(int i = 0; i < numOfOperands; i++) {
     nextOperands[i] = 0;
     operands[i] = 0;
   }
@@ -93,14 +93,14 @@ void ALU::pipe() {
 
   //set the  values equal to the next values
   opcode = nextOpcode;
-  for(int i = 0; i < 3; i++) {
+  for(int i = 0; i < numOfOperands; i++) {
     operands[i] = nextOperands[i]; 
   }
   reorderBufferIndex = nextReorderBufferIndex;
 
   //reset the next values
   nextOpcode = 0;
-  for(int i = 0; i < 3; i++) {
+  for(int i = 0; i < numOfOperands; i++) {
     nextOperands[i] = 0;
   }
   nextReorderBufferIndex = -1;
@@ -113,8 +113,8 @@ void ALU::setNextOpcode(const int x) {
   nextOpcode = x;
 }
 
-void ALU::setNextOperands(const int x[3]) {
-  for(int i = 0; i < 3; i++) {
+void ALU::setNextOperands(const int x[numOfOperands]) {
+  for(int i = 0; i < numOfOperands; i++) {
     nextOperands[i] = x[i];
   }
 }
@@ -126,7 +126,7 @@ void ALU::setNextReorderBufferIndex(const int i) {
 void ALU::flush() {
   nextOpcode = 0;
   opcode = 0;
-  for(int i = 0; i < 3; i++) {
+  for(int i = 0; i < numOfOperands; i++) {
     nextOperands[i] = 0;
     operands[i] = 0;
   }

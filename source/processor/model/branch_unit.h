@@ -7,6 +7,10 @@
 //forward declared dependencies
 class ReorderBuffer;
 
+//===========================================
+// included dependencies
+#include "constants.h"
+
 //===========================
 //class declaration
 class BranchUnit {
@@ -18,12 +22,12 @@ class BranchUnit {
 
     //decoded information
     int nextOpcode;
-    int nextOperands[3];
+    int nextOperands[numOfOperands];
     int nextReorderBufferIndex;
 
     //next information
     int opcode;
-    int operands[3];
+    int operands[numOfOperands];
     int reorderBufferIndex;
 
     //branch outcome
@@ -44,7 +48,7 @@ class BranchUnit {
 
     void setNextOpcode(const int x);
 
-    void setNextOperands(const int x[3]);
+    void setNextOperands(const int x[numOfOperands]);
 
     void setNextReorderBufferIndex(const int i);
 

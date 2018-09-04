@@ -11,6 +11,10 @@ class StoreQueue;
 class LoadQueue;
 class BranchUnitReservationStation;
 
+//===========================================
+// included dependencies
+#include "constants.h"
+
 //===========================
 //class declaration
 class ALU {
@@ -27,12 +31,12 @@ class ALU {
 
     //next information
     int nextOpcode;
-    int nextOperands[3];
+    int nextOperands[numOfOperands];
     int nextReorderBufferIndex;
 
     //current information
     int opcode;
-    int operands[3];
+    int operands[numOfOperands];
     int reorderBufferIndex;
 
     //instruction result
@@ -56,7 +60,7 @@ class ALU {
 
     void setNextOpcode(const int x);
 
-    void setNextOperands(const int x[3]);
+    void setNextOperands(const int x[numOfOperands]);
 
     void setNextReorderBufferIndex(const int i);
 

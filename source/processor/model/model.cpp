@@ -283,7 +283,7 @@ void Model::getAluReservationStationReorderBufferIndexes(int copy[]) const {
   aluReservationStation.getCurrentReorderBufferIndexes(copy);
 }
 
-void Model::getAluReservationStationOperandTypes(OperandType copy[][3]) const {
+void Model::getAluReservationStationOperandTypes(OperandType copy[][numOfOperands]) const {
   aluReservationStation.getOperandTypes(copy);
 }
 
@@ -299,7 +299,7 @@ void Model::getBranchUnitReservationStationReorderBufferIndexes(int copy[]) cons
   branchUnitReservationStation.getCurrentReorderBufferIndexes(copy);
 }
 
-void Model::getBranchUnitReservationStationOperandTypes(OperandType copy[][3]) const {
+void Model::getBranchUnitReservationStationOperandTypes(OperandType copy[][numOfOperands]) const {
   branchUnitReservationStation.getOperandTypes(copy);
 }
 
@@ -315,7 +315,7 @@ void Model::getStoreQueueReorderBufferIndexes(int copy[]) const {
   storeQueue.getCurrentReorderBufferIndexes(copy);
 }
 
-void Model::getStoreQueueOperandTypes(OperandType copy[][3]) const {
+void Model::getStoreQueueOperandTypes(OperandType copy[][numOfOperands]) const {
   storeQueue.getOperandTypes(copy);
 }
 
@@ -331,7 +331,7 @@ void Model::getLoadQueueReorderBufferIndexes(int copy[]) const {
   loadQueue.getCurrentReorderBufferIndexes(copy);
 }
 
-void Model::getLoadQueueOperandTypes(OperandType copy[][3]) const {
+void Model::getLoadQueueOperandTypes(OperandType copy[][numOfOperands]) const {
   loadQueue.getOperandTypes(copy);
 }
 
