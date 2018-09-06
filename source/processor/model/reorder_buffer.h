@@ -5,6 +5,7 @@
 
 //===========================
 //forward declared dependencies
+class ALUReservationStation;
 class RegisterFile;
 class Memory;
 class Instruction;
@@ -20,6 +21,8 @@ class ReorderBuffer {
 
   //private member variables
   private:
+
+    ALUReservationStation* const aluReservationStation;
 
     RegisterFile* const registerFile;
     Memory* const memory;
@@ -45,8 +48,9 @@ class ReorderBuffer {
   //public functions
   public:
 
-    ReorderBuffer(RegisterFile* const registerFile, Memory* const memory, FetchUnit* const fetchUnit, int* const pc, 
-      bool* const runningFlag, int* const noOfInstructionsExecuted, const int bufferSize, const int issueWindowSize);
+    ReorderBuffer(ALUReservationStation* const aluReservationStation, RegisterFile* const registerFile, 
+      Memory* const memory, FetchUnit* const fetchUnit, int* const pc, bool* const runningFlag, 
+      int* const noOfInstructionsExecuted, const int bufferSize, const int issueWindowSize);
 
     bool freeSpace() const;
 
@@ -84,6 +88,10 @@ class ReorderBuffer {
     void getReorderBufferFields(int copy[][ReorderBufferIndex::COUNT]) const;
 
     bool getFlushFlag() const;
+
+    bool isEntryFinished(const int i) const;
+
+    int getEntryResult(const int i) const;
 };
 
 #endif

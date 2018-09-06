@@ -35,8 +35,7 @@ class Model {
     float noOfInstructionsPerCycle;
 
     //processor configuration
-    const int numArchitecturalRegisters;
-    const int numPhysicalRegisters;
+    const int numOfRegisters;
     const int memorySize;
     const int issueWindowSize;
     const int aluReservationStationSize;
@@ -117,9 +116,9 @@ class Model {
 
     void getRenameTable(int copy[]) const;
 
-    void getArchitecturalRegisterValues(int copy[]) const;
+    void getRegisterValues(int copy[]) const;
 
-    void getLatestArchitecturalRegisterValues(int copy[]) const;
+    void getRobMapping(bool copy[]) const;
 
     void getAllMemoryValues(int copy[]) const;
 

@@ -10,35 +10,21 @@ class RegisterFile {
   //private member variables
   private:
 
-    const int numOfArchitecturalRegisters;
-    const int numOfPhysicalRegisters;
+    //number of physical registers
+    const int numOfRegisters;
     //mapping table of the archtictural registers to the physical registers
     int* const renameTable;
+    //indicating whether or not the mapping is to a reorder buffer entry
+    bool* const robMapping;
     //the values in the physical registers
-    int* const physicalRegisters;
-    //tells whether each physical registers is free to be used or not
-    int* const freeList;
-    //tells us whether each physical register is in the process of being written to
-    bool* const scoreBoard;
-
-    int* const rollbackRenameTable;
+    int* const registers;
 
   //public functions
   public:
 
-    RegisterFile(const int numOfArchitecturalRegisters, const int numOfPhysicalRegisters);
-
-    void resetScoreBoard();
+    RegisterFile(const int numOfRegisters);
 
     void printRegisters() const;
-
-    void printScoreBoard() const;
-
-    int findFreePhysicalRegister() const;
-
-    void freePhysicalRegister(const int i);
-
-    bool freePhysicalRegisterAvailable() const;
 
     void flush();
 
@@ -47,27 +33,25 @@ class RegisterFile {
   //getters and setters
   public:
 
-    int getNumOfArchitecturalRegisters() const;
+    int getNumOfRegisters() const;
 
     void getRenameTable(int copy[]) const;
 
-    void getLatestArchitecturalRegisterValues(int copy[]) const;
+    void getRegisterValues(int copy[]) const;
 
-    void getArchitecturalRegisterValues(int copy[]) const;
+    int getRegisterValue(const int i) const;
 
-    int getPhysicalRegisterValue(const int i) const;
+    void setRegisterValue(const int i, const int val);
 
-    void setPhysicalRegisterValue(const int i, const int val);
+    void setMappingToRegister(const int i);
 
-    bool getScoreBoardValue(const int i) const;
+    void setMappingToRobEntry(const int i, const int map);
 
-    void setScoreBoardValue(const int i, const bool val);
+    bool isRobMapping(const int i) const;
 
-    void setArchitecturalRegisterMapping(const int i, const int val) const;
+    int getRegisterMapping(const int i) const;
 
-    int getArchitecturalRegisterMapping(const int i) const;
-
-    void setRollbackRenameTableMapping(const int i, const int val) const;
+    void getRobMapping(bool copy[]) const;
 
 };
 

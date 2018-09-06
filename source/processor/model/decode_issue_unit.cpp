@@ -80,38 +80,44 @@ void DecodeIssueUnit::issue(int instructionToIssue) {
     //ALU instructions
     case ADDI:
       //if there is space in the reservation then issue the instruction
-      if(aluReservationStation->freeSpace() && registerFile->freePhysicalRegisterAvailable()) {
+      if(aluReservationStation->freeSpace()) {
 
         //reserve a space in the reservation station
         aluReservationStation->reserveSpace();
 
         //get the destination architectural register
-        int architecturalRegister = instructions[instructionToIssue].operands[0];
-
-        //get the current mapping of the destination architectural register
-        int oldPhysicalRegister = registerFile->getArchitecturalRegisterMapping(instructions[instructionToIssue].operands[0]);
-
-        //find a free register to use as the destination
-        int newPhysicalRegister = registerFile->findFreePhysicalRegister();
-        registerFile->usePhysicalRegister(newPhysicalRegister);
+        int destinationRegister = instructions[instructionToIssue].operands[0];
 
         //Add instruction to the reorder buffer
-        reorderBufferIndexes[instructionToIssue] = reorderBuffer->addEntry(STORE_TO_REGISTER, false, 0, architecturalRegister, newPhysicalRegister, 
-          oldPhysicalRegister, instructions[instructionToIssue]);
+        int reorderBufferIndex = reorderBuffer->addEntry(STORE_TO_REGISTER, false, 0, destinationRegister, 0, 0, 
+          instructions[instructionToIssue]);
 
-        //rename the source operands
-        instructions[instructionToIssue].operands[1] = registerFile->getArchitecturalRegisterMapping(instructions[instructionToIssue].operands[1]);
+        //Add the reorder buffer index to the list of current instructions
+        reorderBufferIndexes[instructionToIssue] = reorderBufferIndex;
 
-        //update the rename table
-        registerFile->setArchitecturalRegisterMapping(instructions[instructionToIssue].operands[0], newPhysicalRegister);
+        //set the first operand type
+        if(registerFile->isRobMapping(instructions[instructionToIssue].operands[1])) {
+          operandTypes[instructionToIssue][1] = ROB;
+        }
+        else {
+          operandTypes[instructionToIssue][1] = REGISTER;
+        }
 
-        //rename destination operand
-        instructions[instructionToIssue].operands[0] = newPhysicalRegister;
-        
-        //set the operand types
-        operandTypes[instructionToIssue][0] = REGISTER;
-        operandTypes[instructionToIssue][1] = REGISTER;
+        //rename the first operand
+        instructions[instructionToIssue].operands[1] = 
+          registerFile->getRegisterMapping(instructions[instructionToIssue].operands[1]);
+
+        //set the second operands type
         operandTypes[instructionToIssue][2] = CONSTANT;
+
+        //update the rename table for the destination register
+        registerFile->setMappingToRobEntry(instructions[instructionToIssue].operands[0], reorderBufferIndex);
+
+        //rename the destination
+        instructions[instructionToIssue].operands[0] = reorderBufferIndex;
+
+        //set the destinations type
+        operandTypes[instructionToIssue][0] = ROB;
 
         //take note that the instruction was issued
         instructionsIssued[instructionToIssue] = true;
@@ -125,39 +131,53 @@ void DecodeIssueUnit::issue(int instructionToIssue) {
     case SUB:
 
       //if there is space in the reservation then issue the instruction
-      if(aluReservationStation->freeSpace() && registerFile->freePhysicalRegisterAvailable()) {
+      if(aluReservationStation->freeSpace()) {
 
         //reserve a space in the reservation station
         aluReservationStation->reserveSpace();
 
         //get the destination architectural register
-        int architecturalRegister = instructions[instructionToIssue].operands[0];
-
-        //get the current mapping of the destination architectural register
-        int oldPhysicalRegister = registerFile->getArchitecturalRegisterMapping(instructions[instructionToIssue].operands[0]);
-
-        //find a free register to use as the destination
-        int newPhysicalRegister = registerFile->findFreePhysicalRegister();
-        registerFile->usePhysicalRegister(newPhysicalRegister);
+        int destinationRegister = instructions[instructionToIssue].operands[0];
 
         //Add instruction to the reorder buffer
-        reorderBufferIndexes[instructionToIssue] = reorderBuffer->addEntry(STORE_TO_REGISTER, false, 0, architecturalRegister, newPhysicalRegister, 
-          oldPhysicalRegister, instructions[instructionToIssue]);
+        int reorderBufferIndex = reorderBuffer->addEntry(STORE_TO_REGISTER, false, 0, destinationRegister, 0, 0, 
+          instructions[instructionToIssue]);
 
-        //rename the source operands
-        instructions[instructionToIssue].operands[1] = registerFile->getArchitecturalRegisterMapping(instructions[instructionToIssue].operands[1]);
-        instructions[instructionToIssue].operands[2] = registerFile->getArchitecturalRegisterMapping(instructions[instructionToIssue].operands[2]);
+        //Add the reorder buffer index to the list of current instructions
+        reorderBufferIndexes[instructionToIssue] = reorderBufferIndex;
 
-        //update the rename table
-        registerFile->setArchitecturalRegisterMapping(instructions[instructionToIssue].operands[0], newPhysicalRegister);
+        //rename the second operand
+        instructions[instructionToIssue].operands[1] = 
+          registerFile->getRegisterMapping(instructions[instructionToIssue].operands[1]);
 
-        //rename the destination operand
-        instructions[instructionToIssue].operands[0] = newPhysicalRegister;
+        //set the operand type for the second operand
+        if(registerFile->isRobMapping(instructions[instructionToIssue].operands[1])) {
+          operandTypes[instructionToIssue][1] = ROB;
+        }
+        else {
+          operandTypes[instructionToIssue][1] = REGISTER;
+        }
 
-        //set the operand types
-        operandTypes[instructionToIssue][0] = REGISTER;
-        operandTypes[instructionToIssue][1] = REGISTER;
-        operandTypes[instructionToIssue][2] = REGISTER;
+        //rename the third operand
+        instructions[instructionToIssue].operands[2] = 
+          registerFile->getRegisterMapping(instructions[instructionToIssue].operands[2]);
+
+        //set the operand type for the third operand
+        if(registerFile->isRobMapping(instructions[instructionToIssue].operands[2])) {
+          operandTypes[instructionToIssue][2] = ROB;
+        }
+        else {
+          operandTypes[instructionToIssue][2] = REGISTER;
+        }
+
+        //update the rename table for the destination register
+        registerFile->setMappingToRobEntry(destinationRegister, reorderBufferIndex);
+
+        //rename the destination
+        instructions[instructionToIssue].operands[0] = reorderBufferIndex;
+
+        //set the desination type
+        operandTypes[instructionToIssue][0] = ROB;
 
         //take note that the instruction was issued
         instructionsIssued[instructionToIssue] = true;
@@ -166,31 +186,25 @@ void DecodeIssueUnit::issue(int instructionToIssue) {
 
     //Load Store unit instructions
     case LW:
-      if(loadQueue->freeSpace() && registerFile->freePhysicalRegisterAvailable()) {
+      if(loadQueue->freeSpace()) {
 
         //reserve a space in the reservation station
         loadQueue->reserveSpace();
 
         //get the destination architectural register
-        int architecturalRegister = instructions[instructionToIssue].operands[0];
-
-        //get the current mapping of the destination architectural register
-        int oldPhysicalRegister = registerFile->getArchitecturalRegisterMapping(instructions[instructionToIssue].operands[0]);
-
-        //find a free register to use as the destination
-        int newPhysicalRegister = registerFile->findFreePhysicalRegister();
-        registerFile->usePhysicalRegister(newPhysicalRegister);
+        int destinationRegister = instructions[instructionToIssue].operands[0];
 
         //Instruction has been issued so add entry to the reorder buffer
-        reorderBufferIndexes[instructionToIssue] = reorderBuffer->addEntry(STORE_TO_REGISTER, false, 0, architecturalRegister, newPhysicalRegister, 
-          oldPhysicalRegister, instructions[instructionToIssue]);
+        int reorderBufferIndex = reorderBuffer->addEntry(STORE_TO_REGISTER, false, 0, 
+          destinationRegister, 0, 0, instructions[instructionToIssue]);
+        reorderBufferIndexes[instructionToIssue] = reorderBufferIndex;
         
         //update the rename table
-        registerFile->setArchitecturalRegisterMapping(instructions[instructionToIssue].operands[0], newPhysicalRegister);
+        registerFile->setMappingToRobEntry(destinationRegister, reorderBufferIndex);
 
         //rename the destination operand
-        instructions[instructionToIssue].operands[0] = newPhysicalRegister;
-        operandTypes[instructionToIssue][0] = REGISTER;
+        instructions[instructionToIssue].operands[0] = reorderBufferIndex;
+        operandTypes[instructionToIssue][0] = ROB;
 
         operandTypes[instructionToIssue][1] = CONSTANT;
 
@@ -200,35 +214,36 @@ void DecodeIssueUnit::issue(int instructionToIssue) {
       break;
 
     case LWR:
-      if(loadQueue->freeSpace() && registerFile->freePhysicalRegisterAvailable()) {
+      if(loadQueue->freeSpace()) {
 
         //reserve a space in the reservation station
         loadQueue->reserveSpace();
 
         //get the destination architectural register
-        int architecturalRegister = instructions[instructionToIssue].operands[0];
-
-        //get the current mapping of the destination architectural register
-        int oldPhysicalRegister = registerFile->getArchitecturalRegisterMapping(instructions[instructionToIssue].operands[0]);
-
-        //find a free register to use as the destination
-        int newPhysicalRegister = registerFile->findFreePhysicalRegister();
-        registerFile->usePhysicalRegister(newPhysicalRegister);
+        int destinationRegister = instructions[instructionToIssue].operands[0];
 
         //Instruction has been issued so add entry to the reorder buffer
-        reorderBufferIndexes[instructionToIssue] = reorderBuffer->addEntry(STORE_TO_REGISTER, false, 0, architecturalRegister, newPhysicalRegister, 
-          oldPhysicalRegister, instructions[instructionToIssue]);
+        int reorderBufferIndex = reorderBuffer->addEntry(STORE_TO_REGISTER, false, 0, destinationRegister, 0, 0, 
+          instructions[instructionToIssue]);
 
-        //rename the source operands
-        instructions[instructionToIssue].operands[1] = registerFile->getArchitecturalRegisterMapping(instructions[instructionToIssue].operands[1]);
-        operandTypes[instructionToIssue][1] = REGISTER;
+        //store the reorder buffer index for the instruction
+        reorderBufferIndexes[instructionToIssue] = reorderBufferIndex;
 
         //update the rename table
-        registerFile->setArchitecturalRegisterMapping(instructions[instructionToIssue].operands[0], newPhysicalRegister);
+        registerFile->setMappingToRobEntry(destinationRegister, reorderBufferIndex);
 
-        //rename destination operand
-        instructions[instructionToIssue].operands[0] = newPhysicalRegister;
-        operandTypes[instructionToIssue][0] = REGISTER;
+        //rename the first operand
+        instructions[instructionToIssue].operands[0] = reorderBufferIndex;
+        operandTypes[instructionToIssue][0] = ROB;
+
+        //rename the second operand
+        instructions[instructionToIssue].operands[1] = registerFile->getRegisterMapping(instructions[instructionToIssue].operands[1]);
+        if(registerFile->isRobMapping(instructions[instructionToIssue].operands[1])) {
+          operandTypes[instructionToIssue][1] = ROB;
+        }
+        else {
+          operandTypes[instructionToIssue][1] = REGISTER;
+        }
 
         //take note that the instruction was issued
         instructionsIssued[instructionToIssue] = true;
@@ -245,10 +260,15 @@ void DecodeIssueUnit::issue(int instructionToIssue) {
         reorderBufferIndexes[instructionToIssue] = reorderBuffer->addEntry(STORE_TO_MEMORY, true, 0, 0, 0, 0, instructions[instructionToIssue]);
 
         //rename the registers
-        instructions[instructionToIssue].operands[0] = registerFile->getArchitecturalRegisterMapping(instructions[instructionToIssue].operands[0]);
-        operandTypes[instructionToIssue][0] = REGISTER;
+        instructions[instructionToIssue].operands[0] = 
+          registerFile->getRegisterMapping(instructions[instructionToIssue].operands[0]);
 
-        operandTypes[instructionToIssue][1] = CONSTANT;
+        if(registerFile->isRobMapping(instructions[instructionToIssue].operands[0])) {
+          operandTypes[instructionToIssue][0] = ROB;
+        }
+        else {
+          operandTypes[instructionToIssue][0] = REGISTER;
+        }
 
         //take note that the instruction was issued
         instructionsIssued[instructionToIssue] = true;
@@ -264,11 +284,29 @@ void DecodeIssueUnit::issue(int instructionToIssue) {
         //Instruction has been issued so add entry to the reorder buffer
         reorderBufferIndexes[instructionToIssue] = reorderBuffer->addEntry(STORE_TO_MEMORY, true, 0, 0, 0, 0, instructions[instructionToIssue]);
 
-        //rename the registers
-        instructions[instructionToIssue].operands[0] = registerFile->getArchitecturalRegisterMapping(instructions[instructionToIssue].operands[0]);
-        operandTypes[instructionToIssue][0] = REGISTER;
-        instructions[instructionToIssue].operands[1] = registerFile->getArchitecturalRegisterMapping(instructions[instructionToIssue].operands[1]);
-        operandTypes[instructionToIssue][1] = REGISTER;
+        //rename first operand
+        instructions[instructionToIssue].operands[0] = 
+          registerFile->getRegisterMapping(instructions[instructionToIssue].operands[0]);
+
+        //set the first operand type
+        if(registerFile->isRobMapping(instructions[instructionToIssue].operands[0])) {
+          operandTypes[instructionToIssue][0] = ROB;
+        }
+        else {
+          operandTypes[instructionToIssue][0] = CONSTANT;
+        }
+
+        //rename the second operand
+        instructions[instructionToIssue].operands[1] = 
+          registerFile->getRegisterMapping(instructions[instructionToIssue].operands[1]);
+
+        //set the second operand type
+        if(registerFile->isRobMapping(instructions[instructionToIssue].operands[1])) {
+          operandTypes[instructionToIssue][1] = ROB;
+        }
+        else {
+          operandTypes[instructionToIssue][1] = REGISTER;
+        }
 
         //take note that the instruction was issued
         instructionsIssued[instructionToIssue] = true;
@@ -293,13 +331,31 @@ void DecodeIssueUnit::issue(int instructionToIssue) {
             branchAddresses[instructionToIssue], 0, 0, 0, instructions[instructionToIssue]);
         }
 
-        //rename the registers
-        instructions[instructionToIssue].operands[0] = registerFile->getArchitecturalRegisterMapping(instructions[instructionToIssue].operands[0]);
-        instructions[instructionToIssue].operands[1] = registerFile->getArchitecturalRegisterMapping(instructions[instructionToIssue].operands[1]);
+        //rename the first operand
+        instructions[instructionToIssue].operands[0] = 
+          registerFile->getRegisterMapping(instructions[instructionToIssue].operands[0]);
 
-        //set the operand types
-        operandTypes[instructionToIssue][0] = REGISTER;
-        operandTypes[instructionToIssue][1] = REGISTER;
+        //set the first operand type
+        if(registerFile->isRobMapping(instructions[instructionToIssue].operands[0])) {
+          operandTypes[instructionToIssue][0] = ROB;
+        }
+        else {
+          operandTypes[instructionToIssue][0] = REGISTER;
+        }
+
+        //rename the second operand
+        instructions[instructionToIssue].operands[1] = 
+          registerFile->getRegisterMapping(instructions[instructionToIssue].operands[1]);
+
+        //set the second operand type
+        if(registerFile->isRobMapping(instructions[instructionToIssue].operands[1])) {
+          operandTypes[instructionToIssue][1] = ROB;
+        }
+        else {
+          operandTypes[instructionToIssue][1] = REGISTER;
+        }
+
+        //set the third operand type
         operandTypes[instructionToIssue][2] = CONSTANT;
 
         //take note that the instruction was issued
@@ -313,24 +369,6 @@ void DecodeIssueUnit::issue(int instructionToIssue) {
       break;
     case J:
     case JR:
-      if(branchUnitReservationStation->freeSpace()) {
-
-        //reserve a space in the reservation station
-        branchUnitReservationStation->reserveSpace();
-
-        //Instruction has been issued so add entry to the reorder buffer
-        if(branchPrediction) {
-          reorderBufferIndexes[instructionToIssue] = reorderBuffer->addEntry(JUMP, true, 
-            branchAddresses[instructionToIssue], 0, 0, 0, instructions[instructionToIssue]);
-        }
-        else {
-          reorderBufferIndexes[instructionToIssue] = reorderBuffer->addEntry(JUMP, false,
-            branchAddresses[instructionToIssue], 0, 0, 0, instructions[instructionToIssue]);
-        }
-
-        //take note that the instruction was issued
-        instructionsIssued[instructionToIssue] = true;
-      }
       break;
                     
     //Instruction to finish the program
@@ -450,8 +488,7 @@ void DecodeIssueUnit::pipeInstruction(int instructionToIssue) {
     case MULT:
     case OR:
     case SUB:
-      //Set the scoreboard value of the destination register to zero
-      registerFile->setScoreBoardValue(instructions[instructionToIssue].operands[0],false);
+      //send the issued instruction to the alu reservation station
       aluReservationStation->setNextInstruction(instructions[instructionToIssue], operandTypes[instructionToIssue], 
         reorderBufferIndexes[instructionToIssue]);
       break;
@@ -459,13 +496,13 @@ void DecodeIssueUnit::pipeInstruction(int instructionToIssue) {
     //Load Store unit instructions
     case LW:
     case LWR:
-      //Set the scoreboard value of the destination register to zero
-      registerFile->setScoreBoardValue(instructions[instructionToIssue].operands[0],false);
+      //send the issued instruction to the load store unit reservation station
       loadQueue->setNextInstruction(instructions[instructionToIssue], operandTypes[instructionToIssue],
         reorderBufferIndexes[instructionToIssue]);
       break;
     case SW:
     case SWR:
+      //send the issued instruction to the load store unit reservation station
       storeQueue->setNextInstruction(instructions[instructionToIssue], operandTypes[instructionToIssue],
         reorderBufferIndexes[instructionToIssue]);
       break;
@@ -482,7 +519,7 @@ void DecodeIssueUnit::pipeInstruction(int instructionToIssue) {
 
     //Instruction to finish the program
     case HALT:
-      //branchUnitReservationStation->addInstruction(currentInstruction, reorderBufferIndex);
+      //send the issued instruction to the branch unit reservation station
       branchUnitReservationStation->setNextInstruction(instructions[instructionToIssue], 
         operandTypes[instructionToIssue], reorderBufferIndexes[instructionToIssue]);
       break;

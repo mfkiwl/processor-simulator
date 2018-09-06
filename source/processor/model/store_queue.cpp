@@ -213,23 +213,41 @@ void StoreQueue::checkOperandAvailability() {
         break;
       case SW:
         if(!(operandTypes[i][0] == CONSTANT)) {
-          if(registerFile->getScoreBoardValue(instructions[i].operands[0])) {
-            instructions[i].operands[0] = registerFile->getPhysicalRegisterValue(instructions[i].operands[0]);
+          if(operandTypes[i][0] == REGISTER) {
+            instructions[i].operands[0] = registerFile->getRegisterValue(instructions[i].operands[0]);
             operandTypes[i][0] = CONSTANT;
+          }
+          else if(operandTypes[i][0] == ROB) {
+            if(reorderBuffer->isEntryFinished(instructions[i].operands[0])) {
+              instructions[i].operands[0] = reorderBuffer->getEntryResult(instructions[i].operands[0]);
+              operandTypes[i][0] = CONSTANT;
+            }
           }
         }
         break;
       case SWR:
         if(!(operandTypes[i][0] == CONSTANT)) {
-          if(registerFile->getScoreBoardValue(instructions[i].operands[0])) {
-            instructions[i].operands[0] = registerFile->getPhysicalRegisterValue(instructions[i].operands[0]);
+          if(operandTypes[i][0] == REGISTER) {
+            instructions[i].operands[0] = registerFile->getRegisterValue(instructions[i].operands[0]);
             operandTypes[i][0] = CONSTANT;
+          }
+          else if(operandTypes[i][0] == ROB) {
+            if(reorderBuffer->isEntryFinished(instructions[i].operands[0])) {
+              instructions[i].operands[0] = reorderBuffer->getEntryResult(instructions[i].operands[0]);
+              operandTypes[i][0] = CONSTANT;
+            }
           }
         }
         if(!(operandTypes[i][1] == CONSTANT)) {
-          if(registerFile->getScoreBoardValue(instructions[i].operands[1])) {
-            instructions[i].operands[1] = registerFile->getPhysicalRegisterValue(instructions[i].operands[1]);
+          if(operandTypes[i][1] == REGISTER) {
+            instructions[i].operands[1] = registerFile->getRegisterValue(instructions[i].operands[1]);
             operandTypes[i][1] = CONSTANT;
+          }
+          else if(operandTypes[i][1] == ROB) {
+            if(reorderBuffer->isEntryFinished(instructions[i].operands[1])) {
+              instructions[i].operands[1] = reorderBuffer->getEntryResult(instructions[i].operands[1]);
+              operandTypes[i][1] = CONSTANT;
+            }
           }
         }
         break;

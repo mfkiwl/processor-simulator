@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "reorder_buffer.h"
 #include "register_file.h"
 #include "alu.h"
 #include "instructions.h"
@@ -20,8 +21,9 @@ using namespace std;
 //==========================================================================
 //public functions
 
-ALUReservationStation::ALUReservationStation(RegisterFile* const registerFile, const int numALUs, ALU* const alu, 
-  const int size) : 
+ALUReservationStation::ALUReservationStation(ReorderBuffer* const reorderBuffer, RegisterFile* const registerFile, 
+  const int numALUs, ALU* const alu, const int size) :
+  reorderBuffer(reorderBuffer),
   registerFile(registerFile),
   numALUs(numALUs),
   alu(alu),
@@ -165,7 +167,7 @@ void ALUReservationStation::reserveSpace() {
   numReservedSpaces++;
 }
 
-void ALUReservationStation::broadcast(int physicalRegister, int value) {
+void ALUReservationStation::broadcast(int robEntry, int value) {
   for(int i = 0; i < size; i++) {
     switch(instructions[i].opcode) {
       case NOOP:
@@ -175,17 +177,17 @@ void ALUReservationStation::broadcast(int physicalRegister, int value) {
       case MULT:
       case OR:
       case SUB:
-        if(!(operandTypes[i][1] == CONSTANT) && instructions[i].operands[1] == physicalRegister) {
+        if((operandTypes[i][1] == ROB) && instructions[i].operands[1] == robEntry) {
           instructions[i].operands[1] = value;
           operandTypes[i][1] = CONSTANT;
         }
-        if(!(operandTypes[i][2] == CONSTANT) && instructions[i].operands[2] == physicalRegister) {
+        if((operandTypes[i][2] == ROB) && instructions[i].operands[2] == robEntry) {
           instructions[i].operands[2] = value;
           operandTypes[i][2] = CONSTANT;
         }
         break;
       case ADDI:
-        if(!(operandTypes[i][1] == CONSTANT) && instructions[i].operands[1] == physicalRegister) {
+        if((operandTypes[i][1] == ROB) && instructions[i].operands[1] == robEntry) {
           instructions[i].operands[1] = value;
           operandTypes[i][1] = CONSTANT;
         }
@@ -208,23 +210,41 @@ void ALUReservationStation::checkOperandAvailability() {
       case OR:
       case SUB:
         if(!(operandTypes[i][1] == CONSTANT)) {
-          if(registerFile->getScoreBoardValue(instructions[i].operands[1])) {
-            instructions[i].operands[1] = registerFile->getPhysicalRegisterValue(instructions[i].operands[1]);
+          if(operandTypes[i][1] == REGISTER) {
+            instructions[i].operands[1] = registerFile->getRegisterValue(instructions[i].operands[1]);
             operandTypes[i][1] = CONSTANT;
+          }
+          else if(operandTypes[i][1] == ROB) {
+            if(reorderBuffer->isEntryFinished(instructions[i].operands[1])) {
+              instructions[i].operands[1] = reorderBuffer->getEntryResult(instructions[i].operands[1]);
+              operandTypes[i][1] = CONSTANT;
+            }
           }
         }
         if(!(operandTypes[i][2] == CONSTANT)) {
-          if(registerFile->getScoreBoardValue(instructions[i].operands[2])) {
-            instructions[i].operands[2] = registerFile->getPhysicalRegisterValue(instructions[i].operands[2]);
+          if(operandTypes[i][2] == REGISTER) {
+            instructions[i].operands[2] = registerFile->getRegisterValue(instructions[i].operands[2]);
             operandTypes[i][2] = CONSTANT;
+          }
+          else if(operandTypes[i][2] == ROB) {
+            if(reorderBuffer->isEntryFinished(instructions[i].operands[2])) {
+              instructions[i].operands[2] = reorderBuffer->getEntryResult(instructions[i].operands[2]);
+              operandTypes[i][2] = CONSTANT;
+            }
           }
         }
         break;
       case ADDI:
         if(!(operandTypes[i][1] == CONSTANT)) {
-          if(registerFile->getScoreBoardValue(instructions[i].operands[1])) {
-            instructions[i].operands[1] = registerFile->getPhysicalRegisterValue(instructions[i].operands[1]);
+          if(operandTypes[i][1] == REGISTER) {
+            instructions[i].operands[1] = registerFile->getRegisterValue(instructions[i].operands[1]);
             operandTypes[i][1] = CONSTANT;
+          }
+          else if(operandTypes[i][1] == ROB) {
+            if(reorderBuffer->isEntryFinished(instructions[i].operands[1])) {
+              instructions[i].operands[1] = reorderBuffer->getEntryResult(instructions[i].operands[1]);
+              operandTypes[i][1] = CONSTANT;
+            }
           }
         }
         break;
@@ -270,7 +290,7 @@ bool ALUReservationStation::readyToDispatch(const int index) const {
       }
       break;
     case ADDI:
-      if(operandTypes[index][1] == CONSTANT) {
+      if(operandTypes[index][1] == CONSTANT && operandTypes[index][2] == CONSTANT) {
         return true;
       }
       break;

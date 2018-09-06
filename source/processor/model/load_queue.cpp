@@ -183,9 +183,15 @@ void LoadQueue::checkOperandAvailability() {
         break;
       case LWR:
         if(!(operandTypes[i][1] == CONSTANT)) {
-          if(registerFile->getScoreBoardValue(instructions[i].operands[1])) {
-            instructions[i].operands[1] = registerFile->getPhysicalRegisterValue(instructions[i].operands[1]);
+          if(operandTypes[i][1] == REGISTER) {
+            instructions[i].operands[1] = registerFile->getRegisterValue(instructions[i].operands[1]);
             operandTypes[i][1] = CONSTANT;
+          }
+          else if(operandTypes[i][1] == ROB) {
+            if(reorderBuffer->isEntryFinished(instructions[i].operands[1])) {
+              instructions[i].operands[1] = reorderBuffer->getEntryResult(instructions[i].operands[1]);
+              operandTypes[i][1] = CONSTANT;
+            }
           }
         }
         break;

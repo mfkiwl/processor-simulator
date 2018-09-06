@@ -120,10 +120,12 @@ void Controller::updateView() {
   //draw the register file
   int numRegisters = model.getNumRegisters();
   int registerValues[numRegisters];
-  model.getLatestArchitecturalRegisterValues(registerValues);
+  model.getRegisterValues(registerValues);
   int renameTable[numRegisters];
   model.getRenameTable(renameTable);
-  view.drawRegisterFile(numRegisters, registerValues, renameTable);
+  bool robMapping[numRegisters];
+  model.getRobMapping(robMapping);
+  view.drawRegisterFile(numRegisters, registerValues, renameTable, robMapping);
 
   //draw the memory
   int memorySize = model.getMemorySize();

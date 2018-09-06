@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "reorder_buffer.h"
 #include "register_file.h"
 #include "branch_unit.h"
 #include "instructions.h"
@@ -18,8 +19,9 @@
 //================================================================================================
 //public functions
 
-BranchUnitReservationStation::BranchUnitReservationStation(RegisterFile* const registerFile, 
-  BranchUnit* const branchUnit, const int size) : 
+BranchUnitReservationStation::BranchUnitReservationStation(ReorderBuffer* const reorderBuffer, 
+  RegisterFile* const registerFile, BranchUnit* const branchUnit, const int size) :
+  reorderBuffer(reorderBuffer),
   registerFile(registerFile),
   branchUnit(branchUnit),
   size(size),
@@ -188,15 +190,27 @@ void BranchUnitReservationStation::checkOperandAvailability() {
       case BEQ:
       case BNE:
         if(!(operandTypes[i][0] == CONSTANT)) {
-          if(registerFile->getScoreBoardValue(instructions[i].operands[0])) {
-            instructions[i].operands[0] = registerFile->getPhysicalRegisterValue(instructions[i].operands[0]);
+          if(operandTypes[i][0] == REGISTER) {
+            instructions[i].operands[0] = registerFile->getRegisterValue(instructions[i].operands[0]);
             operandTypes[i][0] = CONSTANT;
+          }
+          else if(operandTypes[i][0] == ROB) {
+            if(reorderBuffer->isEntryFinished(instructions[i].operands[0])) {
+              instructions[i].operands[0] = reorderBuffer->getEntryResult(instructions[i].operands[0]);
+              operandTypes[i][0] = CONSTANT;
+            }
           }
         }
         if(!(operandTypes[i][1] == CONSTANT)) {
-          if(registerFile->getScoreBoardValue(instructions[i].operands[1])) {
-            instructions[i].operands[1] = registerFile->getPhysicalRegisterValue(instructions[i].operands[1]);
+          if(operandTypes[i][1] == REGISTER) {
+            instructions[i].operands[1] = registerFile->getRegisterValue(instructions[i].operands[1]);
             operandTypes[i][1] = CONSTANT;
+          }
+          else if(operandTypes[i][1] == ROB) {
+            if(reorderBuffer->isEntryFinished(instructions[i].operands[1])) {
+              instructions[i].operands[1] = reorderBuffer->getEntryResult(instructions[i].operands[1]);
+              operandTypes[i][1] = CONSTANT;
+            }
           }
         }
         break;

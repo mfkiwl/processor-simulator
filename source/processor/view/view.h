@@ -73,7 +73,8 @@ class View {
     void drawTextCell(const int xPos, const int yPos, const int width, const int height, const std::string text, 
       const int xOffset, const int yOffset);
 
-    void drawRegisterFile(const int numRegisters, const int registerValues[], const int renameTable[]);
+    void drawRegisterFile(const int numRegisters, const int registerValues[], const int renameTable[],
+      const bool robMapping[]);
 
     void drawMemory(const int memorySize, const int memoryValues[]);
 

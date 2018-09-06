@@ -79,10 +79,10 @@ void ALU::execute() {
     }
     //tell the reorder buffer the result
     reorderBuffer->finishedEntry(reorderBufferIndex, result);
-    aluReservationStation->broadcast(operands[0], result);
-    storeQueue->broadcast(operands[0], result);
-    loadQueue->broadcast(operands[0], result);
-    branchUnitReservationStation->broadcast(operands[0], result);
+    //aluReservationStation->broadcast(operands[0], result);
+    //storeQueue->broadcast(operands[0], result);
+    //loadQueue->broadcast(operands[0], result);
+    //branchUnitReservationStation->broadcast(operands[0], result);
   }
 }
 

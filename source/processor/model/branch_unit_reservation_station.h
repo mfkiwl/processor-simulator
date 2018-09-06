@@ -5,6 +5,7 @@
 
 //===========================
 //forward declared dependencies
+class ReorderBuffer;
 class RegisterFile;
 class BranchUnit;
 
@@ -20,6 +21,7 @@ class BranchUnitReservationStation {
   //private member variables
   private:
     
+    ReorderBuffer* const reorderBuffer;
     RegisterFile* const registerFile;
     BranchUnit* const branchUnit;
 
@@ -40,7 +42,8 @@ class BranchUnitReservationStation {
   //public functions
   public:
     
-    BranchUnitReservationStation(RegisterFile* const registerFile, BranchUnit* const branchUnit, const int size);
+    BranchUnitReservationStation(ReorderBuffer* const reorderBuffer, RegisterFile* const registerFile, 
+      BranchUnit* const branchUnit, const int size);
 
     void execute();
 

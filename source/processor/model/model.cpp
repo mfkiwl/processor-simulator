@@ -21,8 +21,7 @@ Model::Model(const Instructions instructions) :
   noOfInstructionsPerCycle(0),
 
   //processor configuration
-  numArchitecturalRegisters(16),
-  numPhysicalRegisters(64),
+  numOfRegisters(16),
   memorySize(28),
   issueWindowSize(4),
   aluReservationStationSize(4),
@@ -40,17 +39,17 @@ Model::Model(const Instructions instructions) :
   runningFlag(true),
 
   //components
-  registerFile(numArchitecturalRegisters, numPhysicalRegisters), 
+  registerFile(numOfRegisters), 
   memory(memorySize),
-  reorderBuffer(&registerFile, &memory, &fetchUnit, &pc, &runningFlag, &noOfInstructionsExecuted, reorderBufferSize, 
+  reorderBuffer(&aluReservationStation, &registerFile, &memory, &fetchUnit, &pc, &runningFlag, &noOfInstructionsExecuted, reorderBufferSize, 
     issueWindowSize),
   fetchUnit(instructions, &pc, &decodeIssueUnit, issueWindowSize, branchPrediction),
   decodeIssueUnit(&registerFile, &reorderBuffer, &aluReservationStation, &branchUnitReservationStation, 
     &storeQueue, &loadQueue, issueWindowSize, branchPrediction),
   alu(new ALU[numALUs]),
-  aluReservationStation(&registerFile, numALUs, alu, aluReservationStationSize),
+  aluReservationStation(&reorderBuffer, &registerFile, numALUs, alu, aluReservationStationSize),
   branchUnit(&reorderBuffer),
-  branchUnitReservationStation(&registerFile, &branchUnit, branchUnitReservationStationSize),
+  branchUnitReservationStation(&reorderBuffer, &registerFile, &branchUnit, branchUnitReservationStationSize),
   loadStoreUnit(&memory, &reorderBuffer, &aluReservationStation),
   storeQueue(&reorderBuffer, &registerFile, &loadStoreUnit, storeQueueSize),
   loadQueue(&reorderBuffer, &registerFile, &storeQueue, &loadStoreUnit, loadQueueSize)
@@ -192,8 +191,6 @@ void Model::flushPipeline() {
   loadStoreUnit.flush();
   //flush reorder buffer
   reorderBuffer.flush();
-  //reset the register file scoreboard
-  registerFile.resetScoreBoard();
 }
 
 void Model::updateStats() {
@@ -212,7 +209,7 @@ void Model::updateStats() {
 // getter and setter functions
 
 int Model::getNumRegisters() const {
-  return numArchitecturalRegisters;
+  return numOfRegisters;
 }
 
 int Model::getMemorySize() const {
@@ -247,12 +244,12 @@ void Model::getRenameTable(int copy[]) const {
   registerFile.getRenameTable(copy);
 }
 
-void Model::getArchitecturalRegisterValues(int copy[]) const {
-  registerFile.getArchitecturalRegisterValues(copy);
+void Model::getRegisterValues(int copy[]) const {
+  registerFile.getRegisterValues(copy);
 }
 
-void Model::getLatestArchitecturalRegisterValues(int copy[]) const {
-  registerFile.getLatestArchitecturalRegisterValues(copy);
+void Model::getRobMapping(bool copy[]) const {
+  registerFile.getRobMapping(copy);
 }
 
 void Model::getAllMemoryValues(int copy[]) const {

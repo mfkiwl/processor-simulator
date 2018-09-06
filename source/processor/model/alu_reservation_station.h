@@ -7,6 +7,7 @@
 //forward declared dependencies
 class RegisterFile;
 class ALU;
+class ReorderBuffer;
 
 //=================================
 // included dependencies
@@ -20,6 +21,7 @@ class ALUReservationStation {
   //private member variables
   private:
     
+    ReorderBuffer* const reorderBuffer;
     RegisterFile* const registerFile;
     const int numALUs;
     ALU* const alu;
@@ -41,7 +43,8 @@ class ALUReservationStation {
   //public functions
   public:
 
-    ALUReservationStation(RegisterFile* const registerFile, const int numALUs, ALU* const alu, const int size);
+    ALUReservationStation(ReorderBuffer* const reorderBuffer, RegisterFile* const registerFile, const int numALUs, 
+      ALU* const alu, const int size);
 
     void execute();
 
@@ -55,7 +58,7 @@ class ALUReservationStation {
 
     void reserveSpace();
 
-    void broadcast(int physicalRegister, int value);
+    void broadcast(int robEntry, int value);
 
   //private functions
   private:

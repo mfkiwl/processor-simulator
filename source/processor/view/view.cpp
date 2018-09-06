@@ -172,16 +172,18 @@ void View::drawTextCell(const int xPos, const int yPos, const int width, const i
   SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
 }
 
-void View::drawRegisterFile(const int numRegisters, const int registerValues[], const int renameTable[]) {
+void View::drawRegisterFile(const int numRegisters, const int registerValues[], const int renameTable[],
+  const bool robMapping[]) 
+{
 
   //table info
   int noOfHorizontalCells = numRegisters;
   int noOfVerticalCells = 3;
-  int xPos = 40;
+  int xPos = 0;
   int yPos = 330;
-  int cellWidth = 30;
+  int cellWidth = 38;
   int cellHeight = 20;
-  int textCellWidth = 120;
+  int textCellWidth = 80;
 
   //the offset the text should be drawn at
   int xOffset = 1;
@@ -192,9 +194,9 @@ void View::drawRegisterFile(const int numRegisters, const int registerValues[], 
 
   //draw the table to hold the register values
   drawTable(xPos + textCellWidth, yPos + cellHeight, noOfHorizontalCells, noOfVerticalCells, cellWidth, cellHeight);
-  drawTextCell(xPos, yPos + cellHeight, textCellWidth, cellHeight, "Architectural :", xOffset, yOffset);
-  drawTextCell(xPos, yPos + 2 * cellHeight, textCellWidth, cellHeight, "Physical :", xOffset, yOffset);
-  drawTextCell(xPos, yPos + 3 * cellHeight, textCellWidth, cellHeight, "Latest Value :", xOffset, yOffset);
+  drawTextCell(xPos, yPos + cellHeight, textCellWidth, cellHeight, "Register :", xOffset, yOffset);
+  drawTextCell(xPos, yPos + 2 * cellHeight, textCellWidth, cellHeight, "Value :", xOffset, yOffset);
+  drawTextCell(xPos, yPos + 3 * cellHeight, textCellWidth, cellHeight, "Mapping :", xOffset, yOffset);
 
   //draw the register numbers
   for(int i = 0; i < noOfHorizontalCells; i++) {
@@ -204,13 +206,18 @@ void View::drawRegisterFile(const int numRegisters, const int registerValues[], 
 
   //draw the register values
   for(int i = 0; i < noOfHorizontalCells; i++) {
-    std::string text = intToString(renameTable[i]);
+    std::string text = intToString(registerValues[i]);
     renderText(xPos + textCellWidth + i * cellWidth + xOffset, yPos + 2 * cellHeight + yOffset, text);
   }
 
-  //draw the register values
+  //draw the mapping
   for(int i = 0; i < noOfHorizontalCells; i++) {
-    std::string text = intToString(registerValues[i]);
+    std::string text;
+    if(robMapping[i]) {
+      text = "RB" + intToString(renameTable[i]);
+    } else {
+      text = intToString(renameTable[i]);
+    }
     renderText(xPos + textCellWidth + i * cellWidth + xOffset, yPos + 3 * cellHeight + yOffset, text);
   }
 
@@ -326,10 +333,10 @@ void View::drawAluReservationStation(const int reservationStationSize, const Ins
   const int reorderBufferIndexes[], const OperandType operandTypes[][3]) 
 {
   //specification
-  int xPos = 50;
+  int xPos = 10;
   int yPos = 160;
   int numOfVerticalCells = reservationStationSize;
-  int cellWidth = 40;
+  int cellWidth = 50;
   int cellHeight = 20;
   int instructionCellWidth = 50;
 
@@ -345,19 +352,22 @@ void View::drawAluReservationStation(const int reservationStationSize, const Ins
   for(int i = 0; i < reservationStationSize; i++) {
     if(reorderBufferIndexes[i] != -1) {
       //draw reorder buffer index
-      renderText(xPos, yPos + (2 + i) * cellHeight, intToString(reorderBufferIndexes[i]));
+      renderText(xPos, yPos + (2 + i) * cellHeight, "RB" + intToString(reorderBufferIndexes[i]));
       //draw opcode
       renderText(xPos + cellWidth, yPos + (2 + i) * cellHeight, opcodeToString(instructions[i].opcode));
       //draw operands
       for(int j = 1; j < 3; j++) {
-        std::string operandText;
-        if(operandTypes[i][j] == REGISTER) {
-          operandText = "R" + intToString(instructions[i].operands[j]);
+        std::string operandString;
+        if(operandTypes[i][j] == ROB) {
+          operandString = "RB" + intToString(instructions[i].operands[j]);
+        }
+        else if(operandTypes[i][j] == REGISTER) {
+          operandString = "R" + intToString(instructions[i].operands[j]);
         }
         else if(operandTypes[i][j] == CONSTANT) {
-          operandText = intToString(instructions[i].operands[j]);
+          operandString = intToString(instructions[i].operands[j]);
         }
-        renderText(xPos + instructionCellWidth + j * cellWidth, yPos + (2 + i) * cellHeight, operandText);
+        renderText(xPos + instructionCellWidth + j * cellWidth, yPos + (2 + i) * cellHeight, operandString);
       }
     }
   }
@@ -383,17 +393,6 @@ void View::drawBranchUnitReservationStation(const int reservationStationSize, co
   drawTable(xPos + cellWidth, yPos + cellHeight * 2, 1, numOfVerticalCells, instructionCellWidth, cellHeight);
   drawTable(xPos + cellWidth + instructionCellWidth, yPos + cellHeight * 2, 2, numOfVerticalCells, cellWidth, cellHeight);
 
-/*
-  printf("operandTypes:\n");
-  for(int i = 0; i < reservationStationSize; i++) {
-    for(int j = 0; j < 3; j++) {
-      printf("%d ", operandTypes[i][j]);
-    }
-    printf("\n");
-  }
-  printf("\n");
-*/
-
   for(int i = 0; i < reservationStationSize; i++) {
     if(reorderBufferIndexes[i] != -1) {
       //draw reorder buffer index
@@ -403,7 +402,10 @@ void View::drawBranchUnitReservationStation(const int reservationStationSize, co
       //draw operands
       for(int j = 0; j < 2; j++) {
         std::string operandString;
-        if(operandTypes[i][j] == REGISTER) {
+        if(operandTypes[i][j] == ROB) {
+          operandString = "RB" + intToString(instructions[i].operands[j]);
+        }
+        else if(operandTypes[i][j] == REGISTER) {
           operandString = "R" + intToString(instructions[i].operands[j]);
         }
         else if(operandTypes[i][j] == CONSTANT) {
@@ -446,7 +448,10 @@ void View::drawStoreQueue(const int size, const Instruction instructions[], cons
       //draw operands
       for(int j = 0; j < 2; j++) {
         std::string operandString;
-        if(operandTypes[i][j] == REGISTER) {
+        if(operandTypes[i][j] == ROB) {
+          operandString = "RB" + intToString(instructions[i].operands[j]);
+        }
+        else if(operandTypes[i][j] == REGISTER) {
           operandString = "R" + intToString(instructions[i].operands[j]);
         }
         if(operandTypes[i][j] == CONSTANT) {
@@ -486,7 +491,10 @@ void View::drawLoadQueue(const int size, const Instruction instructions[], const
       //draw operands
       for(int j = 0; j < 2; j++) {
         std::string operandString;
-        if(operandTypes[i][j] == REGISTER) {
+        if(operandTypes[i][j] == ROB) {
+          operandString = "RB" + intToString(instructions[i].operands[j]);
+        }
+        else if(operandTypes[i][j] == REGISTER) {
           operandString = "R" + intToString(instructions[i].operands[j]);
         }
         else if(operandTypes[i][j] == CONSTANT) {

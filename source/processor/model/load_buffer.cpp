@@ -60,7 +60,7 @@ void LoadBuffer::readIfReady() {
     int value = memory->loadFromMemory(address);
     //tell the reorder buffer that we are finished executing the instruction
     reorderBuffer->finishedEntry(reorderBufferIndex, value);
-    aluReservationStation->broadcast(buffer[tail][DESTINATION_REGISTER], value);
+    //aluReservationStation->broadcast(buffer[tail][DESTINATION_REGISTER], value);
     //reset buffer entry
     buffer[tail][ADDRESS] = -1;
     buffer[tail][DESTINATION_REGISTER] = -1;

@@ -11,6 +11,7 @@
 #include "instructions.h"
 #include "fetch_unit.h"
 #include "constants.h"
+#include "alu_reservation_station.h"
 
 //===========================================
 //class implementation
@@ -20,9 +21,10 @@ using namespace std;
 //========================================================
 //public functions
 
-ReorderBuffer::ReorderBuffer(RegisterFile* const registerFile, Memory* const memory, FetchUnit* const fetchUnit, 
-  int* const pc, bool* const runningFlag, int* const noOfInstructionsExecuted, const int bufferSize, 
-  const int issueWindowSize) : 
+ReorderBuffer::ReorderBuffer(ALUReservationStation* const aluReservationStation, RegisterFile* const registerFile, 
+  Memory* const memory, FetchUnit* const fetchUnit, int* const pc, bool* const runningFlag, 
+  int* const noOfInstructionsExecuted, const int bufferSize, const int issueWindowSize) : 
+  aluReservationStation(aluReservationStation),
   registerFile(registerFile),
   memory(memory),
   fetchUnit(fetchUnit),
@@ -99,19 +101,22 @@ void ReorderBuffer::execute() {
       (*noOfInstructionsExecuted)++;
 
       if(buffer[tail][TYPE] == STORE_TO_REGISTER) {
+
         //write the result to the register
-        registerFile->setPhysicalRegisterValue(buffer[tail][PHYSICAL_REGISTER], buffer[tail][RESULT]);
-        //update the rollback rename table
-        registerFile->setRollbackRenameTableMapping(buffer[tail][ARCHITECTURAL_REGISTER], buffer[tail][PHYSICAL_REGISTER]);
-        //Set the scoreBoard of the destination register to 1
-        registerFile->setScoreBoardValue(buffer[tail][PHYSICAL_REGISTER], true);
-        //free the previous physical register
-        registerFile->freePhysicalRegister(buffer[tail][PREVIOUS_PHYSICAL_REGISTER]);
-      }
-      if(buffer[tail][TYPE] == STORE_TO_MEMORY) {
+        registerFile->setRegisterValue(buffer[tail][ARCHITECTURAL_REGISTER], buffer[tail][RESULT]);
+
+        //update the rename table is necessary
+        if(registerFile->isRobMapping(buffer[tail][ARCHITECTURAL_REGISTER]) && 
+          registerFile->getRegisterMapping(buffer[tail][ARCHITECTURAL_REGISTER]) == tail) 
+        {
+          registerFile->setMappingToRegister(buffer[tail][ARCHITECTURAL_REGISTER]);
+        }
+
+        aluReservationStation->broadcast(tail, buffer[tail][RESULT]);
 
       }
       if(buffer[tail][TYPE] == JUMP) {
+        //if the branch prediction was incorrect then recover
         if(buffer[tail][RESULT] != buffer[tail][BRANCH_PREDICTION]) {
           *pc = buffer[tail][BRANCH_TARGET_ADDRESS];
           flushFlag = true;
@@ -215,4 +220,12 @@ void ReorderBuffer::getReorderBufferFields(int copy[][ReorderBufferIndex::COUNT]
 
 bool ReorderBuffer::getFlushFlag() const {
   return flushFlag;
+}
+
+bool ReorderBuffer::isEntryFinished(const int i) const {
+  return buffer[i][STATUS] == FINISHED;
+}
+
+int ReorderBuffer::getEntryResult(const int i) const {
+  return buffer[i][RESULT];
 }
