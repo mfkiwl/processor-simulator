@@ -6,10 +6,6 @@
 //===========================
 //forward declared dependencies
 class ReorderBuffer;
-class ALUReservationStation;
-class StoreQueue;
-class LoadQueue;
-class BranchUnitReservationStation;
 
 //===========================================
 // included dependencies
@@ -24,11 +20,7 @@ class ALU {
 
     //forward components
     ReorderBuffer* reorderBuffer;
-    ALUReservationStation* aluReservationStation;
-    StoreQueue* storeQueue;
-    LoadQueue* loadQueue;
-    BranchUnitReservationStation* branchUnitReservationStation;
-
+    
     //next information
     int nextOpcode;
     int nextOperands[numOfOperands];
@@ -46,8 +38,6 @@ class ALU {
   public:
 
     ALU();
-
-    ALU(ReorderBuffer* const reorderBuffer, ALUReservationStation* const aluReservationStation);
 
     void execute();
 
@@ -69,14 +59,6 @@ class ALU {
     int getReorderBufferIndex() const;
 
     void setReorderBufferPointer(ReorderBuffer* p);
-
-    void setALUReservationStationPointer(ALUReservationStation* p);
-
-    void setStoreQueuePointer(StoreQueue* p);
-
-    void setLoadQueuePointer(LoadQueue* p);
-
-    void setBranchUnitReservationStationPointer(BranchUnitReservationStation* p);
 };
 
 #endif

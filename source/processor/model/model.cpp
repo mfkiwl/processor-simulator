@@ -54,12 +54,9 @@ Model::Model(const Instructions instructions) :
   storeQueue(&reorderBuffer, &registerFile, &loadStoreUnit, storeQueueSize),
   loadQueue(&reorderBuffer, &registerFile, &storeQueue, &loadStoreUnit, loadQueueSize)
 {
+  //give the ALUs pointers to the reorder buffer
   for(int i = 0; i < numALUs; i++) {
     alu[i].setReorderBufferPointer(&reorderBuffer);
-    alu[i].setALUReservationStationPointer(&aluReservationStation);
-    alu[i].setStoreQueuePointer(&storeQueue);
-    alu[i].setLoadQueuePointer(&loadQueue);
-    alu[i].setBranchUnitReservationStationPointer(&branchUnitReservationStation);
   }
 }
 
