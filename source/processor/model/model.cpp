@@ -41,8 +41,8 @@ Model::Model(const Instructions instructions) :
   //components
   registerFile(numOfRegisters), 
   memory(memorySize),
-  reorderBuffer(&aluReservationStation, &registerFile, &memory, &fetchUnit, &pc, &runningFlag, &noOfInstructionsExecuted, reorderBufferSize, 
-    issueWindowSize),
+  reorderBuffer(&aluReservationStation, &branchUnitReservationStation, &storeQueue, &loadQueue, &registerFile, 
+    &memory, &fetchUnit, &pc, &runningFlag, &noOfInstructionsExecuted, reorderBufferSize, issueWindowSize),
   fetchUnit(instructions, &pc, &decodeIssueUnit, issueWindowSize, branchPrediction),
   decodeIssueUnit(&registerFile, &reorderBuffer, &aluReservationStation, &branchUnitReservationStation, 
     &storeQueue, &loadQueue, issueWindowSize, branchPrediction),

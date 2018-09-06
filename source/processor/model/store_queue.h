@@ -64,7 +64,7 @@ class StoreQueue {
 
     void reserveSpace();
 
-  	void broadcast(int physicalRegister, int value);
+  	void broadcast(int robEntry, int value);
 
     bool checkLoad(int age, int address);
 

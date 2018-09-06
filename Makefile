@@ -70,7 +70,7 @@ OBJECTS += $(addprefix $(BUILD_DIR)/objects/controller/, $(addsuffix .o, $(CONTR
 OBJECTS += $(BUILD_DIR)/objects/main.o
 
 # PROGRAM species the program that our processor will run
-PROGRAM = programs/tests/arithmetic
+PROGRAM = programs/kernels/vector_addition
 
 
 # ======================================================

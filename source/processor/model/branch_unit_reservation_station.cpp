@@ -148,18 +148,18 @@ void BranchUnitReservationStation::reserveSpace() {
   numReservedSpaces++;
 }
 
-void BranchUnitReservationStation::broadcast(int physicalRegister, int value) {
+void BranchUnitReservationStation::broadcast(int robEntry, int value) {
   for(int i = 0; i < size; i++) {
     switch(instructions[i].opcode) {
       case NOOP:
         break;
       case BEQ:
       case BNE:
-        if(!(operandTypes[i][0] == CONSTANT) && instructions[i].operands[0] == physicalRegister) {
+        if((operandTypes[i][0] == ROB) && instructions[i].operands[0] == robEntry) {
           instructions[i].operands[0] = value;
           operandTypes[i][0] = CONSTANT;
         }
-        if(!(operandTypes[i][1] == CONSTANT) && instructions[i].operands[1] == physicalRegister) {
+        if((operandTypes[i][1] == ROB) && instructions[i].operands[1] == robEntry) {
           instructions[i].operands[1] = value;
           operandTypes[i][1] = CONSTANT;
         }

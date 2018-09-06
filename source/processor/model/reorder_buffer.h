@@ -6,6 +6,9 @@
 //===========================
 //forward declared dependencies
 class ALUReservationStation;
+class BranchUnitReservationStation;
+class StoreQueue;
+class LoadQueue;
 class RegisterFile;
 class Memory;
 class Instruction;
@@ -23,6 +26,9 @@ class ReorderBuffer {
   private:
 
     ALUReservationStation* const aluReservationStation;
+    BranchUnitReservationStation* const branchUnitReservationStation;
+    StoreQueue* const storeQueue;
+    LoadQueue* const loadQueue;
 
     RegisterFile* const registerFile;
     Memory* const memory;
@@ -48,9 +54,11 @@ class ReorderBuffer {
   //public functions
   public:
 
-    ReorderBuffer(ALUReservationStation* const aluReservationStation, RegisterFile* const registerFile, 
-      Memory* const memory, FetchUnit* const fetchUnit, int* const pc, bool* const runningFlag, 
-      int* const noOfInstructionsExecuted, const int bufferSize, const int issueWindowSize);
+    ReorderBuffer(ALUReservationStation* const aluReservationStation, 
+      BranchUnitReservationStation* const branchUnitReservationStation, StoreQueue* const storeQueue,
+      LoadQueue* const loadQueue, RegisterFile* const registerFile, Memory* const memory, FetchUnit* const fetchUnit, 
+      int* const pc, bool* const runningFlag, int* const noOfInstructionsExecuted, const int bufferSize, 
+      const int issueWindowSize);
 
     bool freeSpace() const;
 

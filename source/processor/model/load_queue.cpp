@@ -145,7 +145,7 @@ void LoadQueue::reserveSpace() {
   numReservedSpaces++;
 }
 
-void LoadQueue::broadcast(int physicalRegister, int value) {
+void LoadQueue::broadcast(int robEntry, int value) {
   for(int i = 0; i < size; i++) {
     switch(instructions[i].opcode) {
       case NOOP:
@@ -153,7 +153,7 @@ void LoadQueue::broadcast(int physicalRegister, int value) {
       case LW:
         break;
       case LWR:
-        if(!(operandTypes[i][1] == CONSTANT) && instructions[i].operands[1] == physicalRegister) {
+        if((operandTypes[i][1] == ROB) && instructions[i].operands[1] == robEntry) {
           instructions[i].operands[1] = value;
           operandTypes[i][1] = CONSTANT;
         }

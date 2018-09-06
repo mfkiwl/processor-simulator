@@ -12,6 +12,9 @@
 #include "fetch_unit.h"
 #include "constants.h"
 #include "alu_reservation_station.h"
+#include "branch_unit_reservation_station.h"
+#include "store_queue.h"
+#include "load_queue.h"
 
 //===========================================
 //class implementation
@@ -21,10 +24,15 @@ using namespace std;
 //========================================================
 //public functions
 
-ReorderBuffer::ReorderBuffer(ALUReservationStation* const aluReservationStation, RegisterFile* const registerFile, 
-  Memory* const memory, FetchUnit* const fetchUnit, int* const pc, bool* const runningFlag, 
-  int* const noOfInstructionsExecuted, const int bufferSize, const int issueWindowSize) : 
+ReorderBuffer::ReorderBuffer(ALUReservationStation* const aluReservationStation, 
+  BranchUnitReservationStation* const branchUnitReservationStation, StoreQueue* const storeQueue, 
+  LoadQueue* const loadQueue, RegisterFile* const registerFile, Memory* const memory, FetchUnit* const fetchUnit, 
+  int* const pc, bool* const runningFlag, int* const noOfInstructionsExecuted, const int bufferSize, 
+  const int issueWindowSize) : 
   aluReservationStation(aluReservationStation),
+  branchUnitReservationStation(branchUnitReservationStation),
+  storeQueue(storeQueue),
+  loadQueue(loadQueue),
   registerFile(registerFile),
   memory(memory),
   fetchUnit(fetchUnit),
@@ -113,6 +121,9 @@ void ReorderBuffer::execute() {
         }
 
         aluReservationStation->broadcast(tail, buffer[tail][RESULT]);
+        branchUnitReservationStation->broadcast(tail, buffer[tail][RESULT]);
+        storeQueue->broadcast(tail, buffer[tail][RESULT]);
+        loadQueue->broadcast(tail, buffer[tail][RESULT]);
 
       }
       if(buffer[tail][TYPE] == JUMP) {

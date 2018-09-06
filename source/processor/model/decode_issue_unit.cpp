@@ -110,14 +110,14 @@ void DecodeIssueUnit::issue(int instructionToIssue) {
         //set the second operands type
         operandTypes[instructionToIssue][2] = CONSTANT;
 
-        //update the rename table for the destination register
-        registerFile->setMappingToRobEntry(instructions[instructionToIssue].operands[0], reorderBufferIndex);
+        //set the destinations type
+        operandTypes[instructionToIssue][0] = ROB;
 
         //rename the destination
         instructions[instructionToIssue].operands[0] = reorderBufferIndex;
 
-        //set the destinations type
-        operandTypes[instructionToIssue][0] = ROB;
+        //update the rename table for the destination register
+        registerFile->setMappingToRobEntry(destinationRegister, reorderBufferIndex);
 
         //take note that the instruction was issued
         instructionsIssued[instructionToIssue] = true;
@@ -146,11 +146,7 @@ void DecodeIssueUnit::issue(int instructionToIssue) {
         //Add the reorder buffer index to the list of current instructions
         reorderBufferIndexes[instructionToIssue] = reorderBufferIndex;
 
-        //rename the second operand
-        instructions[instructionToIssue].operands[1] = 
-          registerFile->getRegisterMapping(instructions[instructionToIssue].operands[1]);
-
-        //set the operand type for the second operand
+        //set the first operand type
         if(registerFile->isRobMapping(instructions[instructionToIssue].operands[1])) {
           operandTypes[instructionToIssue][1] = ROB;
         }
@@ -158,11 +154,11 @@ void DecodeIssueUnit::issue(int instructionToIssue) {
           operandTypes[instructionToIssue][1] = REGISTER;
         }
 
-        //rename the third operand
-        instructions[instructionToIssue].operands[2] = 
-          registerFile->getRegisterMapping(instructions[instructionToIssue].operands[2]);
+        //rename the first operand
+        instructions[instructionToIssue].operands[1] = 
+          registerFile->getRegisterMapping(instructions[instructionToIssue].operands[1]);
 
-        //set the operand type for the third operand
+        //set the  second operand type
         if(registerFile->isRobMapping(instructions[instructionToIssue].operands[2])) {
           operandTypes[instructionToIssue][2] = ROB;
         }
@@ -170,14 +166,18 @@ void DecodeIssueUnit::issue(int instructionToIssue) {
           operandTypes[instructionToIssue][2] = REGISTER;
         }
 
-        //update the rename table for the destination register
-        registerFile->setMappingToRobEntry(destinationRegister, reorderBufferIndex);
+        //rename the second operand
+        instructions[instructionToIssue].operands[2] = 
+          registerFile->getRegisterMapping(instructions[instructionToIssue].operands[2]);
+
+        //set the desination type
+        operandTypes[instructionToIssue][0] = ROB;
 
         //rename the destination
         instructions[instructionToIssue].operands[0] = reorderBufferIndex;
 
-        //set the desination type
-        operandTypes[instructionToIssue][0] = ROB;
+        //update the rename table for the destination register
+        registerFile->setMappingToRobEntry(destinationRegister, reorderBufferIndex);
 
         //take note that the instruction was issued
         instructionsIssued[instructionToIssue] = true;
@@ -198,15 +198,18 @@ void DecodeIssueUnit::issue(int instructionToIssue) {
         int reorderBufferIndex = reorderBuffer->addEntry(STORE_TO_REGISTER, false, 0, 
           destinationRegister, 0, 0, instructions[instructionToIssue]);
         reorderBufferIndexes[instructionToIssue] = reorderBufferIndex;
-        
-        //update the rename table
-        registerFile->setMappingToRobEntry(destinationRegister, reorderBufferIndex);
 
-        //rename the destination operand
-        instructions[instructionToIssue].operands[0] = reorderBufferIndex;
+        //set the first operand type
+        operandTypes[instructionToIssue][1] = CONSTANT;
+
+        //set the destination type
         operandTypes[instructionToIssue][0] = ROB;
 
-        operandTypes[instructionToIssue][1] = CONSTANT;
+        //rename the destination register
+        instructions[instructionToIssue].operands[0] = reorderBufferIndex;
+
+        //update the rename table
+        registerFile->setMappingToRobEntry(destinationRegister, reorderBufferIndex);
 
         //take note that the instruction was issued
         instructionsIssued[instructionToIssue] = true;
@@ -229,21 +232,25 @@ void DecodeIssueUnit::issue(int instructionToIssue) {
         //store the reorder buffer index for the instruction
         reorderBufferIndexes[instructionToIssue] = reorderBufferIndex;
 
-        //update the rename table
-        registerFile->setMappingToRobEntry(destinationRegister, reorderBufferIndex);
-
-        //rename the first operand
-        instructions[instructionToIssue].operands[0] = reorderBufferIndex;
-        operandTypes[instructionToIssue][0] = ROB;
-
-        //rename the second operand
-        instructions[instructionToIssue].operands[1] = registerFile->getRegisterMapping(instructions[instructionToIssue].operands[1]);
+        //set the first operand
         if(registerFile->isRobMapping(instructions[instructionToIssue].operands[1])) {
           operandTypes[instructionToIssue][1] = ROB;
         }
         else {
           operandTypes[instructionToIssue][1] = REGISTER;
         }
+
+        //rename the first operand
+        instructions[instructionToIssue].operands[1] = registerFile->getRegisterMapping(instructions[instructionToIssue].operands[1]);
+
+        //set the destination type
+        operandTypes[instructionToIssue][0] = ROB;
+
+        //rename the destination register
+        instructions[instructionToIssue].operands[0] = reorderBufferIndex;
+
+        //update the rename table
+        registerFile->setMappingToRobEntry(destinationRegister, reorderBufferIndex);
 
         //take note that the instruction was issued
         instructionsIssued[instructionToIssue] = true;
@@ -259,16 +266,17 @@ void DecodeIssueUnit::issue(int instructionToIssue) {
         //Instruction has been issued so add entry to the reorder buffer
         reorderBufferIndexes[instructionToIssue] = reorderBuffer->addEntry(STORE_TO_MEMORY, true, 0, 0, 0, 0, instructions[instructionToIssue]);
 
-        //rename the registers
-        instructions[instructionToIssue].operands[0] = 
-          registerFile->getRegisterMapping(instructions[instructionToIssue].operands[0]);
-
+        //set the operand type
         if(registerFile->isRobMapping(instructions[instructionToIssue].operands[0])) {
           operandTypes[instructionToIssue][0] = ROB;
         }
         else {
           operandTypes[instructionToIssue][0] = REGISTER;
         }
+
+        //rename the operand
+        instructions[instructionToIssue].operands[0] = 
+          registerFile->getRegisterMapping(instructions[instructionToIssue].operands[0]);
 
         //take note that the instruction was issued
         instructionsIssued[instructionToIssue] = true;
@@ -284,10 +292,6 @@ void DecodeIssueUnit::issue(int instructionToIssue) {
         //Instruction has been issued so add entry to the reorder buffer
         reorderBufferIndexes[instructionToIssue] = reorderBuffer->addEntry(STORE_TO_MEMORY, true, 0, 0, 0, 0, instructions[instructionToIssue]);
 
-        //rename first operand
-        instructions[instructionToIssue].operands[0] = 
-          registerFile->getRegisterMapping(instructions[instructionToIssue].operands[0]);
-
         //set the first operand type
         if(registerFile->isRobMapping(instructions[instructionToIssue].operands[0])) {
           operandTypes[instructionToIssue][0] = ROB;
@@ -296,9 +300,9 @@ void DecodeIssueUnit::issue(int instructionToIssue) {
           operandTypes[instructionToIssue][0] = CONSTANT;
         }
 
-        //rename the second operand
-        instructions[instructionToIssue].operands[1] = 
-          registerFile->getRegisterMapping(instructions[instructionToIssue].operands[1]);
+        //rename first operand
+        instructions[instructionToIssue].operands[0] = 
+          registerFile->getRegisterMapping(instructions[instructionToIssue].operands[0]);
 
         //set the second operand type
         if(registerFile->isRobMapping(instructions[instructionToIssue].operands[1])) {
@@ -307,6 +311,10 @@ void DecodeIssueUnit::issue(int instructionToIssue) {
         else {
           operandTypes[instructionToIssue][1] = REGISTER;
         }
+
+        //rename the second operand
+        instructions[instructionToIssue].operands[1] = 
+          registerFile->getRegisterMapping(instructions[instructionToIssue].operands[1]);
 
         //take note that the instruction was issued
         instructionsIssued[instructionToIssue] = true;
@@ -331,10 +339,6 @@ void DecodeIssueUnit::issue(int instructionToIssue) {
             branchAddresses[instructionToIssue], 0, 0, 0, instructions[instructionToIssue]);
         }
 
-        //rename the first operand
-        instructions[instructionToIssue].operands[0] = 
-          registerFile->getRegisterMapping(instructions[instructionToIssue].operands[0]);
-
         //set the first operand type
         if(registerFile->isRobMapping(instructions[instructionToIssue].operands[0])) {
           operandTypes[instructionToIssue][0] = ROB;
@@ -343,9 +347,9 @@ void DecodeIssueUnit::issue(int instructionToIssue) {
           operandTypes[instructionToIssue][0] = REGISTER;
         }
 
-        //rename the second operand
-        instructions[instructionToIssue].operands[1] = 
-          registerFile->getRegisterMapping(instructions[instructionToIssue].operands[1]);
+        //rename the first operand
+        instructions[instructionToIssue].operands[0] = 
+          registerFile->getRegisterMapping(instructions[instructionToIssue].operands[0]);
 
         //set the second operand type
         if(registerFile->isRobMapping(instructions[instructionToIssue].operands[1])) {
@@ -354,6 +358,10 @@ void DecodeIssueUnit::issue(int instructionToIssue) {
         else {
           operandTypes[instructionToIssue][1] = REGISTER;
         }
+
+        //rename the second operand
+        instructions[instructionToIssue].operands[1] = 
+          registerFile->getRegisterMapping(instructions[instructionToIssue].operands[1]);
 
         //set the third operand type
         operandTypes[instructionToIssue][2] = CONSTANT;

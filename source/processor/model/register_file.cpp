@@ -81,7 +81,6 @@ void RegisterFile::flush() {
   for(int i = 0; i < numOfRegisters; i++) {
     renameTable[i] = i;
     robMapping[i] = false;
-    registers[i] = 0;
   }
 }
 
