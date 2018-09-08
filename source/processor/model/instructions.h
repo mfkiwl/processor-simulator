@@ -48,6 +48,10 @@ std::string intToString(const int i);
 
 std::string floatToString(const float i);
 
+std::string operandsToString(const int operands[numOfOperands], const OperandType operandTypes[numOfOperands]);
+
+std::string operandToString(const int operand, const OperandType operandType);
+
 std::string opcodeToString(const int opcode);
 
 std::string instructionToString(const Instruction instruction);

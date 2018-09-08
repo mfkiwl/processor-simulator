@@ -47,9 +47,12 @@ void Controller::updateView() {
   //draw the instruction in the decode issue unit
   Instruction decodeIssueUnitInstructions[issueWindowSize];
   int decodeIssueUnitReorderBufferIndexes[issueWindowSize];
+  OperandType decodeIssueUnitOperandTypes[issueWindowSize][numOfOperands];
   model.getDecodeIssueUnitInstructions(decodeIssueUnitInstructions);
   model.getDecodeIssueUnitReorderBufferIndexes(decodeIssueUnitReorderBufferIndexes);
-  view.drawDecodeIssueUnit(issueWindowSize, decodeIssueUnitInstructions, decodeIssueUnitReorderBufferIndexes);
+  model.getDecodeIssueUnitOperandTypes(decodeIssueUnitOperandTypes);
+  view.drawDecodeIssueUnit(issueWindowSize, decodeIssueUnitInstructions, decodeIssueUnitReorderBufferIndexes,
+    decodeIssueUnitOperandTypes);
 
   //draw the instructions in the alu reservation station
   int aluReservationStationSize = model.getAluReservationStationSize();
@@ -57,7 +60,7 @@ void Controller::updateView() {
   model.getAluReservationStationInstructions(aluReservationStationInstructions);
   int aluReservationStationReorderBufferIndexes[aluReservationStationSize];
   model.getAluReservationStationReorderBufferIndexes(aluReservationStationReorderBufferIndexes);
-  OperandType aluReservationStationOperandTypes[aluReservationStationSize][3];
+  OperandType aluReservationStationOperandTypes[aluReservationStationSize][numOfOperands];
   model.getAluReservationStationOperandTypes(aluReservationStationOperandTypes);
   view.drawAluReservationStation(aluReservationStationSize, aluReservationStationInstructions, 
     aluReservationStationReorderBufferIndexes, aluReservationStationOperandTypes);
@@ -68,7 +71,7 @@ void Controller::updateView() {
   model.getBranchUnitReservationStationInstructions(branchUnitReservationStationInstructions);
   int branchUnitReservationStationReorderBufferIndexes[branchUnitReservationStationSize];
   model.getBranchUnitReservationStationReorderBufferIndexes(branchUnitReservationStationReorderBufferIndexes);
-  OperandType branchUnitReservationStationOperandTypes[branchUnitReservationStationSize][3];
+  OperandType branchUnitReservationStationOperandTypes[branchUnitReservationStationSize][numOfOperands];
   model.getBranchUnitReservationStationOperandTypes(branchUnitReservationStationOperandTypes);
   view.drawBranchUnitReservationStation(branchUnitReservationStationSize, branchUnitReservationStationInstructions, 
     branchUnitReservationStationReorderBufferIndexes, branchUnitReservationStationOperandTypes);
@@ -79,7 +82,7 @@ void Controller::updateView() {
   model.getStoreQueueInstructions(storeQueueInstructions);
   int storeQueueReorderBufferIndexes[storeQueueSize];
   model.getStoreQueueReorderBufferIndexes(storeQueueReorderBufferIndexes);
-  OperandType storeQueueOperandTypes[storeQueueSize][3];
+  OperandType storeQueueOperandTypes[storeQueueSize][numOfOperands];
   model.getStoreQueueOperandTypes(storeQueueOperandTypes);
   view.drawStoreQueue(storeQueueSize, storeQueueInstructions, storeQueueReorderBufferIndexes, storeQueueOperandTypes);
 
@@ -89,7 +92,7 @@ void Controller::updateView() {
   model.getLoadQueueInstructions(loadQueueInstructions);
   int loadQueueReorderBufferIndexes[loadQueueSize];
   model.getLoadQueueReorderBufferIndexes(loadQueueReorderBufferIndexes);
-  OperandType loadQueueOperandTypes[loadQueueSize][3];
+  OperandType loadQueueOperandTypes[loadQueueSize][numOfOperands];
   model.getLoadQueueOperandTypes(loadQueueOperandTypes);
   view.drawLoadQueue(loadQueueSize, loadQueueInstructions, loadQueueReorderBufferIndexes, loadQueueOperandTypes);
 

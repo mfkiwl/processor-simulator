@@ -86,7 +86,7 @@ class View {
     void drawFetchUnit(const int issueWindowSize, const Instruction instructions[]);
 
     void drawDecodeIssueUnit(const int issueWindowSize, const Instruction instructions[], 
-      const int reorderBufferIndexes[]);
+      const int reorderBufferIndexes[], const OperandType operandTypes[][numOfOperands]);
 
     void drawAluReservationStation(const int reservationStationSize, const Instruction instructions[], 
       const int reorderBufferIndexes[], const OperandType operandTypes[][3]);

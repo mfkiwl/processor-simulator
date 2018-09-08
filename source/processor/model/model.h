@@ -128,6 +128,8 @@ class Model {
 
     void getDecodeIssueUnitReorderBufferIndexes(int copy[]) const;
 
+    void getDecodeIssueUnitOperandTypes(OperandType copy[][numOfOperands]) const;
+
     int getAluReservationStationSize() const;
 
     void getAluReservationStationInstructions(Instruction copy[]) const;

@@ -306,7 +306,7 @@ void View::drawFetchUnit(const int issueWindowSize, const Instruction instructio
 }
 
 void View::drawDecodeIssueUnit(const int issueWindowSize, const Instruction instructions[], 
-  const int reorderBufferIndexes[]) 
+  const int reorderBufferIndexes[], const OperandType operandTypes[][numOfOperands]) 
 {
   int xPos = 260;
   int yPos = 60;
@@ -322,7 +322,8 @@ void View::drawDecodeIssueUnit(const int issueWindowSize, const Instruction inst
     if(reorderBufferIndexes[i] != -1) {
       renderText(xPos, yPos + (i + 1) * cellHeight, intToString(reorderBufferIndexes[i]));
     }
-    std::string instructionString = instructionToString(instructions[i]);
+    std::string instructionString = opcodeToString(instructions[i].opcode) + " " +
+      operandsToString(instructions[i].operands, operandTypes[i]);
     if(instructionString != "NOOP") {
       renderText(xPos + 20, yPos + (i + 1) * cellHeight, instructionString);
     }
@@ -352,21 +353,12 @@ void View::drawAluReservationStation(const int reservationStationSize, const Ins
   for(int i = 0; i < reservationStationSize; i++) {
     if(reorderBufferIndexes[i] != -1) {
       //draw reorder buffer index
-      renderText(xPos, yPos + (2 + i) * cellHeight, "RB" + intToString(reorderBufferIndexes[i]));
+      renderText(xPos, yPos + (2 + i) * cellHeight, intToString(reorderBufferIndexes[i]));
       //draw opcode
       renderText(xPos + cellWidth, yPos + (2 + i) * cellHeight, opcodeToString(instructions[i].opcode));
       //draw operands
       for(int j = 1; j < 3; j++) {
-        std::string operandString;
-        if(operandTypes[i][j] == ROB) {
-          operandString = "RB" + intToString(instructions[i].operands[j]);
-        }
-        else if(operandTypes[i][j] == REGISTER) {
-          operandString = "R" + intToString(instructions[i].operands[j]);
-        }
-        else if(operandTypes[i][j] == CONSTANT) {
-          operandString = intToString(instructions[i].operands[j]);
-        }
+        std::string operandString = operandToString(instructions[i].operands[j], operandTypes[i][j]);
         renderText(xPos + instructionCellWidth + j * cellWidth, yPos + (2 + i) * cellHeight, operandString);
       }
     }
@@ -401,19 +393,7 @@ void View::drawBranchUnitReservationStation(const int reservationStationSize, co
       renderText(xPos + cellWidth, yPos + (2 + i) * cellHeight, opcodeToString(instructions[i].opcode));
       //draw operands
       for(int j = 0; j < 2; j++) {
-        std::string operandString;
-        if(operandTypes[i][j] == ROB) {
-          operandString = "RB" + intToString(instructions[i].operands[j]);
-        }
-        else if(operandTypes[i][j] == REGISTER) {
-          operandString = "R" + intToString(instructions[i].operands[j]);
-        }
-        else if(operandTypes[i][j] == CONSTANT) {
-          operandString = intToString(instructions[i].operands[j]);
-        }
-        else if(operandTypes[i][j] == NONE) {
-          operandString = " ";
-        }
+        std::string operandString = operandToString(instructions[i].operands[j], operandTypes[i][j]);
         renderText(xPos + instructionCellWidth + (j + 1) * cellWidth, yPos + (2 + i) * cellHeight, operandString);
       }
     }

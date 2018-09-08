@@ -60,11 +60,7 @@ class DecodeIssueUnit {
 
     void issue(int instructionToIssue);
 
-    void moveInstructions();
-
     void pipe();
-
-    void pipeInstruction(int instructionToIssue);
 
     void flush();
 
@@ -73,6 +69,15 @@ class DecodeIssueUnit {
     bool allInstructionsIssued() const;
 
     int numFreeSpaces() const;
+
+  //private instructins
+  private:
+
+    void setOperandTypes(const int index);
+
+    void pipeInstruction(int instructionToIssue);
+
+    void moveInstructions();
 
   //getters and setters
   public:
@@ -84,6 +89,8 @@ class DecodeIssueUnit {
     void getReorderBufferIndexes(int copy[]) const;
 
     void setNextBranchAddresses(const int x[]);
+
+    void getOperandTypes(OperandType copy[][numOfOperands]) const;
 };
 
 #endif

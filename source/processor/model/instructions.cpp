@@ -183,6 +183,28 @@ std::string floatToString(const float i) {
   return output;
 }
 
+std::string operandsToString(const int operands[numOfOperands], const OperandType operandTypes[numOfOperands]) {
+  std::string result = "";
+  for(int i = 0; i < numOfOperands; i++) {
+    result += operandToString(operands[i], operandTypes[i]) + " ";
+  }
+  return result;
+}
+
+std::string operandToString(const int operand, const OperandType operandType) {
+  switch(operandType) {
+    case NONE:
+      return " ";
+    case REGISTER:
+      return "R" + intToString(operand);
+    case ROB:
+      return "RB" + intToString(operand);
+    case CONSTANT:
+      return intToString(operand);
+  }
+  return " ";
+}
+
 std::string opcodeToString(const int opcode) {
   switch(opcode) {
     case ADD:

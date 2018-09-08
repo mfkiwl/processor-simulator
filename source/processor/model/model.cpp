@@ -265,6 +265,10 @@ void Model::getDecodeIssueUnitReorderBufferIndexes(int copy[]) const {
   decodeIssueUnit.getReorderBufferIndexes(copy);
 }
 
+void Model::getDecodeIssueUnitOperandTypes(OperandType copy[][numOfOperands]) const {
+  decodeIssueUnit.getOperandTypes(copy);
+}
+
 int Model::getAluReservationStationSize() const {
   return aluReservationStationSize;
 }
