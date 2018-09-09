@@ -62,16 +62,16 @@ class View {
     //Frees media and shuts down SDL
     void close();
 
-    void renderText(const int x, const int y, const std::string text);
+    void renderText(const int x, const int y, const std::string text, SDL_Color textColor);
 
     //handle events
     void eventHandler();
 
     void drawTable(const int xPos, const int yPos, const int noOfHorizontalCells, const int noOfVerticalCells, 
-      const int cellWidth, const int cellHeight);
+      const int cellWidth, const int cellHeight, const SDL_Color color);
 
     void drawTextCell(const int xPos, const int yPos, const int width, const int height, const std::string text, 
-      const int xOffset, const int yOffset);
+      const int xOffset, const int yOffset, const SDL_Color color);
 
     void drawRegisterFile(const int numRegisters, const int registerValues[], const int renameTable[],
       const bool robMapping[]);
