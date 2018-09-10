@@ -39,7 +39,9 @@ class View {
     SDL_Renderer* gRenderer;
 
     //Globally used font
-    TTF_Font* gFont;
+    TTF_Font* gFont10;
+    TTF_Font* gFont15;
+    TTF_Font* gFont20;
 
     //Rendered texture
     LTexture gTextTexture;
@@ -62,7 +64,7 @@ class View {
     //Frees media and shuts down SDL
     void close();
 
-    void renderText(const int x, const int y, const std::string text, SDL_Color textColor);
+    void renderText(const int x, const int y, const std::string text, SDL_Color textColor, TTF_Font* gFont);
 
     //handle events
     void eventHandler();
@@ -71,7 +73,7 @@ class View {
       const int cellWidth, const int cellHeight, const SDL_Color color);
 
     void drawTextCell(const int xPos, const int yPos, const int width, const int height, const std::string text, 
-      const int xOffset, const int yOffset, const SDL_Color color);
+      const int xOffset, const int yOffset, const SDL_Color color, TTF_Font* gFont);
 
     void drawRegisterFile(const int numRegisters, const int registerValues[], const int renameTable[],
       const bool robMapping[]);
