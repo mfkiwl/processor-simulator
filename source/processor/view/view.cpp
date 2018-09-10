@@ -591,7 +591,7 @@ void View::drawReorderBuffer(const int size, const int tailIndex, const int head
 
   int xPos = 690;
   int yPos = 10;
-  int numOfHorizontalCells = numFields;
+  int numOfHorizontalCells = numFields - 1;
   int numOfVerticalCells = size;
   int cellWidth = 20;
   int cellHeight = 20;
@@ -605,10 +605,10 @@ void View::drawReorderBuffer(const int size, const int tailIndex, const int head
 
   for(int i = 0; i < size; i++) {
     renderText(xPos, yPos + (i+1) * cellHeight, intToString(i), textColor, textFont);
-    if(fields[i][3] != -1) {
+    if(fields[i][TYPE] != -1) {
       renderText(xPos + cellWidth, yPos + (i+1) * cellHeight, instructionToString(instructions[i]), textColor, textFont);
-      for(int j = 0; j < numFields; j++) {
-        renderText(xPos + textCellWidth + (j+1) * cellWidth, yPos + (i+1) * cellHeight, intToString(fields[i][j]), textColor, textFont);
+      for(int j = 1; j < numFields; j++) {
+        renderText(xPos + textCellWidth + (j) * cellWidth, yPos + (i+1) * cellHeight, intToString(fields[i][j]), textColor, textFont);
       }
     }
   }

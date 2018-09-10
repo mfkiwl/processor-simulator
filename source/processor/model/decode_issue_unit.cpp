@@ -92,7 +92,7 @@ void DecodeIssueUnit::issue(int instructionToIssue) {
         int destinationRegister = instructions[instructionToIssue].operands[0];
 
         //Add instruction to the reorder buffer
-        int reorderBufferIndex = reorderBuffer->addEntry(STORE_TO_REGISTER, false, 0, destinationRegister, 0, 0, 
+        int reorderBufferIndex = reorderBuffer->addEntry(STORE_TO_REGISTER, destinationRegister, false, -1,
           instructions[instructionToIssue]);
 
         //Add the reorder buffer index to the list of current instructions
@@ -143,7 +143,7 @@ void DecodeIssueUnit::issue(int instructionToIssue) {
         int destinationRegister = instructions[instructionToIssue].operands[0];
 
         //Add instruction to the reorder buffer
-        int reorderBufferIndex = reorderBuffer->addEntry(STORE_TO_REGISTER, false, 0, destinationRegister, 0, 0, 
+        int reorderBufferIndex = reorderBuffer->addEntry(STORE_TO_REGISTER, destinationRegister, false, -1,
           instructions[instructionToIssue]);
 
         //Add the reorder buffer index to the list of current instructions
@@ -198,8 +198,8 @@ void DecodeIssueUnit::issue(int instructionToIssue) {
         int destinationRegister = instructions[instructionToIssue].operands[0];
 
         //Instruction has been issued so add entry to the reorder buffer
-        int reorderBufferIndex = reorderBuffer->addEntry(STORE_TO_REGISTER, false, 0, 
-          destinationRegister, 0, 0, instructions[instructionToIssue]);
+        int reorderBufferIndex = reorderBuffer->addEntry(STORE_TO_REGISTER, destinationRegister, false, -1, 
+          instructions[instructionToIssue]);
         reorderBufferIndexes[instructionToIssue] = reorderBufferIndex;
 
         //set the first operand type
@@ -229,7 +229,7 @@ void DecodeIssueUnit::issue(int instructionToIssue) {
         int destinationRegister = instructions[instructionToIssue].operands[0];
 
         //Instruction has been issued so add entry to the reorder buffer
-        int reorderBufferIndex = reorderBuffer->addEntry(STORE_TO_REGISTER, false, 0, destinationRegister, 0, 0, 
+        int reorderBufferIndex = reorderBuffer->addEntry(STORE_TO_REGISTER, destinationRegister, false, -1, 
           instructions[instructionToIssue]);
 
         //store the reorder buffer index for the instruction
@@ -267,7 +267,8 @@ void DecodeIssueUnit::issue(int instructionToIssue) {
         storeQueue->reserveSpace();
 
         //Instruction has been issued so add entry to the reorder buffer
-        reorderBufferIndexes[instructionToIssue] = reorderBuffer->addEntry(STORE_TO_MEMORY, true, 0, 0, 0, 0, instructions[instructionToIssue]);
+        reorderBufferIndexes[instructionToIssue] = reorderBuffer->addEntry(STORE_TO_MEMORY, 0, false, 0, 
+          instructions[instructionToIssue]);
 
         //set the operand type
         if(registerFile->isRobMapping(instructions[instructionToIssue].operands[0])) {
@@ -293,7 +294,8 @@ void DecodeIssueUnit::issue(int instructionToIssue) {
         storeQueue->reserveSpace();
 
         //Instruction has been issued so add entry to the reorder buffer
-        reorderBufferIndexes[instructionToIssue] = reorderBuffer->addEntry(STORE_TO_MEMORY, true, 0, 0, 0, 0, instructions[instructionToIssue]);
+        reorderBufferIndexes[instructionToIssue] = reorderBuffer->addEntry(STORE_TO_MEMORY, -1, false, -1, 
+          instructions[instructionToIssue]);
 
         //set the first operand type
         if(registerFile->isRobMapping(instructions[instructionToIssue].operands[0])) {
@@ -334,12 +336,12 @@ void DecodeIssueUnit::issue(int instructionToIssue) {
 
         //Instruction has been issued so add entry to the reorder buffer
         if(branchPrediction) {
-          reorderBufferIndexes[instructionToIssue] = reorderBuffer->addEntry(JUMP, true, 
-            branchAddresses[instructionToIssue], 0, 0, 0, instructions[instructionToIssue]);
+          reorderBufferIndexes[instructionToIssue] = reorderBuffer->addEntry(JUMP, -1, true, 
+            branchAddresses[instructionToIssue], instructions[instructionToIssue]);
         }
         else {
-          reorderBufferIndexes[instructionToIssue] = reorderBuffer->addEntry(JUMP, false,
-            branchAddresses[instructionToIssue], 0, 0, 0, instructions[instructionToIssue]);
+          reorderBufferIndexes[instructionToIssue] = reorderBuffer->addEntry(JUMP, -1, false,
+            branchAddresses[instructionToIssue], instructions[instructionToIssue]);
         }
 
         //set the first operand type
@@ -390,7 +392,8 @@ void DecodeIssueUnit::issue(int instructionToIssue) {
         branchUnitReservationStation->reserveSpace();
 
         //Instruction has been issued so add entry to the reorder buffer
-        reorderBufferIndexes[instructionToIssue] = reorderBuffer->addEntry(SYSCALL, false, 0, 0, 0, 0, instructions[instructionToIssue]);
+        reorderBufferIndexes[instructionToIssue] = reorderBuffer->addEntry(SYSCALL, -1, false, -1, 
+          instructions[instructionToIssue]);
 
         //take note that the instruction was issued
         instructionsIssued[instructionToIssue] = true;

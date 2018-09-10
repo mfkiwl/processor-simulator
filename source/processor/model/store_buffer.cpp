@@ -60,7 +60,7 @@ void StoreBuffer::writeIfReady() {
     //store the value at the memory address
     memory->storeInMemory(address, value);
     //tell the reorder buffer that we are finished executing the instruction
-    reorderBuffer->finishedEntry(reorderBufferIndex, value);
+    reorderBuffer->finishedEntry(reorderBufferIndex, -1);
     //reset write buffer entry
     buffer[tail][ADDRESS] = -1;
     buffer[tail][VALUE] = -1;

@@ -29,7 +29,7 @@ enum Opcodes {
 
 //type in the reorder buffer
 enum Type {
-  JUMP,
+  BRANCH,
   STORE_TO_MEMORY,
   STORE_TO_REGISTER,
   SYSCALL
@@ -39,12 +39,10 @@ enum Type {
 enum ReorderBufferIndex {
   TYPE,
   STATUS,
+  DESTINATION_REGISTER,
   RESULT,
   BRANCH_PREDICTION,
   BRANCH_TARGET_ADDRESS,
-  ARCHITECTURAL_REGISTER,
-  PHYSICAL_REGISTER,
-  PREVIOUS_PHYSICAL_REGISTER,
   COUNT
 };
 

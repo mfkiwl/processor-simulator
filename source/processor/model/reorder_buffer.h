@@ -64,9 +64,8 @@ class ReorderBuffer {
 
     bool empty() const;
 
-    int addEntry(const Type type, const bool branchPrediction, const int branchTargetAddress, 
-      const int architecturalRegister, const int physicalRegister, const int previousPhysicalRegister, 
-      const Instruction instruction);
+    int addEntry(const Type type, const int destinationRegister, const bool branchPrediction, 
+      const int branchTargetAddress, const Instruction instruction);
 
     void execute();
 

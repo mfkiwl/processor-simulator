@@ -81,21 +81,23 @@ bool ReorderBuffer::empty() const {
   }
 }
 
-int ReorderBuffer::addEntry(const Type type, const bool branchPrediction, const int branchTargetAddress, 
-  const int architecturalRegister, const int physicalRegister, const int previousPhysicalRegister, 
-  const Instruction instruction)
+int ReorderBuffer::addEntry(const Type type, const int destinationRegister, const bool branchPrediction, 
+  const int branchTargetAddress,  const Instruction instruction)
 {
   if(!empty()) {
     head = (head + 1) % bufferSize;
   }
   buffer[head][TYPE] = type;
   buffer[head][STATUS] = ISSUED;
-  buffer[head][RESULT] = 0;
+  buffer[head][DESTINATION_REGISTER] = destinationRegister;
+  if(type == STORE_TO_REGISTER || type == STORE_TO_REGISTER || type == BRANCH) {
+    buffer[head][RESULT] = 0;
+  }
+  else {
+    buffer[head][RESULT] = -1;
+  }
   buffer[head][BRANCH_PREDICTION] = branchPrediction;
   buffer[head][BRANCH_TARGET_ADDRESS] = branchTargetAddress;
-  buffer[head][ARCHITECTURAL_REGISTER] = architecturalRegister;
-  buffer[head][PHYSICAL_REGISTER] = physicalRegister;
-  buffer[head][PREVIOUS_PHYSICAL_REGISTER] = previousPhysicalRegister;
   instructions[head] = instruction;
   return head;
 }
@@ -111,13 +113,13 @@ void ReorderBuffer::execute() {
       if(buffer[tail][TYPE] == STORE_TO_REGISTER) {
 
         //write the result to the register
-        registerFile->setRegisterValue(buffer[tail][ARCHITECTURAL_REGISTER], buffer[tail][RESULT]);
+        registerFile->setRegisterValue(buffer[tail][DESTINATION_REGISTER], buffer[tail][RESULT]);
 
         //update the rename table is necessary
-        if(registerFile->isRobMapping(buffer[tail][ARCHITECTURAL_REGISTER]) && 
-          registerFile->getRegisterMapping(buffer[tail][ARCHITECTURAL_REGISTER]) == tail) 
+        if(registerFile->isRobMapping(buffer[tail][DESTINATION_REGISTER]) && 
+          registerFile->getRegisterMapping(buffer[tail][DESTINATION_REGISTER]) == tail) 
         {
-          registerFile->setMappingToRegister(buffer[tail][ARCHITECTURAL_REGISTER]);
+          registerFile->setMappingToRegister(buffer[tail][DESTINATION_REGISTER]);
         }
 
         aluReservationStation->broadcast(tail, buffer[tail][RESULT]);
@@ -126,7 +128,7 @@ void ReorderBuffer::execute() {
         loadQueue->broadcast(tail, buffer[tail][RESULT]);
 
       }
-      if(buffer[tail][TYPE] == JUMP) {
+      if(buffer[tail][TYPE] == BRANCH) {
         //if the branch prediction was incorrect then recover
         if(buffer[tail][RESULT] != buffer[tail][BRANCH_PREDICTION]) {
           *pc = buffer[tail][BRANCH_TARGET_ADDRESS];
@@ -177,9 +179,7 @@ void ReorderBuffer::flush() {
     buffer[i][RESULT] = -1;
     buffer[i][BRANCH_PREDICTION] = -1;
     buffer[i][BRANCH_TARGET_ADDRESS] = -1;
-    buffer[i][ARCHITECTURAL_REGISTER] = -1;
-    buffer[i][PHYSICAL_REGISTER] = -1;
-    buffer[i][PREVIOUS_PHYSICAL_REGISTER] = -1;
+    buffer[i][DESTINATION_REGISTER] = -1;
   }
   for(int i = 0; i < bufferSize; i++) {
     instructions[i] = (Instruction) {0,0,0,0};
