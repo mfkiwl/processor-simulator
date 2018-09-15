@@ -22,7 +22,7 @@ Model::Model(const Instructions instructions) :
 
   //processor configuration
   numOfRegisters(16),
-  memorySize(28),
+  memorySize(32),
   issueWindowSize(4),
   aluReservationStationSize(4),
   branchUnitReservationStationSize(4),

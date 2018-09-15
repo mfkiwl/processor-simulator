@@ -39,7 +39,7 @@ class View {
     SDL_Renderer* gRenderer;
 
     //Globally used font
-    TTF_Font* gFont10;
+    TTF_Font* gFont12;
     TTF_Font* gFont15;
     TTF_Font* gFont20;
 
