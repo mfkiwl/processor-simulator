@@ -72,8 +72,8 @@ class View {
     void drawTable(const int xPos, const int yPos, const int noOfHorizontalCells, const int noOfVerticalCells, 
       const int cellWidth, const int cellHeight, const SDL_Color color);
 
-    void drawTextCell(const int xPos, const int yPos, const int width, const int height, const std::string text, 
-      const int xOffset, const int yOffset, const SDL_Color color, TTF_Font* gFont);
+    void drawTextCell(const int xPos, const int yPos, const int width, const int height, const SDL_Color lineColor, 
+      const std::string text, const int xOffset, const int yOffset, const SDL_Color textColor, TTF_Font* gFont);
 
     void drawLine(const int x1, const int y1, const int x2, const int y2, const SDL_Color color);
 
@@ -114,6 +114,8 @@ class View {
 
     void drawReorderBuffer(const int size, const int tailIndex, const int headIndex, 
       const Instruction instructions[], int fields[][ReorderBufferIndex::COUNT]);
+
+    void drawConnections();
 
     void clearScreen();
 

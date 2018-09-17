@@ -167,17 +167,17 @@ void View::drawTable(const int xPos, const int yPos, const int noOfHorizontalCel
   SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
 }
 
-void View::drawTextCell(const int xPos, const int yPos, const int width, const int height, const std::string text, 
-  const int xOffset, const int yOffset, const SDL_Color color, TTF_Font* gFont) {
+void View::drawTextCell(const int xPos, const int yPos, const int width, const int height, const SDL_Color lineColor,
+  const std::string text, const int xOffset, const int yOffset, const SDL_Color textColor, TTF_Font* gFont) {
 
   //draw the cell
-  drawLine(xPos, yPos, xPos + width, yPos, color);
-  drawLine(xPos, yPos + height, xPos + width, yPos + height, color);
-  drawLine(xPos, yPos, xPos, yPos + height, color);
-  drawLine(xPos + width, yPos, xPos + width, yPos + height, color);
+  drawLine(xPos, yPos, xPos + width, yPos, lineColor);
+  drawLine(xPos, yPos + height, xPos + width, yPos + height, lineColor);
+  drawLine(xPos, yPos, xPos, yPos + height, lineColor);
+  drawLine(xPos + width, yPos, xPos + width, yPos + height, lineColor);
 
   //draw the text
-  renderText(xPos + xOffset, yPos + yOffset, text, color, gFont);
+  renderText(xPos + xOffset, yPos + yOffset, text, textColor, gFont);
 }
 
 void View::drawLine(const int x1, const int y1, const int x2, const int y2, const SDL_Color color) {
@@ -190,9 +190,9 @@ void View::drawLine(const int x1, const int y1, const int x2, const int y2, cons
 
 void View::drawInstructions() {
 
-  //SDL_Color textColor = {0,0,0};
-  //TTF_Font* textFont = gFont15;
-  SDL_Color lineColor = {127,127,127};
+  SDL_Color textColor = {0,0,0};
+  TTF_Font* textFont = gFont15;
+  SDL_Color lineColor = {212,132,80};
 
   int xPos = 525;
   int yPos = 20;
@@ -200,6 +200,7 @@ void View::drawInstructions() {
   int cellHeight = 20;
 
   drawTable(xPos, yPos, 1, 1, cellWidth, cellHeight, lineColor);
+  renderText(xPos + 25, yPos, "Instructions", textColor, textFont);
 }
 
 void View::drawRegisterFile(const int numRegisters, const int registerValues[], const int renameTable[],
@@ -215,7 +216,7 @@ void View::drawRegisterFile(const int numRegisters, const int registerValues[], 
   int noOfVerticalCells = numRegisters;
   int xPos = 20;
   int yPos = 150;
-  int cellWidth = 38;
+  int cellWidth = 40;
   int cellHeight = 20;
 
   //draw the table to hold the register values
@@ -528,12 +529,13 @@ void View::drawAlu(const int numALUs, const int results[], const int reorderBuff
   int numOfVerticalCells = 1;
   int cellWidth = 20;
   int cellHeight = 20;
+  int space = 20;
 
   for(int i = 0; i < numALUs; i++) {
-    drawTable(xPos + i * 50, yPos, numOfHorizontalCells, numOfVerticalCells, cellWidth, cellHeight, lineColor);
+    drawTable(xPos + i * (40 + space), yPos, numOfHorizontalCells, numOfVerticalCells, cellWidth, cellHeight, lineColor);
     if(reorderBufferIndexes[i] != -1) {
-      renderText(xPos + i * 50, yPos, intToString(reorderBufferIndexes[i]), textColor, textFont);
-      renderText(xPos + i * 50 + cellWidth, yPos, intToString(results[i]), textColor, textFont);
+      renderText(xPos + i * (40 + space), yPos, intToString(reorderBufferIndexes[i]), textColor, textFont);
+      renderText(xPos + i * (40 + space) + cellWidth, yPos, intToString(results[i]), textColor, textFont);
     }
   }
 }
@@ -560,16 +562,17 @@ void View::drawBranchUnit(const bool successful, const int reorderBufferIndex) {
 
 void View::drawLoadStoreUnit() {
 
-  //SDL_Color textColor = {0,0,0};
-  //TTF_Font* textFont = gFont15;
+  SDL_Color textColor = {0,0,0};
+  TTF_Font* textFont = gFont15;
   SDL_Color lineColor = {127,127,127};
 
-  int xPos = 750;
+  int xPos = 725;
   int yPos = 450;
-  int cellWidth = 60;
+  int cellWidth = 150;
   int cellHeight = 20;
 
   drawTable(xPos, yPos, 1, 1, cellWidth, cellHeight, lineColor);
+  renderText(xPos + 10, yPos, "Load/Store Unit", textColor, textFont);
 }
 
 void View::drawReorderBuffer(const int size, const int tailIndex, const int headIndex, 
@@ -606,6 +609,48 @@ void View::drawReorderBuffer(const int size, const int tailIndex, const int head
 
   renderText(xPos - 10, yPos + tailIndex * cellHeight, "T", textColor, gFont15);
   renderText(xPos - 20, yPos + headIndex * cellHeight, "H", textColor, gFont15);
+}
+
+void View::drawConnections() {
+
+  SDL_Color lineColor = {0,0,0};
+
+  //draw from instruction to fetch unit
+  drawLine(600,40,600,70,lineColor);
+  //draw from fetch unit to decode issue unit
+  drawLine(600,150,600,190,lineColor);
+  //draw line from decode issue unit
+  drawLine(600,270,600,290,lineColor);
+  //draw horizontal line
+  drawLine(300,290,900,290,lineColor);
+  //draw line to alu reservatin station
+  drawLine(300,290,300,320,lineColor);
+  //draw line to branch unit reservaion station
+  drawLine(500,290,500,320,lineColor);
+  //draw line to load queue
+  drawLine(700,290,700,320,lineColor);
+  //draw line to store queue
+  drawLine(900,290,900,320,lineColor);
+  //draw line from RAT to decode issue unit
+  drawLine(200,230,515,230,lineColor);
+  //draw line coming from alu reservation station
+  drawLine(300,400,300,420,lineColor);
+  //draw alu reservation station horizontal line
+  drawLine(270,420,330,420,lineColor);
+  //draw alu reservation station parallel vertical lines
+  drawLine(270,420,270,450,lineColor);
+  drawLine(330,420,330,450,lineColor);
+  //draw line from branch unit reservation station to branch unit
+  drawLine(500,400,500,450,lineColor);
+  //draw line coming from load queue
+  drawLine(700,400,700,430,lineColor);
+  //draw line coming from store queue
+  drawLine(900,400,900,430,lineColor);
+  //draw load queue and store queue parallel line
+  drawLine(700,430,900,430,lineColor);
+  //draw line to load/store unit
+  drawLine(800,430,800,450,lineColor);
+
 }
 
 void View::clearScreen() {

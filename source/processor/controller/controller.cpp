@@ -43,6 +43,7 @@ void Controller::updateView() {
   drawReorderBuffer();
   drawRegisterFile();
   drawMemory();
+  view.drawConnections();
 
   //Update  the screen
   view.updateScreen();
