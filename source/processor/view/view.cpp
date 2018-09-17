@@ -196,7 +196,7 @@ void View::drawInstructions() {
 
   int xPos = 525;
   int yPos = 20;
-  int cellWidth = 80;
+  int cellWidth = 150;
   int cellHeight = 20;
 
   drawTable(xPos, yPos, 1, 1, cellWidth, cellHeight, lineColor);
@@ -310,7 +310,7 @@ void View::drawFetchUnit(const int issueWindowSize, const Instruction instructio
   SDL_Color lineColor = {0,255,255};
 
   int xPos = 525;
-  int yPos = 60;
+  int yPos = 70;
   int numOfHorizontalCells = 1;
   int numOfVerticalCells = issueWindowSize;
   int cellWidth = 150;
@@ -334,7 +334,7 @@ void View::drawDecodeIssueUnit(const int issueWindowSize, const Instruction inst
   SDL_Color lineColor = {255,0,255};
 
   int xPos = 515;
-  int yPos = 180;
+  int yPos = 190;
   int numOfHorizontalCells = 1;
   int numOfVerticalCells = issueWindowSize;
   int cellWidth = 150;
@@ -364,7 +364,7 @@ void View::drawAluReservationStation(const int reservationStationSize, const Ins
 
   //specification
   int xPos = 215;
-  int yPos = 290;
+  int yPos = 320;
   int numOfVerticalCells = reservationStationSize;
   int cellWidth = 40;
   int cellHeight = 20;
@@ -400,7 +400,7 @@ void View::drawBranchUnitReservationStation(const int reservationStationSize, co
 
   //specification
   int xPos = 415;
-  int yPos = 290;
+  int yPos = 320;
   int numOfVerticalCells = reservationStationSize;
   int cellWidth = 40;
   int cellHeight = 20;
@@ -436,7 +436,7 @@ void View::drawStoreQueue(const int size, const Instruction instructions[], cons
 
   //specifications
   int xPos = 815;
-  int yPos = 290;
+  int yPos = 320;
   int numOfVerticalCells = size;
   int cellWidth = 40;
   int cellHeight = 20;
@@ -481,7 +481,7 @@ void View::drawLoadQueue(const int size, const Instruction instructions[], const
 
   //specification
   int xPos = 615;
-  int yPos = 290;
+  int yPos = 320;
   int numOfVerticalCells = size;
   int cellWidth = 40;
   int cellHeight = 20;

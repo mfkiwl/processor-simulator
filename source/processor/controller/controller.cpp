@@ -27,120 +27,22 @@ void Controller::updateView() {
   //Clear the screen
   view.clearScreen();
 
-  //render the processor stats
-  int numOfInstructionsExecuted = model.getNoOfInstructionsExecuted();
-  int numOfClockCycles = model.getNoOfClockCycles();
-  float numOfInstructionsExecutedPerCycle = model.getNoOfInstructionsExecutedPerCycle();
-  view.drawProcessorStats(numOfInstructionsExecuted, numOfClockCycles, numOfInstructionsExecutedPerCycle);
-
-  //draw the program counter
-  int programCounter = model.getPC();
-  view.drawPC(programCounter);
-
-  int issueWindowSize = model.getIssueWindowSize();
-
-  //draw instructions
+  //draw all the components
+  drawStats();
+  drawPC();
   view.drawInstructions();
-  
-  //draw the instruction in the fetch unit
-  Instruction fetchUnitInstructions[issueWindowSize];
-  model.getFetchUnitInstructions(fetchUnitInstructions);
-  view.drawFetchUnit(issueWindowSize, fetchUnitInstructions);
-
-  //draw the instruction in the decode issue unit
-  Instruction decodeIssueUnitInstructions[issueWindowSize];
-  int decodeIssueUnitReorderBufferIndexes[issueWindowSize];
-  OperandType decodeIssueUnitOperandTypes[issueWindowSize][numOfOperands];
-  model.getDecodeIssueUnitInstructions(decodeIssueUnitInstructions);
-  model.getDecodeIssueUnitReorderBufferIndexes(decodeIssueUnitReorderBufferIndexes);
-  model.getDecodeIssueUnitOperandTypes(decodeIssueUnitOperandTypes);
-  view.drawDecodeIssueUnit(issueWindowSize, decodeIssueUnitInstructions, decodeIssueUnitReorderBufferIndexes,
-    decodeIssueUnitOperandTypes);
-
-  //draw the instructions in the alu reservation station
-  int aluReservationStationSize = model.getAluReservationStationSize();
-  Instruction aluReservationStationInstructions[aluReservationStationSize];
-  model.getAluReservationStationInstructions(aluReservationStationInstructions);
-  int aluReservationStationReorderBufferIndexes[aluReservationStationSize];
-  model.getAluReservationStationReorderBufferIndexes(aluReservationStationReorderBufferIndexes);
-  OperandType aluReservationStationOperandTypes[aluReservationStationSize][numOfOperands];
-  model.getAluReservationStationOperandTypes(aluReservationStationOperandTypes);
-  view.drawAluReservationStation(aluReservationStationSize, aluReservationStationInstructions, 
-    aluReservationStationReorderBufferIndexes, aluReservationStationOperandTypes);
-
-  //draw the instructions in the branch unit reservation station
-  int branchUnitReservationStationSize = model.getBranchUnitReservationStationSize();
-  Instruction branchUnitReservationStationInstructions[branchUnitReservationStationSize];
-  model.getBranchUnitReservationStationInstructions(branchUnitReservationStationInstructions);
-  int branchUnitReservationStationReorderBufferIndexes[branchUnitReservationStationSize];
-  model.getBranchUnitReservationStationReorderBufferIndexes(branchUnitReservationStationReorderBufferIndexes);
-  OperandType branchUnitReservationStationOperandTypes[branchUnitReservationStationSize][numOfOperands];
-  model.getBranchUnitReservationStationOperandTypes(branchUnitReservationStationOperandTypes);
-  view.drawBranchUnitReservationStation(branchUnitReservationStationSize, branchUnitReservationStationInstructions, 
-    branchUnitReservationStationReorderBufferIndexes, branchUnitReservationStationOperandTypes);
-
-  //draw the instructions in the store queue
-  int storeQueueSize = model.getStoreQueueSize();
-  Instruction storeQueueInstructions[storeQueueSize];
-  model.getStoreQueueInstructions(storeQueueInstructions);
-  int storeQueueReorderBufferIndexes[storeQueueSize];
-  model.getStoreQueueReorderBufferIndexes(storeQueueReorderBufferIndexes);
-  OperandType storeQueueOperandTypes[storeQueueSize][numOfOperands];
-  model.getStoreQueueOperandTypes(storeQueueOperandTypes);
-  view.drawStoreQueue(storeQueueSize, storeQueueInstructions, storeQueueReorderBufferIndexes, storeQueueOperandTypes);
-
-  //draw the instructions in the load queue
-  int loadQueueSize = model.getLoadQueueSize();
-  Instruction loadQueueInstructions[loadQueueSize];
-  model.getLoadQueueInstructions(loadQueueInstructions);
-  int loadQueueReorderBufferIndexes[loadQueueSize];
-  model.getLoadQueueReorderBufferIndexes(loadQueueReorderBufferIndexes);
-  OperandType loadQueueOperandTypes[loadQueueSize][numOfOperands];
-  model.getLoadQueueOperandTypes(loadQueueOperandTypes);
-  view.drawLoadQueue(loadQueueSize, loadQueueInstructions, loadQueueReorderBufferIndexes, loadQueueOperandTypes);
-
-  //draw the alu
-  int numALUs = model.getNumALUs();
-  int aluResults[numALUs];
-  model.getAluResults(aluResults);
-  int aluReorderBufferIndexes[numALUs];
-  model.getAluReorderBufferIndexes(aluReorderBufferIndexes);
-  view.drawAlu(numALUs, aluResults, aluReorderBufferIndexes);
-
-  //draw the branch unit
-  bool branchUnitSuccessful = model.getBranchUnitSuccessful();
-  int branchUnitReorderBufferIndex = model.getBranchUnitReorderBufferIndex();
-  view.drawBranchUnit(branchUnitSuccessful, branchUnitReorderBufferIndex);
-
-  //draw the load/store unit
+  drawFetchUnit();
+  drawDecodeIssueUnit();
+  drawAluReservationStation();
+  drawBranchUnitReservationStation();
+  drawStoreQueue();
+  drawLoadQueue();
+  drawAlu();
   view.drawLoadStoreUnit();
-
-  //draw the reorder buffer
-  int reorderBufferSize = model.getReorderBufferSize();
-  int reorderBufferTailIndex = model.getReorderBufferTailIndex();
-  int reorderBufferHeadIndex = model.getReorderBufferHeadIndex();
-  Instruction reorderBufferInstructions[reorderBufferSize];
-  model.getReorderBufferInstructions(reorderBufferInstructions);
-  int reorderBufferFields[reorderBufferSize][ReorderBufferIndex::COUNT];
-  model.getReorderBufferFields(reorderBufferFields);
-  view.drawReorderBuffer(reorderBufferSize, reorderBufferTailIndex, reorderBufferHeadIndex, reorderBufferInstructions, 
-    reorderBufferFields);
-
-  //draw the register file
-  int numRegisters = model.getNumRegisters();
-  int registerValues[numRegisters];
-  model.getRegisterValues(registerValues);
-  int renameTable[numRegisters];
-  model.getRenameTable(renameTable);
-  bool robMapping[numRegisters];
-  model.getRobMapping(robMapping);
-  view.drawRegisterFile(numRegisters, registerValues, renameTable, robMapping);
-
-  //draw the memory
-  int memorySize = model.getMemorySize();
-  int memoryValues[memorySize];
-  model.getAllMemoryValues(memoryValues);
-  view.drawMemory(memorySize, memoryValues);
+  drawBranchUnit();
+  drawReorderBuffer();
+  drawRegisterFile();
+  drawMemory();
 
   //Update  the screen
   view.updateScreen();
@@ -202,4 +104,141 @@ int Controller::start(const Instructions instructions) {
   view.close();
 
   return 0;
+}
+
+//===========================================================================================================
+//private functions
+void Controller::drawStats() {
+  //render the processor stats
+  int numOfInstructionsExecuted = model.getNoOfInstructionsExecuted();
+  int numOfClockCycles = model.getNoOfClockCycles();
+  float numOfInstructionsExecutedPerCycle = model.getNoOfInstructionsExecutedPerCycle();
+  view.drawProcessorStats(numOfInstructionsExecuted, numOfClockCycles, numOfInstructionsExecutedPerCycle);
+}
+
+void Controller::drawPC() {
+  //draw the program counter
+  int programCounter = model.getPC();
+  view.drawPC(programCounter);
+}
+
+void Controller::drawFetchUnit() {
+  //draw the instruction in the fetch unit
+  int issueWindowSize = model.getIssueWindowSize();
+  Instruction fetchUnitInstructions[issueWindowSize];
+  model.getFetchUnitInstructions(fetchUnitInstructions);
+  view.drawFetchUnit(issueWindowSize, fetchUnitInstructions);
+}
+
+void Controller::drawDecodeIssueUnit() {
+  //draw the instruction in the decode issue unit
+  int issueWindowSize = model.getIssueWindowSize();
+  Instruction decodeIssueUnitInstructions[issueWindowSize];
+  int decodeIssueUnitReorderBufferIndexes[issueWindowSize];
+  OperandType decodeIssueUnitOperandTypes[issueWindowSize][numOfOperands];
+  model.getDecodeIssueUnitInstructions(decodeIssueUnitInstructions);
+  model.getDecodeIssueUnitReorderBufferIndexes(decodeIssueUnitReorderBufferIndexes);
+  model.getDecodeIssueUnitOperandTypes(decodeIssueUnitOperandTypes);
+  view.drawDecodeIssueUnit(issueWindowSize, decodeIssueUnitInstructions, decodeIssueUnitReorderBufferIndexes,
+    decodeIssueUnitOperandTypes);
+}
+
+void Controller::drawAluReservationStation() {
+  //draw the instructions in the alu reservation station
+  int aluReservationStationSize = model.getAluReservationStationSize();
+  Instruction aluReservationStationInstructions[aluReservationStationSize];
+  model.getAluReservationStationInstructions(aluReservationStationInstructions);
+  int aluReservationStationReorderBufferIndexes[aluReservationStationSize];
+  model.getAluReservationStationReorderBufferIndexes(aluReservationStationReorderBufferIndexes);
+  OperandType aluReservationStationOperandTypes[aluReservationStationSize][numOfOperands];
+  model.getAluReservationStationOperandTypes(aluReservationStationOperandTypes);
+  view.drawAluReservationStation(aluReservationStationSize, aluReservationStationInstructions, 
+    aluReservationStationReorderBufferIndexes, aluReservationStationOperandTypes);
+}
+
+void Controller::drawBranchUnitReservationStation() {
+  //draw the instructions in the branch unit reservation station
+  int branchUnitReservationStationSize = model.getBranchUnitReservationStationSize();
+  Instruction branchUnitReservationStationInstructions[branchUnitReservationStationSize];
+  model.getBranchUnitReservationStationInstructions(branchUnitReservationStationInstructions);
+  int branchUnitReservationStationReorderBufferIndexes[branchUnitReservationStationSize];
+  model.getBranchUnitReservationStationReorderBufferIndexes(branchUnitReservationStationReorderBufferIndexes);
+  OperandType branchUnitReservationStationOperandTypes[branchUnitReservationStationSize][numOfOperands];
+  model.getBranchUnitReservationStationOperandTypes(branchUnitReservationStationOperandTypes);
+  view.drawBranchUnitReservationStation(branchUnitReservationStationSize, branchUnitReservationStationInstructions, 
+    branchUnitReservationStationReorderBufferIndexes, branchUnitReservationStationOperandTypes);
+}
+
+void Controller::drawStoreQueue() {
+  //draw the instructions in the store queue
+  int storeQueueSize = model.getStoreQueueSize();
+  Instruction storeQueueInstructions[storeQueueSize];
+  model.getStoreQueueInstructions(storeQueueInstructions);
+  int storeQueueReorderBufferIndexes[storeQueueSize];
+  model.getStoreQueueReorderBufferIndexes(storeQueueReorderBufferIndexes);
+  OperandType storeQueueOperandTypes[storeQueueSize][numOfOperands];
+  model.getStoreQueueOperandTypes(storeQueueOperandTypes);
+  view.drawStoreQueue(storeQueueSize, storeQueueInstructions, storeQueueReorderBufferIndexes, storeQueueOperandTypes);
+}
+
+void Controller::drawLoadQueue() {
+  //draw the instructions in the load queue
+  int loadQueueSize = model.getLoadQueueSize();
+  Instruction loadQueueInstructions[loadQueueSize];
+  model.getLoadQueueInstructions(loadQueueInstructions);
+  int loadQueueReorderBufferIndexes[loadQueueSize];
+  model.getLoadQueueReorderBufferIndexes(loadQueueReorderBufferIndexes);
+  OperandType loadQueueOperandTypes[loadQueueSize][numOfOperands];
+  model.getLoadQueueOperandTypes(loadQueueOperandTypes);
+  view.drawLoadQueue(loadQueueSize, loadQueueInstructions, loadQueueReorderBufferIndexes, loadQueueOperandTypes);
+}
+
+void Controller::drawAlu() {
+  //draw the alu
+  int numALUs = model.getNumALUs();
+  int aluResults[numALUs];
+  model.getAluResults(aluResults);
+  int aluReorderBufferIndexes[numALUs];
+  model.getAluReorderBufferIndexes(aluReorderBufferIndexes);
+  view.drawAlu(numALUs, aluResults, aluReorderBufferIndexes);
+}
+
+void Controller::drawBranchUnit() {
+  //draw the branch unit
+  bool branchUnitSuccessful = model.getBranchUnitSuccessful();
+  int branchUnitReorderBufferIndex = model.getBranchUnitReorderBufferIndex();
+  view.drawBranchUnit(branchUnitSuccessful, branchUnitReorderBufferIndex);
+}
+
+void Controller::drawReorderBuffer() {
+  //draw the reorder buffer
+  int reorderBufferSize = model.getReorderBufferSize();
+  int reorderBufferTailIndex = model.getReorderBufferTailIndex();
+  int reorderBufferHeadIndex = model.getReorderBufferHeadIndex();
+  Instruction reorderBufferInstructions[reorderBufferSize];
+  model.getReorderBufferInstructions(reorderBufferInstructions);
+  int reorderBufferFields[reorderBufferSize][ReorderBufferIndex::COUNT];
+  model.getReorderBufferFields(reorderBufferFields);
+  view.drawReorderBuffer(reorderBufferSize, reorderBufferTailIndex, reorderBufferHeadIndex, reorderBufferInstructions, 
+    reorderBufferFields);
+}
+
+void Controller::drawRegisterFile() {
+  //draw the register file
+  int numRegisters = model.getNumRegisters();
+  int registerValues[numRegisters];
+  model.getRegisterValues(registerValues);
+  int renameTable[numRegisters];
+  model.getRenameTable(renameTable);
+  bool robMapping[numRegisters];
+  model.getRobMapping(robMapping);
+  view.drawRegisterFile(numRegisters, registerValues, renameTable, robMapping);
+}
+
+void Controller::drawMemory() {
+  //draw the memory
+  int memorySize = model.getMemorySize();
+  int memoryValues[memorySize];
+  model.getAllMemoryValues(memoryValues);
+  view.drawMemory(memorySize, memoryValues);
 }

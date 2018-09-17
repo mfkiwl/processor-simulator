@@ -32,6 +32,35 @@ class Controller {
 
     int start(const Instructions instruction);
 
+  //private functions
+  private:
+
+    void drawStats();
+
+    void drawPC();
+
+    void drawFetchUnit();
+
+    void drawDecodeIssueUnit();
+
+    void drawAluReservationStation();
+
+    void drawBranchUnitReservationStation();
+
+    void drawStoreQueue();
+
+    void drawLoadQueue();
+
+    void drawAlu();
+
+    void drawBranchUnit();
+
+    void drawReorderBuffer();
+
+    void drawRegisterFile();
+
+    void drawMemory();
+
 };
 
 #endif
