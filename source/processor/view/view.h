@@ -75,6 +75,10 @@ class View {
     void drawTextCell(const int xPos, const int yPos, const int width, const int height, const std::string text, 
       const int xOffset, const int yOffset, const SDL_Color color, TTF_Font* gFont);
 
+    void drawLine(const int x1, const int y1, const int x2, const int y2, const SDL_Color color);
+
+    void drawInstructions();
+
     void drawRegisterFile(const int numRegisters, const int registerValues[], const int renameTable[],
       const bool robMapping[]);
 
@@ -105,6 +109,8 @@ class View {
     void drawAlu(const int numALUs, const int results[], const int reorderBufferIndexes[]);
 
     void drawBranchUnit(const bool successful, const int reorderBufferIndex);
+
+    void drawLoadStoreUnit();
 
     void drawReorderBuffer(const int size, const int tailIndex, const int headIndex, 
       const Instruction instructions[], int fields[][ReorderBufferIndex::COUNT]);

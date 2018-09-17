@@ -38,6 +38,9 @@ void Controller::updateView() {
   view.drawPC(programCounter);
 
   int issueWindowSize = model.getIssueWindowSize();
+
+  //draw instructions
+  view.drawInstructions();
   
   //draw the instruction in the fetch unit
   Instruction fetchUnitInstructions[issueWindowSize];
@@ -108,6 +111,9 @@ void Controller::updateView() {
   bool branchUnitSuccessful = model.getBranchUnitSuccessful();
   int branchUnitReorderBufferIndex = model.getBranchUnitReorderBufferIndex();
   view.drawBranchUnit(branchUnitSuccessful, branchUnitReorderBufferIndex);
+
+  //draw the load/store unit
+  view.drawLoadStoreUnit();
 
   //draw the reorder buffer
   int reorderBufferSize = model.getReorderBufferSize();
