@@ -336,11 +336,11 @@ void DecodeIssueUnit::issue(int instructionToIssue) {
 
         //Instruction has been issued so add entry to the reorder buffer
         if(branchPrediction) {
-          reorderBufferIndexes[instructionToIssue] = reorderBuffer->addEntry(JUMP, -1, true, 
+          reorderBufferIndexes[instructionToIssue] = reorderBuffer->addEntry(BRANCH, -1, true, 
             branchAddresses[instructionToIssue], instructions[instructionToIssue]);
         }
         else {
-          reorderBufferIndexes[instructionToIssue] = reorderBuffer->addEntry(JUMP, -1, false,
+          reorderBufferIndexes[instructionToIssue] = reorderBuffer->addEntry(BRANCH, -1, false,
             branchAddresses[instructionToIssue], instructions[instructionToIssue]);
         }
 
