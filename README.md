@@ -1,8 +1,18 @@
-# processor
+# Processor
 Advanced Computer Architecture coursework
 
-Install the SDL2 library:
-sudo apt-get install libsdl2-dev
+# SDL
 
-Install the SDL_Image library
+Install the necessary SDL packages with the following commands:
+
+```
+sudo apt-get install libsdl2-dev
+```
+
+```
 sudo apt-get install libsdl2-image-dev
+```
+
+```
+sudo apt-get install libsdl2-image-ttf
+```
