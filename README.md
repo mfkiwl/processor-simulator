@@ -10,7 +10,7 @@ Features of the processor include:
 - Reservation stations
 - Multiple execution units (load/store unit, ALUs, branch unit)
 - Out-of-order exeuction of instructions using a Re-order Buffer
-- Register Renaming to eliminate false data dependencies between instructions
+- Register Renaming by use of a Register Allocation Table (RAT). This eliminates false data dependencies between instructions
 - Simple branch prediction (predicts that every branch will be taken)
 - A GUI to depict the instructions passing through the pipeline (created with SDL)
 
