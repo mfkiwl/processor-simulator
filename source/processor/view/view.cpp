@@ -25,7 +25,9 @@ View::View() :
   SCREEN_HEIGHT(600),
   gWindow(NULL),
   gRenderer(NULL),
+  gFont12(NULL),
   gFont15(NULL),
+  gFont20(NULL),
   quit(false)
 {}
 
@@ -75,7 +77,7 @@ bool View::loadMedia()
   bool success = true;
 
   //Open the font (font size was originally 28)
-  gFont12 = TTF_OpenFont( "source/processor/view/OpenSans-Bold.ttf", 10 );
+  gFont12 = TTF_OpenFont( "source/processor/view/OpenSans-Bold.ttf", 12 );
   if( gFont12 == NULL ) {
     printf( "Failed to load lazy font! SDL_ttf Error: %s\n", TTF_GetError() );
     success = false;
@@ -191,7 +193,7 @@ void View::drawLine(const int x1, const int y1, const int x2, const int y2, cons
 void View::drawInstructions() {
 
   SDL_Color textColor = {0,0,0};
-  TTF_Font* textFont = gFont15;
+  TTF_Font* textFont = gFont12;
   SDL_Color lineColor = {212,132,80};
 
   int xPos = 350;
@@ -208,7 +210,7 @@ void View::drawRegisterFile(const int numRegisters, const int registerValues[], 
 {
 
   SDL_Color textColor = {0,0,0};
-  TTF_Font* textFont = gFont15;
+  TTF_Font* textFont = gFont12;
   SDL_Color lineColor = {255,0,0};
 
   //table info
@@ -216,25 +218,33 @@ void View::drawRegisterFile(const int numRegisters, const int registerValues[], 
   int noOfVerticalCells = numRegisters;
   int xPos = 825;
   int yPos = 120;
-  int cellWidth = 40;
-  int cellHeight = 20;
+  int cellWidth = 30;
+  int cellHeight = 15;
+  int offset = 80;
 
-  //draw the table to hold the register values
-  drawTable(xPos, yPos + cellHeight, noOfHorizontalCells, noOfVerticalCells, cellWidth, cellHeight, lineColor);
+  //draw the title for the register file
+  drawTable(xPos + offset, yPos, 1, 1, cellWidth * 2, cellHeight, textColor);
+  renderText(xPos + offset, yPos, "Registers", textColor, textFont);
 
-  //draw the register numbers
+  //draw the table for the register file
+  drawTable(xPos + offset, yPos + cellHeight, noOfHorizontalCells, noOfVerticalCells, cellWidth, cellHeight, lineColor);
+
+  //draw the values in the register file
   for(int i = 0; i < noOfVerticalCells; i++) {
-  	renderText(xPos, yPos + (i + 1) * cellHeight, "R" + intToString(i), textColor, textFont);
-    renderText(xPos + cellWidth, yPos + (i + 1) * cellHeight, intToString(registerValues[i]), textColor, textFont);
+  	renderText(xPos + offset, yPos + (i + 1) * cellHeight, "R" + intToString(i), textColor, textFont);
+    renderText(xPos + offset + cellWidth, yPos + (i + 1) * cellHeight, intToString(registerValues[i]), textColor, textFont);
   }
 
+  //draw the title for the RAT
   drawTable(xPos, yPos, 1, 1, cellWidth * 2, cellHeight, textColor);
-  renderText(xPos, yPos, "Registers", textColor, textFont);
+  renderText(xPos, yPos, "RAT", textColor, textFont);
 
-  drawTable(xPos + 100, yPos + cellHeight, noOfHorizontalCells, noOfVerticalCells, cellWidth, cellHeight, lineColor);
+  //draw the table for the RAT
+  drawTable(xPos, yPos + cellHeight, noOfHorizontalCells, noOfVerticalCells, cellWidth, cellHeight, lineColor);
 
+  //draw the values in the RAT
   for(int i = 0; i < noOfVerticalCells; i++) {
-    renderText(xPos + 100, yPos + (i + 1) * cellHeight, "R" + intToString(i), textColor, textFont);
+    renderText(xPos, yPos + (i + 1) * cellHeight, "R" + intToString(i), textColor, textFont);
     std::string renameString;
     if(robMapping[i]) {
       renameString = "RB" + intToString(renameTable[i]);
@@ -242,11 +252,8 @@ void View::drawRegisterFile(const int numRegisters, const int registerValues[], 
     else {
       renameString = "R" + intToString(renameTable[i]);
     }
-    renderText(xPos + 100 + cellWidth, yPos + (i + 1) * cellHeight, renameString, textColor, textFont);
+    renderText(xPos + cellWidth, yPos + (i + 1) * cellHeight, renameString, textColor, textFont);
   }
-
-  drawTable(xPos + 100, yPos, 1, 1, cellWidth * 2, cellHeight, textColor);
-  renderText(xPos + 100, yPos, "RAT", textColor, textFont);
 
   //reset the draw color to white
   SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
@@ -255,7 +262,7 @@ void View::drawRegisterFile(const int numRegisters, const int registerValues[], 
 void View::drawMemory(const int memorySize, const int memoryValues[]) {
 
   SDL_Color textColor = {0,0,0};
-  TTF_Font* textFont = gFont15;
+  TTF_Font* textFont = gFont12;
   SDL_Color lineColor = {0,255,0};
 
   //table info
@@ -264,7 +271,7 @@ void View::drawMemory(const int memorySize, const int memoryValues[]) {
   int xPos = 75;
   int yPos = 520;
   int cellWidth = 20;
-  int cellHeight = 20;
+  int cellHeight = 15;
 
   //draw the table to hold the register values
   drawTable(xPos, yPos + cellHeight, noOfHorizontalCells, noOfVerticalCells, cellWidth, cellHeight, lineColor);
@@ -283,18 +290,20 @@ void View::drawMemory(const int memorySize, const int memoryValues[]) {
 void View::drawProcessorStats(const int numOfInstructionsExecuted, const int numOfClockCycles, const float numOfInstructionsExecutedPerCycle) {
   
   SDL_Color textColor = {0,0,0};
-  TTF_Font* textFont = gFont15;
+  TTF_Font* textFont = gFont12;
 
   int xPos = 0;
   int yPos = 0;
   int ySpace = 20;
 
-  //render the number of instructions executed
-  std::string text = "Number of instructions executed : " + intToString(numOfInstructionsExecuted);
-  renderText(xPos, yPos, text, textColor, textFont);
+  std::string text;
 
   //render the number of clock cycles performed
   text = "Number of clock cycles performed : " + intToString(numOfClockCycles);
+  renderText(xPos, yPos, text, textColor, textFont);
+
+  //render the number of instructions executed
+  text = "Number of instructions executed : " + intToString(numOfInstructionsExecuted);
   renderText(xPos, yPos + ySpace, text, textColor, textFont);
   
   //render the number of the instructions executed per clock cycle
@@ -305,7 +314,7 @@ void View::drawProcessorStats(const int numOfInstructionsExecuted, const int num
 void View::drawPC(const int programCounter) {
 
   SDL_Color textColor = {0,0,0};
-  TTF_Font* textFont = gFont15;
+  TTF_Font* textFont = gFont12;
 
   int xPos = 0;
   int yPos = 60;
@@ -316,15 +325,15 @@ void View::drawPC(const int programCounter) {
 void View::drawFetchUnit(const int issueWindowSize, const Instruction instructions[]) {
 
   SDL_Color textColor = {0,0,0};
-  TTF_Font* textFont = gFont15;
+  TTF_Font* textFont = gFont12;
   SDL_Color lineColor = {0,255,255};
 
   int xPos = 350;
   int yPos = 70;
   int numOfHorizontalCells = 1;
   int numOfVerticalCells = issueWindowSize;
-  int cellWidth = 150;
-  int cellHeight = 20;
+  int cellWidth = 110;
+  int cellHeight = 15;
 
   drawTable(xPos, yPos + cellHeight, numOfHorizontalCells, numOfVerticalCells, cellWidth, cellHeight, lineColor);
 
@@ -344,15 +353,15 @@ void View::drawDecodeIssueUnit(const int issueWindowSize, const Instruction inst
 {
 
   SDL_Color textColor = {0,0,0};
-  TTF_Font* textFont = gFont15;
+  TTF_Font* textFont = gFont12;
   SDL_Color lineColor = {255,0,255};
 
   int xPos = 340;
   int yPos = 190;
   int numOfHorizontalCells = 1;
   int numOfVerticalCells = issueWindowSize;
-  int cellWidth = 150;
-  int cellHeight = 20;
+  int cellWidth = 130;
+  int cellHeight = 15;
 
   drawTable(xPos, yPos + cellHeight, 1, numOfVerticalCells, cellHeight, cellHeight, lineColor);
   drawTable(xPos + cellHeight, yPos + cellHeight, numOfHorizontalCells, numOfVerticalCells, cellWidth, cellHeight, lineColor);
@@ -376,16 +385,16 @@ void View::drawAluReservationStation(const int reservationStationSize, const Ins
 {
 
   SDL_Color textColor = {0,0,0};
-  TTF_Font* textFont = gFont15;
+  TTF_Font* textFont = gFont12;
   SDL_Color lineColor = {127,127,127};
 
   //specification
   int xPos = 440;
   int yPos = 320;
   int numOfVerticalCells = reservationStationSize;
-  int cellWidth = 40;
-  int cellHeight = 20;
-  int instructionCellWidth = 50;
+  int cellWidth = 35;
+  int cellHeight = 15;
+  int instructionCellWidth = 40;
 
   //draw table
   drawTable(xPos, yPos + cellHeight, 1, numOfVerticalCells, cellWidth, cellHeight, lineColor);
@@ -415,16 +424,16 @@ void View::drawBranchUnitReservationStation(const int reservationStationSize, co
 {
 
   SDL_Color textColor = {0,0,0};
-  TTF_Font* textFont = gFont15;
+  TTF_Font* textFont = gFont12;
   SDL_Color lineColor = {127,0,0};
 
   //specification
   int xPos = 640;
   int yPos = 320;
   int numOfVerticalCells = reservationStationSize;
-  int cellWidth = 40;
-  int cellHeight = 20;
-  int instructionCellWidth = 50;
+  int cellWidth = 35;
+  int cellHeight = 15;
+  int instructionCellWidth = 40;
 
   //draw table
   drawTable(xPos, yPos + cellHeight, 1, numOfVerticalCells, cellWidth, cellHeight, lineColor);
@@ -454,16 +463,16 @@ void View::drawStoreQueue(const int size, const Instruction instructions[], cons
 {
 
   SDL_Color textColor = {0,0,0};
-  TTF_Font* textFont = gFont15;
+  TTF_Font* textFont = gFont12;
   SDL_Color lineColor = {0,127,0};
 
   //specifications
   int xPos = 40;
   int yPos = 320;
   int numOfVerticalCells = size;
-  int cellWidth = 40;
-  int cellHeight = 20;
-  int instructionCellWidth = 50;
+  int cellWidth = 35;
+  int cellHeight = 15;
+  int instructionCellWidth = 40;
 
   //draw table
   drawTable(xPos, yPos + cellHeight, 1, numOfVerticalCells, cellWidth, cellHeight, lineColor);
@@ -502,16 +511,16 @@ void View::drawLoadQueue(const int size, const Instruction instructions[], const
 {
 
   SDL_Color textColor = {0,0,0};
-  TTF_Font* textFont = gFont15;
+  TTF_Font* textFont = gFont12;
   SDL_Color lineColor = {0,0,127};
 
   //specification
   int xPos = 240;
   int yPos = 320;
   int numOfVerticalCells = size;
-  int cellWidth = 40;
-  int cellHeight = 20;
-  int instructionCellWidth = 50;
+  int cellWidth = 35;
+  int cellHeight = 15;
+  int instructionCellWidth = 40;
 
   //draw table
   drawTable(xPos, yPos + cellHeight, 1, numOfVerticalCells, cellWidth, cellHeight, lineColor);
@@ -548,7 +557,7 @@ void View::drawLoadQueue(const int size, const Instruction instructions[], const
 void View::drawAlu(const int numALUs, const int results[], const int reorderBufferIndexes[]) {
 
   SDL_Color textColor = {0,0,0};
-  TTF_Font* textFont = gFont15;
+  TTF_Font* textFont = gFont12;
   SDL_Color lineColor = {127,127,0};
 
   int xPos = 475;
@@ -556,7 +565,7 @@ void View::drawAlu(const int numALUs, const int results[], const int reorderBuff
   int numOfHorizontalCells = 2;
   int numOfVerticalCells = 1;
   int cellWidth = 20;
-  int cellHeight = 20;
+  int cellHeight = 15;
   int space = 20;
 
   for(int i = 0; i < numALUs; i++) {
@@ -573,7 +582,7 @@ void View::drawAlu(const int numALUs, const int results[], const int reorderBuff
 void View::drawBranchUnit(const bool successful, const int reorderBufferIndex) {
 
   SDL_Color textColor = {0,0,0};
-  TTF_Font* textFont = gFont15;
+  TTF_Font* textFont = gFont12;
   SDL_Color lineColor = {127,0,127};
 
   int xPos = 705;
@@ -581,7 +590,7 @@ void View::drawBranchUnit(const bool successful, const int reorderBufferIndex) {
   int numOfHorizontalCells = 2;
   int numOfVerticalCells = 1;
   int cellWidth = 20;
-  int cellHeight = 20;
+  int cellHeight = 15;
 
   drawTable(xPos, yPos + cellHeight, numOfHorizontalCells, numOfVerticalCells, cellWidth, cellHeight, lineColor);
   if(reorderBufferIndex != -1) {
@@ -595,13 +604,13 @@ void View::drawBranchUnit(const bool successful, const int reorderBufferIndex) {
 void View::drawLoadStoreUnit() {
 
   SDL_Color textColor = {0,0,0};
-  TTF_Font* textFont = gFont15;
+  TTF_Font* textFont = gFont12;
   SDL_Color lineColor = {127,127,127};
 
   int xPos = 150;
   int yPos = 450;
   int cellWidth = 150;
-  int cellHeight = 20;
+  int cellHeight = 15;
 
   drawTable(xPos, yPos, 1, 1, cellWidth, cellHeight, lineColor);
   renderText(xPos + 10, yPos, "Load/Store Unit", textColor, textFont);
@@ -612,7 +621,7 @@ void View::drawReorderBuffer(const int size, const int tailIndex, const int head
 {
 
   SDL_Color textColor = {0,0,0};
-  TTF_Font* textFont = gFont15;
+  TTF_Font* textFont = gFont12;
   SDL_Color lineColor = {0,127,127};
 
   int numFields = ReorderBufferIndex::COUNT;
@@ -622,9 +631,10 @@ void View::drawReorderBuffer(const int size, const int tailIndex, const int head
   int numOfHorizontalCells = numFields - 1;
   int numOfVerticalCells = size;
   int cellWidth = 20;
-  int cellHeight = 20;
-  int textCellWidth = 150;
+  int cellHeight = 15;
+  int textCellWidth = 110;
 
+ 
   drawTable(xPos, yPos + cellHeight, 1, numOfVerticalCells, cellWidth, cellHeight, lineColor);
   drawTable(xPos + cellWidth, yPos + cellHeight, 1, numOfVerticalCells, textCellWidth, cellHeight, lineColor);
   drawTable(xPos + cellWidth + textCellWidth, yPos + cellHeight, numOfHorizontalCells, numOfVerticalCells, cellWidth, cellHeight, lineColor);
@@ -639,8 +649,8 @@ void View::drawReorderBuffer(const int size, const int tailIndex, const int head
     }
   }
 
-  renderText(xPos - 10, yPos + (tailIndex + 1) * cellHeight, "T", textColor, gFont15);
-  renderText(xPos - 20, yPos + (headIndex + 1) * cellHeight, "H", textColor, gFont15);
+  renderText(xPos - 10, yPos + (tailIndex + 1) * cellHeight, "T", textColor, textFont);
+  renderText(xPos - 20, yPos + (headIndex + 1) * cellHeight, "H", textColor, textFont);
 
   drawTable(xPos, yPos, 1, 1, cellWidth * (numOfHorizontalCells + 1) + textCellWidth, cellHeight, textColor);
   renderText(xPos, yPos, "Reorder Buffer", textColor, textFont);
