@@ -202,7 +202,7 @@ void View::drawInstructions() {
   int cellHeight = 15;
 
   drawTable(xPos, yPos, 1, 1, cellWidth, cellHeight, lineColor);
-  renderText(xPos + 25, yPos, "Instructions", textColor, textFont);
+  renderText(xPos, yPos, "Instructions", textColor, textFont);
 }
 
 void View::drawRegisterFile(const int numRegisters, const int registerValues[], const int renameTable[],
@@ -607,7 +607,7 @@ void View::drawLoadStoreUnit() {
   TTF_Font* textFont = gFont12;
   SDL_Color lineColor = {127,127,127};
 
-  int xPos = 150;
+  int xPos = 100;
   int yPos = 350;
   int cellWidth = 150;
   int cellHeight = 15;
@@ -661,21 +661,25 @@ void View::drawConnections() {
   SDL_Color lineColor = {0,0,0};
 
   //draw from instruction to fetch unit
-  drawLine(425,40,425,70,lineColor);
+  drawLine(405,25,405,45,lineColor);
   //draw from fetch unit to decode issue unit
-  drawLine(425,170,425,190,lineColor);
+  drawLine(405,120,405,140,lineColor);
   //draw line from decode issue unit
-  drawLine(425,290,425,300,lineColor);
+  drawLine(405,215,405,230,lineColor);
   //draw horizontal line
-  drawLine(125,300,725,300,lineColor);
-  //draw line to alu reservatin station
-  drawLine(125,300,125,320,lineColor);
-  //draw line to branch unit reservaion station
-  drawLine(325,300,325,320,lineColor);
-  //draw line to load queue
-  drawLine(525,300,525,320,lineColor);
+  drawLine(90,230,570,230,lineColor);
   //draw line to store queue
-  drawLine(725,300,725,320,lineColor);
+  drawLine(90,230,90,250,lineColor);
+  //draw line to load queue
+  drawLine(250,230,250,250,lineColor);
+  //draw line to alu reservation station
+  drawLine(405,230,405,250,lineColor);
+  //draw line to branch unit reservation station
+  drawLine(570,230,570,250,lineColor);
+  //draw line from store queue to load/store unit
+  drawLine(120,325,120,350,lineColor);
+  //draw line from load queue to load/store unit
+  drawLine(220,325,220,350,lineColor);
   //draw line coming from alu reservation station
   drawLine(525,420,525,430,lineColor);
   //draw alu reservation station horizontal line
@@ -685,18 +689,6 @@ void View::drawConnections() {
   drawLine(555,430,555,450,lineColor);
   //draw line from branch unit reservation station to branch unit
   drawLine(725,420,725,450,lineColor);
-  //draw line coming from load queue
-  drawLine(125,420,125,430,lineColor);
-  //draw line coming from store queue
-  drawLine(325,420,325,430,lineColor);
-  //draw load queue horizontal line
-  drawLine(125,430,200,430,lineColor);
-  //draw store queue horizontal line
-  drawLine(250,430,325,430,lineColor);
-  //draw load queue line to load/store unit
-  drawLine(200,430,200,450,lineColor);
-  //draw store queue line to load/store unit
-  drawLine(250,430,250,450,lineColor);
   //draw line from load/store unit to memory
   drawLine(200,470,200,520,lineColor);
   //draw line from load/store unit
