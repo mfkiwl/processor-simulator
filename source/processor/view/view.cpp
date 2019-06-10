@@ -21,8 +21,8 @@ and may not be redistributed without written permission.*/
 // implementation
 
 View::View() :
-  SCREEN_WIDTH(1300),
-  SCREEN_HEIGHT(600),
+  SCREEN_WIDTH(1120),
+  SCREEN_HEIGHT(470),
   gWindow(NULL),
   gRenderer(NULL),
   gFont12(NULL),
@@ -197,9 +197,9 @@ void View::drawInstructions() {
   SDL_Color lineColor = {212,132,80};
 
   int xPos = 350;
-  int yPos = 20;
-  int cellWidth = 150;
-  int cellHeight = 20;
+  int yPos = 10;
+  int cellWidth = 110;
+  int cellHeight = 15;
 
   drawTable(xPos, yPos, 1, 1, cellWidth, cellHeight, lineColor);
   renderText(xPos + 25, yPos, "Instructions", textColor, textFont);
@@ -216,8 +216,8 @@ void View::drawRegisterFile(const int numRegisters, const int registerValues[], 
   //table info
   int noOfHorizontalCells = 2;
   int noOfVerticalCells = numRegisters;
-  int xPos = 825;
-  int yPos = 120;
+  int xPos = 680;
+  int yPos = 100;
   int cellWidth = 30;
   int cellHeight = 15;
   int offset = 80;
@@ -269,7 +269,7 @@ void View::drawMemory(const int memorySize, const int memoryValues[]) {
   int noOfHorizontalCells = memorySize;
   int noOfVerticalCells = 2;
   int xPos = 75;
-  int yPos = 520;
+  int yPos = 400;
   int cellWidth = 20;
   int cellHeight = 15;
 
@@ -329,7 +329,7 @@ void View::drawFetchUnit(const int issueWindowSize, const Instruction instructio
   SDL_Color lineColor = {0,255,255};
 
   int xPos = 350;
-  int yPos = 70;
+  int yPos = 45;
   int numOfHorizontalCells = 1;
   int numOfVerticalCells = issueWindowSize;
   int cellWidth = 110;
@@ -357,7 +357,7 @@ void View::drawDecodeIssueUnit(const int issueWindowSize, const Instruction inst
   SDL_Color lineColor = {255,0,255};
 
   int xPos = 340;
-  int yPos = 190;
+  int yPos = 140;
   int numOfHorizontalCells = 1;
   int numOfVerticalCells = issueWindowSize;
   int cellWidth = 130;
@@ -389,8 +389,8 @@ void View::drawAluReservationStation(const int reservationStationSize, const Ins
   SDL_Color lineColor = {127,127,127};
 
   //specification
-  int xPos = 440;
-  int yPos = 320;
+  int xPos = 340;
+  int yPos = 250;
   int numOfVerticalCells = reservationStationSize;
   int cellWidth = 35;
   int cellHeight = 15;
@@ -428,8 +428,8 @@ void View::drawBranchUnitReservationStation(const int reservationStationSize, co
   SDL_Color lineColor = {127,0,0};
 
   //specification
-  int xPos = 640;
-  int yPos = 320;
+  int xPos = 500;
+  int yPos = 250;
   int numOfVerticalCells = reservationStationSize;
   int cellWidth = 35;
   int cellHeight = 15;
@@ -467,8 +467,8 @@ void View::drawStoreQueue(const int size, const Instruction instructions[], cons
   SDL_Color lineColor = {0,127,0};
 
   //specifications
-  int xPos = 40;
-  int yPos = 320;
+  int xPos = 20;
+  int yPos = 250;
   int numOfVerticalCells = size;
   int cellWidth = 35;
   int cellHeight = 15;
@@ -515,8 +515,8 @@ void View::drawLoadQueue(const int size, const Instruction instructions[], const
   SDL_Color lineColor = {0,0,127};
 
   //specification
-  int xPos = 240;
-  int yPos = 320;
+  int xPos = 180;
+  int yPos = 250;
   int numOfVerticalCells = size;
   int cellWidth = 35;
   int cellHeight = 15;
@@ -560,8 +560,8 @@ void View::drawAlu(const int numALUs, const int results[], const int reorderBuff
   TTF_Font* textFont = gFont12;
   SDL_Color lineColor = {127,127,0};
 
-  int xPos = 475;
-  int yPos = 450;
+  int xPos = 350;
+  int yPos = 350;
   int numOfHorizontalCells = 2;
   int numOfVerticalCells = 1;
   int cellWidth = 20;
@@ -585,8 +585,8 @@ void View::drawBranchUnit(const bool successful, const int reorderBufferIndex) {
   TTF_Font* textFont = gFont12;
   SDL_Color lineColor = {127,0,127};
 
-  int xPos = 705;
-  int yPos = 450;
+  int xPos = 550;
+  int yPos = 350;
   int numOfHorizontalCells = 2;
   int numOfVerticalCells = 1;
   int cellWidth = 20;
@@ -608,7 +608,7 @@ void View::drawLoadStoreUnit() {
   SDL_Color lineColor = {127,127,127};
 
   int xPos = 150;
-  int yPos = 450;
+  int yPos = 350;
   int cellWidth = 150;
   int cellHeight = 15;
 
@@ -626,8 +626,8 @@ void View::drawReorderBuffer(const int size, const int tailIndex, const int head
 
   int numFields = ReorderBufferIndex::COUNT;
 
-  int xPos = 1015;
-  int yPos = 60;
+  int xPos = 850;
+  int yPos = 40;
   int numOfHorizontalCells = numFields - 1;
   int numOfVerticalCells = size;
   int cellWidth = 20;
