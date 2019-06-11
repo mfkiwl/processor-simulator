@@ -14,6 +14,7 @@ Features of the processor include:
 - Simple branch prediction (predicts that every branch will be taken)
 - A GUI to depict the instructions passing through the pipeline (created with SDL)
 
+![Screenshot](./screenshot.png "screenshot")
 
 ## Setup
 
