@@ -40,4 +40,4 @@ Run the processor the the command:
 ```
 make run
 ```
-This will execute a vector addition assembly program
+This will execute a vector addition assembly program. Pressing the enter button in the terminal window will execute one clock cycle. Pressing 'e' and then the enter button will cause the program to automatically run until completion.
