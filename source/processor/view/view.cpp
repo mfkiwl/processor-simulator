@@ -692,14 +692,15 @@ void View::drawConnections() {
   //draw line from load/store unit to memory
   drawLine(170,365,170,400,lineColor);
   //draw line from load/store unit
-  drawLine(250,470,250,510,lineColor);
+  drawLine(190,365,190,390,lineColor);
   //draw lines from ALUs
-  drawLine(495,490,495,510,lineColor);
-  drawLine(555,490,555,510,lineColor);
+  drawLine(370,380,370,390,lineColor);
+  drawLine(430,380,430,390,lineColor);
   //draw line from branch unit
-  drawLine(725,490,725,510,lineColor);
+  drawLine(570,380,570,390,lineColor);
   //draw line from execution units to reorder buffer
-  drawLine(250,510,1015,510,lineColor);
+  drawLine(190,390,900,390,lineColor);
+  drawLine(900,390,900,385,lineColor);
 
 }
 
