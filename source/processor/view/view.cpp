@@ -681,16 +681,16 @@ void View::drawConnections() {
   //draw line from load queue to load/store unit
   drawLine(220,325,220,350,lineColor);
   //draw line coming from alu reservation station
-  drawLine(525,420,525,430,lineColor);
+  drawLine(400,325,400,335,lineColor);
   //draw alu reservation station horizontal line
-  drawLine(495,430,555,430,lineColor);
+  drawLine(370,335,430,335,lineColor);
   //draw lines to ALUs
-  drawLine(495,430,495,450,lineColor);
-  drawLine(555,430,555,450,lineColor);
+  drawLine(370,335,370,350,lineColor);
+  drawLine(430,335,430,350,lineColor);
   //draw line from branch unit reservation station to branch unit
-  drawLine(725,420,725,450,lineColor);
+  drawLine(570,325,570,350,lineColor);
   //draw line from load/store unit to memory
-  drawLine(200,470,200,520,lineColor);
+  drawLine(170,365,170,400,lineColor);
   //draw line from load/store unit
   drawLine(250,470,250,510,lineColor);
   //draw lines from ALUs
