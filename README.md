@@ -14,6 +14,8 @@ Features of the processor include:
 - Simple branch prediction (predicts that every branch will be taken)
 - A GUI to depict the instructions passing through the pipeline (created with SDL)
 
+I also created my own assembly language and an assembler that converts assembly code into machine code.
+
 ![Screenshot](./screenshot.png "screenshot")
 
 ## Setup
