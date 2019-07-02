@@ -77,21 +77,21 @@ bool View::loadMedia()
   bool success = true;
 
   //Open the font (font size was originally 28)
-  gFont12 = TTF_OpenFont( "source/processor/view/OpenSans-Bold.ttf", 12 );
+  gFont12 = TTF_OpenFont( "source/processor/view/Roboto-Bold.ttf", 12 );
   if( gFont12 == NULL ) {
     printf( "Failed to load lazy font! SDL_ttf Error: %s\n", TTF_GetError() );
     success = false;
   }
 
   //Open the font (font size was originally 28)
-  gFont15 = TTF_OpenFont( "source/processor/view/OpenSans-Bold.ttf", 15 );
+  gFont15 = TTF_OpenFont( "source/processor/view/Roboto-Bold.ttf", 15 );
   if( gFont15 == NULL ) {
     printf( "Failed to load lazy font! SDL_ttf Error: %s\n", TTF_GetError() );
     success = false;
   }
 
   //Open the font (font size was originally 28)
-  gFont20 = TTF_OpenFont( "source/processor/view/OpenSans-Bold.ttf", 20 );
+  gFont20 = TTF_OpenFont( "source/processor/view/Roboto-Bold.ttf", 20 );
   if( gFont20 == NULL ) {
     printf( "Failed to load lazy font! SDL_ttf Error: %s\n", TTF_GetError() );
     success = false;
@@ -292,7 +292,7 @@ void View::drawMemory(const int memorySize, const int memoryValues[]) {
 void View::drawProcessorStats(const int numOfInstructionsExecuted, const int numOfClockCycles, const float numOfInstructionsExecutedPerCycle) {
   
   SDL_Color textColor = {0,0,0};
-  TTF_Font* textFont = gFont12;
+  TTF_Font* textFont = gFont15;
 
   int xPos = 0;
   int yPos = 0;
@@ -316,7 +316,7 @@ void View::drawProcessorStats(const int numOfInstructionsExecuted, const int num
 void View::drawPC(const int programCounter) {
 
   SDL_Color textColor = {0,0,0};
-  TTF_Font* textFont = gFont12;
+  TTF_Font* textFont = gFont15;
 
   int xPos = 0;
   int yPos = 60;
