@@ -140,7 +140,7 @@ void View::renderText(const int x, const int y, const std::string text, const SD
   }
 
   //Render current frame
-  gTextTexture.render( x, y, gRenderer);
+  gTextTexture.render( x+2, y, gRenderer);
 }
 
 void View::drawTable(const int xPos, const int yPos, const int noOfHorizontalCells, const int noOfVerticalCells, const int cellWidth, const int cellHeight, const SDL_Color color) {
@@ -186,6 +186,8 @@ void View::drawLine(const int x1, const int y1, const int x2, const int y2, cons
   SDL_SetRenderDrawColor(gRenderer, color.r, color.g, color.b, 0xFF);
 
   SDL_RenderDrawLine(gRenderer, x1, y1, x2, y2);
+  SDL_RenderDrawLine(gRenderer, x1, y1+1, x2, y2+1);
+  SDL_RenderDrawLine(gRenderer, x1+1, y1, x2+1, y2);
 
   SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
 }
