@@ -16,6 +16,8 @@ and may not be redistributed without written permission.*/
 #include "lTexture.h"
 #include "../model/instructions.h"
 #include "../model/constants.h"
+#include <iomanip> // setprecision
+#include <sstream> // stringstream
 
 //===========================================
 // implementation
@@ -309,7 +311,10 @@ void View::drawProcessorStats(const int numOfInstructionsExecuted, const int num
   renderText(xPos, yPos + ySpace, text, textColor, textFont);
   
   //render the number of the instructions executed per clock cycle
-  text = "Number of instructions executed per cycle : " + floatToString(numOfInstructionsExecutedPerCycle);
+  std::stringstream stream;
+  stream << std::fixed << std::setprecision(2) << numOfInstructionsExecutedPerCycle;
+  std::string s = stream.str();
+  text = "Number of instructions executed per cycle : " + s;
   renderText(xPos, yPos + 2 * ySpace, text, textColor, textFont);
 }
 
