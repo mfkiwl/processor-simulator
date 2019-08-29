@@ -19,7 +19,9 @@ I created a GUI to depict the instructions being executed in the processor. This
 
 ![demo](./demo.gif "demo")
 
-## Setup
+## Setup (Linux)
+
+Make sure you have the g++ compiler installed on your machine.
 
 Install the required SDL packages with the following commands:
 ```
