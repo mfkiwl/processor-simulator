@@ -1,3 +1,4 @@
+#include "model/instructions.h"
 #include "controller/controller.h"
 #include <stdio.h>
 

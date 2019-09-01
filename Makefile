@@ -94,16 +94,16 @@ $(BUILD_DIR)/objects/main.o : $(SOURCE_DIR)/processor/main.cpp
 $(BUILD_DIR)/objects/%.o : $(SOURCE_DIR)/processor/%.cpp $(SOURCE_DIR)/processor/%.h
 	$(CC) $(CFLAGS) -c $< $(LINKER_FLAGS) -o $@
 
-# rule for running the processor with the given assembly program
-run: $(BUILD_DIR)/$(EXECUTABLE) $(PROGRAM).mac
-	$(BUILD_DIR)/$(EXECUTABLE) $(PROGRAM).mac
-
 # rule for compiling the assembler
 assembler : $(SOURCE_DIR)/assembler/assembler.cpp
 	$(CC) $(CFLAGS) $(SOURCE_DIR)/assembler/assembler.cpp -o $(BUILD_DIR)/assembler
 
 assemble: $(BUILD_DIR)/assembler $(PROGRAM).asm 
 	$(BUILD_DIR)/assembler $(PROGRAM).asm
+
+# rule for compiling the test program
+test: $(SOURCE_DIR)/test.cpp
+	$(CC) $(CFLAGS) $(SOURCE_DIR)/test.cpp -o $(BUILD_DIR)/test
 
 # rule for deleting all of the object files and the executables in the build directory
 # (trying to be specific on the files that are deleted for safety)

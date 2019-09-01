@@ -5,4 +5,5 @@ build/objects/*.o
 build/objects/model/*.o
 build/objects/view/*.o
 build/objects/controller/*.o
+build/test
 
