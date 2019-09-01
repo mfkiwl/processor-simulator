@@ -1,24 +1,27 @@
 # Superscalar Processor
 
-This repository contains my implementation of a superscalar processor. This was originally part of my coursework for the Advanced Computer Architecture masters unit at the University of Bristol. I have since extended it.
+As part of the Advanced Computer Archicture unit at the University of Bristol, we were tasked with creating a simulator of a superscalar processor. I chose to write the simulator in C++. After finishing the unit I went on the extend the processor somewhat.
 
 ## Features
 
 Features of the processor include:
 
-- A 5-stage pipeline (fetch, decode/issue, dispatch, execute, commit)
-- Reservation stations
-- Multiple execution units (load/store unit, ALUs, branch unit)
-- Out-of-order exeuction of instructions using a Re-order Buffer
-- Register Renaming by use of a Register Allocation Table (RAT). This eliminates false data dependencies between instructions
-- Simple branch prediction (predicts that every branch will be taken)
-- A GUI to depict the instructions passing through the pipeline (created with SDL)
+- A 5-stage pipeline (fetch, decode/issue, dispatch, execute, commit).
+- Reservation stations to store instructions that are waiting for operands to be computed.
+- Multiple execution units (load/store unit, ALUs, branch unit).
+- Out-of-order execution of instructions using a Reorder Buffer.
+- Register Renaming by use of a Register Allocation Table (RAT). This eliminates false data dependencies between instructions.
+- Simple branch prediction (predicts that every branch will be taken).
 
-I also created my own assembly language and an assembler that converts assembly code into machine code.
+I created my own assembly language and an assembler that converts assembly code into machine code.
 
-![Screenshot](./screenshot.png "screenshot")
+I created a GUI to depict the instructions being executed in the processor. This was created using SDL. The GIF below shows the processor running a vector addition program.
 
-## Setup
+![demo](./demo.gif "demo")
+
+## Setup (Linux)
+
+Make sure you have the g++ compiler installed on your machine.
 
 Install the required SDL packages with the following commands:
 ```
@@ -26,7 +29,7 @@ sudo apt-get install libsdl2-dev
 
 sudo apt-get install libsdl2-image-dev
 
-sudo apt-get install libsdl2-image-ttf
+sudo apt-get install libsdl2-ttf-dev
 ```
 
 ## Compilation
@@ -42,4 +45,4 @@ Run the processor the the command:
 ```
 make run
 ```
-This will execute a vector addition assembly program. Pressing the enter button in the terminal window will execute one clock cycle. Pressing 'e' and then the enter button will cause the program to automatically run until completion.
+This will execute a vector addition program. Pressing enter in the console will execute one clock cycle. Pressing 'e' and then the enter button will cause the program to automatically run until completion.

@@ -5,7 +5,7 @@
 CC = g++
 
 # CFLAGS specifies the additional compilation options we're using
-CFLAGS = -Wall
+CFLAGS = -Wall -std=c++11
 
 # LINKER_FLAGS specifies the libraries we're linking against
 LINKER_FLAGS = -lSDL2 -lSDL2_image -lSDL2_ttf
