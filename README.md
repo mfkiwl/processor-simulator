@@ -41,8 +41,8 @@ make
 
 ## Running the processor
 
-Run the processor the the command:
+Run the processor with the command:
 ```
-make run
+./build/processor ./programs/kernels/vector_addition.mac
 ```
 This will execute a vector addition program. Pressing enter in the console will execute one clock cycle. Pressing 'e' and then the enter button will cause the program to automatically run until completion.
