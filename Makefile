@@ -102,8 +102,8 @@ assemble: $(BUILD_DIR)/assembler $(PROGRAM).asm
 	$(BUILD_DIR)/assembler $(PROGRAM).asm
 
 # rule for compiling the test program
-test: $(SOURCE_DIR)/test.cpp
-	$(CC) $(CFLAGS) $(SOURCE_DIR)/test.cpp -o $(BUILD_DIR)/test
+test: test.cpp
+	$(CC) $(CFLAGS) test.cpp -o $(BUILD_DIR)/test
 
 # rule for deleting all of the object files and the executables in the build directory
 # (trying to be specific on the files that are deleted for safety)

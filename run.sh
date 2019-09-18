@@ -1,1 +1,1 @@
-./build/processor programs/kernels/vector_addition.mac
+./build/processor programs/tests/arithmetic.mac
