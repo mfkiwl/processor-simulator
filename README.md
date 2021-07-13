@@ -1,6 +1,6 @@
 # Superscalar Processor
 
-As part of the Advanced Computer Archicture unit at the University of Bristol, we were tasked with creating a simulator of a superscalar processor. I chose to write the simulator in C++. After finishing the unit I went on the extend the processor somewhat.
+As part of the Advanced Computer Archicture unit at the University of Bristol, we were tasked with creating a simulator of a superscalar processor. I chose to write the simulator in C++.
 
 ## Features
 
