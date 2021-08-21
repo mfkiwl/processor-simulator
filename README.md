@@ -1,6 +1,6 @@
 # Superscalar Processor
 
-As part of the Advanced Computer Archicture unit at the University of Bristol, we were tasked with creating a simulator of a superscalar processor. I chose to write the simulator in C++.
+As part of the Advanced Computer Archicture unit at the University of Bristol, we were tasked with creating a simulator of a superscalar processor. A superscalar processor is able to execute multiple instructions in each clock cycle. I chose to write my simulator in C++.
 
 ## Features
 
